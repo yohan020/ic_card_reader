@@ -6,6 +6,8 @@
 .packages
 build/
 coverage/
+.private-backups/
+supabase/.temp/
 android/.gradle/
 android/local.properties
 ios/Pods/
@@ -16,6 +18,10 @@ ios/Flutter/ephemeral/
 # Reference exports contain third-party data with unresolved redistribution
 # terms. Keep the source material local and publish only the analysis docs.
 ic_card_export/
+
+# Keep the user-provided crawl as local source material. The app distributes
+# only the bundled station asset under the documented permission conditions.
+yoiko_station_export/
 
 # Physical-card blocks encode real travel history even without an IDm.
 test/fixtures/felica/android_history_20_v1.json

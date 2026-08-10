@@ -12,16 +12,25 @@ import '../domain/raw_history_block.dart';
 import '../domain/raw_history_fixture_log.dart';
 
 class NfcManagerCardReader implements CardReader {
-  NfcManagerCardReader({NfcManager? manager})
-    : _manager = manager ?? NfcManager.instance;
+  NfcManagerCardReader({
+    NfcManager? manager,
+    Stream<NfcAdapterStateAndroid>? androidAdapterStates,
+  }) : _manager = manager ?? NfcManager.instance,
+       _androidAdapterStates =
+           androidAdapterStates ??
+           (defaultTargetPlatform == TargetPlatform.android
+               ? NfcManagerAndroid.instance.onStateChanged
+               : null);
 
   static final Uint8List _systemCode = Uint8List.fromList([0x00, 0x03]);
   static final Uint8List _historyServiceCode = Uint8List.fromList([0x0F, 0x09]);
 
   final NfcManager _manager;
+  final Stream<NfcAdapterStateAndroid>? _androidAdapterStates;
   bool _sessionActive = false;
   bool _completed = false;
   Completer<CardScanResult>? _completer;
+  StreamSubscription<NfcAdapterStateAndroid>? _adapterStateSubscription;
 
   @override
   Future<bool> isAvailable() async {
@@ -42,20 +51,23 @@ class NfcManagerCardReader implements CardReader {
     if (!await isAvailable()) {
       throw const CardScanException(
         CardScanFailureKind.nfcUnavailable,
-        'NFC를 사용할 수 없습니다. 기기 설정을 확인해 주세요.',
+        'NFC 읽기 기능을 사용할 수 없습니다. Samsung 기기는 NFC를 기본 모드로 설정해 주세요.',
       );
     }
 
     _completed = false;
     _sessionActive = true;
     _completer = Completer<CardScanResult>();
-    await _manager.startSession(
-      pollingOptions: const {NfcPollingOption.iso18092},
-      alertMessageIos: '교통계 IC 카드를 iPhone 상단에 가까이 대 주세요.',
-      onDiscovered: _onDiscovered,
+    _adapterStateSubscription = _androidAdapterStates?.listen(
+      _onAndroidAdapterStateChanged,
     );
 
     try {
+      await _manager.startSession(
+        pollingOptions: const {NfcPollingOption.iso18092},
+        alertMessageIos: '교통계 IC 카드를 iPhone 상단에 가까이 대 주세요.',
+        onDiscovered: _onDiscovered,
+      );
       return await _completer!.future.timeout(
         timeout,
         onTimeout: () async {
@@ -69,8 +81,27 @@ class NfcManagerCardReader implements CardReader {
         },
       );
     } finally {
+      await _adapterStateSubscription?.cancel();
+      _adapterStateSubscription = null;
       _sessionActive = false;
     }
+  }
+
+  void _onAndroidAdapterStateChanged(NfcAdapterStateAndroid state) {
+    if (!_sessionActive || _completed) return;
+    if (state != NfcAdapterStateAndroid.turningOff &&
+        state != NfcAdapterStateAndroid.off) {
+      return;
+    }
+    unawaited(
+      _finish(
+        error: const CardScanException(
+          CardScanFailureKind.nfcUnavailable,
+          'NFC 읽기 기능이 꺼졌습니다. Samsung 기기는 NFC를 기본 모드로 변경한 뒤 다시 시도해 주세요.',
+        ),
+        stopPlatformSession: false,
+      ),
+    );
   }
 
   Future<void> _onDiscovered(NfcTag tag) async {
@@ -210,14 +241,19 @@ class NfcManagerCardReader implements CardReader {
   Future<void> _finish({
     CardScanResult? result,
     CardScanException? error,
+    bool stopPlatformSession = true,
   }) async {
     if (_completed) return;
     _completed = true;
     try {
-      await _manager.stopSession(
-        alertMessageIos: result == null ? null : 'IC 카드 이용내역을 읽었습니다.',
-        errorMessageIos: error?.message,
-      );
+      if (stopPlatformSession) {
+        await _manager.stopSession(
+          alertMessageIos: result == null ? null : 'IC 카드 이용내역을 읽었습니다.',
+          errorMessageIos: error?.message,
+        );
+      }
+    } catch (_) {
+      // Session teardown failures must not leak from the plugin callback.
     } finally {
       final completer = _completer;
       if (completer != null && !completer.isCompleted) {

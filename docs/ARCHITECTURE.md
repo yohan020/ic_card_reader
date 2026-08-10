@@ -4,7 +4,7 @@
 
 앱은 일본 전국호환 선불식 교통계 IC 카드의 최근 이력을 읽는다. NFC 통신과 파싱, 역 조회, 저장, UI를 분리하며 기본 데이터 처리는 기기 안에서 끝낸다. 카드 IDm 원문은 FeliCa 명령 수행 중 메모리에서만 사용하고 저장·로그·화면·서버 전송에서 제외한다.
 
-현재 구현 범위는 Phase 1 NFC PoC다. Phase 2 파싱/SQLite/역명 표시와 선택적 신고 전송은 설계만 유지하며, Phase 3 교통패스 비교는 구현하지 않는다.
+현재 Android Phase 1 NFC PoC를 검증하고 Phase 2의 보수적 원시 이력 파서와 로컬 역명 조회를 구현했다. Phase 2 이용내역 SQLite 저장과 선택적 신고 전송은 아직 설계 단계이며, Phase 3 교통패스 비교는 구현하지 않는다. iOS NFC 실기기 검증은 Apple Developer 계정 준비 후 진행한다.
 
 ## 디렉터리 구조
 
@@ -13,7 +13,7 @@ lib/src/
   features/
     card_reader/          NFC 세션, FeliCa 프로토콜, 원시 블록 UI
     transaction_history/ Phase 2 파서·저장·표시 예정
-    station_resolver/     Phase 2 SQLite 조회 예정
+    station_resolver/     Phase 2 번들 역 데이터 조회
     issue_report/         신고 계약 및 향후 큐
     pass_comparison/      Phase 3 확장 지점(현재 미구현)
 ```
@@ -41,19 +41,23 @@ lib/src/
 
 위 조건은 실기기 검증 전까지 완료로 표시하지 않는다.
 
-## Phase 2 예정 구조
+## Phase 2 구조
 
-- `TransactionParser`: 16바이트 레코드를 보존하며 날짜, 코드, 잔액을 파싱한다. 확실한 근거가 없는 거래 유형은 `UNKNOWN`이다.
-- `AmountState`: 인접 레코드 잔액 차이를 `CALCULATED`, `UNAVAILABLE`, `SUSPICIOUS`로 표현한다. 잔액 증가를 일반 차감으로 표시하지 않는다.
-- `StationResolver`: `(region,line,station)` 정확 조회 후 `(line,station)` 단일 후보만 확정한다. 다중 후보는 보존하고 출발/도착 지역 교집합만 보조 근거로 쓴다.
+- `TransitHistoryParser`: 구현됨. 16바이트 레코드를 보존하며 날짜, 단말/처리 코드, 지역·출발·도착 코드, 잔액을 파싱한다. 실물 fixture로 확인한 `16/01` 철도, `05/0D` 버스, `C8/46` 물품 구매, 잔액 증가가 동반된 `C8/49` 충전만 분류하며 나머지는 `UNKNOWN`이다.
+- `AmountCalculation`: 구현됨. 인접 레코드 잔액 차이를 `CALCULATED`, `UNAVAILABLE`, `SUSPICIOUS`로 표현한다. 잔액 증가를 일반 차감으로 표시하지 않으며 날짜 순서가 비정상이면 의심 상태로 둔다.
+- `AssetStationDatabase`: 구현됨. Yoiko CSV를 최초 조회 시 한 번 파싱해 완전 키와 `(line,station)` 인덱스를 만든다. 정확 조회, 제한된 지역 힌트, 단일 후보, 출발/도착 지역 교집합만 사용하며 다중 후보는 보존한다.
 - `LocalStore`: SQLite에 해시된 카드 식별값, 원시 레코드/해시, 파싱 결과, 파서/DB 버전, 마지막 스캔 시각을 저장한다. IDm 원문은 금지한다.
 - `IssueReportRepository`: 사용자 동의가 있을 때 한 건만 전송하며 실패 건은 로컬 큐에서 재시도한다.
 
-## CSV -> SQLite 계획
+## 역 데이터 저장 방식
 
-빌드 전 개발 도구가 UTF-8 CSV를 읽어 정수 코드를 정규화하고, Yoiko가 같은 완전 키를 덮어쓰는 기존 우선순위를 적용해 SQLite asset을 생성한다. 테이블은 `station_codes(region_code, line_code, station_code, station_name, line_name, operator_name, source, confidence)`와 완전 키 unique index, `(line_code, station_code)` index를 갖는다. 입력 SHA-256, 변환 스크립트 버전, 행 수를 `station_database_meta`에 기록한다. 수동 보정은 별도 migration으로 재현한다.
+현재 앱 asset에는 사용 허가를 받은 Yoiko CSV 8,537행과 허가 조건 고지를 포함한다. 약 1.4MB CSV는 최초 카드 스캔 후 한 번 메모리 인덱스로 변환하며 이후 같은 실행에서는 재사용한다. 원본 export는 수정하지 않고 Git 추적에서 제외한다.
 
-Yoiko 데이터의 재배포 조건이 확인되기 전에는 앱 asset 또는 공개 저장소에 포함하지 않는다.
+## CSV -> SQLite 후속 계획
+
+필요하면 빌드 전 개발 도구가 UTF-8 Yoiko CSV를 읽어 정수 코드를 정규화하고 SQLite asset을 생성한다. 테이블은 `station_codes(region_code, line_code, station_code, station_name, line_name, operator_name, source, confidence)`와 완전 키 unique index, `(line_code, station_code)` index를 갖는다. 입력 SHA-256, 변환 스크립트 버전, 행 수를 `station_database_meta`에 기록한다. 수동 보정은 별도 migration으로 재현한다.
+
+로컬 이용내역 SQLite 저장을 구현할 때 역 데이터도 사전 생성 SQLite asset으로 전환할지 실기기 로딩 성능을 기준으로 결정한다. 어떤 형식으로 전환하더라도 Yoiko 데이터는 앱과 함께만 배포하고 데이터 단독 배포는 금지한다.
 
 ## 주요 위험
 

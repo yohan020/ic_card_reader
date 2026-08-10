@@ -29,7 +29,6 @@ class IssueReport {
     required this.appVersion,
     required this.platform,
     required this.osVersion,
-    required this.deduplicationKey,
     this.currentBoardingStation,
     this.currentAlightingStation,
     this.suggestedBoardingStation,
@@ -54,7 +53,7 @@ class IssueReport {
   final String? suggestedAlightingStation;
   final String currentTransactionType;
   final String? suggestedTransactionType;
-  final DateTime usageDate;
+  final DateTime? usageDate;
   final int balance;
   final int? calculatedAmount;
   final String? additionalDescription;
@@ -63,6 +62,56 @@ class IssueReport {
   final String appVersion;
   final String platform;
   final String osVersion;
-  final String deduplicationKey;
   final IssueReportStatus status;
+
+  Map<String, Object?> toJson() => {
+    'anonymousReportId': anonymousReportId,
+    'anonymousRawRecord': anonymousRawRecord,
+    'issueType': issueType.wireName,
+    'regionCode': regionCode,
+    'boardingLineCode': boardingLineCode,
+    'boardingStationCode': boardingStationCode,
+    'alightingLineCode': alightingLineCode,
+    'alightingStationCode': alightingStationCode,
+    'currentBoardingStation': currentBoardingStation,
+    'currentAlightingStation': currentAlightingStation,
+    'suggestedBoardingStation': suggestedBoardingStation,
+    'suggestedAlightingStation': suggestedAlightingStation,
+    'currentTransactionType': currentTransactionType,
+    'suggestedTransactionType': suggestedTransactionType,
+    'usageDate': usageDate == null
+        ? null
+        : '${usageDate!.year.toString().padLeft(4, '0')}-'
+              '${usageDate!.month.toString().padLeft(2, '0')}-'
+              '${usageDate!.day.toString().padLeft(2, '0')}',
+    'balance': balance,
+    'calculatedAmount': calculatedAmount,
+    'additionalDescription': additionalDescription,
+    'parserVersion': parserVersion,
+    'stationDatabaseVersion': stationDatabaseVersion,
+    'appVersion': appVersion,
+    'platform': platform,
+    'osVersion': osVersion,
+  };
+}
+
+extension on IssueType {
+  String get wireName => switch (this) {
+    IssueType.wrongBoardingStation => 'WRONG_BOARDING_STATION',
+    IssueType.wrongAlightingStation => 'WRONG_ALIGHTING_STATION',
+    IssueType.stationNotResolved => 'STATION_NOT_RESOLVED',
+    IssueType.wrongTransactionType => 'WRONG_TRANSACTION_TYPE',
+    IssueType.wrongAmountOrBalance => 'WRONG_AMOUNT_OR_BALANCE',
+    IssueType.other => 'OTHER',
+  };
+}
+
+class IssueReportReceipt {
+  const IssueReportReceipt({
+    required this.reportId,
+    required this.reviewStatus,
+  });
+
+  final String reportId;
+  final String reviewStatus;
 }

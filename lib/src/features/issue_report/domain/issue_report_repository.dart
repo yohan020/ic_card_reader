@@ -1,9 +1,14 @@
 import 'issue_report.dart';
 
 abstract interface class IssueReportRepository {
-  Future<void> enqueue(IssueReport report);
+  Future<IssueReportReceipt> submit(IssueReport report);
+}
 
-  Future<void> retryPending();
+class IssueReportSubmissionException implements Exception {
+  const IssueReportSubmissionException(this.message);
 
-  Stream<List<IssueReport>> watchPending();
+  final String message;
+
+  @override
+  String toString() => message;
 }

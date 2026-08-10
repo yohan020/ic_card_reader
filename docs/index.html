@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <meta name="description" content="일본 교통카드 리더 개인정보처리방침">
+    <title>일본 교통카드 리더 개인정보처리방침</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --background: #f4faff;
+        --surface: #ffffff;
+        --text: #16232d;
+        --muted: #536875;
+        --primary: #087faf;
+        --border: #d8e8f0;
+        --notice: #e7f6fc;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --background: #0f1820;
+          --surface: #18242d;
+          --text: #edf7fc;
+          --muted: #b5c9d4;
+          --primary: #6acdf2;
+          --border: #304450;
+          --notice: #173442;
+        }
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        background: var(--background);
+        color: var(--text);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif;
+        line-height: 1.7;
+      }
+
+      main {
+        width: min(760px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 48px 0 72px;
+      }
+
+      article {
+        padding: clamp(24px, 5vw, 48px);
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 24px;
+        box-shadow: 0 18px 48px rgb(20 80 110 / 8%);
+      }
+
+      h1 {
+        margin: 0 0 8px;
+        font-size: clamp(28px, 6vw, 40px);
+        line-height: 1.25;
+        letter-spacing: -0.04em;
+      }
+
+      h2 {
+        margin: 34px 0 8px;
+        font-size: 20px;
+        line-height: 1.4;
+        letter-spacing: -0.02em;
+      }
+
+      p, li { color: var(--muted); }
+      ul { padding-left: 22px; }
+
+      a {
+        color: var(--primary);
+        font-weight: 650;
+        overflow-wrap: anywhere;
+      }
+
+      .meta {
+        margin: 0 0 28px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .notice {
+        margin: 24px 0 8px;
+        padding: 18px 20px;
+        background: var(--notice);
+        border: 1px solid color-mix(in srgb, var(--primary) 24%, transparent);
+        border-radius: 16px;
+      }
+
+      .notice strong {
+        display: block;
+        margin-bottom: 4px;
+        color: var(--text);
+      }
+
+      footer {
+        margin-top: 36px;
+        padding-top: 20px;
+        border-top: 1px solid var(--border);
+        color: var(--muted);
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <article>
+        <h1>개인정보처리방침</h1>
+        <p class="meta">일본 교통카드 리더 · 시행일 2026년 8월 10일 · 앱 버전 1.0.0</p>
+
+        <div class="notice">
+          <strong>카드 정보는 기본적으로 기기 안에서 처리됩니다.</strong>
+          교통카드 이용내역은 NFC로 읽어 화면에 표시하며 영구 저장하지 않습니다. 카드 IDm 원문은 NFC 통신 중에만 일시적으로 사용하고 저장·표시·전송하지 않습니다.
+        </div>
+
+        <h2>1. NFC 사용 목적</h2>
+        <p>앱은 사용자가 스캔을 시작했을 때 일본 교통계 IC 카드의 최근 이용내역을 읽기 위해 NFC 기능을 사용합니다. 앱은 카드에 정보를 기록하거나 변경하지 않습니다.</p>
+
+        <h2>2. 기기 안에서 처리하는 정보</h2>
+        <p>최근 이용내역의 원본 16바이트 기록, 날짜, 거래 유형, 역 코드·역명, 금액과 잔액을 기기 안에서 해석해 표시합니다. 이용내역은 영구 저장하지 않으며 다른 카드를 읽으면 현재 결과로 교체됩니다.</p>
+
+        <h2>3. 오류 제보 시 전송하는 정보</h2>
+        <p>오류 제보는 선택 사항입니다. 사용자가 전송 전 미리보기를 확인하고 명시적으로 동의한 경우에만 다음 정보를 Supabase로 전송합니다.</p>
+        <ul>
+          <li>선택한 이용내역 1건의 원본 16바이트 기록</li>
+          <li>지역·노선·역 코드와 현재 해석 및 사용자가 제안한 해석</li>
+          <li>거래 유형, 이용 날짜, 잔액과 계산 금액</li>
+          <li>사용자가 직접 입력한 추가 설명</li>
+          <li>앱·파서·역 데이터베이스 버전, 플랫폼과 OS 버전</li>
+          <li>앱에서 생성한 익명 제보 번호</li>
+        </ul>
+        <p>전송된 내용은 오류 확인과 앱 개선을 위해 사용합니다.</p>
+
+        <h2>4. 전송하지 않는 정보</h2>
+        <p>카드 IDm 원문, 선택하지 않은 다른 이용내역, 이름, 이메일 주소, 기기 고유 식별자, 현재 위치와 전체 이동 경로는 오류 제보 데이터에 포함하지 않습니다.</p>
+
+        <h2>5. 외부 처리 서비스</h2>
+        <p>오류 제보 접수에는 Supabase의 익명 인증, Edge Function과 PostgreSQL 데이터베이스를 사용합니다. 익명 인증 ID는 10분당 최대 5건의 반복 제보 제한에만 사용하며 제보 내용과 연결하지 않습니다. 네트워크 연결 과정의 기술 정보는 Supabase의 서비스 운영 및 보안 정책에 따라 처리될 수 있습니다.</p>
+
+        <h2>6. 역 코드 데이터</h2>
+        <p>역명 조회에는 사용 허가를 받아 앱에 함께 배포하는 Yoiko 역 코드 데이터를 사용합니다. 조회는 기기 안에서 수행되며 역명을 확인하기 위해 카드 기록을 외부 서버로 보내지 않습니다.</p>
+
+        <h2>7. 보관과 삭제</h2>
+        <p>기기에서 읽은 이용내역은 앱이 영구 저장하지 않습니다. 선택적으로 전송된 오류 제보는 접수 후 최대 1년간 보관하고 매월 정리합니다. 반복 제보 제한에 사용하는 익명 인증 정보는 마지막 활동 후 최대 1년간 보관합니다. 법령상 보존 의무가 있는 경우에는 해당 기간 동안 보관할 수 있습니다.</p>
+
+        <h2>8. 이용자의 선택</h2>
+        <p>오류 제보를 전송하지 않아도 NFC 읽기와 이용내역 확인 기능을 사용할 수 있습니다. 전송 전 화면에서 실제 전송 항목을 확인할 수 있으며 동의하지 않으면 아무 정보도 전송하지 않습니다.</p>
+
+        <h2>9. 정책 변경과 문의</h2>
+        <p>데이터 처리 방식이 변경되면 이 방침과 시행일을 함께 갱신합니다. 개인정보 확인·삭제 요청, 앱 오류, 이용 방법과 기타 문의는 아래 통합 문의 이메일로 접수합니다.</p>
+        <p><a href="mailto:iccardreader10@gmail.com">iccardreader10@gmail.com</a></p>
+
+        <footer>
+          운영자: 일본 교통카드 리더 운영자<br>
+          이 페이지는 방문 분석 도구, 광고와 추적 쿠키를 사용하지 않습니다.
+        </footer>
+      </article>
+    </main>
+  </body>
+</html>

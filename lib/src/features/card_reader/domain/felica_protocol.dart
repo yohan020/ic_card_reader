@@ -52,5 +52,6 @@ final class FelicaProtocol {
     return Uint8List.fromList(response.sublist(headerLength));
   }
 
-  static bool isEmptyBlock(Uint8List block) => block.every((byte) => byte == 0);
+  static bool isEmptyBlock(Uint8List block) =>
+      block.length >= 2 && block[0] == 0 && block[1] == 0;
 }

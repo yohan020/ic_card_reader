@@ -1,0 +1,4 @@
+project_id = "ic-card-reader"
+
+[functions.ic-card-report]
+verify_jwt = false

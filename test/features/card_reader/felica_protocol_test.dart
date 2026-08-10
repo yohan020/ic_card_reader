@@ -90,4 +90,30 @@ void main() {
       isNull,
     );
   });
+
+  test('treats a 00 00 terminal and process pair as an empty block', () {
+    expect(
+      FelicaProtocol.isEmptyBlock(
+        Uint8List.fromList(const [
+          0x00,
+          0x00,
+          0xFF,
+          0xFF,
+          0x34,
+          0xE3,
+          0x01,
+          0x02,
+          0x03,
+          0x04,
+          0x00,
+          0x00,
+          0x00,
+          0x01,
+          0x00,
+          0x00,
+        ]),
+      ),
+      isTrue,
+    );
+  });
 }

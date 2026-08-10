@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'src/app.dart';
+import 'src/features/issue_report/data/issue_report_bootstrap.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const IcCardReaderApp());
+  final issueReportRepository = await IssueReportBootstrap.initialize();
+  runApp(IcCardReaderApp(issueReportRepository: issueReportRepository));
 }

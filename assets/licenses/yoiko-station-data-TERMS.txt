@@ -1,0 +1,16 @@
+Yoiko 自動改札機の研究・駅コードデータ
+
+Source:
+https://ja.ysrl.org/atc/station-code.html
+
+The project owner stated on 2026-08-09 that permission was obtained to bundle
+this station-code data with the application under the following conditions:
+
+・データの正確性を保証しない
+・データの変更や訂正を通知しない、義務がない
+・データ公開は予告なく中止する場合がある
+・データ単体での再配布は有償、無償を問わず許可しない
+　(アプリケーションとの同時配布は問題ありません)
+・データ使用による責任を一切負わない(損害は一切補償しない)
+
+The data must not be redistributed separately from the application.
