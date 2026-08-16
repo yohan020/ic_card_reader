@@ -4,7 +4,7 @@ import android.app.Activity
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.Context.RECEIVER_NOT_EXPORTED
+import android.content.Context.RECEIVER_EXPORTED
 import android.content.Intent
 import android.content.IntentFilter
 import android.nfc.NdefMessage
@@ -31,6 +31,8 @@ import java.util.*
 class NfcManagerPlugin: FlutterPlugin, ActivityAware, HostApiPigeon, BroadcastReceiver() {
   private lateinit var flutterApi: FlutterApiPigeon
   private lateinit var activity: Activity
+  private var applicationContext: Context? = null
+  private var adapterStateReceiverRegistered = false
   private var adapter: NfcAdapter? = null
   private var cachedTags: MutableMap<String, Tag> = mutableMapOf()
   private var connectedTech: TagTechnology? = null
@@ -38,23 +40,20 @@ class NfcManagerPlugin: FlutterPlugin, ActivityAware, HostApiPigeon, BroadcastRe
   override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
     HostApiPigeon.setUp(flutterPluginBinding.binaryMessenger, this)
     flutterApi = FlutterApiPigeon(flutterPluginBinding.binaryMessenger)
-    adapter = NfcAdapter.getDefaultAdapter(flutterPluginBinding.applicationContext)
+    val context = flutterPluginBinding.applicationContext
+    applicationContext = context
+    adapter = NfcAdapter.getDefaultAdapter(context)
+    registerAdapterStateReceiver()
   }
 
   override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
+    unregisterAdapterStateReceiver()
+    applicationContext = null
     HostApiPigeon.setUp(binding.binaryMessenger, null)
   }
 
   override fun onAttachedToActivity(binding: ActivityPluginBinding) {
     activity = binding.activity
-
-    val intentFilter = IntentFilter(NfcAdapter.ACTION_ADAPTER_STATE_CHANGED)
-
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-      activity.applicationContext.registerReceiver(this, intentFilter, RECEIVER_NOT_EXPORTED)
-    } else {
-      activity.applicationContext.registerReceiver(this, intentFilter)
-    }
   }
 
   override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
@@ -67,6 +66,33 @@ class NfcManagerPlugin: FlutterPlugin, ActivityAware, HostApiPigeon, BroadcastRe
 
   override fun onDetachedFromActivity() {
     // noop
+  }
+
+  private fun registerAdapterStateReceiver() {
+    if (adapterStateReceiverRegistered) { return }
+    val context = applicationContext ?: return
+    val intentFilter = IntentFilter(NfcAdapter.ACTION_ADAPTER_STATE_CHANGED)
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+      // Samsung's NFC service can deliver this protected system broadcast
+      // from a privileged process with a different UID.
+      context.registerReceiver(this, intentFilter, RECEIVER_EXPORTED)
+    } else {
+      context.registerReceiver(this, intentFilter)
+    }
+    adapterStateReceiverRegistered = true
+  }
+
+  private fun unregisterAdapterStateReceiver() {
+    if (!adapterStateReceiverRegistered) { return }
+    val context = applicationContext ?: return
+    try {
+      context.unregisterReceiver(this)
+    } catch (_: IllegalArgumentException) {
+      // The framework may already have removed the receiver during teardown.
+    } finally {
+      adapterStateReceiverRegistered = false
+    }
   }
 
   override fun onReceive(context: Context?, intent: Intent?) {

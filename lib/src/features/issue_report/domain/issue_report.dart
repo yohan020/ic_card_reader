@@ -1,10 +1,25 @@
 enum IssueType {
+  wrongStationName,
   wrongBoardingStation,
   wrongAlightingStation,
+  wrongBothStations,
   stationNotResolved,
+  busCompanyNotResolved,
   wrongTransactionType,
   wrongAmountOrBalance,
   other,
+}
+
+enum StationIssueScope { boarding, alighting, both }
+
+class StationCorrection {
+  const StationCorrection({required this.name, required this.city, this.line});
+
+  final String name;
+  final String city;
+  final String? line;
+
+  Map<String, String?> toJson() => {'name': name, 'city': city, 'line': line};
 }
 
 enum IssueReportStatus { pending, submitted, failed }
@@ -33,7 +48,13 @@ class IssueReport {
     this.currentAlightingStation,
     this.suggestedBoardingStation,
     this.suggestedAlightingStation,
+    this.stationIssueScope,
+    this.correctedBoardingStation,
+    this.correctedAlightingStation,
+    this.suggestedBusCompanyName,
+    this.suggestedBusCompanyCity,
     this.suggestedTransactionType,
+    this.customSuggestedTransactionType,
     this.calculatedAmount,
     this.additionalDescription,
     this.status = IssueReportStatus.pending,
@@ -51,8 +72,14 @@ class IssueReport {
   final String? currentAlightingStation;
   final String? suggestedBoardingStation;
   final String? suggestedAlightingStation;
+  final StationIssueScope? stationIssueScope;
+  final StationCorrection? correctedBoardingStation;
+  final StationCorrection? correctedAlightingStation;
+  final String? suggestedBusCompanyName;
+  final String? suggestedBusCompanyCity;
   final String currentTransactionType;
   final String? suggestedTransactionType;
+  final String? customSuggestedTransactionType;
   final DateTime? usageDate;
   final int balance;
   final int? calculatedAmount;
@@ -77,8 +104,14 @@ class IssueReport {
     'currentAlightingStation': currentAlightingStation,
     'suggestedBoardingStation': suggestedBoardingStation,
     'suggestedAlightingStation': suggestedAlightingStation,
+    'stationIssueScope': stationIssueScope?.wireName,
+    'correctedBoardingStation': correctedBoardingStation?.toJson(),
+    'correctedAlightingStation': correctedAlightingStation?.toJson(),
+    'suggestedBusCompanyName': suggestedBusCompanyName,
+    'suggestedBusCompanyCity': suggestedBusCompanyCity,
     'currentTransactionType': currentTransactionType,
     'suggestedTransactionType': suggestedTransactionType,
+    'customSuggestedTransactionType': customSuggestedTransactionType,
     'usageDate': usageDate == null
         ? null
         : '${usageDate!.year.toString().padLeft(4, '0')}-'
@@ -97,12 +130,23 @@ class IssueReport {
 
 extension on IssueType {
   String get wireName => switch (this) {
+    IssueType.wrongStationName => 'WRONG_STATION_NAME',
     IssueType.wrongBoardingStation => 'WRONG_BOARDING_STATION',
     IssueType.wrongAlightingStation => 'WRONG_ALIGHTING_STATION',
+    IssueType.wrongBothStations => 'WRONG_BOTH_STATIONS',
     IssueType.stationNotResolved => 'STATION_NOT_RESOLVED',
+    IssueType.busCompanyNotResolved => 'BUS_COMPANY_NOT_RESOLVED',
     IssueType.wrongTransactionType => 'WRONG_TRANSACTION_TYPE',
     IssueType.wrongAmountOrBalance => 'WRONG_AMOUNT_OR_BALANCE',
     IssueType.other => 'OTHER',
+  };
+}
+
+extension on StationIssueScope {
+  String get wireName => switch (this) {
+    StationIssueScope.boarding => 'BOARDING',
+    StationIssueScope.alighting => 'ALIGHTING',
+    StationIssueScope.both => 'BOTH',
   };
 }
 

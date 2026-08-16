@@ -16,6 +16,11 @@ class ParsedTransitHistory {
     required this.balance,
     required this.transactionType,
     required this.amountCalculation,
+    this.transactionDateTime,
+    this.busOperatorName,
+    this.transactionLocationRegionCode,
+    this.transactionLocationLineCode,
+    this.transactionLocationStationCode,
   });
 
   final RawHistoryBlock rawBlock;
@@ -30,6 +35,21 @@ class ParsedTransitHistory {
   final int balance;
   final TransitTransactionType transactionType;
   final AmountCalculation amountCalculation;
+  final DateTime? transactionDateTime;
+  final String? busOperatorName;
+  final int? transactionLocationRegionCode;
+  final int? transactionLocationLineCode;
+  final int? transactionLocationStationCode;
+
+  int get sequenceNumber =>
+      (rawBlock.bytes[12] << 16) |
+      (rawBlock.bytes[13] << 8) |
+      rawBlock.bytes[14];
+
+  bool get hasTransactionLocationCode =>
+      transactionLocationRegionCode != null &&
+      transactionLocationLineCode != null &&
+      transactionLocationStationCode != null;
 
   ParsedTransitHistory copyWith({
     AmountCalculation? amountCalculation,
@@ -48,6 +68,11 @@ class ParsedTransitHistory {
       balance: balance,
       transactionType: transactionType ?? this.transactionType,
       amountCalculation: amountCalculation ?? this.amountCalculation,
+      transactionDateTime: transactionDateTime,
+      busOperatorName: busOperatorName,
+      transactionLocationRegionCode: transactionLocationRegionCode,
+      transactionLocationLineCode: transactionLocationLineCode,
+      transactionLocationStationCode: transactionLocationStationCode,
     );
   }
 }

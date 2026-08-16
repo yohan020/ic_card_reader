@@ -1,7 +1,7 @@
 name: ic_card_reader
 description: Privacy-first Japanese transit IC card history reader PoC.
 publish_to: none
-version: 1.0.0+1
+version: 1.0.0+13
 
 environment:
   sdk: ">=3.11.0 <4.0.0"
@@ -23,5 +23,6 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
+    - assets/data/pass_comparison/
     - assets/data/stations/
     - assets/licenses/

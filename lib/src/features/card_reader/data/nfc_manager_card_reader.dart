@@ -15,7 +15,11 @@ class NfcManagerCardReader implements CardReader {
   NfcManagerCardReader({
     NfcManager? manager,
     Stream<NfcAdapterStateAndroid>? androidAdapterStates,
+    Duration androidAvailabilityPollInterval = const Duration(
+      milliseconds: 500,
+    ),
   }) : _manager = manager ?? NfcManager.instance,
+       _androidAvailabilityPollInterval = androidAvailabilityPollInterval,
        _androidAdapterStates =
            androidAdapterStates ??
            (defaultTargetPlatform == TargetPlatform.android
@@ -27,10 +31,14 @@ class NfcManagerCardReader implements CardReader {
 
   final NfcManager _manager;
   final Stream<NfcAdapterStateAndroid>? _androidAdapterStates;
+  final Duration _androidAvailabilityPollInterval;
   bool _sessionActive = false;
   bool _completed = false;
+  bool _availabilityCheckInFlight = false;
+  int _scanGeneration = 0;
   Completer<CardScanResult>? _completer;
   StreamSubscription<NfcAdapterStateAndroid>? _adapterStateSubscription;
+  Timer? _availabilityPollTimer;
 
   @override
   Future<bool> isAvailable() async {
@@ -57,6 +65,7 @@ class NfcManagerCardReader implements CardReader {
 
     _completed = false;
     _sessionActive = true;
+    final scanGeneration = ++_scanGeneration;
     _completer = Completer<CardScanResult>();
     _adapterStateSubscription = _androidAdapterStates?.listen(
       _onAndroidAdapterStateChanged,
@@ -68,6 +77,7 @@ class NfcManagerCardReader implements CardReader {
         alertMessageIos: '교통계 IC 카드를 iPhone 상단에 가까이 대 주세요.',
         onDiscovered: _onDiscovered,
       );
+      _startAndroidAvailabilityPolling(scanGeneration);
       return await _completer!.future.timeout(
         timeout,
         onTimeout: () async {
@@ -81,9 +91,45 @@ class NfcManagerCardReader implements CardReader {
         },
       );
     } finally {
+      _availabilityPollTimer?.cancel();
+      _availabilityPollTimer = null;
       await _adapterStateSubscription?.cancel();
       _adapterStateSubscription = null;
       _sessionActive = false;
+    }
+  }
+
+  void _startAndroidAvailabilityPolling(int scanGeneration) {
+    if (_androidAdapterStates == null) return;
+    _availabilityPollTimer?.cancel();
+    _availabilityPollTimer = Timer.periodic(
+      _androidAvailabilityPollInterval,
+      (_) => unawaited(_verifyAndroidAvailability(scanGeneration)),
+    );
+  }
+
+  Future<void> _verifyAndroidAvailability(int scanGeneration) async {
+    if (scanGeneration != _scanGeneration ||
+        !_sessionActive ||
+        _completed ||
+        _availabilityCheckInFlight) {
+      return;
+    }
+    _availabilityCheckInFlight = true;
+    try {
+      final availability = await _manager.checkAvailability();
+      if (scanGeneration != _scanGeneration ||
+          availability == NfcAvailability.enabled ||
+          _completed) {
+        return;
+      }
+      await _finishForUnavailableNfc();
+    } catch (_) {
+      if (scanGeneration == _scanGeneration && !_completed) {
+        await _finishForUnavailableNfc();
+      }
+    } finally {
+      _availabilityCheckInFlight = false;
     }
   }
 
@@ -93,16 +139,16 @@ class NfcManagerCardReader implements CardReader {
         state != NfcAdapterStateAndroid.off) {
       return;
     }
-    unawaited(
-      _finish(
-        error: const CardScanException(
-          CardScanFailureKind.nfcUnavailable,
-          'NFC 읽기 기능이 꺼졌습니다. Samsung 기기는 NFC를 기본 모드로 변경한 뒤 다시 시도해 주세요.',
-        ),
-        stopPlatformSession: false,
-      ),
-    );
+    unawaited(_finishForUnavailableNfc());
   }
+
+  Future<void> _finishForUnavailableNfc() => _finish(
+    error: const CardScanException(
+      CardScanFailureKind.nfcUnavailable,
+      'NFC 읽기 기능이 꺼졌습니다. Samsung 기기는 NFC를 기본 모드로 변경한 뒤 다시 시도해 주세요.',
+    ),
+    stopPlatformSession: false,
+  );
 
   Future<void> _onDiscovered(NfcTag tag) async {
     if (_completed) return;
@@ -245,6 +291,8 @@ class NfcManagerCardReader implements CardReader {
   }) async {
     if (_completed) return;
     _completed = true;
+    _availabilityPollTimer?.cancel();
+    _availabilityPollTimer = null;
     try {
       if (stopPlatformSession) {
         await _manager.stopSession(

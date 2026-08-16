@@ -47,6 +47,11 @@ class SupabaseIssueReportRepository implements IssueReportRepository {
           '짧은 시간에 제보가 많이 접수되었습니다. 10분 뒤 다시 시도해 주세요.',
         );
       }
+      if (error.status == 403) {
+        throw const IssueReportSubmissionException(
+          '제보 전송이 제한되었습니다. 문의가 필요하면 앱 설정의 이메일로 연락해 주세요.',
+        );
+      }
       if (error.status >= 400 && error.status < 500) {
         throw const IssueReportSubmissionException(
           '제보 내용을 확인할 수 없습니다. 입력 내용을 다시 확인해 주세요.',

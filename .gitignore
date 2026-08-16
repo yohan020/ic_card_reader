@@ -6,6 +6,9 @@
 .packages
 build/
 coverage/
+.env
+.env.*
+assets/data/pass_comparison/odpt_pass_data.json
 .private-backups/
 supabase/.temp/
 android/.gradle/
@@ -25,3 +28,7 @@ yoiko_station_export/
 
 # Physical-card blocks encode real travel history even without an IDm.
 test/fixtures/felica/android_history_20_v1.json
+
+# Resumable Wikidata query cache. The reviewed generated CSV is the only
+# distributable localization asset.
+tool/.cache/

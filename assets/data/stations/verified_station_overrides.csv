@@ -1,0 +1,22 @@
+region_code,line_code,station_code,operator_name,line_name,station_name,evidence,source_note,source_url
+3,197,1,伊予鉄道,郡中線,郡中港,verified_fixture,anonymous user-provided 090F fixture; official station order,https://www.iyotetsu.co.jp/sp/rosen/map/rail_kogai.html?r=rail_kogai_gunchu_iki
+3,197,3,伊予鉄道,郡中線,郡中,inferred_sequence,official order + step-2 sequence,https://www.iyotetsu.co.jp/sp/rosen/map/rail_kogai.html?r=rail_kogai_gunchu_iki
+3,197,5,伊予鉄道,郡中線,新川,inferred_sequence,official order + step-2 sequence,https://www.iyotetsu.co.jp/sp/rosen/map/rail_kogai.html?r=rail_kogai_gunchu_iki
+3,197,7,伊予鉄道,郡中線,地蔵町,inferred_sequence,official order + step-2 sequence,https://www.iyotetsu.co.jp/sp/rosen/map/rail_kogai.html?r=rail_kogai_gunchu_iki
+3,197,9,伊予鉄道,郡中線,松前,inferred_sequence,official order + step-2 sequence,https://www.iyotetsu.co.jp/sp/rosen/map/rail_kogai.html?r=rail_kogai_gunchu_iki
+3,197,11,伊予鉄道,郡中線,古泉,inferred_sequence,official order + step-2 sequence,https://www.iyotetsu.co.jp/sp/rosen/map/rail_kogai.html?r=rail_kogai_gunchu_iki
+3,197,13,伊予鉄道,郡中線,岡田,inferred_sequence,official order + step-2 sequence,https://www.iyotetsu.co.jp/sp/rosen/map/rail_kogai.html?r=rail_kogai_gunchu_iki
+3,197,15,伊予鉄道,郡中線,鎌田,inferred_sequence,official order + step-2 sequence,https://www.iyotetsu.co.jp/sp/rosen/map/rail_kogai.html?r=rail_kogai_gunchu_iki
+3,197,17,伊予鉄道,郡中線,余戸,inferred_sequence,official order + step-2 sequence,https://www.iyotetsu.co.jp/sp/rosen/map/rail_kogai.html?r=rail_kogai_gunchu_iki
+3,197,19,伊予鉄道,郡中線,土居田,inferred_sequence,official order + step-2 sequence,https://www.iyotetsu.co.jp/sp/rosen/map/rail_kogai.html?r=rail_kogai_gunchu_iki
+3,197,21,伊予鉄道,郡中線,土橋,inferred_sequence,official order + step-2 sequence,https://www.iyotetsu.co.jp/sp/rosen/map/rail_kogai.html?r=rail_kogai_gunchu_iki
+3,197,23,伊予鉄道,伊予鉄道郊外電車,松山市,verified_fixture,anonymous user-provided Takahama and Gunchu fixtures; official station orders,https://www.iyotetsu.co.jp/sp/rosen/map/rail_kogai.html
+3,197,25,伊予鉄道,高浜線,大手町,inferred_sequence,official order + step-2 sequence,https://www.iyotetsu.co.jp/sp/company/free/station02.html
+3,197,27,伊予鉄道,高浜線,古町,verified_fixture,anonymous user-provided 090F fixture; official station order,https://www.iyotetsu.co.jp/sp/company/free/station02.html
+3,197,29,伊予鉄道,高浜線,衣山,inferred_sequence,official order + step-2 sequence,https://www.iyotetsu.co.jp/sp/company/free/station02.html
+3,197,31,伊予鉄道,高浜線,西衣山,inferred_sequence,official order + step-2 sequence,https://www.iyotetsu.co.jp/sp/company/free/station02.html
+3,197,33,伊予鉄道,高浜線,山西,inferred_sequence,official order + step-2 sequence,https://www.iyotetsu.co.jp/sp/company/free/station02.html
+3,197,35,伊予鉄道,高浜線,三津,inferred_sequence,official order + step-2 sequence,https://www.iyotetsu.co.jp/sp/company/free/station02.html
+3,197,37,伊予鉄道,高浜線,港山,inferred_sequence,official order + step-2 sequence,https://www.iyotetsu.co.jp/sp/company/free/station02.html
+3,197,39,伊予鉄道,高浜線,梅津寺,verified_fixture,anonymous user-provided 090F fixture; official station order,https://www.iyotetsu.co.jp/sp/company/free/station02.html
+3,197,41,伊予鉄道,高浜線,高浜,inferred_sequence,official order + step-2 sequence,https://www.iyotetsu.co.jp/sp/company/free/station02.html

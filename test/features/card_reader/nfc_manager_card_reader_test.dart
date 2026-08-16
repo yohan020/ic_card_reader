@@ -66,18 +66,83 @@ void main() {
       await adapterStates.close();
     },
   );
+
+  test(
+    'polls Android availability when the adapter broadcast is missed',
+    () async {
+      final manager = _FakeNfcManager();
+      final reader = NfcManagerCardReader(
+        manager: manager,
+        androidAdapterStates: const Stream.empty(),
+        androidAvailabilityPollInterval: const Duration(milliseconds: 5),
+      );
+
+      final scan = reader.scan();
+      await manager.sessionStarted.future;
+      manager.availability = NfcAvailability.disabled;
+
+      await expectLater(
+        scan,
+        throwsA(
+          isA<CardScanException>().having(
+            (error) => error.kind,
+            'kind',
+            CardScanFailureKind.nfcUnavailable,
+          ),
+        ),
+      );
+      expect(manager.stopSessionCalls, 0);
+
+      final checksAfterCompletion = manager.checkAvailabilityCalls;
+      await Future<void>.delayed(const Duration(milliseconds: 20));
+      expect(manager.checkAvailabilityCalls, checksAfterCompletion);
+    },
+  );
+
+  test('treats an Android availability error as an interrupted scan', () async {
+    final manager = _FakeNfcManager();
+    final reader = NfcManagerCardReader(
+      manager: manager,
+      androidAdapterStates: const Stream.empty(),
+      androidAvailabilityPollInterval: const Duration(milliseconds: 5),
+    );
+
+    final scan = reader.scan();
+    await manager.sessionStarted.future;
+    manager.throwAvailabilityErrorAfterStart = true;
+
+    await expectLater(
+      scan,
+      throwsA(
+        isA<CardScanException>().having(
+          (error) => error.kind,
+          'kind',
+          CardScanFailureKind.nfcUnavailable,
+        ),
+      ),
+    );
+    expect(manager.stopSessionCalls, 0);
+  });
 }
 
 class _FakeNfcManager extends NfcManager {
   _FakeNfcManager({this.availability = NfcAvailability.enabled});
 
-  final NfcAvailability availability;
+  NfcAvailability availability;
+  bool throwAvailabilityErrorAfterStart = false;
   final sessionStarted = Completer<void>();
+  int checkAvailabilityCalls = 0;
   int startSessionCalls = 0;
   int stopSessionCalls = 0;
 
   @override
-  Future<NfcAvailability> checkAvailability() async => availability;
+  Future<NfcAvailability> checkAvailability() async {
+    checkAvailabilityCalls++;
+    if (sessionStarted.isCompleted && throwAvailabilityErrorAfterStart) {
+      throw StateError('adapter unavailable');
+    }
+    return availability;
+  }
 
   @override
   Future<bool> isAvailable() async => availability == NfcAvailability.enabled;

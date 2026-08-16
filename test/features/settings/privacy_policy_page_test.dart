@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:ic_card_reader/src/core/design/app_theme.dart';
 import 'package:ic_card_reader/src/features/settings/presentation/privacy_policy_page.dart';
 
 void main() {
   testWidgets('explains NFC use and optional issue report transmission', (
     tester,
   ) async {
-    await tester.pumpWidget(const MaterialApp(home: PrivacyPolicyPage()));
+    await tester.pumpWidget(
+      MaterialApp(theme: AppTheme.light, home: const PrivacyPolicyPage()),
+    );
 
     expect(find.text('개인정보처리방침'), findsOneWidget);
     expect(find.text('1. NFC 사용 목적'), findsOneWidget);
@@ -17,7 +20,7 @@ void main() {
     expect(find.textContaining('기기 고유 식별자'), findsOneWidget);
 
     await tester.scrollUntilVisible(find.text('7. 보관과 삭제'), 300);
-    expect(find.textContaining('최대 1년간 보관'), findsOneWidget);
+    expect(find.textContaining('해결 후 1년간 보관'), findsOneWidget);
 
     await tester.scrollUntilVisible(
       find.textContaining('iccardreader10@gmail.com'),

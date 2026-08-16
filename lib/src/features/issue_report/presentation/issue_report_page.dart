@@ -12,6 +12,7 @@ import '../../transaction_history/data/transit_history_parser.dart';
 import '../../transaction_history/domain/amount_calculation.dart';
 import '../../transaction_history/domain/parsed_transit_history.dart';
 import '../../transaction_history/domain/transit_transaction_type.dart';
+import '../../transaction_history/presentation/transaction_history_labels.dart';
 import '../data/supabase_issue_report_repository.dart';
 import '../domain/issue_report.dart';
 import '../domain/issue_report_repository.dart';
@@ -21,11 +22,13 @@ class IssueReportPage extends StatefulWidget {
     required this.history,
     super.key,
     this.stations,
+    this.transactionLocation,
     this.repository,
   });
 
   final ParsedTransitHistory history;
   final ResolvedStationPair? stations;
+  final StationResolution? transactionLocation;
   final IssueReportRepository? repository;
 
   @override
@@ -38,6 +41,19 @@ class _IssueReportPageState extends State<IssueReportPage> {
   bool _consented = false;
   bool _isSubmitting = false;
   String? _submissionError;
+  String? _detailError;
+  StationIssueScope? _stationIssueScope;
+  String? _suggestedTransactionType;
+  final _detailFormKey = GlobalKey<FormState>();
+  final _boardingStationController = TextEditingController();
+  final _boardingCityController = TextEditingController();
+  final _boardingLineController = TextEditingController();
+  final _alightingStationController = TextEditingController();
+  final _alightingCityController = TextEditingController();
+  final _alightingLineController = TextEditingController();
+  final _busCompanyNameController = TextEditingController();
+  final _busCompanyCityController = TextEditingController();
+  final _customTransactionTypeController = TextEditingController();
   final _descriptionController = TextEditingController();
 
   IssueReportRepository get _repository =>
@@ -45,6 +61,15 @@ class _IssueReportPageState extends State<IssueReportPage> {
 
   @override
   void dispose() {
+    _boardingStationController.dispose();
+    _boardingCityController.dispose();
+    _boardingLineController.dispose();
+    _alightingStationController.dispose();
+    _alightingCityController.dispose();
+    _alightingLineController.dispose();
+    _busCompanyNameController.dispose();
+    _busCompanyCityController.dispose();
+    _customTransactionTypeController.dispose();
     _descriptionController.dispose();
     super.dispose();
   }
@@ -70,19 +95,23 @@ class _IssueReportPageState extends State<IssueReportPage> {
         ],
       ),
     ),
-    body: AppPage(
-      children: [
-        _StepIndicator(current: _step),
-        const SizedBox(height: 18),
-        _SelectedHistoryCard(
-          history: widget.history,
-          stations: widget.stations,
-        ),
-        const SizedBox(height: 22),
-        if (_step == 0) _issueStep(context),
-        if (_step == 1) _detailStep(context),
-        if (_step == 2) _reviewStep(context),
-      ],
+    body: SafeArea(
+      top: false,
+      child: AppPage(
+        children: [
+          _StepIndicator(current: _step),
+          const SizedBox(height: 18),
+          _SelectedHistoryCard(
+            history: widget.history,
+            stations: widget.stations,
+            transactionLocation: widget.transactionLocation,
+          ),
+          const SizedBox(height: 22),
+          if (_step == 0) _issueStep(context),
+          if (_step == 1) _detailStep(context),
+          if (_step == 2) _reviewStep(context),
+        ],
+      ),
     ),
   );
 
@@ -105,13 +134,12 @@ class _IssueReportPageState extends State<IssueReportPage> {
         padding: EdgeInsets.zero,
         child: RadioGroup<String>(
           groupValue: _issue,
-          onChanged: (value) => setState(() => _issue = value),
+          onChanged: _selectIssue,
           child: Column(
             children: [
-              for (final issue in const [
-                '승차역이 잘못됨',
-                '하차역이 잘못됨',
-                '역을 찾지 못함',
+              for (final issue in [
+                '역 정보가 없거나 잘못됨',
+                if (_isBusHistory) '버스 회사 정보가 없거나 잘못됨',
                 '거래 유형이 잘못됨',
                 '금액 또는 잔액이 잘못됨',
                 '기타',
@@ -137,54 +165,185 @@ class _IssueReportPageState extends State<IssueReportPage> {
     ],
   );
 
-  Widget _detailStep(BuildContext context) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(
-        '추가 설명',
-        style: Theme.of(
-          context,
-        ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
-      ),
-      const SizedBox(height: 6),
-      Text(
-        '알고 있는 내용을 적어주시면 해석 정확도를 높이는 데 도움이 됩니다.',
-        style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
-      ),
-      const SizedBox(height: 18),
-      TextField(
-        controller: _descriptionController,
-        maxLines: 6,
-        maxLength: 300,
-        decoration: const InputDecoration(
-          hintText: '예: 실제 이용한 역이나 거래 유형을 알려주세요.',
+  Widget _detailStep(BuildContext context) => Form(
+    key: _detailFormKey,
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          _detailTitle,
+          style: Theme.of(
+            context,
+          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
         ),
-      ),
-      const SizedBox(height: 16),
-      Row(
-        children: [
-          Expanded(
-            child: OutlinedButton(
-              onPressed: () => setState(() => _step = 0),
-              child: const Text(
-                '이전',
-                style: TextStyle(fontWeight: FontWeight.w600),
-              ),
+        const SizedBox(height: 6),
+        Text(
+          _detailGuide,
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
+        ),
+        const SizedBox(height: 18),
+        if (_usesStationScope) ...[
+          Text('어느 역 정보인가요?', style: Theme.of(context).textTheme.titleSmall),
+          const SizedBox(height: 8),
+          OutlinedButton(
+            onPressed: _showStationScopeSheet,
+            style: OutlinedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
+              alignment: Alignment.centerLeft,
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.train_outlined,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    _stationIssueScope == null
+                        ? '승차역·하차역을 선택해 주세요'
+                        : _stationIssueScopeLabel(_stationIssueScope!),
+                    style: TextStyle(
+                      color: _stationIssueScope == null
+                          ? Theme.of(context).colorScheme.onSurfaceVariant
+                          : Theme.of(context).colorScheme.onSurface,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                const Icon(Icons.keyboard_arrow_up_rounded),
+              ],
             ),
           ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: FilledButton(
-              onPressed: () => setState(() => _step = 2),
-              child: const Text(
-                '검토하기',
-                style: TextStyle(fontWeight: FontWeight.w600),
-              ),
+          if (_detailError != null) ...[
+            const SizedBox(height: 4),
+            Text(
+              _detailError!,
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
             ),
-          ),
+          ],
+          const SizedBox(height: 10),
         ],
-      ),
-    ],
+        if (_needsBoardingCorrection) ...[
+          _stationCorrectionFields(
+            context,
+            title: '올바른 승차역',
+            stationController: _boardingStationController,
+            cityController: _boardingCityController,
+            lineController: _boardingLineController,
+          ),
+          if (_needsAlightingCorrection) const SizedBox(height: 18),
+        ],
+        if (_needsAlightingCorrection)
+          _stationCorrectionFields(
+            context,
+            title: '올바른 하차역',
+            stationController: _alightingStationController,
+            cityController: _alightingCityController,
+            lineController: _alightingLineController,
+          ),
+        if (_issue == '거래 유형이 잘못됨') ...[
+          Text('올바른 거래 유형', style: Theme.of(context).textTheme.titleSmall),
+          const SizedBox(height: 8),
+          OutlinedButton(
+            onPressed: _showTransactionTypeSheet,
+            style: OutlinedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
+              alignment: Alignment.centerLeft,
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  _suggestedTransactionType == null
+                      ? Icons.category_outlined
+                      : _suggestedTransactionTypeIcon(
+                          _suggestedTransactionType!,
+                        ),
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    _suggestedTransactionType == null
+                        ? '유형을 선택해 주세요'
+                        : _suggestedTransactionTypeLabel(
+                            _suggestedTransactionType!,
+                          ),
+                    style: TextStyle(
+                      color: _suggestedTransactionType == null
+                          ? Theme.of(context).colorScheme.onSurfaceVariant
+                          : Theme.of(context).colorScheme.onSurface,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                const Icon(Icons.keyboard_arrow_up_rounded),
+              ],
+            ),
+          ),
+          if (_detailError != null) ...[
+            const SizedBox(height: 4),
+            Text(
+              _detailError!,
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
+            ),
+          ],
+          if (_suggestedTransactionType == 'OTHER') ...[
+            const SizedBox(height: 12),
+            TextFormField(
+              controller: _customTransactionTypeController,
+              maxLength: 80,
+              decoration: const InputDecoration(
+                labelText: '직접 입력한 거래 유형',
+                hintText: '예: 승차권 구매',
+              ),
+              validator: (value) => _requiredTextError(value, '거래 유형'),
+            ),
+          ],
+        ],
+        if (_isBusCompanyIssue) ...[_busCompanyFields(context)],
+        if (_needsStationCorrection ||
+            _issue == '거래 유형이 잘못됨' ||
+            _isBusCompanyIssue)
+          const SizedBox(height: 20),
+        Text('추가 설명 (선택)', style: Theme.of(context).textTheme.titleSmall),
+        const SizedBox(height: 8),
+        TextFormField(
+          controller: _descriptionController,
+          maxLines: 4,
+          maxLength: 300,
+          decoration: const InputDecoration(
+            hintText: '개인정보를 제외하고 추가로 알려줄 내용을 적어주세요.',
+          ),
+        ),
+        const SizedBox(height: 16),
+        Row(
+          children: [
+            Expanded(
+              child: OutlinedButton(
+                onPressed: () => setState(() => _step = 0),
+                child: const Text(
+                  '이전',
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: FilledButton(
+                onPressed: _validateAndReview,
+                child: const Text(
+                  '검토하기',
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    ),
   );
 
   Widget _reviewStep(BuildContext context) => Column(
@@ -202,15 +361,49 @@ class _IssueReportPageState extends State<IssueReportPage> {
           children: [
             DetailLine(label: '제보 유형', value: _issue ?? '-'),
             const Divider(),
+            if (_needsBoardingCorrection) ...[
+              DetailLine(label: '올바른 승차역', value: _boardingCorrectionSummary),
+              const Divider(),
+            ],
+            if (_needsAlightingCorrection) ...[
+              DetailLine(label: '올바른 하차역', value: _alightingCorrectionSummary),
+              const Divider(),
+            ],
+            if (_usesStationScope) ...[
+              DetailLine(
+                label: '문제가 있는 역 정보',
+                value: _stationIssueScope == null
+                    ? '선택되지 않음'
+                    : _stationIssueScopeLabel(_stationIssueScope!),
+              ),
+              const Divider(),
+            ],
+            if (_issue == '거래 유형이 잘못됨') ...[
+              DetailLine(
+                label: '제안 거래 유형',
+                value: _suggestedTransactionSummary,
+              ),
+              const Divider(),
+            ],
+            if (_isBusCompanyIssue) ...[
+              DetailLine(label: '실제 버스 회사명', value: _busCompanyName),
+              const Divider(),
+              DetailLine(label: '운행 도시·지역', value: _busCompanyCity),
+              const Divider(),
+            ],
             DetailLine(
               label: '선택한 내역',
-              value: _reportHistorySummary(widget.history, widget.stations),
+              value: _reportHistorySummary(
+                widget.history,
+                widget.stations,
+                widget.transactionLocation,
+              ),
             ),
             const Divider(),
             DetailLine(
               label: '거래 유형 / 금액',
               value:
-                  '${_reportTypeLabel(widget.history.transactionType)} · ${_reportAmount(widget.history.amountCalculation)}',
+                  '${transactionTypeLabel(widget.history)} · ${_reportAmount(widget.history.amountCalculation)}',
             ),
             const Divider(),
             DetailLine(
@@ -229,7 +422,8 @@ class _IssueReportPageState extends State<IssueReportPage> {
       const SizedBox(height: 14),
       const NoticeBanner(
         title: '개인정보 보호',
-        text: '카드 IDm은 포함하지 않습니다. 선택한 이용내역 1건의 16바이트 원본과 제보 내용만 전송 대상으로 준비합니다.',
+        text:
+            '카드 IDm은 포함하지 않습니다. 선택한 이용내역 1건과 입력한 역·도시·노선, 버스 회사·도시 또는 거래 유형, 제보 내용만 전송 대상으로 준비합니다.',
         tone: NoticeTone.privacy,
       ),
       const SizedBox(height: 12),
@@ -313,7 +507,30 @@ class _IssueReportPageState extends State<IssueReportPage> {
       alightingStationCode: widget.history.alightingStationCode,
       currentBoardingStation: widget.stations?.boarding.station?.stationName,
       currentAlightingStation: widget.stations?.alighting.station?.stationName,
-      currentTransactionType: widget.history.transactionType.name.toUpperCase(),
+      stationIssueScope: _stationIssueScope,
+      correctedBoardingStation: _needsBoardingCorrection
+          ? _stationCorrection(
+              _boardingStationController,
+              _boardingCityController,
+              _boardingLineController,
+            )
+          : null,
+      correctedAlightingStation: _needsAlightingCorrection
+          ? _stationCorrection(
+              _alightingStationController,
+              _alightingCityController,
+              _alightingLineController,
+            )
+          : null,
+      suggestedBusCompanyName: _isBusCompanyIssue ? _busCompanyName : null,
+      suggestedBusCompanyCity: _isBusCompanyIssue ? _busCompanyCity : null,
+      currentTransactionType: widget.history.transactionType.wireName,
+      suggestedTransactionType: _issue == '거래 유형이 잘못됨'
+          ? _suggestedTransactionType
+          : null,
+      customSuggestedTransactionType: _suggestedTransactionType == 'OTHER'
+          ? _optionalText(_customTransactionTypeController)
+          : null,
       usageDate: widget.history.usageDate,
       balance: widget.history.balance,
       calculatedAmount: widget.history.amountCalculation.isResolved
@@ -325,6 +542,416 @@ class _IssueReportPageState extends State<IssueReportPage> {
       appVersion: '1.0.0+1',
       platform: kIsWeb ? 'web' : defaultTargetPlatform.name,
       osVersion: kIsWeb ? 'web' : Platform.operatingSystemVersion,
+    );
+  }
+
+  void _selectIssue(String? value) {
+    setState(() {
+      _issue = value;
+      _detailError = null;
+      _stationIssueScope = null;
+      _suggestedTransactionType = null;
+      _busCompanyNameController.clear();
+      _busCompanyCityController.clear();
+      _customTransactionTypeController.clear();
+    });
+  }
+
+  Future<void> _showStationScopeSheet() async {
+    final selected = await showModalBottomSheet<StationIssueScope>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (context) => _StationScopeSheet(selected: _stationIssueScope),
+    );
+    if (!mounted || selected == null) return;
+    setState(() {
+      _stationIssueScope = selected;
+      _detailError = null;
+    });
+  }
+
+  Future<void> _showTransactionTypeSheet() async {
+    final selected = await showModalBottomSheet<String>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (context) =>
+          _TransactionTypeSheet(selected: _suggestedTransactionType),
+    );
+    if (!mounted || selected == null) return;
+    setState(() {
+      _suggestedTransactionType = selected;
+      _detailError = null;
+      if (selected != 'OTHER') _customTransactionTypeController.clear();
+    });
+  }
+
+  void _validateAndReview() {
+    if (_usesStationScope && _stationIssueScope == null) {
+      setState(() => _detailError = '역 범위를 선택해 주세요.');
+      return;
+    }
+    if (_issue == '거래 유형이 잘못됨' && _suggestedTransactionType == null) {
+      setState(() => _detailError = '올바른 거래 유형을 선택해 주세요.');
+      return;
+    }
+    if (!(_detailFormKey.currentState?.validate() ?? false)) return;
+    setState(() {
+      _detailError = null;
+      _step = 2;
+    });
+  }
+
+  bool get _needsStationCorrection => _usesStationScope;
+
+  bool get _usesStationScope => _issue == '역 정보가 없거나 잘못됨';
+
+  bool get _isBusHistory =>
+      widget.history.transactionType == TransitTransactionType.bus;
+
+  bool get _isBusCompanyIssue => _issue == '버스 회사 정보가 없거나 잘못됨';
+
+  bool get _needsBoardingCorrection =>
+      _stationIssueScope == StationIssueScope.boarding ||
+      _stationIssueScope == StationIssueScope.both;
+
+  bool get _needsAlightingCorrection =>
+      _stationIssueScope == StationIssueScope.alighting ||
+      _stationIssueScope == StationIssueScope.both;
+
+  String get _detailTitle => _needsStationCorrection
+      ? '올바른 역 정보'
+      : _issue == '거래 유형이 잘못됨'
+      ? '올바른 거래 유형'
+      : _isBusCompanyIssue
+      ? '버스 회사 정보'
+      : '추가 설명';
+
+  String get _detailGuide => _needsStationCorrection
+      ? '역 이름과 도시·지역을 입력해 주세요. 노선명은 알고 있는 경우에만 적어주세요.'
+      : _issue == '거래 유형이 잘못됨'
+      ? '목록에서 선택하고, 없는 유형은 직접 입력해 주세요.'
+      : _isBusCompanyIssue
+      ? '실제 버스 회사명과 운행 도시·지역을 입력해 주세요.'
+      : '알고 있는 내용을 적어주시면 해석 정확도를 높이는 데 도움이 됩니다.';
+
+  String get _boardingCorrectionSummary => _stationCorrectionSummary(
+    _boardingStationController,
+    _boardingCityController,
+    _boardingLineController,
+  );
+
+  String get _alightingCorrectionSummary => _stationCorrectionSummary(
+    _alightingStationController,
+    _alightingCityController,
+    _alightingLineController,
+  );
+
+  String get _suggestedTransactionSummary =>
+      _suggestedTransactionType == 'OTHER'
+      ? _optionalText(_customTransactionTypeController) ?? '직접 입력 없음'
+      : _suggestedTransactionTypeLabel(_suggestedTransactionType);
+
+  String get _busCompanyName => _busCompanyNameController.text.trim();
+
+  String get _busCompanyCity => _busCompanyCityController.text.trim();
+
+  Widget _stationCorrectionFields(
+    BuildContext context, {
+    required String title,
+    required TextEditingController stationController,
+    required TextEditingController cityController,
+    required TextEditingController lineController,
+  }) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(title, style: Theme.of(context).textTheme.titleSmall),
+      const SizedBox(height: 10),
+      TextFormField(
+        controller: stationController,
+        maxLength: 80,
+        decoration: const InputDecoration(labelText: '역 이름'),
+        validator: (value) => _requiredTextError(value, '역 이름'),
+      ),
+      const SizedBox(height: 8),
+      TextFormField(
+        controller: cityController,
+        maxLength: 80,
+        decoration: const InputDecoration(labelText: '도시·지역'),
+        validator: (value) => _requiredTextError(value, '도시·지역'),
+      ),
+      const SizedBox(height: 8),
+      TextFormField(
+        controller: lineController,
+        maxLength: 100,
+        decoration: const InputDecoration(labelText: '노선명 (선택)'),
+      ),
+    ],
+  );
+
+  Widget _busCompanyFields(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text('버스 회사 정보', style: Theme.of(context).textTheme.titleSmall),
+      const SizedBox(height: 10),
+      TextFormField(
+        controller: _busCompanyNameController,
+        maxLength: 80,
+        decoration: const InputDecoration(labelText: '실제 버스 회사명'),
+        validator: (value) => _requiredTextError(value, '버스 회사명'),
+      ),
+      const SizedBox(height: 8),
+      TextFormField(
+        controller: _busCompanyCityController,
+        maxLength: 80,
+        decoration: const InputDecoration(labelText: '운행 도시·지역'),
+        validator: (value) => _requiredTextError(value, '운행 도시·지역'),
+      ),
+    ],
+  );
+
+  StationCorrection _stationCorrection(
+    TextEditingController stationController,
+    TextEditingController cityController,
+    TextEditingController lineController,
+  ) => StationCorrection(
+    name: stationController.text.trim(),
+    city: cityController.text.trim(),
+    line: _optionalText(lineController),
+  );
+}
+
+class _StationScopeSheet extends StatelessWidget {
+  const _StationScopeSheet({this.selected});
+
+  final StationIssueScope? selected;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return SafeArea(
+      top: false,
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+        decoration: BoxDecoration(
+          color: colorScheme.surface,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 38,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: colorScheme.outlineVariant,
+                  borderRadius: BorderRadius.circular(99),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              '어느 역 정보인가요?',
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: 5),
+            Text(
+              '표시되지 않거나 잘못된 역 정보를 선택해 주세요.',
+              style: TextStyle(color: colorScheme.onSurfaceVariant),
+            ),
+            const SizedBox(height: 16),
+            for (final scope in StationIssueScope.values) ...[
+              _StationScopeOption(
+                scope: scope,
+                selected: selected == scope,
+                onTap: () => Navigator.pop(context, scope),
+              ),
+              if (scope != StationIssueScope.both) const SizedBox(height: 8),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _StationScopeOption extends StatelessWidget {
+  const _StationScopeOption({
+    required this.scope,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final StationIssueScope scope;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Material(
+      color: selected ? AppColors.skySoft : colorScheme.surfaceContainerLow,
+      borderRadius: BorderRadius.circular(18),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(18),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
+          child: Row(
+            children: [
+              Icon(
+                scope == StationIssueScope.both
+                    ? Icons.compare_arrows_rounded
+                    : Icons.train_outlined,
+                color: selected
+                    ? AppColors.skyDark
+                    : colorScheme.onSurfaceVariant,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  _stationIssueScopeLabel(scope),
+                  style: TextStyle(
+                    color: selected ? AppColors.skyDark : colorScheme.onSurface,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              if (selected)
+                const Icon(
+                  Icons.check_circle_rounded,
+                  color: AppColors.skyDark,
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _TransactionTypeSheet extends StatelessWidget {
+  const _TransactionTypeSheet({this.selected});
+
+  final String? selected;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return SafeArea(
+      top: false,
+      child: Container(
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.sizeOf(context).height * 0.72,
+        ),
+        padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+        decoration: BoxDecoration(
+          color: colorScheme.surface,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 38,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: colorScheme.outlineVariant,
+                  borderRadius: BorderRadius.circular(99),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              '올바른 거래 유형을 선택해 주세요',
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: 5),
+            Text(
+              '목록에 없는 유형은 직접 입력할 수 있습니다.',
+              style: TextStyle(color: colorScheme.onSurfaceVariant),
+            ),
+            const SizedBox(height: 16),
+            Flexible(
+              child: ListView.separated(
+                shrinkWrap: true,
+                itemCount: _suggestedTransactionTypes.length,
+                separatorBuilder: (_, _) => const SizedBox(height: 8),
+                itemBuilder: (context, index) {
+                  final type = _suggestedTransactionTypes[index];
+                  return _TransactionTypeOption(
+                    type: type,
+                    selected: selected == type,
+                    onTap: () => Navigator.pop(context, type),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _TransactionTypeOption extends StatelessWidget {
+  const _TransactionTypeOption({
+    required this.type,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String type;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Material(
+      color: selected ? AppColors.skySoft : colorScheme.surfaceContainerLow,
+      borderRadius: BorderRadius.circular(18),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(18),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
+          child: Row(
+            children: [
+              Icon(
+                _suggestedTransactionTypeIcon(type),
+                color: selected
+                    ? AppColors.skyDark
+                    : colorScheme.onSurfaceVariant,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  _suggestedTransactionTypeLabel(type),
+                  style: TextStyle(
+                    color: selected ? AppColors.skyDark : colorScheme.onSurface,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              if (selected)
+                const Icon(
+                  Icons.check_circle_rounded,
+                  color: AppColors.skyDark,
+                ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
@@ -452,12 +1079,72 @@ class _ReportSuccessDialog extends StatelessWidget {
 }
 
 IssueType _issueType(String issue) => switch (issue) {
-  '승차역이 잘못됨' => IssueType.wrongBoardingStation,
-  '하차역이 잘못됨' => IssueType.wrongAlightingStation,
-  '역을 찾지 못함' => IssueType.stationNotResolved,
+  '역 정보가 없거나 잘못됨' => IssueType.wrongStationName,
+  '버스 회사 정보가 없거나 잘못됨' => IssueType.busCompanyNotResolved,
   '거래 유형이 잘못됨' => IssueType.wrongTransactionType,
   '금액 또는 잔액이 잘못됨' => IssueType.wrongAmountOrBalance,
   _ => IssueType.other,
+};
+
+String? _requiredTextError(String? value, String label) =>
+    value == null || value.trim().isEmpty ? '$label을 입력해 주세요.' : null;
+
+String? _optionalText(TextEditingController controller) {
+  final value = controller.text.trim();
+  return value.isEmpty ? null : value;
+}
+
+String _stationIssueScopeLabel(StationIssueScope scope) => switch (scope) {
+  StationIssueScope.boarding => '승차역',
+  StationIssueScope.alighting => '하차역',
+  StationIssueScope.both => '승차역과 하차역 모두',
+};
+
+String _stationCorrectionSummary(
+  TextEditingController stationController,
+  TextEditingController cityController,
+  TextEditingController lineController,
+) {
+  final values = [
+    stationController.text.trim(),
+    cityController.text.trim(),
+    _optionalText(lineController),
+  ].whereType<String>().where((value) => value.isNotEmpty);
+  return values.join(' · ');
+}
+
+String _suggestedTransactionTypeLabel(String? type) => switch (type) {
+  'RAIL' => '철도 이용',
+  'BUS' => '버스 이용',
+  'PURCHASE' => '물품 구매',
+  'CHARGE' => '충전',
+  'GATE_WINDOW_PROCESSING' => '개찰 창구 처리',
+  'REFUND' => '환불',
+  'ADJUSTMENT' => '정산',
+  'OTHER' => '목록에 없음 / 직접 입력',
+  _ => '선택되지 않음',
+};
+
+const _suggestedTransactionTypes = [
+  'RAIL',
+  'BUS',
+  'PURCHASE',
+  'CHARGE',
+  'GATE_WINDOW_PROCESSING',
+  'REFUND',
+  'ADJUSTMENT',
+  'OTHER',
+];
+
+IconData _suggestedTransactionTypeIcon(String type) => switch (type) {
+  'RAIL' => Icons.train_rounded,
+  'BUS' => Icons.directions_bus_rounded,
+  'PURCHASE' => Icons.shopping_bag_outlined,
+  'CHARGE' => Icons.add_card_rounded,
+  'GATE_WINDOW_PROCESSING' => Icons.meeting_room_outlined,
+  'REFUND' => Icons.undo_rounded,
+  'ADJUSTMENT' => Icons.receipt_long_outlined,
+  _ => Icons.edit_note_rounded,
 };
 
 String _uuidV4() {
@@ -505,10 +1192,15 @@ class _StepIndicator extends StatelessWidget {
 }
 
 class _SelectedHistoryCard extends StatelessWidget {
-  const _SelectedHistoryCard({required this.history, this.stations});
+  const _SelectedHistoryCard({
+    required this.history,
+    this.stations,
+    this.transactionLocation,
+  });
 
   final ParsedTransitHistory history;
   final ResolvedStationPair? stations;
+  final StationResolution? transactionLocation;
 
   @override
   Widget build(BuildContext context) => AppSurface(
@@ -529,7 +1221,7 @@ class _SelectedHistoryCard extends StatelessWidget {
           children: [
             Expanded(
               child: Text(
-                _reportHistorySummary(history, stations),
+                _reportHistorySummary(history, stations, transactionLocation),
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
@@ -551,7 +1243,7 @@ class _SelectedHistoryCard extends StatelessWidget {
         ),
         const SizedBox(height: 5),
         Text(
-          '${_reportTypeLabel(history.transactionType)} · ${formatDate(history.usageDate)}',
+          '${transactionTypeLabel(history)} · ${formatDate(history.usageDate)}',
           style: TextStyle(
             color: Theme.of(context).colorScheme.onSurfaceVariant,
             fontSize: 12,
@@ -565,27 +1257,25 @@ class _SelectedHistoryCard extends StatelessWidget {
 String _reportHistorySummary(
   ParsedTransitHistory history,
   ResolvedStationPair? stations,
+  StationResolution? transactionLocation,
 ) => switch (history.transactionType) {
   TransitTransactionType.rail =>
     '${stations?.boarding.station?.stationName ?? _reportBoardingCode(history)}'
         ' → '
         '${stations?.alighting.station?.stationName ?? _reportAlightingCode(history)}',
-  TransitTransactionType.bus => '버스 회사 미확인',
-  TransitTransactionType.purchase => '물품 구매',
-  TransitTransactionType.charge => '카드 충전',
+  TransitTransactionType.bus => history.busOperatorName ?? '버스 회사 미확인',
+  TransitTransactionType.purchase => purchaseSummary(history),
+  TransitTransactionType.charge => chargeSummary(
+    history,
+    transactionLocation: transactionLocation,
+  ),
+  TransitTransactionType.gateWindowProcessing => gateWindowSummary(
+    history,
+    transactionLocation: transactionLocation,
+  ),
   TransitTransactionType.refund => '환불',
   TransitTransactionType.adjustment => '정산',
   TransitTransactionType.unknown => '거래 유형 미확인',
-};
-
-String _reportTypeLabel(TransitTransactionType type) => switch (type) {
-  TransitTransactionType.rail => '철도 이용',
-  TransitTransactionType.bus => '버스 이용',
-  TransitTransactionType.purchase => '물품 구매',
-  TransitTransactionType.charge => '충전',
-  TransitTransactionType.refund => '환불',
-  TransitTransactionType.adjustment => '정산',
-  TransitTransactionType.unknown => '유형 미확인',
 };
 
 String _reportAmount(AmountCalculation calculation) =>
