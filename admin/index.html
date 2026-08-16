@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light" />
+    <title>일본 교통카드 리더 · 문의 관리</title>
+    <link rel="stylesheet" href="./src/styles.css" />
+  </head>
+  <body>
+    <div class="background-orb orb-one"></div>
+    <div class="background-orb orb-two"></div>
+
+    <main id="login-view" class="login-shell">
+      <section class="login-card">
+        <div class="brand-mark" aria-hidden="true">IC</div>
+        <p class="eyebrow">LOCAL ADMIN</p>
+        <h1>문의 관리</h1>
+        <p class="login-description">
+          일본 교통카드 리더에 접수된 익명 오류 제보를 localhost에서만 확인합니다.
+        </p>
+        <form id="login-form" class="login-form">
+          <label>
+            관리자 이메일
+            <input id="email" type="email" autocomplete="username" value="iccardreader10@gmail.com" required />
+          </label>
+          <label>
+            비밀번호
+            <input id="password" type="password" autocomplete="current-password" required />
+          </label>
+          <button class="primary-button" type="submit">관리자 로그인</button>
+        </form>
+        <p id="login-error" class="form-error" role="alert" hidden></p>
+        <p class="security-note">관리자 세션은 이 브라우저 탭이 닫히면 삭제됩니다.</p>
+      </section>
+    </main>
+
+    <main id="dashboard-view" class="dashboard" hidden>
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">IC CARD READER</p>
+          <h1>문의 관리</h1>
+        </div>
+        <div class="topbar-actions">
+          <span id="admin-email" class="admin-chip"></span>
+          <button id="refresh-button" class="ghost-button" type="button">새로고침</button>
+          <button id="logout-button" class="ghost-button danger-text" type="button">로그아웃</button>
+        </div>
+      </header>
+
+      <section id="summary" class="summary-grid" aria-label="문의 현황"></section>
+
+      <section class="workspace">
+        <aside class="report-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">REPORTS</p>
+              <h2>접수 목록</h2>
+            </div>
+            <span id="report-count" class="count-badge">0건</span>
+          </div>
+
+          <div class="filters">
+            <label class="search-field">
+              <span class="sr-only">문의 검색</span>
+              <input id="search-input" type="search" placeholder="역명, 코드, 설명 검색" />
+            </label>
+            <select id="status-filter" aria-label="처리 상태">
+              <option value="">모든 상태</option>
+              <option value="RECEIVED">신규 접수</option>
+              <option value="REVIEWING">확인 중</option>
+              <option value="VERIFIED">수정 확정</option>
+              <option value="APPLIED">반영 완료</option>
+              <option value="REJECTED">제외</option>
+            </select>
+            <select id="type-filter" aria-label="문의 유형">
+              <option value="">모든 유형</option>
+              <option value="WRONG_BOARDING_STATION">승차역 오류</option>
+              <option value="WRONG_ALIGHTING_STATION">하차역 오류</option>
+              <option value="WRONG_BOTH_STATIONS">승차·하차역 오류</option>
+              <option value="WRONG_STATION_NAME">역 정보 오류·미확인</option>
+              <option value="STATION_NOT_RESOLVED">역명 미확인</option>
+              <option value="BUS_COMPANY_NOT_RESOLVED">버스 회사 정보 오류·미확인</option>
+              <option value="WRONG_TRANSACTION_TYPE">거래 유형 오류</option>
+              <option value="WRONG_AMOUNT_OR_BALANCE">금액·잔액 오류</option>
+              <option value="OTHER">기타</option>
+            </select>
+          </div>
+
+          <div id="bulk-actions" class="bulk-actions" hidden>
+            <label class="bulk-select-all">
+              <input id="bulk-select-all" type="checkbox" />
+              <span>전체 선택</span>
+            </label>
+            <div>
+              <strong id="bulk-target-count">0건 선택됨</strong>
+              <span>체크한 문의만 상태 변경</span>
+            </div>
+            <select id="bulk-status" aria-label="일괄 변경할 상태">
+              <option value="RECEIVED">신규 접수</option>
+              <option value="REVIEWING">확인 중</option>
+              <option value="VERIFIED">수정 확정</option>
+              <option value="APPLIED">반영 완료</option>
+              <option value="REJECTED">제외</option>
+            </select>
+            <button id="bulk-open-button" class="primary-button compact" type="button">일괄 변경</button>
+          </div>
+          <p id="bulk-message" class="bulk-message" role="status"></p>
+
+          <div id="loading-state" class="empty-state">문의 데이터를 불러오는 중입니다.</div>
+          <div id="report-list" class="report-list" aria-live="polite"></div>
+        </aside>
+
+        <section id="detail-panel" class="detail-panel">
+          <div id="empty-detail" class="empty-detail">
+            <div class="empty-icon">⌁</div>
+            <h2>확인할 문의를 선택해 주세요</h2>
+            <p>목록에서 문의를 선택하면 원본 기록과 제안 내용을 확인할 수 있습니다.</p>
+          </div>
+
+          <article id="report-detail" hidden>
+            <div class="detail-heading">
+              <div>
+                <p id="detail-created" class="eyebrow"></p>
+                <h2 id="detail-title"></h2>
+              </div>
+              <span id="detail-status" class="status-badge"></span>
+            </div>
+
+            <section class="detail-section">
+              <h3>선택한 이용내역</h3>
+              <div id="route-card" class="route-card"></div>
+            </section>
+
+            <section class="detail-section">
+              <h3>제보 내용</h3>
+              <dl id="payload-fields" class="field-list"></dl>
+              <details class="raw-details">
+                <summary>전체 익명 payload 보기</summary>
+                <pre id="payload-json"></pre>
+              </details>
+            </section>
+
+            <section class="detail-section review-section">
+              <h3>처리 상태</h3>
+              <form id="review-form">
+                <div class="review-row">
+                  <label>
+                    상태
+                    <select id="review-status" required>
+                      <option value="RECEIVED">신규 접수</option>
+                      <option value="REVIEWING">확인 중</option>
+                      <option value="VERIFIED">수정 확정</option>
+                      <option value="APPLIED">반영 완료</option>
+                      <option value="REJECTED">제외</option>
+                    </select>
+                  </label>
+                  <label>
+                    적용 앱 버전
+                    <input id="applied-version" maxlength="80" placeholder="예: 1.0.0+12" />
+                  </label>
+                </div>
+                <label>
+                  관리자 메모
+                  <textarea id="review-note" maxlength="2000" rows="5" placeholder="확인 결과, 수정 내용 또는 제외 사유를 기록하세요."></textarea>
+                </label>
+                <div class="form-actions">
+                  <span id="save-message" role="status"></span>
+                  <button id="save-button" class="primary-button compact" type="submit">변경사항 저장</button>
+                </div>
+              </form>
+            </section>
+
+            <section class="detail-section review-section">
+              <h3>악성 제보 방지</h3>
+              <p id="reporter-block-description" class="confirm-notice"></p>
+              <div class="form-actions">
+                <span id="reporter-block-message" role="status"></span>
+                <button id="reporter-block-button" class="ghost-button danger-button" type="button"></button>
+              </div>
+            </section>
+          </article>
+        </section>
+      </section>
+    </main>
+
+    <dialog id="bulk-confirm-dialog" class="confirm-dialog">
+      <div class="confirm-icon" aria-hidden="true">↻</div>
+      <p class="eyebrow">BULK UPDATE</p>
+      <h2>처리 상태를 한꺼번에 변경할까요?</h2>
+      <p id="bulk-confirm-description" class="confirm-description"></p>
+      <p class="confirm-notice">각 문의의 기존 메모와 적용 버전은 유지되며, 변경 이력은 감사 로그에 개별 기록됩니다.</p>
+      <div class="confirm-actions">
+        <button id="bulk-cancel-button" class="ghost-button" type="button">취소</button>
+        <button id="bulk-confirm-button" class="primary-button compact" type="button">변경하기</button>
+      </div>
+    </dialog>
+
+    <script type="module" src="./src/app.js"></script>
+  </body>
+</html>

@@ -43,13 +43,19 @@ class StationRecord {
     required this.lineName,
     required this.stationName,
     required this.source,
+    this.stationNameKorean,
+    this.evidence,
+    this.sourceNote,
   });
 
   final StationCode code;
   final String operatorName;
   final String lineName;
   final String stationName;
+  final String? stationNameKorean;
   final String source;
+  final String? evidence;
+  final String? sourceNote;
 }
 
 enum StationMatchStrategy {
@@ -86,8 +92,15 @@ class StationResolution {
 }
 
 class ResolvedStationPair {
-  const ResolvedStationPair({required this.boarding, required this.alighting});
+  const ResolvedStationPair({
+    required this.boarding,
+    required this.alighting,
+    this.routeOperatorName,
+    this.routeLineName,
+  });
 
   final StationResolution boarding;
   final StationResolution alighting;
+  final String? routeOperatorName;
+  final String? routeLineName;
 }

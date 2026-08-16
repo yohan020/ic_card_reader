@@ -4,7 +4,7 @@
 
 앱은 일본 전국호환 선불식 교통계 IC 카드의 최근 이력을 읽는다. NFC 통신과 파싱, 역 조회, 저장, UI를 분리하며 기본 데이터 처리는 기기 안에서 끝낸다. 카드 IDm 원문은 FeliCa 명령 수행 중 메모리에서만 사용하고 저장·로그·화면·서버 전송에서 제외한다.
 
-현재 Android Phase 1 NFC PoC를 검증하고 Phase 2의 보수적 원시 이력 파서와 로컬 역명 조회를 구현했다. Phase 2 이용내역 SQLite 저장과 선택적 신고 전송은 아직 설계 단계이며, Phase 3 교통패스 비교는 구현하지 않는다. iOS NFC 실기기 검증은 Apple Developer 계정 준비 후 진행한다.
+현재 Android Phase 1 NFC PoC와 Phase 2의 보수적 원시 이력 파서·로컬 역명 조회·선택적 익명 신고를 구현했다. 이용내역 영구 저장은 제품 범위에서 제외했다. Phase 3 교통패스 비교는 본 앱과 분리된 Flutter Web 프로토타입, 순수 Dart 계산 엔진, ODPT 정적 역·운임 가져오기와 한국어 자동완성을 구현했다. 실제 ODPT 생성물 검증과 자동 경로 탐색은 남아 있다. iOS NFC 실기기 검증은 Apple Developer 계정 준비 후 진행한다.
 
 ## 디렉터리 구조
 
@@ -15,7 +15,7 @@ lib/src/
     transaction_history/ Phase 2 파서·저장·표시 예정
     station_resolver/     Phase 2 번들 역 데이터 조회
     issue_report/         신고 계약 및 향후 큐
-    pass_comparison/      Phase 3 확장 지점(현재 미구현)
+    pass_comparison/      Phase 3 순수 계산 엔진·별도 Web 프로토타입
 ```
 
 의존 방향은 `presentation -> domain <- data`다. 순수 프로토콜 파서는 플러그인과 분리해 fixture 단위 테스트가 가능하다.
@@ -66,3 +66,20 @@ lib/src/
 - 참고 `Info.plist`에는 리터럴 `` `r`n `` 문자열이 섞여 있어 그대로 재사용할 수 없다.
 - 참고 리더의 IDm 로그와 미확인 거래 기본 철도 분류는 채택하지 않았다. 원시 블록은 fixture 확보를 위해 debug 빌드에서만 시작/종료 marker와 함께 출력하며 release에서는 출력하지 않는다.
 - 시스템/서비스 코드와 바이트 해석은 실물 카드 검증이 필요하다. PiTaPa 포스트페이는 출시 필수가 아니다.
+
+## Phase 3 교통패스 프로토타입
+
+- 별도 진입점 `lib/pass_comparison_prototype.dart`로 실행하며 본 앱 내비게이션에는 포함하지 않는다.
+- `PassComparisonEvaluator`는 UI나 ODPT에 의존하지 않는 순수 Dart 계산 엔진이다.
+- v0.2는 개발 시 ODPT Station·Railway·RailwayFare를 정규화한 정적 JSON만 앱에서 읽으며 액세스 토큰은 앱과 저장소에 넣지 않는다.
+- 역 검색은 ODPT 한국어·일본어·영어 표기와 한국어 초성 인덱스를 사용하고, 정확한 동일 사업자 운임 쌍만 자동 입력한다.
+- Metro↔도에이 연결 운임, 역 그래프, 환승과 경로 후보는 v0.3 범위다.
+- ODPT 연동 후에도 외부 데이터 모델을 앱 도메인 모델로 정규화하여 계산 엔진이 특정 API 응답에 직접 의존하지 않게 한다.
+
+## localhost 문의 관리 도구
+
+- `admin/`은 Android 앱과 분리된 무의존성 정적 웹과 Node localhost 서버다. `127.0.0.1`에만 바인딩되며 외부 호스팅하지 않는다.
+- 브라우저는 Supabase 이메일·비밀번호 인증으로 관리자 JWT를 얻고 Publishable key와 함께 `issue-report-admin` Edge Function만 호출한다.
+- Edge Function은 localhost Origin, 유효한 사용자 JWT, `ISSUE_REPORT_ADMIN_EMAILS` 허용 목록을 모두 확인한 뒤에만 service role 클라이언트로 제보를 조회한다.
+- 상태 변경은 service role 전용 `admin_update_issue_report_review` RPC가 제보 갱신과 `issue_report_review_logs` 감사를 한 트랜잭션으로 처리한다.
+- 브라우저 코드와 Git에는 `service_role`, 관리자 비밀번호, DB 비밀번호를 두지 않는다.

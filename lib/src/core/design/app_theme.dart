@@ -27,6 +27,9 @@ abstract final class AppTheme {
       useMaterial3: true,
       brightness: brightness,
       colorScheme: scheme,
+      // Avoid the shader-heavy default InkSparkle so touch feedback remains
+      // smooth on lower-end Android GPUs as well as segmented controls.
+      splashFactory: InkRipple.splashFactory,
       scaffoldBackgroundColor: isDark
           ? const Color(0xFF10171C)
           : AppColors.canvas,
@@ -67,6 +70,16 @@ abstract final class AppTheme {
                 : FontWeight.w600,
           );
         }),
+      ),
+      segmentedButtonTheme: SegmentedButtonThemeData(
+        style: ButtonStyle(
+          // InkSparkle can stutter on some Android GPUs. InkRipple keeps
+          // segmented control feedback smooth and consistent across devices.
+          animationDuration: const Duration(milliseconds: 220),
+          overlayColor: WidgetStatePropertyAll(
+            scheme.primary.withValues(alpha: isDark ? .18 : .12),
+          ),
+        ),
       ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(

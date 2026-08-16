@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'core/design/app_theme.dart';
 import 'features/card_reader/presentation/card_reader_page.dart';
 import 'features/issue_report/domain/issue_report_repository.dart';
+import 'features/station_resolver/domain/station_name_display.dart';
 
 class IcCardReaderApp extends StatefulWidget {
   const IcCardReaderApp({super.key, this.issueReportRepository});
@@ -17,6 +18,8 @@ class IcCardReaderApp extends StatefulWidget {
 
 class _IcCardReaderAppState extends State<IcCardReaderApp> {
   ThemeMode _themeMode = ThemeMode.system;
+  StationNameDisplayMode _stationNameDisplayMode =
+      StationNameDisplayMode.japanese;
 
   @override
   void initState() {
@@ -36,6 +39,9 @@ class _IcCardReaderAppState extends State<IcCardReaderApp> {
         issueReportRepository: widget.issueReportRepository,
         themeMode: _themeMode,
         onThemeModeChanged: (mode) => setState(() => _themeMode = mode),
+        stationNameDisplayMode: _stationNameDisplayMode,
+        onStationNameDisplayModeChanged: (mode) =>
+            setState(() => _stationNameDisplayMode = mode),
       ),
     );
   }
@@ -47,11 +53,17 @@ void _registerStationDataLicense() {
   if (_stationDataLicenseRegistered) return;
   _stationDataLicenseRegistered = true;
   LicenseRegistry.addLicense(() async* {
-    final license = await rootBundle.loadString(
+    final yoikoTerms = await rootBundle.loadString(
       'assets/licenses/yoiko-station-data-TERMS.txt',
     );
     yield LicenseEntryWithLineBreaks(const [
       'Yoiko station code data',
-    ], license);
+    ], yoikoTerms);
+    final wikidataNotice = await rootBundle.loadString(
+      'assets/licenses/wikidata-station-names-CC0.txt',
+    );
+    yield LicenseEntryWithLineBreaks(const [
+      'Wikidata Korean station labels',
+    ], wikidataNotice);
   });
 }

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../../../core/design/app_theme.dart';
 import '../../../core/widgets/app_ui.dart';
 import '../../card_reader/domain/card_scan_result.dart';
+import '../../station_resolver/domain/station_name_display.dart';
 import 'privacy_policy_page.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -11,6 +11,8 @@ class SettingsPage extends StatelessWidget {
     required this.themeMode,
     required this.onThemeModeChanged,
     required this.onClearSession,
+    required this.stationNameDisplayMode,
+    required this.onStationNameDisplayModeChanged,
     super.key,
     this.result,
   });
@@ -18,6 +20,8 @@ class SettingsPage extends StatelessWidget {
   final ThemeMode themeMode;
   final ValueChanged<ThemeMode> onThemeModeChanged;
   final VoidCallback onClearSession;
+  final StationNameDisplayMode stationNameDisplayMode;
+  final ValueChanged<StationNameDisplayMode> onStationNameDisplayModeChanged;
   final CardScanResult? result;
 
   @override
@@ -25,41 +29,6 @@ class SettingsPage extends StatelessWidget {
     children: [
       Text('설정', style: Theme.of(context).appBarTheme.titleTextStyle),
       const SizedBox(height: 22),
-      const SectionLabel('개인정보 및 데이터'),
-      AppSurface(
-        padding: EdgeInsets.zero,
-        child: Column(
-          children: [
-            const _SettingsTile(
-              icon: Icons.shield_outlined,
-              title: '기본 처리는 기기 안에서',
-              subtitle: '오류 제보는 동의한 이용내역 1건만 전송합니다.',
-            ),
-            const Divider(),
-            _SettingsTile(
-              icon: Icons.policy_outlined,
-              title: '개인정보처리방침',
-              subtitle: 'NFC와 오류 제보 데이터 처리 안내',
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute<void>(
-                  builder: (_) => const PrivacyPolicyPage(),
-                ),
-              ),
-            ),
-            const Divider(),
-            _SettingsTile(
-              icon: Icons.delete_outline_rounded,
-              title: '현재 이용내역 지우기',
-              subtitle: result == null
-                  ? '지울 세션 데이터가 없습니다.'
-                  : '${result!.blocks.length}개의 읽기 결과가 있습니다.',
-              iconColor: Theme.of(context).colorScheme.error,
-              onTap: result == null ? null : () => _confirmClear(context),
-            ),
-          ],
-        ),
-      ),
-      const SizedBox(height: 24),
       const SectionLabel('화면'),
       AppSurface(
         child: Column(
@@ -68,6 +37,7 @@ class SettingsPage extends StatelessWidget {
             const Text('테마', style: TextStyle(fontWeight: FontWeight.w800)),
             const SizedBox(height: 12),
             SizedBox(
+              key: const ValueKey('station-name-display-selector'),
               width: double.infinity,
               child: SegmentedButton<ThemeMode>(
                 segments: const [
@@ -96,6 +66,48 @@ class SettingsPage extends StatelessWidget {
           ],
         ),
       ),
+      const SizedBox(height: 16),
+      AppSurface(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('역명 표기', style: TextStyle(fontWeight: FontWeight.w800)),
+            const SizedBox(height: 6),
+            Text(
+              '한국어 표기가 확인된 역에만 적용됩니다.',
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: 12),
+            SizedBox(
+              width: double.infinity,
+              child: SegmentedButton<StationNameDisplayMode>(
+                segments: const [
+                  ButtonSegment(
+                    value: StationNameDisplayMode.japanese,
+                    icon: Icon(Icons.translate_rounded),
+                    label: Text('일본어'),
+                  ),
+                  ButtonSegment(
+                    value: StationNameDisplayMode.korean,
+                    icon: Icon(Icons.language_rounded),
+                    label: Text('한국어'),
+                  ),
+                  ButtonSegment(
+                    value: StationNameDisplayMode.both,
+                    label: Text('함께 표시'),
+                  ),
+                ],
+                selected: {stationNameDisplayMode},
+                onSelectionChanged: (selection) =>
+                    onStationNameDisplayModeChanged(selection.first),
+                showSelectedIcon: false,
+              ),
+            ),
+          ],
+        ),
+      ),
       const SizedBox(height: 24),
       const SectionLabel('앱 정보'),
       AppSurface(
@@ -117,16 +129,34 @@ class SettingsPage extends StatelessWidget {
                 applicationVersion: '1.0.0',
               ),
             ),
-            const Divider(),
+          ],
+        ),
+      ),
+      const SizedBox(height: 24),
+      const SectionLabel('개인정보 및 데이터'),
+      AppSurface(
+        padding: EdgeInsets.zero,
+        child: Column(
+          children: [
             _SettingsTile(
-              icon: Icons.developer_mode_rounded,
-              title: '개발자 정보',
-              subtitle: '원본 16바이트 블록 확인',
+              icon: Icons.policy_outlined,
+              title: '개인정보처리방침',
+              subtitle: 'NFC와 오류 제보 데이터 처리 안내',
               onTap: () => Navigator.of(context).push(
                 MaterialPageRoute<void>(
-                  builder: (_) => DeveloperPage(result: result),
+                  builder: (_) => const PrivacyPolicyPage(),
                 ),
               ),
+            ),
+            const Divider(),
+            _SettingsTile(
+              icon: Icons.delete_outline_rounded,
+              title: '현재 이용내역 지우기',
+              subtitle: result == null
+                  ? '지울 세션 데이터가 없습니다.'
+                  : '${result!.blocks.length}개의 읽기 결과가 있습니다.',
+              iconColor: Theme.of(context).colorScheme.error,
+              onTap: result == null ? null : () => _confirmClear(context),
             ),
           ],
         ),
@@ -147,23 +177,129 @@ class SettingsPage extends StatelessWidget {
   Future<void> _confirmClear(BuildContext context) async {
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        icon: const Icon(Icons.delete_outline_rounded),
-        title: const Text('현재 이용내역을 지울까요?'),
-        content: const Text('이번 실행 중 읽은 이용내역과 원본 블록을 화면에서 제거합니다.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext, false),
-            child: const Text('취소'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(dialogContext, true),
-            child: const Text('지우기'),
-          ),
-        ],
+      builder: (dialogContext) => _ClearHistoryDialog(
+        onCancel: () => Navigator.pop(dialogContext, false),
+        onConfirm: () => Navigator.pop(dialogContext, true),
       ),
     );
     if (confirmed == true) onClearSession();
+  }
+}
+
+class _ClearHistoryDialog extends StatelessWidget {
+  const _ClearHistoryDialog({required this.onCancel, required this.onConfirm});
+
+  final VoidCallback onCancel;
+  final VoidCallback onConfirm;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Dialog(
+      key: const ValueKey('clear-history-dialog'),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 24),
+      backgroundColor: colorScheme.surface,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(24, 28, 24, 22),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 68,
+              height: 68,
+              decoration: BoxDecoration(
+                color: colorScheme.errorContainer,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.delete_outline_rounded,
+                size: 34,
+                color: colorScheme.onErrorContainer,
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              '현재 이용내역을 지울까요?',
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w800,
+                letterSpacing: -0.4,
+              ),
+            ),
+            const SizedBox(height: 9),
+            Text(
+              '이번에 읽은 이용내역과 원본 기록이\n앱 화면에서 삭제됩니다.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: colorScheme.onSurfaceVariant,
+                height: 1.5,
+              ),
+            ),
+            const SizedBox(height: 18),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 14),
+              decoration: BoxDecoration(
+                color: AppColors.skySoft.withValues(
+                  alpha: Theme.of(context).brightness == Brightness.dark
+                      ? .14
+                      : 1,
+                ),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: AppColors.skyDark.withValues(alpha: .22),
+                ),
+              ),
+              child: const Row(
+                children: [
+                  Icon(
+                    Icons.credit_card_rounded,
+                    color: AppColors.skyDark,
+                    size: 21,
+                  ),
+                  SizedBox(width: 11),
+                  Expanded(
+                    child: Text(
+                      '실물 카드 안의 데이터는 변경되지 않습니다.',
+                      style: TextStyle(
+                        color: AppColors.skyDark,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                        height: 1.4,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 22),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton.icon(
+                key: const ValueKey('confirm-clear-history'),
+                onPressed: onConfirm,
+                style: FilledButton.styleFrom(
+                  backgroundColor: colorScheme.error,
+                  foregroundColor: colorScheme.onError,
+                ),
+                icon: const Icon(Icons.delete_outline_rounded),
+                label: const Text('이용내역 지우기'),
+              ),
+            ),
+            const SizedBox(height: 10),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton(
+                key: const ValueKey('cancel-clear-history'),
+                onPressed: onCancel,
+                child: const Text('취소'),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
@@ -209,163 +345,5 @@ class _SettingsTile extends StatelessWidget {
         ? const Icon(Icons.chevron_right_rounded)
         : null,
     onTap: onTap,
-  );
-}
-
-class DeveloperPage extends StatelessWidget {
-  const DeveloperPage({required this.result, super.key});
-
-  final CardScanResult? result;
-
-  @override
-  Widget build(BuildContext context) {
-    final joined =
-        result?.blocks
-            .map(
-              (block) => 'IC_CARD_BLOCK[${block.index}]=${block.hexadecimal}',
-            )
-            .join('\n') ??
-        '';
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('개발자 정보'),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 16),
-            child: Center(
-              child: StatusPill(label: 'DEV', icon: Icons.code_rounded),
-            ),
-          ),
-        ],
-      ),
-      body: AppPage(
-        children: [
-          const NoticeBanner(
-            title: '민감 정보 제외',
-            text: '이 화면에는 카드 IDm이 포함되지 않습니다. 원본 이용내역 블록은 디버깅 용도로만 확인하세요.',
-            tone: NoticeTone.warning,
-          ),
-          const SizedBox(height: 18),
-          AppSurface(
-            child: Row(
-              children: [
-                Expanded(
-                  child: _Metric(
-                    label: '읽은 블록',
-                    value: '${result?.blocks.length ?? 0}개',
-                  ),
-                ),
-                const SizedBox(height: 42, child: VerticalDivider()),
-                Expanded(
-                  child: _Metric(
-                    label: '스캔 시각',
-                    value: result == null
-                        ? '-'
-                        : formatDateTime(result!.scannedAt),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 20),
-          SectionLabel(
-            '원본 블록',
-            trailing: TextButton.icon(
-              onPressed: result == null
-                  ? null
-                  : () async {
-                      await Clipboard.setData(ClipboardData(text: joined));
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('원본 블록을 복사했습니다.')),
-                        );
-                      }
-                    },
-              icon: const Icon(Icons.copy_all_rounded, size: 18),
-              label: const Text('모두 복사'),
-            ),
-          ),
-          if (result == null)
-            const AppSurface(
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 26),
-                child: Center(child: Text('먼저 IC 카드를 스캔해 주세요.')),
-              ),
-            )
-          else
-            for (final block in result!.blocks) ...[
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(15),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      StatusPill(label: '#${block.index + 1}'),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SelectableText(
-                              block.hexadecimal,
-                              style: const TextStyle(
-                                fontFamily: 'monospace',
-                                fontSize: 13,
-                                height: 1.45,
-                              ),
-                            ),
-                            const SizedBox(height: 5),
-                            Text(
-                              '16 bytes',
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.outline,
-                                fontSize: 11,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      IconButton(
-                        tooltip: '복사',
-                        onPressed: () => Clipboard.setData(
-                          ClipboardData(text: block.hexadecimal),
-                        ),
-                        icon: const Icon(Icons.copy_rounded, size: 19),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10),
-            ],
-        ],
-      ),
-    );
-  }
-}
-
-class _Metric extends StatelessWidget {
-  const _Metric({required this.label, required this.value});
-
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) => Column(
-    children: [
-      Text(
-        label,
-        style: TextStyle(
-          color: Theme.of(context).colorScheme.onSurfaceVariant,
-          fontSize: 12,
-        ),
-      ),
-      const SizedBox(height: 5),
-      Text(
-        value,
-        textAlign: TextAlign.center,
-        style: const TextStyle(fontWeight: FontWeight.w900),
-      ),
-    ],
   );
 }

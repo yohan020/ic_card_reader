@@ -5,9 +5,11 @@ import '../../../core/widgets/app_ui.dart';
 import '../../issue_report/presentation/issue_report_page.dart';
 import '../../issue_report/domain/issue_report_repository.dart';
 import '../../station_resolver/domain/station_resolution.dart';
+import '../../station_resolver/domain/station_name_display.dart';
 import '../domain/amount_calculation.dart';
 import '../domain/parsed_transit_history.dart';
 import '../domain/transit_transaction_type.dart';
+import 'transaction_history_labels.dart';
 
 class HistoryListPage extends StatefulWidget {
   const HistoryListPage({
@@ -17,6 +19,8 @@ class HistoryListPage extends StatefulWidget {
     required this.onScan,
     super.key,
     this.issueReportRepository,
+    this.transactionLocations = const {},
+    this.stationNameDisplayMode = StationNameDisplayMode.japanese,
   });
 
   final List<ParsedTransitHistory> histories;
@@ -24,6 +28,8 @@ class HistoryListPage extends StatefulWidget {
   final Map<int, ResolvedStationPair> stationPairs;
   final VoidCallback onScan;
   final IssueReportRepository? issueReportRepository;
+  final Map<int, StationResolution> transactionLocations;
+  final StationNameDisplayMode stationNameDisplayMode;
 
   @override
   State<HistoryListPage> createState() => _HistoryListPageState();
@@ -103,11 +109,17 @@ class _HistoryListPageState extends State<HistoryListPage> {
             _HistoryTile(
               history: history,
               stations: widget.stationPairs[history.rawBlock.index],
+              transactionLocation:
+                  widget.transactionLocations[history.rawBlock.index],
+              stationNameDisplayMode: widget.stationNameDisplayMode,
               onTap: () => Navigator.of(context).push(
                 MaterialPageRoute<void>(
                   builder: (_) => HistoryDetailPage(
                     history: history,
                     stations: widget.stationPairs[history.rawBlock.index],
+                    transactionLocation:
+                        widget.transactionLocations[history.rawBlock.index],
+                    stationNameDisplayMode: widget.stationNameDisplayMode,
                     issueReportRepository: widget.issueReportRepository,
                   ),
                 ),
@@ -218,10 +230,14 @@ class _HistoryTile extends StatelessWidget {
     required this.history,
     required this.onTap,
     this.stations,
+    this.transactionLocation,
+    this.stationNameDisplayMode = StationNameDisplayMode.japanese,
   });
 
   final ParsedTransitHistory history;
   final ResolvedStationPair? stations;
+  final StationResolution? transactionLocation;
+  final StationNameDisplayMode stationNameDisplayMode;
   final VoidCallback onTap;
 
   @override
@@ -260,7 +276,7 @@ class _HistoryTile extends StatelessWidget {
                       children: [
                         Expanded(
                           child: Text(
-                            _typeLabel(history.transactionType),
+                            transactionTypeLabel(history),
                             style: const TextStyle(fontWeight: FontWeight.w800),
                           ),
                         ),
@@ -280,7 +296,12 @@ class _HistoryTile extends StatelessWidget {
                     ),
                     const SizedBox(height: 3),
                     Text(
-                      _routeSummary(history, stations),
+                      _routeSummary(
+                        history,
+                        stations,
+                        transactionLocation,
+                        stationNameDisplayMode,
+                      ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -326,200 +347,270 @@ class HistoryDetailPage extends StatelessWidget {
     required this.history,
     super.key,
     this.stations,
+    this.transactionLocation,
     this.issueReportRepository,
+    this.stationNameDisplayMode = StationNameDisplayMode.japanese,
   });
 
   final ParsedTransitHistory history;
   final ResolvedStationPair? stations;
+  final StationResolution? transactionLocation;
   final IssueReportRepository? issueReportRepository;
+  final StationNameDisplayMode stationNameDisplayMode;
 
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(title: const Text('이용내역 상세')),
-    body: AppPage(
-      children: [
-        Row(
-          children: [
-            StatusPill(
-              label: _typeLabel(history.transactionType),
-              icon: _typeIcon(history.transactionType),
-            ),
-            const Spacer(),
-            Text(
-              formatDate(history.usageDate),
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 20),
-        AppSurface(
-          child: Column(
+    body: SafeArea(
+      top: false,
+      child: AppPage(
+        children: [
+          Row(
             children: [
-              if (history.transactionType == TransitTransactionType.rail) ...[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _RoutePoint(
-                      label: '승차',
-                      code: _boardingCode(history),
-                      resolution: stations?.boarding,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: Icon(
-                        Icons.arrow_forward_rounded,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                    ),
-                    _RoutePoint(
-                      label: '하차',
-                      code: _alightingCode(history),
-                      resolution: stations?.alighting,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                const Divider(),
-                const SizedBox(height: 16),
-              ],
-              Text(
-                _amountText(history.amountCalculation),
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  color:
-                      history.transactionType == TransitTransactionType.charge
-                      ? AppColors.success
-                      : null,
-                  fontWeight: FontWeight.w900,
-                ),
+              StatusPill(
+                label: transactionTypeLabel(history),
+                icon: _typeIcon(history.transactionType),
               ),
-              const SizedBox(height: 4),
+              const Spacer(),
               Text(
-                '이용 후 잔액 ${yen(history.balance)}',
+                formatDate(history.usageDate),
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               ),
             ],
           ),
-        ),
-        if (history.amountCalculation.status ==
-            AmountCalculationStatus.unavailable) ...[
-          const SizedBox(height: 14),
-          NoticeBanner(
-            title: '금액을 계산할 수 없습니다',
-            text: _amountUnavailableExplanation(history.amountCalculation),
-          ),
-        ],
-        if (history.transactionType == TransitTransactionType.rail &&
-            !_bothStationsResolved(stations)) ...[
-          const SizedBox(height: 14),
-          NoticeBanner(
-            title: _hasMultipleCandidates(stations)
-                ? '여러 역 후보가 있습니다'
-                : '일부 역 정보 확인이 필요합니다',
-            text: _hasMultipleCandidates(stations)
-                ? '같은 노선·역 코드를 사용하는 후보가 여러 개라 임의로 확정하지 않았습니다. 원본 코드는 아래에서 확인할 수 있습니다.'
-                : '데이터베이스에서 찾지 못한 역은 코드로 표시합니다. 확인되지 않은 역명을 임의로 추측하지 않습니다.',
-            tone: NoticeTone.warning,
-          ),
-        ],
-        const SizedBox(height: 24),
-        const SectionLabel('상세 정보'),
-        AppSurface(
-          child: Column(
-            children: [
-              DetailLine(
-                label: '거래 유형',
-                value: _typeLabel(history.transactionType),
-              ),
-              const Divider(),
-              DetailLine(
-                label: '단말 / 처리 코드',
-                value:
-                    '${hexByte(history.terminalCode)} / ${hexByte(history.processCode)}',
-                monospace: true,
-              ),
-              if (history.transactionType == TransitTransactionType.rail) ...[
-                const Divider(),
-                DetailLine(
-                  label: '승차역',
-                  value: _stationDetail(
-                    stations?.boarding,
-                    _boardingCode(history),
+          const SizedBox(height: 20),
+          AppSurface(
+            child: Column(
+              children: [
+                if (history.transactionType == TransitTransactionType.rail) ...[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _RoutePoint(
+                        label: '승차',
+                        code: _boardingCode(history),
+                        resolution: stations?.boarding,
+                        routeOperatorName: stations?.routeOperatorName,
+                        routeLineName: stations?.routeLineName,
+                        stationNameDisplayMode: stationNameDisplayMode,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: Icon(
+                          Icons.arrow_forward_rounded,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
+                      _RoutePoint(
+                        label: '하차',
+                        code: _alightingCode(history),
+                        resolution: stations?.alighting,
+                        routeOperatorName: stations?.routeOperatorName,
+                        routeLineName: stations?.routeLineName,
+                        stationNameDisplayMode: stationNameDisplayMode,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  const Divider(),
+                  const SizedBox(height: 16),
+                ],
+                Text(
+                  _amountText(history.amountCalculation),
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    color:
+                        history.transactionType == TransitTransactionType.charge
+                        ? AppColors.success
+                        : null,
+                    fontWeight: FontWeight.w900,
                   ),
                 ),
-                const Divider(),
-                DetailLine(
-                  label: '하차역',
-                  value: _stationDetail(
-                    stations?.alighting,
-                    _alightingCode(history),
+                const SizedBox(height: 4),
+                Text(
+                  '이용 후 잔액 ${yen(history.balance)}',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
               ],
-              if (history.transactionType == TransitTransactionType.bus) ...[
+            ),
+          ),
+          if (history.amountCalculation.status ==
+              AmountCalculationStatus.unavailable) ...[
+            const SizedBox(height: 14),
+            NoticeBanner(
+              title: '금액을 계산할 수 없습니다',
+              text: _amountUnavailableExplanation(history.amountCalculation),
+            ),
+          ],
+          if (history.transactionType == TransitTransactionType.rail &&
+              !_bothStationsResolved(stations)) ...[
+            const SizedBox(height: 14),
+            NoticeBanner(
+              title: _hasMultipleCandidates(stations)
+                  ? '여러 역 후보가 있습니다'
+                  : '일부 역 정보 확인이 필요합니다',
+              text: _hasMultipleCandidates(stations)
+                  ? '같은 노선·역 코드를 사용하는 후보가 여러 개라 임의로 확정하지 않았습니다. 원본 코드는 아래에서 확인할 수 있습니다.'
+                  : '데이터베이스에서 찾지 못한 역은 코드로 표시합니다. 확인되지 않은 역명을 임의로 추측하지 않습니다.',
+              tone: NoticeTone.warning,
+            ),
+          ],
+          const SizedBox(height: 24),
+          const SectionLabel('상세 정보'),
+          AppSurface(
+            child: Column(
+              children: [
+                DetailLine(
+                  label: '거래 유형',
+                  value: transactionTypeLabel(history),
+                ),
                 const Divider(),
-                const DetailLine(label: '버스 회사', value: '미확인 · 회사 고유 코드 미해석'),
-              ],
-              const Divider(),
-              DetailLine(label: '잔액', value: yen(history.balance)),
-            ],
-          ),
-        ),
-        const SizedBox(height: 14),
-        ExpansionTile(
-          tilePadding: const EdgeInsets.symmetric(horizontal: 4),
-          title: const Text(
-            '기술 정보',
-            style: TextStyle(fontWeight: FontWeight.w800),
-          ),
-          subtitle: const Text('문제 확인에 필요한 원본 16바이트 데이터'),
-          children: [
-            AppSurface(
-              child: Column(
-                children: [
+                DetailLine(
+                  label: '단말 / 처리 코드',
+                  value:
+                      '${hexByte(history.terminalCode)} / ${hexByte(history.processCode)}',
+                  monospace: true,
+                ),
+                if (history.transactionType == TransitTransactionType.rail) ...[
+                  const Divider(),
                   DetailLine(
-                    label: '블록',
-                    value: '#${history.rawBlock.index + 1}',
+                    label: '승차역',
+                    value: _stationDetail(
+                      stations?.boarding,
+                      _boardingCode(history),
+                      routeLineName: stations?.routeLineName,
+                      stationNameDisplayMode: stationNameDisplayMode,
+                    ),
                   ),
                   const Divider(),
                   DetailLine(
-                    label: '원본 데이터',
-                    value: history.rawBlock.hexadecimal,
-                    monospace: true,
+                    label: '하차역',
+                    value: _stationDetail(
+                      stations?.alighting,
+                      _alightingCode(history),
+                      routeLineName: stations?.routeLineName,
+                      stationNameDisplayMode: stationNameDisplayMode,
+                    ),
                   ),
                 ],
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 24),
-        OutlinedButton.icon(
-          onPressed: () => Navigator.of(context).push(
-            MaterialPageRoute<void>(
-              builder: (_) => IssueReportPage(
-                history: history,
-                stations: stations,
-                repository: issueReportRepository,
-              ),
+                if (history.transactionType == TransitTransactionType.bus) ...[
+                  const Divider(),
+                  DetailLine(label: '버스 회사', value: busOperatorLabel(history)),
+                ],
+                if (history.transactionType ==
+                    TransitTransactionType.purchase) ...[
+                  if (isCashCombinedPurchase(history)) ...[
+                    const Divider(),
+                    const DetailLine(label: '결제 방식', value: '현금 병용'),
+                  ],
+                  if (history.transactionDateTime != null) ...[
+                    const Divider(),
+                    DetailLine(
+                      label: '거래 시각',
+                      value: _formatTime(history.transactionDateTime!),
+                    ),
+                  ],
+                ],
+                if (history.transactionType ==
+                    TransitTransactionType.charge) ...[
+                  const Divider(),
+                  DetailLine(label: '충전 방식', value: chargeMethodLabel(history)),
+                  const Divider(),
+                  DetailLine(
+                    label: '충전 장소',
+                    value: chargeLocationDetail(
+                      history,
+                      transactionLocation: transactionLocation,
+                      stationNameDisplayMode: stationNameDisplayMode,
+                    ),
+                  ),
+                ],
+                if (history.transactionType ==
+                    TransitTransactionType.gateWindowProcessing) ...[
+                  const Divider(),
+                  DetailLine(
+                    label: '처리 장소',
+                    value: chargeLocationDetail(
+                      history,
+                      transactionLocation: transactionLocation,
+                      stationNameDisplayMode: stationNameDisplayMode,
+                    ),
+                  ),
+                  const Divider(),
+                  const DetailLine(label: '세부 처리', value: '확인할 수 없음'),
+                ],
+                const Divider(),
+                DetailLine(label: '잔액', value: yen(history.balance)),
+              ],
             ),
           ),
-          icon: const Icon(Icons.flag_outlined),
-          label: const Text('이 내역의 오류 제보하기'),
-        ),
-      ],
+          const SizedBox(height: 14),
+          ExpansionTile(
+            tilePadding: const EdgeInsets.symmetric(horizontal: 4),
+            title: const Text(
+              '기술 정보',
+              style: TextStyle(fontWeight: FontWeight.w800),
+            ),
+            subtitle: const Text('문제 확인에 필요한 원본 16바이트 데이터'),
+            children: [
+              AppSurface(
+                child: Column(
+                  children: [
+                    DetailLine(
+                      label: '블록',
+                      value: '#${history.rawBlock.index + 1}',
+                    ),
+                    const Divider(),
+                    DetailLine(
+                      label: '원본 데이터',
+                      value: history.rawBlock.hexadecimal,
+                      monospace: true,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 24),
+          OutlinedButton.icon(
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => IssueReportPage(
+                  history: history,
+                  stations: stations,
+                  transactionLocation: transactionLocation,
+                  repository: issueReportRepository,
+                ),
+              ),
+            ),
+            icon: const Icon(Icons.flag_outlined),
+            label: const Text('이 내역의 오류 제보하기'),
+          ),
+        ],
+      ),
     ),
   );
 }
 
 class _RoutePoint extends StatelessWidget {
-  const _RoutePoint({required this.label, required this.code, this.resolution});
+  const _RoutePoint({
+    required this.label,
+    required this.code,
+    this.resolution,
+    this.routeOperatorName,
+    this.routeLineName,
+    required this.stationNameDisplayMode,
+  });
 
   final String label;
   final String code;
   final StationResolution? resolution;
+  final String? routeOperatorName;
+  final String? routeLineName;
+  final StationNameDisplayMode stationNameDisplayMode;
 
   @override
   Widget build(BuildContext context) => Expanded(
@@ -534,14 +625,24 @@ class _RoutePoint extends StatelessWidget {
         ),
         const SizedBox(height: 5),
         Text(
-          resolution?.station?.stationName ?? '역 정보 미등록',
+          resolution?.station == null
+              ? '역 정보 미등록'
+              : displayStationName(
+                  japanese: resolution!.station!.stationName,
+                  korean: resolution!.station!.stationNameKorean,
+                  mode: stationNameDisplayMode,
+                ),
           textAlign: TextAlign.center,
           style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
         ),
         if (resolution?.station case final station?) ...[
           const SizedBox(height: 2),
           Text(
-            station.lineName,
+            routeLineName == null
+                ? (station.operatorName.isEmpty
+                      ? station.lineName
+                      : '${station.operatorName} · ${station.lineName}')
+                : '${routeOperatorName ?? station.operatorName} · $routeLineName',
             textAlign: TextAlign.center,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
@@ -580,7 +681,9 @@ extension on _HistoryFilter {
     _HistoryFilter.all => true,
     _HistoryFilter.transport =>
       history.transactionType == TransitTransactionType.rail ||
-          history.transactionType == TransitTransactionType.bus,
+          history.transactionType == TransitTransactionType.bus ||
+          history.transactionType ==
+              TransitTransactionType.gateWindowProcessing,
     _HistoryFilter.purchase =>
       history.transactionType == TransitTransactionType.purchase,
     _HistoryFilter.charge =>
@@ -590,21 +693,12 @@ extension on _HistoryFilter {
   };
 }
 
-String _typeLabel(TransitTransactionType type) => switch (type) {
-  TransitTransactionType.rail => '철도 이용',
-  TransitTransactionType.bus => '버스 이용',
-  TransitTransactionType.purchase => '물품 구매',
-  TransitTransactionType.charge => '충전',
-  TransitTransactionType.refund => '환불',
-  TransitTransactionType.adjustment => '정산',
-  TransitTransactionType.unknown => '유형 미확인',
-};
-
 IconData _typeIcon(TransitTransactionType type) => switch (type) {
   TransitTransactionType.rail => Icons.train_rounded,
   TransitTransactionType.bus => Icons.directions_bus_rounded,
   TransitTransactionType.purchase => Icons.shopping_bag_outlined,
   TransitTransactionType.charge => Icons.add_card_rounded,
+  TransitTransactionType.gateWindowProcessing => Icons.meeting_room_outlined,
   TransitTransactionType.refund => Icons.currency_yen_rounded,
   TransitTransactionType.adjustment => Icons.tune_rounded,
   TransitTransactionType.unknown => Icons.help_outline_rounded,
@@ -630,6 +724,10 @@ IconData _typeIcon(TransitTransactionType type) => switch (type) {
     TransitTransactionType.charge => (
       background: const Color(0xFFDDF7E8),
       foreground: const Color(0xFF219653),
+    ),
+    TransitTransactionType.gateWindowProcessing => (
+      background: const Color(0xFFE8EEF9),
+      foreground: const Color(0xFF4A67A1),
     ),
     TransitTransactionType.refund => (
       background: const Color(0xFFFCE8EC),
@@ -676,23 +774,59 @@ String _alightingCode(ParsedTransitHistory history) =>
 String _routeSummary(
   ParsedTransitHistory history,
   ResolvedStationPair? stations,
+  StationResolution? transactionLocation,
+  StationNameDisplayMode stationNameDisplayMode,
 ) => switch (history.transactionType) {
   TransitTransactionType.rail =>
-    '${stations?.boarding.station?.stationName ?? _boardingCode(history)}'
+    '${_displayStation(stations?.boarding, _boardingCode(history), stationNameDisplayMode)}'
         '  →  '
-        '${stations?.alighting.station?.stationName ?? _alightingCode(history)}',
-  TransitTransactionType.bus => '버스 회사 미확인',
-  TransitTransactionType.purchase => '물품 구매',
-  TransitTransactionType.charge => '카드 충전',
+        '${_displayStation(stations?.alighting, _alightingCode(history), stationNameDisplayMode)}',
+  TransitTransactionType.bus => history.busOperatorName ?? '버스 회사 미확인',
+  TransitTransactionType.purchase => purchaseSummary(history),
+  TransitTransactionType.charge => chargeSummary(
+    history,
+    transactionLocation: transactionLocation,
+    stationNameDisplayMode: stationNameDisplayMode,
+  ),
+  TransitTransactionType.gateWindowProcessing => gateWindowSummary(
+    history,
+    transactionLocation: transactionLocation,
+    stationNameDisplayMode: stationNameDisplayMode,
+  ),
   TransitTransactionType.refund => '환불',
   TransitTransactionType.adjustment => '정산',
   TransitTransactionType.unknown => '거래 유형을 확인할 수 없습니다',
 };
 
-String _stationDetail(StationResolution? resolution, String fallbackCode) {
+String _formatTime(DateTime value) =>
+    '${value.hour.toString().padLeft(2, '0')}:'
+    '${value.minute.toString().padLeft(2, '0')}:'
+    '${value.second.toString().padLeft(2, '0')}';
+
+String _stationDetail(
+  StationResolution? resolution,
+  String fallbackCode, {
+  String? routeLineName,
+  required StationNameDisplayMode stationNameDisplayMode,
+}) {
   final station = resolution?.station;
   if (station == null) return '미등록 · $fallbackCode';
-  return '${station.stationName} · ${station.lineName}';
+  return '${displayStationName(japanese: station.stationName, korean: station.stationNameKorean, mode: stationNameDisplayMode)} · ${routeLineName ?? station.lineName}';
+}
+
+String _displayStation(
+  StationResolution? resolution,
+  String fallbackCode,
+  StationNameDisplayMode mode,
+) {
+  final station = resolution?.station;
+  return station == null
+      ? fallbackCode
+      : displayStationName(
+          japanese: station.stationName,
+          korean: station.stationNameKorean,
+          mode: mode,
+        );
 }
 
 bool _bothStationsResolved(ResolvedStationPair? stations) =>

@@ -6,11 +6,13 @@ import '../../issue_report/domain/issue_report_repository.dart';
 import '../../settings/presentation/settings_page.dart';
 import '../../station_resolver/data/asset_station_database.dart';
 import '../../station_resolver/domain/station_resolution.dart';
+import '../../station_resolver/domain/station_name_display.dart';
 import '../../transaction_history/data/transit_history_parser.dart';
 import '../../transaction_history/domain/amount_calculation.dart';
 import '../../transaction_history/domain/parsed_transit_history.dart';
 import '../../transaction_history/domain/transit_transaction_type.dart';
 import '../../transaction_history/presentation/history_pages.dart';
+import '../../transaction_history/presentation/transaction_history_labels.dart';
 import '../data/nfc_manager_card_reader.dart';
 import '../domain/card_reader.dart';
 import '../domain/card_scan_result.dart';
@@ -19,6 +21,8 @@ class CardReaderPage extends StatefulWidget {
   const CardReaderPage({
     required this.themeMode,
     required this.onThemeModeChanged,
+    required this.stationNameDisplayMode,
+    required this.onStationNameDisplayModeChanged,
     super.key,
     this.reader,
     this.stationDatabase,
@@ -30,6 +34,8 @@ class CardReaderPage extends StatefulWidget {
   final IssueReportRepository? issueReportRepository;
   final ThemeMode themeMode;
   final ValueChanged<ThemeMode> onThemeModeChanged;
+  final StationNameDisplayMode stationNameDisplayMode;
+  final ValueChanged<StationNameDisplayMode> onStationNameDisplayModeChanged;
 
   @override
   State<CardReaderPage> createState() => _CardReaderPageState();
@@ -49,6 +55,7 @@ class _CardReaderPageState extends State<CardReaderPage> {
   _ReaderFlow _flow = _ReaderFlow.main;
   bool _cancelRequested = false;
   Map<int, ResolvedStationPair> _stationPairs = const {};
+  Map<int, StationResolution> _transactionLocations = const {};
 
   List<ParsedTransitHistory> get _histories =>
       _result == null ? const [] : _historyParser.parse(_result!.blocks);
@@ -68,8 +75,11 @@ class _CardReaderPageState extends State<CardReaderPage> {
       if (!mounted || _cancelRequested) return;
       final histories = _historyParser.parse(result.blocks);
       Map<int, ResolvedStationPair> stationPairs = const {};
+      Map<int, StationResolution> transactionLocations = const {};
       try {
-        stationPairs = await _resolveStations(histories);
+        final locations = await _resolveLocations(histories);
+        stationPairs = locations.stationPairs;
+        transactionLocations = locations.transactionLocations;
       } catch (_) {
         // Station enrichment must never turn a successful NFC read into an
         // error. Raw codes remain available as the safe fallback.
@@ -78,6 +88,7 @@ class _CardReaderPageState extends State<CardReaderPage> {
       setState(() {
         _result = result;
         _stationPairs = stationPairs;
+        _transactionLocations = transactionLocations;
         _flow = _ReaderFlow.success;
       });
     } on CardScanException catch (error) {
@@ -101,27 +112,45 @@ class _CardReaderPageState extends State<CardReaderPage> {
     await _reader.cancel();
   }
 
-  Future<Map<int, ResolvedStationPair>> _resolveStations(
-    List<ParsedTransitHistory> histories,
-  ) async {
+  Future<
+    ({
+      Map<int, ResolvedStationPair> stationPairs,
+      Map<int, StationResolution> transactionLocations,
+    })
+  >
+  _resolveLocations(List<ParsedTransitHistory> histories) async {
     final database = await _stationDatabase;
-    final resolved = <int, ResolvedStationPair>{};
+    final stationPairs = <int, ResolvedStationPair>{};
+    final transactionLocations = <int, StationResolution>{};
     for (final history in histories) {
-      if (history.transactionType != TransitTransactionType.rail) continue;
-      resolved[history.rawBlock.index] = database.resolvePair(
-        boardingCode: StationCode(
-          regionCode: history.regionCode,
-          lineCode: history.boardingLineCode,
-          stationCode: history.boardingStationCode,
-        ),
-        alightingCode: StationCode(
-          regionCode: history.regionCode,
-          lineCode: history.alightingLineCode,
-          stationCode: history.alightingStationCode,
-        ),
-      );
+      if (history.transactionType == TransitTransactionType.rail) {
+        stationPairs[history.rawBlock.index] = database.resolvePair(
+          boardingCode: StationCode(
+            regionCode: history.regionCode,
+            lineCode: history.boardingLineCode,
+            stationCode: history.boardingStationCode,
+          ),
+          alightingCode: StationCode(
+            regionCode: history.regionCode,
+            lineCode: history.alightingLineCode,
+            stationCode: history.alightingStationCode,
+          ),
+        );
+      }
+      if (history.hasTransactionLocationCode) {
+        transactionLocations[history.rawBlock.index] = database.resolve(
+          StationCode(
+            regionCode: history.transactionLocationRegionCode!,
+            lineCode: history.transactionLocationLineCode!,
+            stationCode: history.transactionLocationStationCode!,
+          ),
+        );
+      }
     }
-    return resolved;
+    return (
+      stationPairs: stationPairs,
+      transactionLocations: transactionLocations,
+    );
   }
 
   void _openHistory() => setState(() {
@@ -134,6 +163,7 @@ class _CardReaderPageState extends State<CardReaderPage> {
       _result = null;
       _message = null;
       _stationPairs = const {};
+      _transactionLocations = const {};
     });
     ScaffoldMessenger.of(
       context,
@@ -160,6 +190,8 @@ class _CardReaderPageState extends State<CardReaderPage> {
         result: _result,
         histories: _histories,
         stationPairs: _stationPairs,
+        transactionLocations: _transactionLocations,
+        stationNameDisplayMode: widget.stationNameDisplayMode,
         message: _message,
         animateCard: _selectedTab == 0,
         onScan: _startScan,
@@ -170,12 +202,16 @@ class _CardReaderPageState extends State<CardReaderPage> {
         currentBalance: _currentBalance,
         issueReportRepository: widget.issueReportRepository,
         stationPairs: _stationPairs,
+        transactionLocations: _transactionLocations,
+        stationNameDisplayMode: widget.stationNameDisplayMode,
         onScan: _startScan,
       ),
       SettingsPage(
         result: _result,
         themeMode: widget.themeMode,
         onThemeModeChanged: widget.onThemeModeChanged,
+        stationNameDisplayMode: widget.stationNameDisplayMode,
+        onStationNameDisplayModeChanged: widget.onStationNameDisplayModeChanged,
         onClearSession: _clearSession,
       ),
     ];
@@ -236,6 +272,8 @@ class _HomePage extends StatelessWidget {
     required this.result,
     required this.histories,
     required this.stationPairs,
+    required this.transactionLocations,
+    required this.stationNameDisplayMode,
     required this.message,
     required this.animateCard,
     required this.onScan,
@@ -245,6 +283,8 @@ class _HomePage extends StatelessWidget {
   final CardScanResult? result;
   final List<ParsedTransitHistory> histories;
   final Map<int, ResolvedStationPair> stationPairs;
+  final Map<int, StationResolution> transactionLocations;
+  final StationNameDisplayMode stationNameDisplayMode;
   final String? message;
   final bool animateCard;
   final VoidCallback onScan;
@@ -256,6 +296,9 @@ class _HomePage extends StatelessWidget {
     final latestStations = latest == null
         ? null
         : stationPairs[latest.rawBlock.index];
+    final latestTransactionLocation = latest == null
+        ? null
+        : transactionLocations[latest.rawBlock.index];
     return AppPage(
       padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
       children: [
@@ -367,7 +410,12 @@ class _HomePage extends StatelessWidget {
                           ),
                           const SizedBox(height: 3),
                           Text(
-                            _homeHistorySummary(latest, latestStations),
+                            _homeHistorySummary(
+                              latest,
+                              latestStations,
+                              latestTransactionLocation,
+                              stationNameDisplayMode,
+                            ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
@@ -468,10 +516,19 @@ class _ScanScreen extends StatefulWidget {
 
 class _ScanScreenState extends State<_ScanScreen>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _progressController = AnimationController(
-    vsync: this,
-    duration: const Duration(seconds: 30),
-  )..forward();
+  static const _scanDuration = Duration(seconds: 30);
+
+  late final AnimationController _progressController;
+
+  @override
+  void initState() {
+    super.initState();
+    _progressController = AnimationController(
+      vsync: this,
+      duration: _scanDuration,
+      animationBehavior: AnimationBehavior.preserve,
+    )..forward();
+  }
 
   @override
   void dispose() {
@@ -519,13 +576,15 @@ class _ScanScreenState extends State<_ScanScreen>
           const SizedBox(height: 24),
           AnimatedBuilder(
             animation: _progressController,
-            builder: (context, _) {
-              final remainingSeconds = (30 * (1 - _progressController.value))
-                  .ceil();
+            builder: (context, child) {
+              final progress = _progressController.value;
+              final remainingMilliseconds =
+                  (_scanDuration.inMilliseconds * (1 - progress)).ceil();
+              final remainingSeconds = (remainingMilliseconds / 1000).ceil();
               return Column(
                 children: [
                   LinearProgressIndicator(
-                    value: _progressController.value,
+                    value: progress,
                     borderRadius: const BorderRadius.all(Radius.circular(999)),
                     semanticsLabel: '카드 스캔 진행률',
                   ),
@@ -746,14 +805,25 @@ String _homeAmountText(AmountCalculation calculation) =>
 String _homeHistorySummary(
   ParsedTransitHistory history,
   ResolvedStationPair? stations,
+  StationResolution? transactionLocation,
+  StationNameDisplayMode stationNameDisplayMode,
 ) => switch (history.transactionType) {
   TransitTransactionType.rail =>
-    '${_stationLabel(stations?.boarding, _stationCode(history, boarding: true))}'
+    '${_stationLabel(stations?.boarding, _stationCode(history, boarding: true), stationNameDisplayMode)}'
         '  →  '
-        '${_stationLabel(stations?.alighting, _stationCode(history, boarding: false))}',
-  TransitTransactionType.bus => '버스 회사 미확인',
-  TransitTransactionType.purchase => '물품 구매',
-  TransitTransactionType.charge => '카드 충전',
+        '${_stationLabel(stations?.alighting, _stationCode(history, boarding: false), stationNameDisplayMode)}',
+  TransitTransactionType.bus => history.busOperatorName ?? '버스 회사 미확인',
+  TransitTransactionType.purchase => purchaseSummary(history),
+  TransitTransactionType.charge => chargeSummary(
+    history,
+    transactionLocation: transactionLocation,
+    stationNameDisplayMode: stationNameDisplayMode,
+  ),
+  TransitTransactionType.gateWindowProcessing => gateWindowSummary(
+    history,
+    transactionLocation: transactionLocation,
+    stationNameDisplayMode: stationNameDisplayMode,
+  ),
   TransitTransactionType.refund => '환불',
   TransitTransactionType.adjustment => '정산',
   TransitTransactionType.unknown => '거래 유형 미확인',
@@ -764,5 +834,17 @@ String _stationCode(ParsedTransitHistory history, {required bool boarding}) =>
     '${hexByte(boarding ? history.boardingLineCode : history.alightingLineCode)}-'
     '${hexByte(boarding ? history.boardingStationCode : history.alightingStationCode)}';
 
-String _stationLabel(StationResolution? resolution, String fallbackCode) =>
-    resolution?.station?.stationName ?? fallbackCode;
+String _stationLabel(
+  StationResolution? resolution,
+  String fallbackCode,
+  StationNameDisplayMode mode,
+) {
+  final station = resolution?.station;
+  return station == null
+      ? fallbackCode
+      : displayStationName(
+          japanese: station.stationName,
+          korean: station.stationNameKorean,
+          mode: mode,
+        );
+}
