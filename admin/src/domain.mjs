@@ -77,9 +77,11 @@ export function formatCurrency(value, transactionType = '') {
 }
 
 export function routeLabel(payload) {
-  const boarding = readName(payload, 'boarding', 'currentName') ??
+  const boarding = currentStationName(payload, 'boarding') ??
+    readName(payload, 'boarding', 'currentName') ??
     codeLabel(payload, 'boarding')
-  const alighting = readName(payload, 'alighting', 'currentName') ??
+  const alighting = currentStationName(payload, 'alighting') ??
+    readName(payload, 'alighting', 'currentName') ??
     codeLabel(payload, 'alighting')
   if (boarding && alighting) return `${boarding} → ${alighting}`
   return transactionTypeLabel(payload?.currentTransactionType)
@@ -104,6 +106,8 @@ export function reportFields(report) {
     ['제보 유형', issueTypeLabels[report.issue_type] ?? report.issue_type],
     ['원본 16바이트', report.anonymous_raw_record],
     ['현재 거래 유형', transactionTypeLabel(payload.currentTransactionType)],
+    ['파서 확인 승차역', currentStationName(payload, 'boarding') ?? 'null'],
+    ['파서 확인 하차역', currentStationName(payload, 'alighting') ?? 'null'],
     ['이용 날짜', payload.usageDate ?? '확인 불가'],
     ['잔액', Number.isInteger(payload.balance) ? `¥${payload.balance.toLocaleString('ko-KR')}` : '확인 불가'],
     ['계산 금액', formatCurrency(payload.calculatedAmount, payload.currentTransactionType)],
@@ -166,6 +170,14 @@ function readName(payload, group, field) {
   return value && typeof value === 'object' && typeof value[field] === 'string'
     ? value[field]
     : null
+}
+
+function currentStationName(payload, direction) {
+  const field = direction === 'boarding'
+    ? 'currentBoardingStation'
+    : 'currentAlightingStation'
+  const value = payload?.[field]
+  return typeof value === 'string' && value.trim().length > 0 ? value : null
 }
 
 function codeLabel(payload, prefix) {

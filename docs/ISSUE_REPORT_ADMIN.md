@@ -108,6 +108,8 @@ node admin/server.mjs
 
 관리 페이지에서 상태, 관리자 메모, 적용 앱 버전을 저장하면 `reviewed_at`, `resolved_at`, `updated_at`이 서버에서 갱신되고 `issue_report_review_logs`에 변경 이력이 남는다. 해결된 제보는 바로 삭제하지 않고 기존 1년 보존 정책에 따라 정리한다.
 
+문의 상세의 **파서 확인 승차역**·**파서 확인 하차역**은 제보를 보낸 앱이 당시 파싱한 `currentBoardingStation`·`currentAlightingStation` snapshot이다. 서버에서 역 코드를 다시 추측하지 않으며, 값이 없던 이전 문의 또는 미확인 거래는 `null`로 표시한다.
+
 ## 악성 제보 차단과 자동 정리
 
 - 상세 화면의 **제보자 차단**은 현재 문의를 보낸 익명 Auth 사용자만 서버에서 차단한다. 이후 제보 요청은 저장 전에 거절되며, 현재 문의의 처리 상태는 자동으로 변경하지 않는다.
