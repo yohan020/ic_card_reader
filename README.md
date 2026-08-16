@@ -1,35 +1,77 @@
-# IC Card Reader
+# 일본 교통카드 리더
 
-일본 전국호환 선불식 교통계 IC 카드의 최근 이용내역을 기기 안에서 읽는 Flutter 앱이다.
+Android NFC로 일본 전국호환 교통계 IC 카드의 최근 이용내역을 읽고, 기기 안에서 보기 쉽게 해석하는 Flutter 앱입니다.
 
-현재는 Phase 1 NFC PoC다. NFC-F/FeliCa 카드에서 시스템 코드 `0003`, 서비스 코드 `090F`의 원시 16바이트 이력 블록을 최대 20개 읽고 개발자 화면에 표시한다. 카드 IDm은 명령 수행 중 메모리에서만 사용하며 결과, 로그, 로컬 저장소에 남기지 않는다.
+> 현재 Android 우선으로 개발·비공개 테스트 중입니다. iOS NFC 지원은 추후 진행합니다.
 
-## 개발 환경 준비
+## 주요 기능
 
-Flutter 3.44.9(Dart 3.12.2)로 플랫폼 러너를 생성하고 검증했다. 작업용 SDK는 `.tooling/flutter`에 있으며 Git에서 제외된다. 다른 환경에서는 Flutter 3.44 이상을 설치한 뒤 프로젝트 루트에서 다음을 실행한다.
+- NFC-F/FeliCa 카드에서 서비스 코드 `090F`의 최근 16바이트 이용내역을 최대 20건 읽기
+- 철도·버스·물품 구매·충전 등 확인된 거래 유형 표시
+- 이용일, 잔액, 금액, 역 코드와 역명·노선 정보 표시
+- 역명을 일본어·한국어·함께 표시 중 선택
+- 현재 스캔 세션의 이용내역만 표시하며 앱 종료 후 영구 저장하지 않음
+- 선택한 이용내역 1건을 익명으로 오류 제보
+  - 카드 IDm, 이메일, 기기 고유 식별자는 전송하지 않음
+  - 역명·버스 회사·거래 유형 보정 제보를 지원
+- 교통패스 손익 비교를 위한 별도 Web 프로토타입 포함
 
-```text
+## 지원 범위와 주의사항
+
+- 전국 상호이용 교통계 IC 카드의 모든 거래 유형·버스 회사·역 코드를 완전히 해석하지는 않습니다.
+- 실제 샘플로 검증되지 않은 값은 추측하지 않고 `미확인` 또는 `계산할 수 없음`으로 표시합니다.
+- PiTaPa처럼 이용 이력 구조가 다른 카드나 포스트페이 카드의 완전한 지원은 현재 범위 밖입니다.
+- Samsung 기기에서는 NFC 설정을 **기본 모드**로 두어야 읽기가 가능한 경우가 있습니다.
+
+## 개인정보
+
+카드 IDm은 NFC 명령 처리 중 메모리에서만 사용하며, 로그·로컬 저장소·서버에 저장하거나 전송하지 않습니다. 오류 제보는 사용자가 전송에 동의한 경우에만 선택한 이용내역 1건과 제보 내용만 전송합니다.
+
+자세한 내용은 [개인정보처리방침](docs/PRIVACY_POLICY.md)과 [공개 페이지](https://yohan020.github.io/ic_card_reader/)를 참고하세요.
+
+## 개발 환경
+
+- Flutter 3.44.9 / Dart 3.12.2 이상
+- NFC를 지원하는 Android 기기
+- Android SDK 및 연결된 실제 기기
+
+```powershell
 flutter pub get
 flutter analyze
 flutter test
-flutter build apk --debug
+flutter run
 ```
 
-Android NFC permission/feature와 iOS NFC 설명·FeliCa 시스템 코드 `0003`·entitlement 연결은 프로젝트에 포함되어 있다. iOS 서명 시 Xcode의 Runner Signing & Capabilities에서 Near Field Communication Tag Reading이 실제 프로비저닝 프로파일에 포함됐는지 확인한다.
+릴리스 서명 및 AAB 생성 절차는 [Android 릴리스 서명 안내](docs/ANDROID_RELEASE_SIGNING.md)를 따릅니다. 빌드 번호는 `pubspec.yaml`에서 직접 올린 뒤 생성하세요.
 
-실물 카드 검증 전에는 읽기 성공으로 간주하지 않는다. 자세한 상태는 `docs/DEVELOPMENT_STATUS.md`를 참고한다.
+## 오류 제보 백엔드와 관리 화면
 
-## 익명 fixture용 로그
+오류 제보는 Supabase Anonymous Auth, Edge Function, PostgreSQL을 사용합니다. 관리자용 문의 관리 화면은 localhost에서만 실행하도록 구성되어 있습니다.
 
-`flutter run`으로 실행한 debug 빌드에서 카드 읽기에 성공하면 터미널에 다음 구간이 출력된다.
-
-```text
-IC_CARD_FIXTURE_BEGIN count=20
-IC_CARD_BLOCK[0]=32자리 16진수
-...
-IC_CARD_FIXTURE_END
+```powershell
+cd admin
+npm install
+npm run start
 ```
 
-이 구간에는 카드 IDm과 기기 식별정보가 포함되지 않는다. 단, 원시 블록 자체에는 실제 이동 이력이 있으므로 외부 공유 전 노출 가능성을 확인한다. release 빌드에서는 출력하지 않는다.
+Supabase migration·함수 배포와 관리자 화면 설정은 [Supabase 운영 안내](docs/SUPABASE_SETUP.md), [문의 관리 안내](docs/ISSUE_REPORT_ADMIN.md)를 확인하세요.
 
-실물 카드 fixture `test/fixtures/felica/android_history_20_v1.json`은 실제 이동 이력 보호를 위해 Git에서 제외된다. 로컬에 파일이 없으면 해당 fixture 테스트는 실패로 기록되지 않고 명시적으로 skip된다.
+## 데이터와 라이선스
+
+- 역 코드 데이터는 허가받은 Yoiko 데이터를 앱과 함께 사용합니다. 데이터만 별도로 재배포할 수 없습니다.
+- 한국어 역명 보조 표기는 Wikidata의 CC0 데이터를 기반으로 생성했습니다.
+- 출처·이용 조건·갱신 방법은 [데이터 및 라이선스 안내](docs/DATA_AND_LICENSES.md)를 참고하세요.
+
+## 문서와 검증
+
+- [현재 개발 상태](docs/DEVELOPMENT_STATUS.md)
+- [미완료 작업](docs/planning/TODO.md)
+- [테스트 매트릭스](docs/TEST_MATRIX.md)
+- [이용내역 파서 근거와 이력](docs/TRANSIT_HISTORY_PARSER_FIRST_REVISION.md)
+- [교통패스 비교 분석](docs/planning/PASS_COMPARISON_ANALYSIS.md)
+
+```powershell
+flutter analyze --no-pub
+flutter test --no-pub
+node --test admin/test/*.test.mjs
+```
