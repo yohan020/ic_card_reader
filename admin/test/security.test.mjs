@@ -146,3 +146,25 @@ test('bus company reports are restricted to bus records and reach the admin flow
   assert.match(adminFunction, /BUS_COMPANY_NOT_RESOLVED/)
   assert.match(migration, /BUS_COMPANY_NOT_RESOLVED/)
 })
+
+test('Korean station-name requests accept only the proposed display label', () => {
+  const reportFunction = readFileSync(
+    new URL('../../supabase/functions/ic-card-report/index.ts', import.meta.url),
+    'utf8',
+  )
+  const adminFunction = readFileSync(
+    new URL('../../supabase/functions/issue-report-admin/index.ts', import.meta.url),
+    'utf8',
+  )
+  const migration = readFileSync(
+    new URL('../../supabase/migrations/202608160001_issue_report_korean_station_name_request.sql', import.meta.url),
+    'utf8',
+  )
+
+  assert.match(reportFunction, /KOREAN_STATION_NAME_REQUEST/)
+  assert.match(reportFunction, /suggestedKoreanBoardingStationName/)
+  assert.match(reportFunction, /suggestedKoreanAlightingStationName/)
+  assert.match(reportFunction, /suggestedKoreanStationName/)
+  assert.match(adminFunction, /KOREAN_STATION_NAME_REQUEST/)
+  assert.match(migration, /KOREAN_STATION_NAME_REQUEST/)
+})

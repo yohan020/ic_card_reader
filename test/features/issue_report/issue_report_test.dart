@@ -98,6 +98,68 @@ void main() {
     },
   );
 
+  test(
+    'serializes a Korean station-name request without location corrections',
+    () {
+      final json = IssueReport(
+        anonymousReportId: '550e8400-e29b-41d4-a716-446655440000',
+        anonymousRawRecord: '1601000234E4A578AC38E20300012950',
+        issueType: IssueType.koreanStationNameRequest,
+        regionCode: 0x50,
+        boardingLineCode: 0xA5,
+        boardingStationCode: 0x78,
+        alightingLineCode: 0xAC,
+        alightingStationCode: 0x38,
+        currentBoardingStation: '名鉄名古屋',
+        currentAlightingStation: '中部国際空港',
+        currentTransactionType: 'RAIL',
+        usageDate: DateTime(2026, 7, 4),
+        balance: 994,
+        parserVersion: TransitHistoryParser.version,
+        stationDatabaseVersion: 'test-stations-v1',
+        appVersion: '1.0.0+1',
+        platform: 'android',
+        osVersion: 'test',
+        stationIssueScope: StationIssueScope.both,
+        suggestedKoreanBoardingStationName: '메이테쓰 나고야',
+        suggestedKoreanAlightingStationName: '주부 국제공항',
+      ).toJson();
+
+      expect(json['issueType'], 'KOREAN_STATION_NAME_REQUEST');
+      expect(json['stationIssueScope'], 'BOTH');
+      expect(json['suggestedKoreanBoardingStationName'], '메이테쓰 나고야');
+      expect(json['suggestedKoreanAlightingStationName'], '주부 국제공항');
+      expect(json['correctedBoardingStation'], isNull);
+      expect(json['correctedAlightingStation'], isNull);
+    },
+  );
+
+  test('allows a Korean station-name request with only the selected scope', () {
+    final json = IssueReport(
+      anonymousReportId: '550e8400-e29b-41d4-a716-446655440000',
+      anonymousRawRecord: '1601000234E4A578AC38E20300012950',
+      issueType: IssueType.koreanStationNameRequest,
+      regionCode: 0x50,
+      boardingLineCode: 0xA5,
+      boardingStationCode: 0x78,
+      alightingLineCode: 0xAC,
+      alightingStationCode: 0x38,
+      currentTransactionType: 'RAIL',
+      usageDate: DateTime(2026, 7, 4),
+      balance: 994,
+      parserVersion: TransitHistoryParser.version,
+      stationDatabaseVersion: 'test-stations-v1',
+      appVersion: '1.0.0+1',
+      platform: 'android',
+      osVersion: 'test',
+      stationIssueScope: StationIssueScope.alighting,
+    ).toJson();
+
+    expect(json['stationIssueScope'], 'ALIGHTING');
+    expect(json['suggestedKoreanBoardingStationName'], isNull);
+    expect(json['suggestedKoreanAlightingStationName'], isNull);
+  });
+
   testWidgets('submits the selected history through the repository', (
     tester,
   ) async {
@@ -232,6 +294,55 @@ void main() {
     expect(find.text('운행 도시·지역'), findsOneWidget);
     expect(find.text('노선 번호'), findsNothing);
   });
+
+  testWidgets(
+    'collects only a proposed Korean station name for its request type',
+    (tester) async {
+      await tester.binding.setSurfaceSize(const Size(800, 1000));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      final history = const TransitHistoryParser().parse([
+        _block(0, '1601000234E4A578AC38E20300012950'),
+      ]).single;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.light,
+          home: IssueReportPage(history: history),
+        ),
+      );
+      await tester.tap(find.text('역명 한글 표기 추가 요청'));
+      await tester.pump();
+      await tester.dragUntilVisible(
+        find.text('다음'),
+        find.byType(ListView),
+        const Offset(0, -300),
+      );
+      await tester.tap(find.text('다음'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('승차역·하차역을 선택해 주세요'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('승차역과 하차역 모두').last);
+      await tester.pumpAndSettle();
+
+      expect(find.text('승차역 한글 표기'), findsOneWidget);
+      expect(find.text('하차역 한글 표기'), findsOneWidget);
+      expect(find.text('한글 표기'), findsNWidgets(2));
+      expect(find.text('추가 설명 (선택)'), findsNothing);
+      expect(find.text('도시·지역'), findsNothing);
+      expect(find.text('노선명 (선택)'), findsNothing);
+
+      await tester.dragUntilVisible(
+        find.text('검토하기'),
+        find.byType(ListView),
+        const Offset(0, -300),
+      );
+      await tester.tap(find.text('검토하기'));
+      await tester.pumpAndSettle();
+      expect(find.text('전송 전 확인'), findsOneWidget);
+      expect(find.text('입력 없음'), findsNWidgets(2));
+    },
+  );
 
   testWidgets('chooses a suggested transaction type from a bottom sheet', (
     tester,

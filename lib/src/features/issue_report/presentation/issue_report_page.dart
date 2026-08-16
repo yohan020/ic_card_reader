@@ -53,6 +53,8 @@ class _IssueReportPageState extends State<IssueReportPage> {
   final _alightingLineController = TextEditingController();
   final _busCompanyNameController = TextEditingController();
   final _busCompanyCityController = TextEditingController();
+  final _koreanBoardingStationNameController = TextEditingController();
+  final _koreanAlightingStationNameController = TextEditingController();
   final _customTransactionTypeController = TextEditingController();
   final _descriptionController = TextEditingController();
 
@@ -69,6 +71,8 @@ class _IssueReportPageState extends State<IssueReportPage> {
     _alightingLineController.dispose();
     _busCompanyNameController.dispose();
     _busCompanyCityController.dispose();
+    _koreanBoardingStationNameController.dispose();
+    _koreanAlightingStationNameController.dispose();
     _customTransactionTypeController.dispose();
     _descriptionController.dispose();
     super.dispose();
@@ -139,6 +143,7 @@ class _IssueReportPageState extends State<IssueReportPage> {
             children: [
               for (final issue in [
                 '역 정보가 없거나 잘못됨',
+                '역명 한글 표기 추가 요청',
                 if (_isBusHistory) '버스 회사 정보가 없거나 잘못됨',
                 '거래 유형이 잘못됨',
                 '금액 또는 잔액이 잘못됨',
@@ -185,7 +190,10 @@ class _IssueReportPageState extends State<IssueReportPage> {
         ),
         const SizedBox(height: 18),
         if (_usesStationScope) ...[
-          Text('어느 역 정보인가요?', style: Theme.of(context).textTheme.titleSmall),
+          Text(
+            _isKoreanStationNameIssue ? '어느 역의 한글 표기인가요?' : '어느 역 정보인가요?',
+            style: Theme.of(context).textTheme.titleSmall,
+          ),
           const SizedBox(height: 8),
           OutlinedButton(
             onPressed: _showStationScopeSheet,
@@ -226,7 +234,7 @@ class _IssueReportPageState extends State<IssueReportPage> {
           ],
           const SizedBox(height: 10),
         ],
-        if (_needsBoardingCorrection) ...[
+        if (_needsStationCorrection && _needsBoardingStationScope) ...[
           _stationCorrectionFields(
             context,
             title: '올바른 승차역',
@@ -234,9 +242,9 @@ class _IssueReportPageState extends State<IssueReportPage> {
             cityController: _boardingCityController,
             lineController: _boardingLineController,
           ),
-          if (_needsAlightingCorrection) const SizedBox(height: 18),
+          if (_needsAlightingStationScope) const SizedBox(height: 18),
         ],
-        if (_needsAlightingCorrection)
+        if (_needsStationCorrection && _needsAlightingStationScope)
           _stationCorrectionFields(
             context,
             title: '올바른 하차역',
@@ -304,20 +312,37 @@ class _IssueReportPageState extends State<IssueReportPage> {
           ],
         ],
         if (_isBusCompanyIssue) ...[_busCompanyFields(context)],
+        if (_isKoreanStationNameIssue && _needsBoardingStationScope) ...[
+          _koreanStationNameField(
+            context,
+            title: '승차역 한글 표기',
+            controller: _koreanBoardingStationNameController,
+          ),
+          if (_needsAlightingStationScope) const SizedBox(height: 18),
+        ],
+        if (_isKoreanStationNameIssue && _needsAlightingStationScope)
+          _koreanStationNameField(
+            context,
+            title: '하차역 한글 표기',
+            controller: _koreanAlightingStationNameController,
+          ),
         if (_needsStationCorrection ||
             _issue == '거래 유형이 잘못됨' ||
-            _isBusCompanyIssue)
+            _isBusCompanyIssue ||
+            _isKoreanStationNameIssue)
           const SizedBox(height: 20),
-        Text('추가 설명 (선택)', style: Theme.of(context).textTheme.titleSmall),
-        const SizedBox(height: 8),
-        TextFormField(
-          controller: _descriptionController,
-          maxLines: 4,
-          maxLength: 300,
-          decoration: const InputDecoration(
-            hintText: '개인정보를 제외하고 추가로 알려줄 내용을 적어주세요.',
+        if (!_isKoreanStationNameIssue) ...[
+          Text('추가 설명 (선택)', style: Theme.of(context).textTheme.titleSmall),
+          const SizedBox(height: 8),
+          TextFormField(
+            controller: _descriptionController,
+            maxLines: 4,
+            maxLength: 300,
+            decoration: const InputDecoration(
+              hintText: '개인정보를 제외하고 추가로 알려줄 내용을 적어주세요.',
+            ),
           ),
-        ),
+        ],
         const SizedBox(height: 16),
         Row(
           children: [
@@ -361,11 +386,11 @@ class _IssueReportPageState extends State<IssueReportPage> {
           children: [
             DetailLine(label: '제보 유형', value: _issue ?? '-'),
             const Divider(),
-            if (_needsBoardingCorrection) ...[
+            if (_needsStationCorrection && _needsBoardingStationScope) ...[
               DetailLine(label: '올바른 승차역', value: _boardingCorrectionSummary),
               const Divider(),
             ],
-            if (_needsAlightingCorrection) ...[
+            if (_needsStationCorrection && _needsAlightingStationScope) ...[
               DetailLine(label: '올바른 하차역', value: _alightingCorrectionSummary),
               const Divider(),
             ],
@@ -390,6 +415,26 @@ class _IssueReportPageState extends State<IssueReportPage> {
               const Divider(),
               DetailLine(label: '운행 도시·지역', value: _busCompanyCity),
               const Divider(),
+            ],
+            if (_isKoreanStationNameIssue) ...[
+              if (_needsBoardingStationScope) ...[
+                DetailLine(
+                  label: '제안 승차역 한글 표기',
+                  value:
+                      _optionalText(_koreanBoardingStationNameController) ??
+                      '입력 없음',
+                ),
+                const Divider(),
+              ],
+              if (_needsAlightingStationScope) ...[
+                DetailLine(
+                  label: '제안 하차역 한글 표기',
+                  value:
+                      _optionalText(_koreanAlightingStationNameController) ??
+                      '입력 없음',
+                ),
+                const Divider(),
+              ],
             ],
             DetailLine(
               label: '선택한 내역',
@@ -508,14 +553,16 @@ class _IssueReportPageState extends State<IssueReportPage> {
       currentBoardingStation: widget.stations?.boarding.station?.stationName,
       currentAlightingStation: widget.stations?.alighting.station?.stationName,
       stationIssueScope: _stationIssueScope,
-      correctedBoardingStation: _needsBoardingCorrection
+      correctedBoardingStation:
+          _needsStationCorrection && _needsBoardingStationScope
           ? _stationCorrection(
               _boardingStationController,
               _boardingCityController,
               _boardingLineController,
             )
           : null,
-      correctedAlightingStation: _needsAlightingCorrection
+      correctedAlightingStation:
+          _needsStationCorrection && _needsAlightingStationScope
           ? _stationCorrection(
               _alightingStationController,
               _alightingCityController,
@@ -524,6 +571,14 @@ class _IssueReportPageState extends State<IssueReportPage> {
           : null,
       suggestedBusCompanyName: _isBusCompanyIssue ? _busCompanyName : null,
       suggestedBusCompanyCity: _isBusCompanyIssue ? _busCompanyCity : null,
+      suggestedKoreanBoardingStationName:
+          _isKoreanStationNameIssue && _needsBoardingStationScope
+          ? _optionalText(_koreanBoardingStationNameController)
+          : null,
+      suggestedKoreanAlightingStationName:
+          _isKoreanStationNameIssue && _needsAlightingStationScope
+          ? _optionalText(_koreanAlightingStationNameController)
+          : null,
       currentTransactionType: widget.history.transactionType.wireName,
       suggestedTransactionType: _issue == '거래 유형이 잘못됨'
           ? _suggestedTransactionType
@@ -553,6 +608,8 @@ class _IssueReportPageState extends State<IssueReportPage> {
       _suggestedTransactionType = null;
       _busCompanyNameController.clear();
       _busCompanyCityController.clear();
+      _koreanBoardingStationNameController.clear();
+      _koreanAlightingStationNameController.clear();
       _customTransactionTypeController.clear();
     });
   }
@@ -562,7 +619,10 @@ class _IssueReportPageState extends State<IssueReportPage> {
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      builder: (context) => _StationScopeSheet(selected: _stationIssueScope),
+      builder: (context) => _StationScopeSheet(
+        selected: _stationIssueScope,
+        isKoreanStationNameRequest: _isKoreanStationNameIssue,
+      ),
     );
     if (!mounted || selected == null) return;
     setState(() {
@@ -603,20 +663,23 @@ class _IssueReportPageState extends State<IssueReportPage> {
     });
   }
 
-  bool get _needsStationCorrection => _usesStationScope;
+  bool get _needsStationCorrection => _issue == '역 정보가 없거나 잘못됨';
 
-  bool get _usesStationScope => _issue == '역 정보가 없거나 잘못됨';
+  bool get _usesStationScope =>
+      _issue == '역 정보가 없거나 잘못됨' || _isKoreanStationNameIssue;
 
   bool get _isBusHistory =>
       widget.history.transactionType == TransitTransactionType.bus;
 
   bool get _isBusCompanyIssue => _issue == '버스 회사 정보가 없거나 잘못됨';
 
-  bool get _needsBoardingCorrection =>
+  bool get _isKoreanStationNameIssue => _issue == '역명 한글 표기 추가 요청';
+
+  bool get _needsBoardingStationScope =>
       _stationIssueScope == StationIssueScope.boarding ||
       _stationIssueScope == StationIssueScope.both;
 
-  bool get _needsAlightingCorrection =>
+  bool get _needsAlightingStationScope =>
       _stationIssueScope == StationIssueScope.alighting ||
       _stationIssueScope == StationIssueScope.both;
 
@@ -626,6 +689,8 @@ class _IssueReportPageState extends State<IssueReportPage> {
       ? '올바른 거래 유형'
       : _isBusCompanyIssue
       ? '버스 회사 정보'
+      : _isKoreanStationNameIssue
+      ? '한글 역명 제안'
       : '추가 설명';
 
   String get _detailGuide => _needsStationCorrection
@@ -634,6 +699,8 @@ class _IssueReportPageState extends State<IssueReportPage> {
       ? '목록에서 선택하고, 없는 유형은 직접 입력해 주세요.'
       : _isBusCompanyIssue
       ? '실제 버스 회사명과 운행 도시·지역을 입력해 주세요.'
+      : _isKoreanStationNameIssue
+      ? '승차역·하차역 중 해당 범위를 선택해 주세요. 한글 발음을 아는 경우에만 표기를 입력하면 됩니다.'
       : '알고 있는 내용을 적어주시면 해석 정확도를 높이는 데 도움이 됩니다.';
 
   String get _boardingCorrectionSummary => _stationCorrectionSummary(
@@ -690,6 +757,26 @@ class _IssueReportPageState extends State<IssueReportPage> {
     ],
   );
 
+  Widget _koreanStationNameField(
+    BuildContext context, {
+    required String title,
+    required TextEditingController controller,
+  }) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(title, style: Theme.of(context).textTheme.titleSmall),
+      const SizedBox(height: 10),
+      TextFormField(
+        controller: controller,
+        maxLength: 80,
+        decoration: const InputDecoration(
+          labelText: '한글 표기',
+          hintText: '예: 시부야 (모르면 비워 두세요)',
+        ),
+      ),
+    ],
+  );
+
   Widget _busCompanyFields(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
@@ -723,9 +810,13 @@ class _IssueReportPageState extends State<IssueReportPage> {
 }
 
 class _StationScopeSheet extends StatelessWidget {
-  const _StationScopeSheet({this.selected});
+  const _StationScopeSheet({
+    this.selected,
+    required this.isKoreanStationNameRequest,
+  });
 
   final StationIssueScope? selected;
+  final bool isKoreanStationNameRequest;
 
   @override
   Widget build(BuildContext context) {
@@ -754,14 +845,16 @@ class _StationScopeSheet extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             Text(
-              '어느 역 정보인가요?',
+              isKoreanStationNameRequest ? '어느 역의 한글 표기인가요?' : '어느 역 정보인가요?',
               style: Theme.of(
                 context,
               ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 5),
             Text(
-              '표시되지 않거나 잘못된 역 정보를 선택해 주세요.',
+              isKoreanStationNameRequest
+                  ? '한글 표기를 추가할 역을 선택해 주세요.'
+                  : '표시되지 않거나 잘못된 역 정보를 선택해 주세요.',
               style: TextStyle(color: colorScheme.onSurfaceVariant),
             ),
             const SizedBox(height: 16),
@@ -1080,6 +1173,7 @@ class _ReportSuccessDialog extends StatelessWidget {
 
 IssueType _issueType(String issue) => switch (issue) {
   '역 정보가 없거나 잘못됨' => IssueType.wrongStationName,
+  '역명 한글 표기 추가 요청' => IssueType.koreanStationNameRequest,
   '버스 회사 정보가 없거나 잘못됨' => IssueType.busCompanyNotResolved,
   '거래 유형이 잘못됨' => IssueType.wrongTransactionType,
   '금액 또는 잔액이 잘못됨' => IssueType.wrongAmountOrBalance,

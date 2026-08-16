@@ -13,6 +13,7 @@ export const issueTypeLabels = Object.freeze({
   WRONG_BOTH_STATIONS: '승차역과 하차역이 모두 잘못됨',
   STATION_NOT_RESOLVED: '역명이 표시되지 않음',
   BUS_COMPANY_NOT_RESOLVED: '버스 회사 정보가 없거나 잘못됨',
+  KOREAN_STATION_NAME_REQUEST: '역명 한글 표기 추가 요청',
   WRONG_TRANSACTION_TYPE: '이용 유형이 잘못됨',
   WRONG_AMOUNT_OR_BALANCE: '금액 또는 잔액이 잘못됨',
   OTHER: '기타 문제',
@@ -77,9 +78,11 @@ export function formatCurrency(value, transactionType = '') {
 }
 
 export function routeLabel(payload) {
-  const boarding = readName(payload, 'boarding', 'currentName') ??
+  const boarding = currentStationName(payload, 'boarding') ??
+    readName(payload, 'boarding', 'currentName') ??
     codeLabel(payload, 'boarding')
-  const alighting = readName(payload, 'alighting', 'currentName') ??
+  const alighting = currentStationName(payload, 'alighting') ??
+    readName(payload, 'alighting', 'currentName') ??
     codeLabel(payload, 'alighting')
   if (boarding && alighting) return `${boarding} → ${alighting}`
   return transactionTypeLabel(payload?.currentTransactionType)
@@ -100,24 +103,131 @@ export function transactionTypeLabel(value) {
 
 export function reportFields(report) {
   const payload = report.report_payload ?? {}
-  return [
+  const fields = [
     ['제보 유형', issueTypeLabels[report.issue_type] ?? report.issue_type],
     ['원본 16바이트', report.anonymous_raw_record],
     ['현재 거래 유형', transactionTypeLabel(payload.currentTransactionType)],
     ['이용 날짜', payload.usageDate ?? '확인 불가'],
     ['잔액', Number.isInteger(payload.balance) ? `¥${payload.balance.toLocaleString('ko-KR')}` : '확인 불가'],
     ['계산 금액', formatCurrency(payload.calculatedAmount, payload.currentTransactionType)],
-    ['역명 미확인 범위', stationIssueScopeLabel(payload.stationIssueScope)],
-    ['제안 승차역', stationCorrectionLabel(payload.correctedBoardingStation) ?? readName(payload, 'boarding', 'suggestedName') ?? '입력 없음'],
-    ['제안 하차역', stationCorrectionLabel(payload.correctedAlightingStation) ?? readName(payload, 'alighting', 'suggestedName') ?? '입력 없음'],
-    ['제안 버스 회사', busCompanyLabel(payload)],
-    ['운행 도시·지역', payload.suggestedBusCompanyCity ?? '입력 없음'],
-    ['제안 거래 유형', suggestedTransactionLabel(payload)],
-    ['추가 설명', payload.additionalDescription ?? '입력 없음'],
+  ]
+
+  if (stationIssueTypes.has(report.issue_type)) {
+    return [
+      ...fields,
+      ...stationReportFields(report.issue_type, payload),
+      ...optionalDescriptionField(payload),
+      ...environmentFields(payload),
+    ]
+  }
+
+  if (report.issue_type === 'KOREAN_STATION_NAME_REQUEST') {
+    return [
+      ...fields,
+      ...koreanStationNameFields(payload),
+      ...environmentFields(payload),
+    ]
+  }
+
+  if (report.issue_type === 'BUS_COMPANY_NOT_RESOLVED') {
+    return [
+      ...fields,
+      ['제안 버스 회사', busCompanyLabel(payload)],
+      ['운행 도시·지역', payload.suggestedBusCompanyCity ?? '입력 없음'],
+      ...environmentFields(payload),
+    ]
+  }
+
+  if (report.issue_type === 'WRONG_TRANSACTION_TYPE') {
+    return [
+      ...fields,
+      ['제안 거래 유형', suggestedTransactionLabel(payload)],
+      ...optionalDescriptionField(payload),
+      ...environmentFields(payload),
+    ]
+  }
+
+  return [
+    ...fields,
+    ...optionalDescriptionField(payload),
+    ...environmentFields(payload),
+  ]
+}
+
+const stationIssueTypes = new Set([
+  'WRONG_STATION_NAME',
+  'WRONG_BOARDING_STATION',
+  'WRONG_ALIGHTING_STATION',
+  'WRONG_BOTH_STATIONS',
+  'STATION_NOT_RESOLVED',
+])
+
+function stationReportFields(issueType, payload) {
+  const directions = stationDirections(issueType, payload.stationIssueScope)
+  const fields = [
+    ['역명 지정 범위', stationIssueScopeLabel(payload.stationIssueScope)],
+  ]
+  for (const direction of directions) {
+    const label = direction === 'boarding' ? '승차역' : '하차역'
+    const correction = direction === 'boarding'
+      ? payload.correctedBoardingStation
+      : payload.correctedAlightingStation
+    fields.push(
+      [`파서 확인 ${label}`, currentStationName(payload, direction) ?? 'null'],
+      [`제안 ${label}`, stationCorrectionLabel(correction) ??
+        readName(payload, direction, 'suggestedName') ?? '입력 없음'],
+    )
+  }
+  return fields
+}
+
+function stationDirections(issueType, scope) {
+  if (scope === 'BOARDING') return ['boarding']
+  if (scope === 'ALIGHTING') return ['alighting']
+  if (scope === 'BOTH') return ['boarding', 'alighting']
+  if (issueType === 'WRONG_BOARDING_STATION') return ['boarding']
+  if (issueType === 'WRONG_ALIGHTING_STATION') return ['alighting']
+  return ['boarding', 'alighting']
+}
+
+function optionalDescriptionField(payload) {
+  const description = nonEmptyText(payload.additionalDescription)
+  return description === null ? [] : [['추가 설명', description]]
+}
+
+function environmentFields(payload) {
+  return [
     ['앱 버전', payload.appVersion ?? '확인 불가'],
     ['파서 / 역 DB', `${payload.parserVersion ?? '-'} / ${payload.stationDatabaseVersion ?? '-'}`],
     ['플랫폼', `${payload.platform ?? '-'} ${payload.osVersion ?? ''}`.trim()],
   ]
+}
+
+function koreanStationNameFields(payload) {
+  const legacyName = nonEmptyText(payload.suggestedKoreanStationName)
+  const scope = payload.stationIssueScope
+  const fields = [['역명 지정 범위', stationIssueScopeLabel(scope)]]
+  for (const direction of stationDirections('KOREAN_STATION_NAME_REQUEST', scope)) {
+    const isBoarding = direction === 'boarding'
+    const label = isBoarding ? '승차역' : '하차역'
+    const name = nonEmptyText(isBoarding
+      ? payload.suggestedKoreanBoardingStationName
+      : payload.suggestedKoreanAlightingStationName) ??
+      ((isBoarding && scope === 'BOARDING') || (!isBoarding && scope === 'ALIGHTING')
+        ? legacyName
+        : null)
+    fields.push(
+      [`파서 확인 ${label}`, currentStationName(payload, direction) ?? 'null'],
+      [`제안 ${label} 한글 표기`, name ?? '입력 없음'],
+    )
+  }
+
+  // Older app versions sent one unscoped field. Keep it visible rather than
+  // guessing which station it belonged to when both stations were selected.
+  if (legacyName !== null && scope === 'BOTH') {
+    fields.push(['제안 한글 역명 (기존 앱)', legacyName])
+  }
+  return fields
 }
 
 function stationIssueScopeLabel(value) {
@@ -166,6 +276,18 @@ function readName(payload, group, field) {
   return value && typeof value === 'object' && typeof value[field] === 'string'
     ? value[field]
     : null
+}
+
+function currentStationName(payload, direction) {
+  const field = direction === 'boarding'
+    ? 'currentBoardingStation'
+    : 'currentAlightingStation'
+  const value = payload?.[field]
+  return typeof value === 'string' && value.trim().length > 0 ? value : null
+}
+
+function nonEmptyText(value) {
+  return typeof value === 'string' && value.trim().length > 0 ? value : null
 }
 
 function codeLabel(payload, prefix) {

@@ -1,7 +1,7 @@
 name: ic_card_reader
 description: Privacy-first Japanese transit IC card history reader PoC.
 publish_to: none
-version: 1.0.0+13
+version: 1.0.0+14
 
 environment:
   sdk: ">=3.11.0 <4.0.0"
@@ -14,6 +14,7 @@ dependencies:
   nfc_manager:
     path: third_party/nfc_manager
   supabase_flutter: ^2.16.0
+  in_app_update: ^5.0.0
 
 dev_dependencies:
   flutter_test:

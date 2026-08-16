@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/design/app_theme.dart';
 import '../../../core/widgets/app_ui.dart';
+import '../../app_update/domain/app_update_service.dart';
 import '../../card_reader/domain/card_scan_result.dart';
 import '../../station_resolver/domain/station_name_display.dart';
 import 'privacy_policy_page.dart';
@@ -15,6 +16,8 @@ class SettingsPage extends StatelessWidget {
     required this.onStationNameDisplayModeChanged,
     super.key,
     this.result,
+    this.appUpdateStatus = const AppUpdateStatus.unknown(),
+    this.isCheckingForUpdate = false,
   });
 
   final ThemeMode themeMode;
@@ -23,6 +26,8 @@ class SettingsPage extends StatelessWidget {
   final StationNameDisplayMode stationNameDisplayMode;
   final ValueChanged<StationNameDisplayMode> onStationNameDisplayModeChanged;
   final CardScanResult? result;
+  final AppUpdateStatus appUpdateStatus;
+  final bool isCheckingForUpdate;
 
   @override
   Widget build(BuildContext context) => AppPage(
@@ -121,6 +126,22 @@ class SettingsPage extends StatelessWidget {
             ),
             const Divider(),
             _SettingsTile(
+              icon: Icons.system_update_rounded,
+              title: '앱 업데이트',
+              subtitle: _updateSubtitle(
+                appUpdateStatus,
+                isChecking: isCheckingForUpdate,
+              ),
+              trailingWidget: isCheckingForUpdate
+                  ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : null,
+            ),
+            const Divider(),
+            _SettingsTile(
               icon: Icons.description_outlined,
               title: '오픈소스 라이선스',
               onTap: () => showLicensePage(
@@ -184,6 +205,16 @@ class SettingsPage extends StatelessWidget {
     );
     if (confirmed == true) onClearSession();
   }
+}
+
+String _updateSubtitle(AppUpdateStatus status, {required bool isChecking}) {
+  if (isChecking) return '업데이트 정보를 확인하고 있습니다.';
+  return switch (status.availability) {
+    AppUpdateAvailability.unknown => '앱을 열면 자동으로 업데이트를 확인합니다.',
+    AppUpdateAvailability.latest => '현재 최신 버전을 사용 중입니다.',
+    AppUpdateAvailability.updateAvailable => '새 버전이 홈 화면에 안내됩니다.',
+    AppUpdateAvailability.unavailable => '지금은 업데이트 정보를 확인할 수 없습니다.',
+  };
 }
 
 class _ClearHistoryDialog extends StatelessWidget {
@@ -309,6 +340,7 @@ class _SettingsTile extends StatelessWidget {
     required this.title,
     this.subtitle,
     this.trailing,
+    this.trailingWidget,
     this.onTap,
     this.iconColor,
   });
@@ -317,6 +349,7 @@ class _SettingsTile extends StatelessWidget {
   final String title;
   final String? subtitle;
   final String? trailing;
+  final Widget? trailingWidget;
   final VoidCallback? onTap;
   final Color? iconColor;
 
@@ -334,16 +367,18 @@ class _SettingsTile extends StatelessWidget {
     ),
     title: Text(title, style: const TextStyle(fontWeight: FontWeight.w800)),
     subtitle: subtitle == null ? null : Text(subtitle!),
-    trailing: trailing != null
-        ? Text(
-            trailing!,
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
-          )
-        : onTap != null
-        ? const Icon(Icons.chevron_right_rounded)
-        : null,
+    trailing:
+        trailingWidget ??
+        (trailing != null
+            ? Text(
+                trailing!,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+              )
+            : onTap != null
+            ? const Icon(Icons.chevron_right_rounded)
+            : null),
     onTap: onTap,
   );
 }

@@ -35,7 +35,7 @@ void main() {
 
     expect(boarding.strategy, StationMatchStrategy.regionHint);
     expect(boarding.station?.stationName, '名鉄名古屋');
-    expect(boarding.station?.stationNameKorean, '메이테쓰나고야역');
+    expect(boarding.station?.stationNameKorean, '메이테쓰나고야');
     expect(boarding.station?.lineName, '名古屋本線');
     expect(alighting.strategy, StationMatchStrategy.regionHint);
     expect(alighting.station?.stationName, '中部国際空港');
@@ -51,7 +51,7 @@ void main() {
 ''';
       const koreanCsv =
           '''station_name_ja,station_name_ko,wikidata_id,match_status,source
-名鉄名古屋,메이테쓰 나고야,Q1,unique_korean_label,Wikidata CC0
+名鉄名古屋,메이테쓰 나고야역,Q1,unique_korean_label,Wikidata CC0
 ''';
       final localized =
           AssetStationDatabase.fromCsv(
@@ -81,6 +81,30 @@ void main() {
       );
     },
   );
+
+  test('prefers a manually verified Korean label over the generated label', () {
+    const sourceCsv =
+        '''region,line,station,x1,x2,x3,operator,line_name,station_name
+1,165,120,,,,Meitetsu,名古屋本線,名鉄名古屋
+''';
+    const generatedKoreanCsv =
+        '''station_name_ja,station_name_ko,wikidata_id,match_status,source
+名鉄名古屋,메이테쓰 나고야,Q1,unique_korean_label,Wikidata CC0
+''';
+    const manualKoreanCsv = '''station_name_ja,station_name_ko,source_note
+名鉄名古屋,메이테쓰나고야역,manual verification
+''';
+    final localized =
+        AssetStationDatabase.fromCsv(
+          sourceCsv,
+          koreanNamesCsv: generatedKoreanCsv,
+          manualKoreanNamesCsv: manualKoreanCsv,
+        ).resolve(
+          const StationCode(regionCode: 1, lineCode: 165, stationCode: 120),
+        );
+
+    expect(localized.station?.stationNameKorean, '메이테쓰나고야역');
+  });
 
   test('resolves normalized regions and the documented charge location', () {
     final meitetsuNagoya = database.resolve(

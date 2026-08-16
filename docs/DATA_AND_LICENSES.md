@@ -36,18 +36,19 @@ CSV에는 지역·노선·역 코드와 사업자명·노선명·역명이 들�
 
 각 행의 `evidence`, `source_note`, `source_url`은 근거 수준과 확인 경로를 나타낸다. `verified_fixture`는 공개하지 않는 익명 실물 카드 fixture로 확인한 값이며, `inferred_sequence`는 공식 역 순서와 카드 코드의 제한된 패턴을 함께 사용한 추론값이다. 추론값을 공식 코드표나 실물 카드로 직접 검증한 값처럼 표시하지 않는다.
 
-CC BY 4.0은 프로젝트가 만든 매핑, 근거 분류, 출처 주석과 편집 구성에만 적용된다. 역명·공개 사실·코드값에 독점 권리를 주장하지 않으며, Yoiko 원본 데이터·Wikidata·각 교통사업자 자료 등 제3자 자료의 조건을 변경하거나 재라이선스하지 않는다. 익명 fixture 원문은 이 asset과 저장소에 포함하지 않는다.
+CC BY 4.0은 프로젝트가 만든 매핑, 수동 한글 표기, 근거 분류, 출처 주석과 편집 구성에만 적용된다. 역명·공개 사실·코드값에 독점 권리를 주장하지 않으며, Yoiko 원본 데이터·Wikidata·각 교통사업자 자료 등 제3자 자료의 조건을 변경하거나 재라이선스하지 않는다. 익명 fixture 원문은 이 asset과 저장소에 포함하지 않는다.
 
 ## 한국어 역명 보조 데이터
 
 일본어 역명에 대한 한국어 표기는 Wikidata의 구조화 데이터에서 생성한다.
 
 - 생성 asset: `assets/data/stations/wikidata_station_names_ko.csv`
+- 수동 보완 asset: `assets/data/stations/manual_station_names_ko.csv`
 - 생성 도구: `tool/generate_wikidata_railway_station_catalog.mjs`, `tool/generate_wikidata_station_korean_labels.mjs`
 - 앱 실행 중 외부 API 호출: 없음
 - 출처·고지: `assets/licenses/wikidata-station-names-CC0.txt`
 
-Wikidata의 구조화 데이터는 CC0 Public Domain Dedication으로 제공된다. 생성기는 일본의 철도역 카탈로그를 페이지 단위로 수집한 뒤, Yoiko 역명의 원문과 `駅` 접미사가 붙은 이름을 로컬에서 대조한다. 전체 대조기 역시 모든 Yoiko 역명을 같은 규칙으로 확인해 카탈로그의 누락분을 보완한다. 후보가 여러 개인 경우 한국어 라벨이 단 하나로 일치할 때만 asset에 넣는다. 전수 대조 결과 Yoiko 고유 역명 7,320개 중 6,738개가 이 조건을 만족했으며, 그 외에는 한국어 표기를 추측하지 않고 기존 일본어 역명을 유지한다.
+Wikidata의 구조화 데이터는 CC0 Public Domain Dedication으로 제공된다. 생성기는 일본의 철도역 카탈로그를 페이지 단위로 수집한 뒤, Yoiko 역명의 원문과 `駅` 접미사가 붙은 이름을 로컬에서 대조한다. 전체 대조기 역시 모든 Yoiko 역명을 같은 규칙으로 확인해 카탈로그의 누락분을 보완한다. 후보가 여러 개인 경우 한국어 라벨이 단 하나로 일치할 때만 asset에 넣는다. 전수 대조 결과 Yoiko 고유 역명 7,320개 중 6,738개가 이 조건을 만족했으며, 그 외에는 한국어 표기를 추측하지 않고 기존 일본어 원문을 유지한다. 앱은 표시할 때 Wikidata 생성 한글명 끝의 `역`만 일괄 제거하며, 수동 보완 표기는 입력값을 그대로 유지한다.
 
 데이터를 갱신할 때는 다음 명령을 실행한다. 조회 캐시는 `tool/.cache/`에만 남고 Git에 포함하지 않는다.
 
@@ -55,6 +56,17 @@ Wikidata의 구조화 데이터는 CC0 Public Domain Dedication으로 제공된�
 node tool/generate_wikidata_railway_station_catalog.mjs
 node tool/generate_wikidata_station_korean_labels.mjs
 ```
+
+### 직접 검증한 한글 표기 추가
+
+Wikidata 생성 파일은 다음 생성 작업에서 다시 만들어지므로 직접 수정하지 않는다. 직접 조사·검증한 표기는 `assets/data/stations/manual_station_names_ko.csv`에 다음 형식으로 한 줄씩 추가한다. 같은 일본어 역명이 생성 데이터에 있어도 수동 표기가 우선한다.
+
+```csv
+station_name_ja,station_name_ko,source_note
+名鉄名古屋,메이테쓰나고야역,직접 발음 조사 2026-08-16
+```
+
+`source_note`에는 확인 방법 또는 출처를 짧게 남긴다. 이 파일은 비어 있는 헤더만으로도 유효하며, 새 줄을 추가한 뒤 `flutter analyze`와 `flutter test`를 실행해 확인한다.
 
 ## 기존 참고 자료
 
