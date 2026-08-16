@@ -25,6 +25,19 @@ CSV에는 지역·노선·역 코드와 사업자명·노선명·역명이 들�
 
 따라서 데이터 파일만 별도로 재배포하지 않는다. 앱과 동시에 배포하는 asset으로만 포함하며, 설정의 라이선스 화면에도 위 조건을 표시한다.
 
+## 프로젝트 보완 역 데이터
+
+프로젝트가 실제 익명 fixture와 공개된 이요테츠 역 순서를 대조해 만든 보완 매핑은 Yoiko 원본과 별도 파일로 관리한다.
+
+- 보완 asset: `assets/data/stations/verified_station_overrides.csv`
+- 라이선스 고지: `assets/licenses/project-supplemental-station-overrides-CC-BY-4.0.txt`
+- 라이선스: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
+- 권장 출처 표기: `IC Card Reader / yohan020 supplemental station overrides (CC BY 4.0)`
+
+각 행의 `evidence`, `source_note`, `source_url`은 근거 수준과 확인 경로를 나타낸다. `verified_fixture`는 공개하지 않는 익명 실물 카드 fixture로 확인한 값이며, `inferred_sequence`는 공식 역 순서와 카드 코드의 제한된 패턴을 함께 사용한 추론값이다. 추론값을 공식 코드표나 실물 카드로 직접 검증한 값처럼 표시하지 않는다.
+
+CC BY 4.0은 프로젝트가 만든 매핑, 근거 분류, 출처 주석과 편집 구성에만 적용된다. 역명·공개 사실·코드값에 독점 권리를 주장하지 않으며, Yoiko 원본 데이터·Wikidata·이요테츠 등 제3자 자료의 조건을 변경하거나 재라이선스하지 않는다. 익명 fixture 원문은 이 asset과 저장소에 포함하지 않는다.
+
 ## 한국어 역명 보조 데이터
 
 일본어 역명에 대한 한국어 표기는 Wikidata의 구조화 데이터에서 생성한다.
@@ -46,6 +59,10 @@ node tool/generate_wikidata_station_korean_labels.mjs
 ## 기존 참고 자료
 
 `ic_card_export/`는 수정하지 않는 참고 자료이며 Git 추적에서 제외한다. 기존 Suica Viewer CSV와 MIT 고지는 앱 asset에서 제거했지만 분석 참고 자료는 원본 폴더에 그대로 둔다. Kotlin·PostgreSQL·기존 Dart 코드는 개념과 검증 규칙만 참고하고 앱 구조에 맞게 재작성한다.
+
+## 프로젝트 코드 라이선스
+
+별도 조건이 명시된 데이터 asset과 제3자 자료를 제외한 프로젝트 소스 코드는 루트의 [`LICENSE`](../LICENSE)에 따라 MIT License로 제공한다. 코드 라이선스는 Yoiko 데이터의 동시 배포 조건이나 외부 데이터의 원래 라이선스를 대체하지 않는다.
 
 ## 데이터 해석 원칙
 

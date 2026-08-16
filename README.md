@@ -58,8 +58,10 @@ Supabase migration·함수 배포와 관리자 화면 설정은 [Supabase 운영
 
 ## 데이터와 라이선스
 
+- 프로젝트 소스 코드는 [MIT License](LICENSE)로 제공합니다.
 - 역 코드 데이터는 허가받은 Yoiko 데이터를 앱과 함께 사용합니다. 데이터만 별도로 재배포할 수 없습니다.
 - 한국어 역명 보조 표기는 Wikidata의 CC0 데이터를 기반으로 생성했습니다.
+- 프로젝트가 직접 검증·보완한 역 매핑과 근거 주석은 [CC BY 4.0](assets/licenses/project-supplemental-station-overrides-CC-BY-4.0.txt)으로 제공합니다.
 - 출처·이용 조건·갱신 방법은 [데이터 및 라이선스 안내](docs/DATA_AND_LICENSES.md)를 참고하세요.
 
 ## 문서와 검증
