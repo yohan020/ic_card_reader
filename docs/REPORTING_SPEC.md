@@ -8,7 +8,7 @@ Supabase 익명 인증, Edge Function, RLS로 보호된 PostgreSQL 테이블을 
 
 1. 이용내역 상세에서 `문제 신고`를 누른다.
 2. 현재 한 건이 선택된 상태에서 문제 유형을 고른다.
-3. 역 관련 제보는 올바른 역 이름과 도시·지역을 입력하고 노선명은 선택적으로 입력한다. 버스 회사 미확인은 실제 회사명과 운행 도시·지역을 입력한다. 거래 유형 오류는 하단 팝업 목록에서 선택하거나 목록에 없을 때만 직접 입력한다.
+3. 역 관련 제보는 올바른 역 이름과 도시·지역을 입력하고 노선명은 선택적으로 입력한다. 역명 한글 표기 추가 요청은 승차역·하차역·둘 다 중 범위를 선택하고, 현재 선택한 내역의 파서 확인 역명을 기준으로 아는 한글 표기만 선택적으로 입력한다. 한자 발음을 모르면 표기를 비워 둔 채 범위만 제보할 수 있다. 버스 회사 미확인은 실제 회사명과 운행 도시·지역을 입력한다. 거래 유형 오류는 하단 팝업 목록에서 선택하거나 목록에 없을 때만 직접 입력한다.
 4. 전송할 필드와 제외할 정보를 미리 보여준다.
 5. 사용자가 명시적으로 동의한 경우에만 큐에 넣고 전송한다.
 
@@ -16,7 +16,7 @@ Supabase 익명 인증, Edge Function, RLS로 보호된 PostgreSQL 테이블을 
 
 ## 문제 유형
 
-현재 앱이 생성하는 제보 유형은 `WRONG_STATION_NAME`, `BUS_COMPANY_NOT_RESOLVED`, `WRONG_TRANSACTION_TYPE`, `WRONG_AMOUNT_OR_BALANCE`, `OTHER`다. 기존 앱의 `STATION_NOT_RESOLVED`, `WRONG_BOARDING_STATION`, `WRONG_ALIGHTING_STATION`, `WRONG_BOTH_STATIONS`도 서버와 관리 화면에서 계속 조회한다.
+현재 앱이 생성하는 제보 유형은 `WRONG_STATION_NAME`, `KOREAN_STATION_NAME_REQUEST`, `BUS_COMPANY_NOT_RESOLVED`, `WRONG_TRANSACTION_TYPE`, `WRONG_AMOUNT_OR_BALANCE`, `OTHER`다. `KOREAN_STATION_NAME_REQUEST`는 `stationIssueScope`로 승차역·하차역 범위를 지정하고, 선택된 범위의 `suggestedKoreanBoardingStationName` 또는 `suggestedKoreanAlightingStationName`만 교정 입력으로 허용한다. 기존 앱의 `STATION_NOT_RESOLVED`, `WRONG_BOARDING_STATION`, `WRONG_ALIGHTING_STATION`, `WRONG_BOTH_STATIONS`도 서버와 관리 화면에서 계속 조회한다.
 
 ## API 계약
 
@@ -46,7 +46,7 @@ Supabase 익명 인증, Edge Function, RLS로 보호된 PostgreSQL 테이블을 
 }
 ```
 
-`currentTransactionType`은 `RAIL`, `BUS`, `PURCHASE`, `CHARGE`, `GATE_WINDOW_PROCESSING`, `REFUND`, `ADJUSTMENT`, `UNKNOWN` 중 하나다. `suggestedTransactionType`은 지원하는 거래 유형 중 하나이거나 `OTHER`이며, `OTHER`일 때만 `customSuggestedTransactionType`을 보낸다. `BUS_COMPANY_NOT_RESOLVED`는 현재 거래 유형이 `BUS`일 때만 허용하며 `suggestedBusCompanyName`, `suggestedBusCompanyCity`를 필수로 보낸다. 노선 번호는 수집하지 않는다. 역 교정 정보에는 카드 IDm·현재 위치·정확한 좌표를 포함하지 않는다.
+`currentTransactionType`은 `RAIL`, `BUS`, `PURCHASE`, `CHARGE`, `GATE_WINDOW_PROCESSING`, `REFUND`, `ADJUSTMENT`, `UNKNOWN` 중 하나다. `suggestedTransactionType`은 지원하는 거래 유형 중 하나이거나 `OTHER`이며, `OTHER`일 때만 `customSuggestedTransactionType`을 보낸다. `BUS_COMPANY_NOT_RESOLVED`는 현재 거래 유형이 `BUS`일 때만 허용하며 `suggestedBusCompanyName`, `suggestedBusCompanyCity`를 필수로 보낸다. `KOREAN_STATION_NAME_REQUEST`는 승차역·하차역·둘 다 중 범위만 필수로 지정한다. 각 선택 범위의 80자 이하 한글 표기는 선택사항이며, 한자 발음을 모르는 사용자는 값을 비워 둘 수 있다. 역명·도시·노선 교정 필드는 받지 않는다. 노선 번호는 수집하지 않는다. 역 교정 정보에는 카드 IDm·현재 위치·정확한 좌표를 포함하지 않는다.
 
 중복 키는 조작 방지를 위해 클라이언트가 보내지 않고 Edge Function이 정규화된 비개인 교정 필드로 SHA-256을 계산한다. 새 역·버스 회사·거래 유형 교정값이 있는 경우에는 해당 값도 포함하므로, 같은 원시 기록에 서로 다른 교정안을 보내는 경우를 하나로 잘못 묶지 않는다.
 

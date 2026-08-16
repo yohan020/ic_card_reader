@@ -5,6 +5,7 @@ enum IssueType {
   wrongBothStations,
   stationNotResolved,
   busCompanyNotResolved,
+  koreanStationNameRequest,
   wrongTransactionType,
   wrongAmountOrBalance,
   other,
@@ -53,6 +54,8 @@ class IssueReport {
     this.correctedAlightingStation,
     this.suggestedBusCompanyName,
     this.suggestedBusCompanyCity,
+    this.suggestedKoreanBoardingStationName,
+    this.suggestedKoreanAlightingStationName,
     this.suggestedTransactionType,
     this.customSuggestedTransactionType,
     this.calculatedAmount,
@@ -77,6 +80,8 @@ class IssueReport {
   final StationCorrection? correctedAlightingStation;
   final String? suggestedBusCompanyName;
   final String? suggestedBusCompanyCity;
+  final String? suggestedKoreanBoardingStationName;
+  final String? suggestedKoreanAlightingStationName;
   final String currentTransactionType;
   final String? suggestedTransactionType;
   final String? customSuggestedTransactionType;
@@ -109,6 +114,8 @@ class IssueReport {
     'correctedAlightingStation': correctedAlightingStation?.toJson(),
     'suggestedBusCompanyName': suggestedBusCompanyName,
     'suggestedBusCompanyCity': suggestedBusCompanyCity,
+    'suggestedKoreanBoardingStationName': suggestedKoreanBoardingStationName,
+    'suggestedKoreanAlightingStationName': suggestedKoreanAlightingStationName,
     'currentTransactionType': currentTransactionType,
     'suggestedTransactionType': suggestedTransactionType,
     'customSuggestedTransactionType': customSuggestedTransactionType,
@@ -136,6 +143,7 @@ extension on IssueType {
     IssueType.wrongBothStations => 'WRONG_BOTH_STATIONS',
     IssueType.stationNotResolved => 'STATION_NOT_RESOLVED',
     IssueType.busCompanyNotResolved => 'BUS_COMPANY_NOT_RESOLVED',
+    IssueType.koreanStationNameRequest => 'KOREAN_STATION_NAME_REQUEST',
     IssueType.wrongTransactionType => 'WRONG_TRANSACTION_TYPE',
     IssueType.wrongAmountOrBalance => 'WRONG_AMOUNT_OR_BALANCE',
     IssueType.other => 'OTHER',

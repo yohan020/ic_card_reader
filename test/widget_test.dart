@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ic_card_reader/src/app.dart';
 import 'package:ic_card_reader/src/core/design/app_theme.dart';
+import 'package:ic_card_reader/src/features/app_update/domain/app_update_service.dart';
 import 'package:ic_card_reader/src/features/card_reader/domain/card_reader.dart';
 import 'package:ic_card_reader/src/features/card_reader/domain/card_scan_result.dart';
 import 'package:ic_card_reader/src/features/card_reader/domain/raw_history_block.dart';
@@ -22,6 +23,40 @@ void main() {
     expect(find.text('IC 카드 스캔'), findsOneWidget);
     await tester.scrollUntilVisible(find.text('카드 데이터는 이 기기에서만 처리합니다'), 200);
     expect(find.text('카드 데이터는 이 기기에서만 처리합니다'), findsOneWidget);
+  });
+
+  testWidgets('checks for a Play update on home and exposes it in settings', (
+    tester,
+  ) async {
+    final updateService = _FakeAppUpdateService(
+      const AppUpdateStatus.available(AppUpdateInstallMode.flexible),
+    );
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: AppTheme.light,
+        home: CardReaderPage(
+          reader: _FakeCardReader(),
+          appUpdateService: updateService,
+          themeMode: ThemeMode.system,
+          onThemeModeChanged: (_) {},
+          stationNameDisplayMode: StationNameDisplayMode.japanese,
+          onStationNameDisplayModeChanged: (_) {},
+        ),
+      ),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 20));
+
+    expect(find.byKey(const ValueKey('home-update-banner')), findsOneWidget);
+    expect(find.text('새 버전이 있어요'), findsOneWidget);
+    await tester.tap(find.text('업데이트'));
+    await tester.pump();
+    expect(updateService.startCount, 1);
+
+    await tester.tap(find.text('설정'));
+    await tester.pump();
+    expect(find.text('새 버전이 홈 화면에 안내됩니다.'), findsOneWidget);
+    expect(find.text('업데이트 시작'), findsNothing);
   });
 
   testWidgets('shows the scan result and opens parsed history', (tester) async {
@@ -55,7 +90,7 @@ void main() {
     expect(find.text('이용내역 보기'), findsOneWidget);
 
     await tester.tap(find.text('이용내역 보기'));
-    await tester.pumpAndSettle();
+    await tester.pump();
 
     expect(find.text('최근 스캔 · 1개 기록'), findsOneWidget);
     expect(find.text('현재 카드 잔액'), findsOneWidget);
@@ -590,4 +625,19 @@ class _PendingCardReader implements CardReader {
   Future<CardScanResult> scan({
     Duration timeout = const Duration(seconds: 30),
   }) => _result.future;
+}
+
+class _FakeAppUpdateService implements AppUpdateService {
+  _FakeAppUpdateService(this.status);
+
+  final AppUpdateStatus status;
+  int startCount = 0;
+
+  @override
+  Future<AppUpdateStatus> checkForUpdate() async => status;
+
+  @override
+  Future<void> startUpdate(AppUpdateStatus status) async {
+    startCount += 1;
+  }
 }

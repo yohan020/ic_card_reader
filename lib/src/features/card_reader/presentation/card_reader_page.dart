@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../core/design/app_theme.dart';
 import '../../../core/widgets/app_ui.dart';
+import '../../app_update/data/play_app_update_service.dart';
+import '../../app_update/domain/app_update_service.dart';
 import '../../issue_report/domain/issue_report_repository.dart';
 import '../../settings/presentation/settings_page.dart';
 import '../../station_resolver/data/asset_station_database.dart';
@@ -27,11 +29,13 @@ class CardReaderPage extends StatefulWidget {
     this.reader,
     this.stationDatabase,
     this.issueReportRepository,
+    this.appUpdateService,
   });
 
   final CardReader? reader;
   final AssetStationDatabase? stationDatabase;
   final IssueReportRepository? issueReportRepository;
+  final AppUpdateService? appUpdateService;
   final ThemeMode themeMode;
   final ValueChanged<ThemeMode> onThemeModeChanged;
   final StationNameDisplayMode stationNameDisplayMode;
@@ -43,6 +47,8 @@ class CardReaderPage extends StatefulWidget {
 
 class _CardReaderPageState extends State<CardReaderPage> {
   late final CardReader _reader = widget.reader ?? NfcManagerCardReader();
+  late final AppUpdateService _appUpdateService =
+      widget.appUpdateService ?? PlayAppUpdateService();
   late final Future<AssetStationDatabase> _stationDatabase =
       widget.stationDatabase != null
       ? Future.value(widget.stationDatabase)
@@ -56,6 +62,15 @@ class _CardReaderPageState extends State<CardReaderPage> {
   bool _cancelRequested = false;
   Map<int, ResolvedStationPair> _stationPairs = const {};
   Map<int, StationResolution> _transactionLocations = const {};
+  AppUpdateStatus _appUpdateStatus = const AppUpdateStatus.unknown();
+  bool _isCheckingForUpdate = false;
+  bool _isStartingUpdate = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkForUpdate();
+  }
 
   List<ParsedTransitHistory> get _histories =>
       _result == null ? const [] : _historyParser.parse(_result!.blocks);
@@ -170,6 +185,32 @@ class _CardReaderPageState extends State<CardReaderPage> {
     ).showSnackBar(const SnackBar(content: Text('현재 세션의 이용내역을 지웠습니다.')));
   }
 
+  Future<void> _checkForUpdate() async {
+    if (_isCheckingForUpdate) return;
+    setState(() => _isCheckingForUpdate = true);
+    final status = await _appUpdateService.checkForUpdate();
+    if (!mounted) return;
+    setState(() {
+      _appUpdateStatus = status;
+      _isCheckingForUpdate = false;
+    });
+  }
+
+  Future<void> _startUpdate() async {
+    if (_isStartingUpdate || !_appUpdateStatus.hasUpdate) return;
+    setState(() => _isStartingUpdate = true);
+    try {
+      await _appUpdateService.startUpdate(_appUpdateStatus);
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('업데이트를 시작하지 못했습니다. 잠시 후 다시 시도해 주세요.')),
+      );
+    } finally {
+      if (mounted) setState(() => _isStartingUpdate = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_flow == _ReaderFlow.scanning) {
@@ -193,9 +234,12 @@ class _CardReaderPageState extends State<CardReaderPage> {
         transactionLocations: _transactionLocations,
         stationNameDisplayMode: widget.stationNameDisplayMode,
         message: _message,
+        appUpdateStatus: _appUpdateStatus,
         animateCard: _selectedTab == 0,
         onScan: _startScan,
         onOpenHistory: _openHistory,
+        onStartUpdate: _startUpdate,
+        isStartingUpdate: _isStartingUpdate,
       ),
       HistoryListPage(
         histories: _histories,
@@ -213,6 +257,8 @@ class _CardReaderPageState extends State<CardReaderPage> {
         stationNameDisplayMode: widget.stationNameDisplayMode,
         onStationNameDisplayModeChanged: widget.onStationNameDisplayModeChanged,
         onClearSession: _clearSession,
+        appUpdateStatus: _appUpdateStatus,
+        isCheckingForUpdate: _isCheckingForUpdate,
       ),
     ];
 
@@ -275,9 +321,12 @@ class _HomePage extends StatelessWidget {
     required this.transactionLocations,
     required this.stationNameDisplayMode,
     required this.message,
+    required this.appUpdateStatus,
     required this.animateCard,
     required this.onScan,
     required this.onOpenHistory,
+    required this.onStartUpdate,
+    required this.isStartingUpdate,
   });
 
   final CardScanResult? result;
@@ -286,9 +335,12 @@ class _HomePage extends StatelessWidget {
   final Map<int, StationResolution> transactionLocations;
   final StationNameDisplayMode stationNameDisplayMode;
   final String? message;
+  final AppUpdateStatus appUpdateStatus;
   final bool animateCard;
   final VoidCallback onScan;
   final VoidCallback onOpenHistory;
+  final Future<void> Function() onStartUpdate;
+  final bool isStartingUpdate;
 
   @override
   Widget build(BuildContext context) {
@@ -302,6 +354,13 @@ class _HomePage extends StatelessWidget {
     return AppPage(
       padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
       children: [
+        if (appUpdateStatus.hasUpdate) ...[
+          _HomeUpdateBanner(
+            onStartUpdate: onStartUpdate,
+            isStartingUpdate: isStartingUpdate,
+          ),
+          const SizedBox(height: 14),
+        ],
         Center(child: IcCardArt(animated: animateCard, size: 300)),
         Text(
           'IC 카드를 스캔해 주세요',
@@ -503,6 +562,53 @@ class _HomePage extends StatelessWidget {
       ],
     );
   }
+}
+
+class _HomeUpdateBanner extends StatelessWidget {
+  const _HomeUpdateBanner({
+    required this.onStartUpdate,
+    required this.isStartingUpdate,
+  });
+
+  final Future<void> Function() onStartUpdate;
+  final bool isStartingUpdate;
+
+  @override
+  Widget build(BuildContext context) => AppSurface(
+    key: const ValueKey('home-update-banner'),
+    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 13),
+    child: Row(
+      children: [
+        Container(
+          width: 42,
+          height: 42,
+          decoration: BoxDecoration(
+            color: AppColors.skySoft,
+            borderRadius: BorderRadius.circular(13),
+          ),
+          child: const Icon(
+            Icons.system_update_rounded,
+            color: AppColors.skyDark,
+          ),
+        ),
+        const SizedBox(width: 12),
+        const Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('새 버전이 있어요', style: TextStyle(fontWeight: FontWeight.w800)),
+              SizedBox(height: 2),
+              Text('최신 기능과 개선 사항을 적용해 보세요.', style: TextStyle(fontSize: 12)),
+            ],
+          ),
+        ),
+        TextButton(
+          onPressed: isStartingUpdate ? null : onStartUpdate,
+          child: Text(isStartingUpdate ? '여는 중' : '업데이트'),
+        ),
+      ],
+    ),
+  );
 }
 
 class _ScanScreen extends StatefulWidget {

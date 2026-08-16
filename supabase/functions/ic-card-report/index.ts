@@ -7,6 +7,7 @@ const issueTypes = new Set([
   'WRONG_BOTH_STATIONS',
   'STATION_NOT_RESOLVED',
   'BUS_COMPANY_NOT_RESOLVED',
+  'KOREAN_STATION_NAME_REQUEST',
   'WRONG_TRANSACTION_TYPE',
   'WRONG_AMOUNT_OR_BALANCE',
   'OTHER',
@@ -158,6 +159,15 @@ function validatePayload(payload: ReportPayload): string | null {
   if (!isNullableShortText(payload.suggestedBusCompanyCity, 80)) {
     return 'suggestedBusCompanyCity'
   }
+  if (!isNullableShortText(payload.suggestedKoreanBoardingStationName, 80)) {
+    return 'suggestedKoreanBoardingStationName'
+  }
+  if (!isNullableShortText(payload.suggestedKoreanAlightingStationName, 80)) {
+    return 'suggestedKoreanAlightingStationName'
+  }
+  if (!isNullableShortText(payload.suggestedKoreanStationName, 80)) {
+    return 'suggestedKoreanStationName'
+  }
   if (!isNullableShortText(payload.suggestedTransactionType, 40)) {
     return 'suggestedTransactionType'
   }
@@ -200,6 +210,19 @@ function validateCorrectionForIssue(payload: ReportPayload): string | null {
   const customSuggestion = payload.customSuggestedTransactionType ?? null
   const busCompanyName = payload.suggestedBusCompanyName ?? null
   const busCompanyCity = payload.suggestedBusCompanyCity ?? null
+  const koreanBoardingStationName =
+    payload.suggestedKoreanBoardingStationName ?? null
+  const koreanAlightingStationName =
+    payload.suggestedKoreanAlightingStationName ?? null
+  const legacyKoreanStationName = payload.suggestedKoreanStationName ?? null
+
+  if (
+    issueType !== 'KOREAN_STATION_NAME_REQUEST' &&
+    (koreanBoardingStationName !== null || koreanAlightingStationName !== null ||
+      legacyKoreanStationName !== null)
+  ) {
+    return 'unexpectedCorrectionField'
+  }
 
   if (
     issueType !== 'BUS_COMPANY_NOT_RESOLVED' &&
@@ -239,6 +262,31 @@ function validateCorrectionForIssue(payload: ReportPayload): string | null {
     if (!isShortText(busCompanyCity, 80)) return 'suggestedBusCompanyCity'
     return scope === null && boarding === null && alighting === null &&
         suggestion === null && customSuggestion === null
+      ? null
+      : 'unexpectedCorrectionField'
+  }
+  if (issueType === 'KOREAN_STATION_NAME_REQUEST') {
+    if (!stationIssueScopes.has(scope as string)) return 'stationIssueScope'
+    if (legacyKoreanStationName !== null &&
+      (koreanBoardingStationName !== null || koreanAlightingStationName !== null)) {
+      return 'unexpectedCorrectionField'
+    }
+    const hasExpectedBoarding =
+      scope !== 'ALIGHTING'
+        ? koreanBoardingStationName === null ||
+          isShortText(koreanBoardingStationName, 80)
+        : koreanBoardingStationName === null
+    const hasExpectedAlighting =
+      scope !== 'BOARDING'
+        ? koreanAlightingStationName === null ||
+          isShortText(koreanAlightingStationName, 80)
+        : koreanAlightingStationName === null
+    const hasValidLegacyValue = legacyKoreanStationName === null ||
+      isShortText(legacyKoreanStationName, 80)
+    return hasExpectedBoarding && hasExpectedAlighting && hasValidLegacyValue &&
+        boarding === null && alighting === null &&
+        busCompanyName === null && busCompanyCity === null && suggestion === null &&
+        customSuggestion === null && payload.additionalDescription === null
       ? null
       : 'unexpectedCorrectionField'
   }
@@ -297,7 +345,10 @@ async function createDeduplicationKey(payload: ReportPayload): Promise<string> {
     'correctedBoardingStation',
     'correctedAlightingStation',
     'suggestedBusCompanyName',
-    'suggestedBusCompanyCity',
+      'suggestedBusCompanyCity',
+    'suggestedKoreanBoardingStationName',
+    'suggestedKoreanAlightingStationName',
+    'suggestedKoreanStationName',
     'suggestedTransactionType',
     'customSuggestedTransactionType',
   ]) {

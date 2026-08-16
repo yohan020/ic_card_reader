@@ -58,7 +58,11 @@ void main() {
       ),
     );
 
-    await tester.scrollUntilVisible(find.text('현재 이용내역 지우기'), 200);
+    await tester.dragUntilVisible(
+      find.text('현재 이용내역 지우기'),
+      find.byType(ListView),
+      const Offset(0, -300),
+    );
     await tester.tap(find.text('현재 이용내역 지우기'));
     await tester.pumpAndSettle();
 

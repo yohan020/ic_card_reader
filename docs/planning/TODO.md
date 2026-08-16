@@ -1,6 +1,6 @@
 # TODO
 
-- 마지막 갱신: 2026-08-14 (Asia/Seoul)
+- 마지막 갱신: 2026-08-16 (Asia/Seoul)
 - 현재 단계: Android 비공개 테스트 업데이트 및 출시 준비
 
 이 문서는 아직 해야 할 작업만 관리한다. 완료한 작업의 상세 이력은 `../DEVELOPMENT_STATUS.md`에 기록한다.
@@ -11,7 +11,7 @@
 
 ## 지금 진행할 작업
 
-- [ ] 사용자가 `npx supabase db push`와 `npx supabase functions deploy ic-card-report`, `npx supabase functions deploy issue-report-admin`을 실행하고 새 역 교정·버스 회사·거래 유형 제보, 악성 제보 차단과 월간 1년 보관 정리를 실데이터로 확인한다.
+- [ ] 사용자가 `npx supabase db push`와 `npx supabase functions deploy ic-card-report`, `npx supabase functions deploy issue-report-admin`을 실행하고 새 역 교정·한글 역명 제안·버스 회사·거래 유형 제보, 악성 제보 차단과 월간 1년 보관 정리를 실데이터로 확인한다.
 - [ ] 사용자가 최신 코드의 빌드 번호를 이전 Play Console 버전 코드보다 높게 설정한다.
 - [ ] 사용자가 `flutter build appbundle --release`로 최신 AAB를 생성한다.
 - [ ] 기존 비공개 테스트 `Alpha` 트랙에 최신 AAB와 출시 메모를 업로드한다.
