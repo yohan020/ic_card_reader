@@ -10,4 +10,11 @@ void main() {
     expect(theme.splashFactory, InkRipple.splashFactory);
     expect(style?.animationDuration, const Duration(milliseconds: 220));
   });
+
+  test('keeps dark primary buttons readable', () {
+    final style = AppTheme.dark.filledButtonTheme.style;
+
+    expect(style?.backgroundColor?.resolve(<WidgetState>{}), AppColors.skyDark);
+    expect(style?.foregroundColor?.resolve(<WidgetState>{}), Colors.white);
+  });
 }

@@ -136,7 +136,7 @@ class _ProgressSteps extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: index + 1 <= activeStep
                         ? AppColors.skyDark
-                        : AppColors.skySoft,
+                        : AppColors.softSurface(context),
                     borderRadius: BorderRadius.circular(99),
                   ),
                 ),
@@ -146,7 +146,7 @@ class _ProgressSteps extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     color: index + 1 == activeStep
-                        ? AppColors.skyDark
+                        ? AppColors.accent(context)
                         : Theme.of(context).colorScheme.onSurfaceVariant,
                     fontSize: 11,
                     fontWeight: index + 1 == activeStep
@@ -185,96 +185,118 @@ class _PassChoiceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = teal ? const Color(0xFF008E9B) : AppColors.skyDark;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final color = teal
+        ? isDark
+              ? const Color(0xFF35C4C7)
+              : const Color(0xFF008E9B)
+        : AppColors.accent(context);
     return Semantics(
       button: true,
       label: '$title 비교 시작',
-      child: InkWell(
-        onTap: onTap,
+      child: Material(
+        color: Colors.transparent,
         borderRadius: BorderRadius.circular(22),
+        clipBehavior: Clip.antiAlias,
         child: Ink(
-          padding: const EdgeInsets.all(17),
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
+            color: isDark
+                ? const Color(0xFF17242A)
+                : Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(22),
-            border: Border.all(color: AppColors.skySoft),
+            border: Border.all(
+              color: isDark ? color.withValues(alpha: .56) : AppColors.skySoft,
+            ),
           ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: 64,
-                height: 82,
-                decoration: BoxDecoration(
-                  color: color,
-                  borderRadius: BorderRadius.circular(15),
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [color, color.withValues(alpha: .72)],
+          child: InkWell(
+            // Cards must move as one unit when pressed. A separate splash on
+            // the Ink background made the border and content appear detached.
+            splashFactory: NoSplash.splashFactory,
+            highlightColor: Colors.transparent,
+            hoverColor: color.withValues(alpha: .05),
+            onTap: onTap,
+            child: Padding(
+              padding: const EdgeInsets.all(17),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 64,
+                    height: 82,
+                    decoration: BoxDecoration(
+                      color: color,
+                      borderRadius: BorderRadius.circular(15),
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [color, color.withValues(alpha: .72)],
+                      ),
+                    ),
+                    child: Icon(icon, color: Colors.white, size: 34),
                   ),
-                ),
-                child: Icon(icon, color: Colors.white, size: 34),
-              ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      subtitle,
-                      style: TextStyle(
-                        color: color,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      description,
-                      style: const TextStyle(fontSize: 12, height: 1.35),
-                    ),
-                    const SizedBox(height: 11),
-                    Wrap(
-                      spacing: 6,
-                      runSpacing: 6,
-                      children: periods
-                          .map(
-                            (period) => Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 9,
-                                vertical: 5,
-                              ),
-                              decoration: BoxDecoration(
-                                color: AppColors.skySoft,
-                                borderRadius: BorderRadius.circular(9),
-                              ),
-                              child: Text(
-                                period,
-                                style: TextStyle(
-                                  color: color,
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w700,
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          style: const TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          subtitle,
+                          style: TextStyle(
+                            color: color,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          description,
+                          style: const TextStyle(fontSize: 12, height: 1.35),
+                        ),
+                        const SizedBox(height: 11),
+                        Wrap(
+                          spacing: 6,
+                          runSpacing: 6,
+                          children: periods
+                              .map(
+                                (period) => Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 9,
+                                    vertical: 5,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: isDark
+                                        ? color.withValues(alpha: .18)
+                                        : AppColors.skySoft,
+                                    borderRadius: BorderRadius.circular(9),
+                                  ),
+                                  child: Text(
+                                    period,
+                                    style: TextStyle(
+                                      color: color,
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                          )
-                          .toList(growable: false),
+                              )
+                              .toList(growable: false),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(width: 4),
+                  Icon(Icons.chevron_right_rounded, color: color),
+                ],
               ),
-              const SizedBox(width: 4),
-              Icon(Icons.chevron_right_rounded, color: color),
-            ],
+            ),
           ),
         ),
       ),

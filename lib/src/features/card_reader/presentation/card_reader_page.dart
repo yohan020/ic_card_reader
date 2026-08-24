@@ -582,71 +582,84 @@ class _PassComparisonEntryCard extends StatelessWidget {
   final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) => Semantics(
-    button: true,
-    label: '교통패스 비교 열기',
-    child: DecoratedBox(
-      decoration: BoxDecoration(
-        border: Border.all(color: AppColors.skyDark, width: 1.4),
-        borderRadius: BorderRadius.circular(22),
-        gradient: const LinearGradient(
-          colors: [Color(0xFFF7FCFF), Color(0xFFE8F6FF)],
-        ),
-      ),
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final titleColor = isDark ? Colors.white : AppColors.ink;
+    final descriptionColor = isDark ? const Color(0xFFC7D9E3) : AppColors.muted;
+    final accentColor = isDark ? const Color(0xFF65C9F4) : AppColors.skyDark;
+
+    return Semantics(
+      button: true,
+      label: '교통패스 비교 열기',
       child: Material(
-        type: MaterialType.transparency,
-        clipBehavior: Clip.antiAlias,
+        color: Colors.transparent,
         borderRadius: BorderRadius.circular(22),
-        child: InkWell(
-          onTap: onTap,
-          child: Padding(
-            padding: const EdgeInsets.all(17),
-            child: Row(
-              children: [
-                Container(
-                  width: 52,
-                  height: 52,
-                  decoration: BoxDecoration(
-                    color: AppColors.skySoft,
-                    borderRadius: BorderRadius.circular(16),
+        clipBehavior: Clip.antiAlias,
+        child: Ink(
+          decoration: BoxDecoration(
+            border: Border.all(color: accentColor, width: 1.4),
+            borderRadius: BorderRadius.circular(22),
+            gradient: LinearGradient(
+              colors: isDark
+                  ? const [Color(0xFF162D39), Color(0xFF123E51)]
+                  : const [Color(0xFFF7FCFF), Color(0xFFE8F6FF)],
+            ),
+          ),
+          child: InkWell(
+            onTap: onTap,
+            child: Padding(
+              padding: const EdgeInsets.all(17),
+              child: Row(
+                children: [
+                  Container(
+                    width: 52,
+                    height: 52,
+                    decoration: BoxDecoration(
+                      color: isDark
+                          ? const Color(0xFF1C536D)
+                          : AppColors.skySoft,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Icon(
+                      Icons.local_activity_outlined,
+                      color: isDark ? Colors.white : AppColors.skyDark,
+                    ),
                   ),
-                  child: const Icon(
-                    Icons.local_activity_outlined,
-                    color: AppColors.skyDark,
-                  ),
-                ),
-                const SizedBox(width: 13),
-                const Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '교통패스 비교',
-                        style: TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w800,
+                  const SizedBox(width: 13),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '교통패스 비교',
+                          style: TextStyle(
+                            color: titleColor,
+                            fontSize: 17,
+                            fontWeight: FontWeight.w800,
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 4),
-                      Text(
-                        '여정별 운임을 합산해 패스 구매가 이득인지 확인해 보세요.',
-                        style: TextStyle(fontSize: 12, height: 1.35),
-                      ),
-                    ],
+                        const SizedBox(height: 4),
+                        Text(
+                          '여정별 운임을 합산해 패스 구매가 이득인지 확인해 보세요.',
+                          style: TextStyle(
+                            color: descriptionColor,
+                            fontSize: 12,
+                            height: 1.35,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                const SizedBox(width: 8),
-                const Icon(
-                  Icons.chevron_right_rounded,
-                  color: AppColors.skyDark,
-                ),
-              ],
+                  const SizedBox(width: 8),
+                  Icon(Icons.chevron_right_rounded, color: accentColor),
+                ],
+              ),
             ),
           ),
         ),
       ),
-    ),
-  );
+    );
+  }
 }
 
 class _HomeUpdateBanner extends StatelessWidget {

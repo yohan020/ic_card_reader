@@ -10,6 +10,24 @@ abstract final class AppColors {
   static const border = Color(0xFFDCE6EC);
   static const success = Color(0xFF20875A);
   static const warning = Color(0xFFC67510);
+
+  static bool isDark(BuildContext context) =>
+      Theme.of(context).brightness == Brightness.dark;
+
+  static Color accent(BuildContext context) =>
+      isDark(context) ? const Color(0xFF66C8F2) : skyDark;
+
+  static Color softSurface(BuildContext context) =>
+      isDark(context) ? const Color(0xFF1A3D4E) : skySoft;
+
+  static Color fieldSurface(BuildContext context) =>
+      isDark(context) ? const Color(0xFF1D2B32) : Colors.white;
+
+  static Color mutedText(BuildContext context) =>
+      isDark(context) ? const Color(0xFFB5C6CF) : muted;
+
+  static Color outline(BuildContext context) =>
+      isDark(context) ? const Color(0xFF46606C) : border;
 }
 
 abstract final class AppTheme {
@@ -84,7 +102,9 @@ abstract final class AppTheme {
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
           minimumSize: const Size.fromHeight(54),
-          backgroundColor: isDark ? scheme.primary : AppColors.skyDark,
+          // A seed-derived dark primary is too light for white labels on
+          // large action buttons. Keep the established sky-blue accent.
+          backgroundColor: AppColors.skyDark,
           foregroundColor: Colors.white,
           textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
           shape: RoundedRectangleBorder(
@@ -95,6 +115,10 @@ abstract final class AppTheme {
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           minimumSize: const Size.fromHeight(52),
+          foregroundColor: isDark ? const Color(0xFF66C8F2) : AppColors.skyDark,
+          side: BorderSide(
+            color: isDark ? const Color(0xFF607782) : AppColors.border,
+          ),
           textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),

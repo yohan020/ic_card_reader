@@ -276,14 +276,14 @@ class _SelectedPassSummary extends StatelessWidget {
               width: 38,
               height: 38,
               decoration: BoxDecoration(
-                color: AppColors.skySoft,
+                color: AppColors.softSurface(context),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(
                 product.isTokyoSubwayTicket
                     ? Icons.subway_outlined
                     : Icons.train_outlined,
-                color: AppColors.skyDark,
+                color: AppColors.accent(context),
               ),
             ),
             const SizedBox(width: 11),
@@ -300,8 +300,8 @@ class _SelectedPassSummary extends StatelessWidget {
                   const SizedBox(height: 2),
                   Text(
                     '¥${product.price}',
-                    style: const TextStyle(
-                      color: AppColors.skyDark,
+                    style: TextStyle(
+                      color: AppColors.accent(context),
                       fontSize: 13,
                     ),
                   ),
@@ -372,7 +372,7 @@ class _DurationOption extends StatelessWidget {
         duration: const Duration(milliseconds: 180),
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 9),
         decoration: BoxDecoration(
-          color: selected ? AppColors.skyDark : AppColors.skySoft,
+          color: selected ? AppColors.skyDark : AppColors.softSurface(context),
           borderRadius: BorderRadius.circular(11),
         ),
         child: Column(
@@ -380,7 +380,7 @@ class _DurationOption extends StatelessWidget {
             Text(
               '${product.duration.inHours}시간',
               style: TextStyle(
-                color: selected ? Colors.white : AppColors.skyDark,
+                color: selected ? Colors.white : AppColors.accent(context),
                 fontSize: 12,
                 fontWeight: FontWeight.w800,
               ),
@@ -391,7 +391,7 @@ class _DurationOption extends StatelessWidget {
               style: TextStyle(
                 color: selected
                     ? Colors.white.withValues(alpha: .86)
-                    : AppColors.skyDark,
+                    : AppColors.accent(context),
                 fontSize: 11,
                 fontWeight: FontWeight.w600,
               ),
@@ -407,15 +407,23 @@ class _PlannerFootnote extends StatelessWidget {
   const _PlannerFootnote();
 
   @override
-  Widget build(BuildContext context) => const Row(
+  Widget build(BuildContext context) => Row(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Icon(Icons.info_outline_rounded, size: 16, color: AppColors.muted),
+      Icon(
+        Icons.info_outline_rounded,
+        size: 16,
+        color: AppColors.mutedText(context),
+      ),
       SizedBox(width: 6),
       Expanded(
         child: Text(
           '실제로 개찰을 통과해 하차한 역을 입력해 주세요. 확인되지 않은 운임은 계산하지 않습니다.',
-          style: TextStyle(color: AppColors.muted, fontSize: 12, height: 1.35),
+          style: TextStyle(
+            color: AppColors.mutedText(context),
+            fontSize: 12,
+            height: 1.35,
+          ),
         ),
       ),
     ],
@@ -495,13 +503,13 @@ class _SegmentEditor extends StatelessWidget {
             height: 28,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: AppColors.skySoft,
+              color: AppColors.softSurface(context),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Text(
               '${index + 1}',
-              style: const TextStyle(
-                color: AppColors.skyDark,
+              style: TextStyle(
+                color: AppColors.accent(context),
                 fontWeight: FontWeight.w900,
               ),
             ),
@@ -546,8 +554,8 @@ class _SegmentEditor extends StatelessWidget {
               visualDensity: VisualDensity.compact,
               constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
               style: IconButton.styleFrom(
-                foregroundColor: AppColors.skyDark,
-                backgroundColor: AppColors.skySoft,
+                foregroundColor: AppColors.accent(context),
+                backgroundColor: AppColors.softSurface(context),
               ),
               icon: const Icon(Icons.swap_horiz_rounded, size: 20),
             ),
@@ -595,21 +603,28 @@ class _ResolvedFareSummary extends StatelessWidget {
   Widget build(BuildContext context) {
     final fare = draft.resolvedFare;
     if (fare == null) {
-      return const Row(
+      return Row(
         children: [
-          Icon(Icons.info_outline_rounded, size: 17, color: AppColors.muted),
-          SizedBox(width: 7),
+          Icon(
+            Icons.info_outline_rounded,
+            size: 17,
+            color: AppColors.mutedText(context),
+          ),
+          const SizedBox(width: 7),
           Expanded(
             child: Text(
               '두 역을 선택하면 운임을 자동으로 확인합니다.',
-              style: TextStyle(color: AppColors.muted, fontSize: 12),
+              style: TextStyle(
+                color: AppColors.mutedText(context),
+                fontSize: 12,
+              ),
             ),
           ),
         ],
       );
     }
     final covered = draft.coverage.isCoveredBy(product);
-    final color = covered ? AppColors.success : AppColors.muted;
+    final color = covered ? AppColors.success : AppColors.mutedText(context);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
@@ -656,7 +671,10 @@ class _DaySelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Row(
     children: [
-      const Text('이용일', style: TextStyle(fontSize: 12, color: AppColors.muted)),
+      Text(
+        '이용일',
+        style: TextStyle(fontSize: 12, color: AppColors.mutedText(context)),
+      ),
       const SizedBox(width: 10),
       for (var day = 0; day < dayCount; day++) ...[
         ChoiceChip(
@@ -664,12 +682,12 @@ class _DaySelector extends StatelessWidget {
           selected: day == value,
           onSelected: (_) => onChanged(day),
           labelStyle: TextStyle(
-            color: day == value ? Colors.white : AppColors.skyDark,
+            color: day == value ? Colors.white : AppColors.accent(context),
             fontSize: 12,
             fontWeight: FontWeight.w700,
           ),
           selectedColor: AppColors.skyDark,
-          backgroundColor: AppColors.skySoft,
+          backgroundColor: AppColors.softSurface(context),
           side: BorderSide.none,
           visualDensity: VisualDensity.compact,
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -699,12 +717,9 @@ class _StationPickerField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     final empty = controller.text.isEmpty;
     final radius = BorderRadius.circular(14);
-    final fieldColor = Theme.of(context).brightness == Brightness.dark
-        ? colorScheme.surface
-        : Colors.white;
+    final fieldColor = AppColors.fieldSurface(context);
     final fieldHeight = station == null ? 60.0 : 76.0;
     return Semantics(
       button: true,
@@ -719,7 +734,7 @@ class _StationPickerField extends StatelessWidget {
             decoration: BoxDecoration(
               color: fieldColor,
               borderRadius: radius,
-              border: Border.all(color: colorScheme.outlineVariant),
+              border: Border.all(color: AppColors.outline(context)),
             ),
             child: SizedBox(
               height: fieldHeight,
@@ -736,7 +751,7 @@ class _StationPickerField extends StatelessWidget {
                             : label,
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: colorScheme.onSurfaceVariant,
+                          color: AppColors.mutedText(context),
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
                         ),
@@ -751,8 +766,8 @@ class _StationPickerField extends StatelessWidget {
                         textAlign: TextAlign.center,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          color: AppColors.skyDark,
+                        style: TextStyle(
+                          color: AppColors.accent(context),
                           fontSize: 14,
                           fontWeight: FontWeight.w700,
                         ),
@@ -1054,7 +1069,7 @@ class _ProgressBar extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: index + 1 <= activeStep
                         ? AppColors.skyDark
-                        : AppColors.skySoft,
+                        : AppColors.softSurface(context),
                     borderRadius: BorderRadius.circular(99),
                   ),
                 ),
@@ -1064,7 +1079,7 @@ class _ProgressBar extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     color: index + 1 == activeStep
-                        ? AppColors.skyDark
+                        ? AppColors.accent(context)
                         : Theme.of(context).colorScheme.onSurfaceVariant,
                     fontSize: 11,
                     fontWeight: index + 1 == activeStep
