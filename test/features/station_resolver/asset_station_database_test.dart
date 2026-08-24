@@ -16,12 +16,16 @@ void main() {
       'assets/data/stations/verified_station_overrides.csv',
     ).readAsStringSync();
     final koreanNamesCsv = File(
-      'assets/data/stations/wikidata_station_names_ko.csv',
+      'assets/data/stations/station_names_ko_by_code.csv',
+    ).readAsStringSync();
+    final manualKoreanNamesCsv = File(
+      'assets/data/stations/manual_station_names_ko_by_code.csv',
     ).readAsStringSync();
     database = AssetStationDatabase.fromCsv(
       csv,
       overrideCsv: overrideCsv,
       koreanNamesCsv: koreanNamesCsv,
+      manualKoreanNamesCsv: manualKoreanNamesCsv,
     );
   });
 
@@ -42,45 +46,42 @@ void main() {
     expect(alighting.station?.lineName, '空港線');
   });
 
-  test(
-    'attaches a generated Korean label without changing the source name',
-    () {
-      const sourceCsv =
-          '''region,line,station,x1,x2,x3,operator,line_name,station_name
+  test('attaches a generated Korean label without changing the source name', () {
+    const sourceCsv =
+        '''region,line,station,x1,x2,x3,operator,line_name,station_name
 1,165,120,,,,Meitetsu,名古屋本線,名鉄名古屋
 ''';
-      const koreanCsv =
-          '''station_name_ja,station_name_ko,wikidata_id,match_status,source
-名鉄名古屋,메이테쓰 나고야역,Q1,unique_korean_label,Wikidata CC0
+    const koreanCsv =
+        '''region_code,line_code,station_code,station_name_ja,station_name_ko,source
+1,165,120,名鉄名古屋,메이테쓰 나고야역,Wikidata CC0
 ''';
-      final localized =
-          AssetStationDatabase.fromCsv(
-            sourceCsv,
-            koreanNamesCsv: koreanCsv,
-          ).resolve(
-            const StationCode(regionCode: 1, lineCode: 165, stationCode: 120),
-          );
+    final localized =
+        AssetStationDatabase.fromCsv(
+          sourceCsv,
+          koreanNamesCsv: koreanCsv,
+        ).resolve(
+          const StationCode(regionCode: 1, lineCode: 165, stationCode: 120),
+        );
 
-      expect(localized.station?.stationName, '名鉄名古屋');
-      expect(localized.station?.stationNameKorean, '메이테쓰 나고야');
-      expect(
-        displayStationName(
-          japanese: localized.station!.stationName,
-          korean: localized.station!.stationNameKorean,
-          mode: StationNameDisplayMode.korean,
-        ),
-        '메이테쓰 나고야',
-      );
-      expect(
-        displayStationName(
-          japanese: localized.station!.stationName,
-          korean: localized.station!.stationNameKorean,
-          mode: StationNameDisplayMode.both,
-        ),
-        '메이테쓰 나고야 (名鉄名古屋)',
-      );
-    },
-  );
+    expect(localized.station?.stationName, '名鉄名古屋');
+    expect(localized.station?.stationNameKorean, '메이테쓰 나고야');
+    expect(
+      displayStationName(
+        japanese: localized.station!.stationName,
+        korean: localized.station!.stationNameKorean,
+        mode: StationNameDisplayMode.korean,
+      ),
+      '메이테쓰 나고야',
+    );
+    expect(
+      displayStationName(
+        japanese: localized.station!.stationName,
+        korean: localized.station!.stationNameKorean,
+        mode: StationNameDisplayMode.both,
+      ),
+      '메이테쓰 나고야 (名鉄名古屋)',
+    );
+  });
 
   test('prefers a manually verified Korean label over the generated label', () {
     const sourceCsv =
@@ -88,11 +89,12 @@ void main() {
 1,165,120,,,,Meitetsu,名古屋本線,名鉄名古屋
 ''';
     const generatedKoreanCsv =
-        '''station_name_ja,station_name_ko,wikidata_id,match_status,source
-名鉄名古屋,메이테쓰 나고야,Q1,unique_korean_label,Wikidata CC0
+        '''region_code,line_code,station_code,station_name_ja,station_name_ko,source
+1,165,120,名鉄名古屋,메이테쓰 나고야,Wikidata CC0
 ''';
-    const manualKoreanCsv = '''station_name_ja,station_name_ko,source_note
-名鉄名古屋,메이테쓰나고야역,manual verification
+    const manualKoreanCsv =
+        '''region_code,line_code,station_code,station_name_ja,station_name_ko,source_note
+1,165,120,名鉄名古屋,메이테쓰나고야역,manual verification
 ''';
     final localized =
         AssetStationDatabase.fromCsv(
@@ -104,6 +106,77 @@ void main() {
         );
 
     expect(localized.station?.stationNameKorean, '메이테쓰나고야역');
+  });
+
+  test('keeps identical Japanese names separate by station code', () {
+    const sourceCsv =
+        '''region,line,station,x1,x2,x3,operator,line_name,station_name
+0,227,52,,,,Tokyo Metro,銀座線,日本橋
+2,133,37,,,,Osaka Metro,千日前線,日本橋
+''';
+    const koreanCsv =
+        '''region_code,line_code,station_code,station_name_ja,station_name_ko,source
+0,227,52,日本橋,니혼바시,verified
+2,133,37,日本橋,닛폰바시,verified
+''';
+    final localized = AssetStationDatabase.fromCsv(
+      sourceCsv,
+      koreanNamesCsv: koreanCsv,
+    );
+
+    expect(
+      localized
+          .resolve(
+            const StationCode(regionCode: 0, lineCode: 227, stationCode: 52),
+          )
+          .station
+          ?.stationNameKorean,
+      '니혼바시',
+    );
+    expect(
+      localized
+          .resolve(
+            const StationCode(regionCode: 2, lineCode: 133, stationCode: 37),
+          )
+          .station
+          ?.stationNameKorean,
+      '닛폰바시',
+    );
+  });
+
+  test('uses verified code-scoped labels for Tokyo and Osaka Nihombashi', () {
+    final tokyo = database.resolve(
+      const StationCode(regionCode: 0, lineCode: 0xE3, stationCode: 0x34),
+    );
+    final osaka = database.resolve(
+      const StationCode(regionCode: 2, lineCode: 0x85, stationCode: 0x25),
+    );
+    final iyotetsu = database.resolve(
+      const StationCode(regionCode: 3, lineCode: 0xC5, stationCode: 0x19),
+    );
+
+    expect(tokyo.station?.stationName, '日本橋');
+    expect(tokyo.station?.stationNameKorean, '니혼바시');
+    expect(osaka.station?.stationName, '日本橋');
+    expect(osaka.station?.stationNameKorean, '닛폰바시');
+    expect(iyotetsu.station?.stationName, '大手町');
+    expect(iyotetsu.station?.stationNameKorean, '오테마치');
+  });
+
+  test('migrates existing manual pronunciations to every matching code', () {
+    final takayama = database.resolve(
+      const StationCode(regionCode: 0, lineCode: 0x44, stationCode: 0x24),
+    );
+    final hidaFurukawa = database.resolve(
+      const StationCode(regionCode: 0, lineCode: 0x44, stationCode: 0x28),
+    );
+    final iyotetsuFurumachi = database.resolve(
+      const StationCode(regionCode: 3, lineCode: 0xC5, stationCode: 0x1B),
+    );
+
+    expect(takayama.station?.stationNameKorean, '타카야마');
+    expect(hidaFurukawa.station?.stationNameKorean, '히다후루카와');
+    expect(iyotetsuFurumachi.station?.stationNameKorean, '코마치');
   });
 
   test('resolves normalized regions and the documented charge location', () {

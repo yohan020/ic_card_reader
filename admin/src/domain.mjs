@@ -19,6 +19,39 @@ export const issueTypeLabels = Object.freeze({
   OTHER: '기타 문제',
 })
 
+export function manualKoreanStationCandidates(report) {
+  if (report?.issue_type !== 'KOREAN_STATION_NAME_REQUEST') return []
+
+  const payload = report.report_payload ?? {}
+  return stationDirections('KOREAN_STATION_NAME_REQUEST', payload.stationIssueScope)
+    .map((direction) => {
+      const isBoarding = direction === 'boarding'
+      const label = isBoarding ? '승차역' : '하차역'
+      const legacyName = nonEmptyText(payload.suggestedKoreanStationName)
+      const stationNameKo = nonEmptyText(isBoarding
+        ? payload.suggestedKoreanBoardingStationName
+        : payload.suggestedKoreanAlightingStationName) ??
+        ((isBoarding && payload.stationIssueScope === 'BOARDING') ||
+          (!isBoarding && payload.stationIssueScope === 'ALIGHTING')
+          ? legacyName
+          : null)
+      const candidate = {
+        direction,
+        label,
+        regionCode: payload.regionCode,
+        lineCode: payload[`${direction}LineCode`],
+        stationCode: payload[`${direction}StationCode`],
+        stationNameJa: currentStationName(payload, direction),
+        stationNameKo,
+        parsedLineName: currentStationLineName(payload, direction),
+      }
+      const hasCodes = [candidate.regionCode, candidate.lineCode, candidate.stationCode]
+        .every((value) => Number.isInteger(value) && value >= 0 && value <= 255)
+      candidate.isReady = hasCodes && candidate.stationNameJa !== null && candidate.stationNameKo !== null
+      return candidate
+    })
+}
+
 export function filterReports(reports, { search = '', status = '', issueType = '' }) {
   const needle = search.trim().toLocaleLowerCase('ko-KR')
   return reports.filter((report) => {
@@ -218,7 +251,9 @@ function koreanStationNameFields(payload) {
         : null)
     fields.push(
       [`파서 확인 ${label}`, currentStationName(payload, direction) ?? 'null'],
+      [`${label} 코드 (10진수)`, decimalStationCodeLabel(payload, direction) ?? '확인 불가'],
       [`제안 ${label} 한글 표기`, name ?? '입력 없음'],
+      [`파서 확인 ${label} 노선`, currentStationLineName(payload, direction) ?? 'null'],
     )
   }
 
@@ -296,6 +331,21 @@ function codeLabel(payload, prefix) {
   const station = nested?.stationCode ?? payload?.[`${prefix}StationCode`]
   if (!Number.isInteger(line) || !Number.isInteger(station)) return null
   return `${toHex(line)}-${toHex(station)}`
+}
+
+function currentStationLineName(payload, direction) {
+  const value = direction === 'boarding'
+    ? payload.currentBoardingLineName
+    : payload.currentAlightingLineName
+  return nonEmptyText(value)
+}
+
+function decimalStationCodeLabel(payload, prefix) {
+  const region = payload?.regionCode
+  const line = payload?.[`${prefix}LineCode`]
+  const station = payload?.[`${prefix}StationCode`]
+  if (![region, line, station].every(Number.isInteger)) return null
+  return `지역 ${region} / 노선 ${line} / 역 ${station}`
 }
 
 function toHex(value) {

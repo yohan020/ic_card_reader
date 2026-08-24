@@ -5,6 +5,7 @@ import '../../../core/widgets/app_ui.dart';
 import '../../app_update/data/play_app_update_service.dart';
 import '../../app_update/domain/app_update_service.dart';
 import '../../issue_report/domain/issue_report_repository.dart';
+import '../../pass_comparison/presentation/pass_selection_page.dart';
 import '../../settings/presentation/settings_page.dart';
 import '../../station_resolver/data/asset_station_database.dart';
 import '../../station_resolver/domain/station_resolution.dart';
@@ -173,6 +174,12 @@ class _CardReaderPageState extends State<CardReaderPage> {
     _selectedTab = 1;
   });
 
+  void _openPassComparison() {
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute<void>(builder: (_) => const PassSelectionPage()));
+  }
+
   void _clearSession() {
     setState(() {
       _result = null;
@@ -238,6 +245,7 @@ class _CardReaderPageState extends State<CardReaderPage> {
         animateCard: _selectedTab == 0,
         onScan: _startScan,
         onOpenHistory: _openHistory,
+        onOpenPassComparison: _openPassComparison,
         onStartUpdate: _startUpdate,
         isStartingUpdate: _isStartingUpdate,
       ),
@@ -325,6 +333,7 @@ class _HomePage extends StatelessWidget {
     required this.animateCard,
     required this.onScan,
     required this.onOpenHistory,
+    required this.onOpenPassComparison,
     required this.onStartUpdate,
     required this.isStartingUpdate,
   });
@@ -339,6 +348,7 @@ class _HomePage extends StatelessWidget {
   final bool animateCard;
   final VoidCallback onScan;
   final VoidCallback onOpenHistory;
+  final VoidCallback onOpenPassComparison;
   final Future<void> Function() onStartUpdate;
   final bool isStartingUpdate;
 
@@ -521,6 +531,8 @@ class _HomePage extends StatelessWidget {
               ],
             ),
           ),
+        const SizedBox(height: 18),
+        _PassComparisonEntryCard(onTap: onOpenPassComparison),
         const SizedBox(height: 16),
         const AppSurface(
           child: Column(
@@ -562,6 +574,79 @@ class _HomePage extends StatelessWidget {
       ],
     );
   }
+}
+
+class _PassComparisonEntryCard extends StatelessWidget {
+  const _PassComparisonEntryCard({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+    button: true,
+    label: '교통패스 비교 열기',
+    child: DecoratedBox(
+      decoration: BoxDecoration(
+        border: Border.all(color: AppColors.skyDark, width: 1.4),
+        borderRadius: BorderRadius.circular(22),
+        gradient: const LinearGradient(
+          colors: [Color(0xFFF7FCFF), Color(0xFFE8F6FF)],
+        ),
+      ),
+      child: Material(
+        type: MaterialType.transparency,
+        clipBehavior: Clip.antiAlias,
+        borderRadius: BorderRadius.circular(22),
+        child: InkWell(
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.all(17),
+            child: Row(
+              children: [
+                Container(
+                  width: 52,
+                  height: 52,
+                  decoration: BoxDecoration(
+                    color: AppColors.skySoft,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: const Icon(
+                    Icons.local_activity_outlined,
+                    color: AppColors.skyDark,
+                  ),
+                ),
+                const SizedBox(width: 13),
+                const Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '교통패스 비교',
+                        style: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        '여정별 운임을 합산해 패스 구매가 이득인지 확인해 보세요.',
+                        style: TextStyle(fontSize: 12, height: 1.35),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 8),
+                const Icon(
+                  Icons.chevron_right_rounded,
+                  color: AppColors.skyDark,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
 }
 
 class _HomeUpdateBanner extends StatelessWidget {

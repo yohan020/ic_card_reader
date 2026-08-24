@@ -4,6 +4,7 @@ import {
   filterReports,
   formatDate,
   formatCurrency,
+  manualKoreanStationCandidates,
   reportFields,
   routeLabel,
   selectedBulkUpdateIds,
@@ -130,8 +131,16 @@ test('shows the proposed Korean station name in the report detail', () => {
     issue_type: 'KOREAN_STATION_NAME_REQUEST',
     anonymous_raw_record: 'A'.repeat(32),
     report_payload: {
+      regionCode: 0,
+      boardingLineCode: 227,
+      boardingStationCode: 52,
+      alightingLineCode: 240,
+      alightingStationCode: 8,
+      stationIssueScope: 'BOTH',
       suggestedKoreanBoardingStationName: '시부야',
       suggestedKoreanAlightingStationName: '아사쿠사',
+      currentBoardingLineName: '긴자선',
+      currentAlightingLineName: '아사쿠사선',
     },
   })
 
@@ -140,6 +149,20 @@ test('shows the proposed Korean station name in the report detail', () => {
     [
       ['제안 승차역 한글 표기', '시부야'],
       ['제안 하차역 한글 표기', '아사쿠사'],
+    ],
+  )
+  assert.deepEqual(
+    fields.filter(([label]) => label.includes('코드 (10진수)')),
+    [
+      ['승차역 코드 (10진수)', '지역 0 / 노선 227 / 역 52'],
+      ['하차역 코드 (10진수)', '지역 0 / 노선 240 / 역 8'],
+    ],
+  )
+  assert.deepEqual(
+    fields.filter(([label]) => label.includes('노선')),
+    [
+      ['파서 확인 승차역 노선', '긴자선'],
+      ['파서 확인 하차역 노선', '아사쿠사선'],
     ],
   )
 })
@@ -158,6 +181,37 @@ test('keeps a proposed Korean station name from the previous app format visible'
     fields.find(([label]) => label === '제안 한글 역명 (기존 앱)'),
     ['제안 한글 역명 (기존 앱)', '시부야·아사쿠사'],
   )
+})
+
+test('creates code-specific manual Korean station candidates only for selected stations', () => {
+  const candidates = manualKoreanStationCandidates({
+    issue_type: 'KOREAN_STATION_NAME_REQUEST',
+    report_payload: {
+      regionCode: 0,
+      boardingLineCode: 227,
+      boardingStationCode: 52,
+      alightingLineCode: 240,
+      alightingStationCode: 8,
+      stationIssueScope: 'BOTH',
+      currentBoardingStation: '日本橋',
+      currentAlightingStation: '浅草',
+      suggestedKoreanBoardingStationName: '니혼바시',
+      suggestedKoreanAlightingStationName: '아사쿠사',
+      currentBoardingLineName: '긴자선',
+      currentAlightingLineName: '아사쿠사선',
+    },
+  })
+
+  assert.deepEqual(candidates, [
+    {
+      direction: 'boarding', label: '승차역', regionCode: 0, lineCode: 227, stationCode: 52,
+      stationNameJa: '日本橋', stationNameKo: '니혼바시', parsedLineName: '긴자선', isReady: true,
+    },
+    {
+      direction: 'alighting', label: '하차역', regionCode: 0, lineCode: 240, stationCode: 8,
+      stationNameJa: '浅草', stationNameKo: '아사쿠사', parsedLineName: '아사쿠사선', isReady: true,
+    },
+  ])
 })
 
 test('formats list dates without transaction details or time', () => {

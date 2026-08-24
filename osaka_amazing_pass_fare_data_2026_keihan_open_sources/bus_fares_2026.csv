@@ -1,0 +1,2 @@
+﻿operator,route_scope,fare_type,adult_fare_yen,notes,fare_source_url,pass_source_url,source_quality
+大阪シティバス,regular_route,adult_one_way,210,大阪周遊パス対象は全路線のうち規則で定める特定路線を除く。オンデマンドバス対象外。,https://citybus-osaka.co.jp/howto/,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php,official

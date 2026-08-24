@@ -13,9 +13,9 @@ class AssetStationDatabase {
   static const overrideAssetPath =
       'assets/data/stations/verified_station_overrides.csv';
   static const koreanNameAssetPath =
-      'assets/data/stations/wikidata_station_names_ko.csv';
+      'assets/data/stations/station_names_ko_by_code.csv';
   static const manualKoreanNameAssetPath =
-      'assets/data/stations/manual_station_names_ko.csv';
+      'assets/data/stations/manual_station_names_ko_by_code.csv';
   static const version = 'yoiko-c38cdaa4-2026-07-15+iyotetsu-v2';
   static const source = 'Yoiko 自動改札機の研究';
   static const overrideSource = 'App station override';
@@ -47,7 +47,7 @@ class AssetStationDatabase {
   }) {
     final byFullCode = <StationCode, List<StationRecord>>{};
     final byLineStation = <LineStationCode, List<StationRecord>>{};
-    final koreanNames = Map<String, String>.of(
+    final koreanNames = Map<StationCode, String>.of(
       _parseKoreanNames(koreanNamesCsv, stripStationSuffix: true),
     );
     koreanNames.addAll(_parseKoreanNames(manualKoreanNamesCsv));
@@ -66,7 +66,7 @@ class AssetStationDatabase {
     String csv,
     Map<StationCode, List<StationRecord>> byFullCode,
     Map<LineStationCode, List<StationRecord>> byLineStation,
-    Map<String, String> koreanNames,
+    Map<StationCode, String> koreanNames,
   ) {
     final lines = csv.split(RegExp(r'\r?\n'));
 
@@ -93,7 +93,7 @@ class AssetStationDatabase {
         lineName: fields[7].trim(),
         stationName: fields[8].trim(),
         source: source,
-        stationNameKorean: koreanNames[fields[8].trim()],
+        stationNameKorean: koreanNames[code],
       );
       byFullCode.putIfAbsent(code, () => []).add(station);
       byLineStation
@@ -109,7 +109,7 @@ class AssetStationDatabase {
     String csv,
     Map<StationCode, List<StationRecord>> byFullCode,
     Map<LineStationCode, List<StationRecord>> byLineStation,
-    Map<String, String> koreanNames,
+    Map<StationCode, String> koreanNames,
   ) {
     final lines = csv.split(RegExp(r'\r?\n'));
     for (final line in lines.skip(1)) {
@@ -133,7 +133,7 @@ class AssetStationDatabase {
         lineName: fields[4].trim(),
         stationName: fields[5].trim(),
         source: overrideSource,
-        stationNameKorean: koreanNames[fields[5].trim()],
+        stationNameKorean: koreanNames[code],
         evidence: fields[6].trim(),
         sourceNote: fields[7].trim(),
       );
@@ -332,23 +332,33 @@ class AssetStationDatabase {
     return fields;
   }
 
-  static Map<String, String> _parseKoreanNames(
+  static Map<StationCode, String> _parseKoreanNames(
     String? csv, {
     bool stripStationSuffix = false,
   }) {
     if (csv == null || csv.trim().isEmpty) return const {};
-    final localized = <String, String>{};
+    final localized = <StationCode, String>{};
     for (final line in csv.split(RegExp(r'\r?\n')).skip(1)) {
       if (line.trim().isEmpty) continue;
       final fields = _parseCsvLine(line);
-      if (fields.length < 2) continue;
-      final japanese = fields[0].trim();
+      if (fields.length < 5) continue;
+      final regionCode = int.tryParse(fields[0].trim());
+      final lineCode = int.tryParse(fields[1].trim());
+      final stationCode = int.tryParse(fields[2].trim());
+      if (regionCode == null || lineCode == null || stationCode == null) {
+        continue;
+      }
       final korean = _normalizedKoreanStationName(
-        fields[1].trim(),
+        fields[4].trim(),
         stripStationSuffix: stripStationSuffix,
       );
-      if (japanese.isNotEmpty && korean.isNotEmpty) {
-        localized[japanese] = korean;
+      if (korean.isNotEmpty) {
+        localized[StationCode(
+              regionCode: regionCode,
+              lineCode: lineCode,
+              stationCode: stationCode,
+            )] =
+            korean;
       }
     }
     return localized;

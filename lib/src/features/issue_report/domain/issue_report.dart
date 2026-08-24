@@ -56,6 +56,8 @@ class IssueReport {
     this.suggestedBusCompanyCity,
     this.suggestedKoreanBoardingStationName,
     this.suggestedKoreanAlightingStationName,
+    this.currentBoardingLineName,
+    this.currentAlightingLineName,
     this.suggestedTransactionType,
     this.customSuggestedTransactionType,
     this.calculatedAmount,
@@ -82,6 +84,8 @@ class IssueReport {
   final String? suggestedBusCompanyCity;
   final String? suggestedKoreanBoardingStationName;
   final String? suggestedKoreanAlightingStationName;
+  final String? currentBoardingLineName;
+  final String? currentAlightingLineName;
   final String currentTransactionType;
   final String? suggestedTransactionType;
   final String? customSuggestedTransactionType;
@@ -116,6 +120,8 @@ class IssueReport {
     'suggestedBusCompanyCity': suggestedBusCompanyCity,
     'suggestedKoreanBoardingStationName': suggestedKoreanBoardingStationName,
     'suggestedKoreanAlightingStationName': suggestedKoreanAlightingStationName,
+    'currentBoardingLineName': currentBoardingLineName,
+    'currentAlightingLineName': currentAlightingLineName,
     'currentTransactionType': currentTransactionType,
     'suggestedTransactionType': suggestedTransactionType,
     'customSuggestedTransactionType': customSuggestedTransactionType,

@@ -1,0 +1,7 @@
+﻿check,result,status
+keihan_pair_count,66,PASS
+fare_amount_differences_vs_previous_verified_output,0,PASS
+keihan_official_domain_in_keihan_csv_source_fields,0,PASS
+sample_大江橋_京橋,180,PASS
+sample_大江橋_千林,240,PASS
+sample_中之島_京橋,300,PASS

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'src/core/design/app_theme.dart';
-import 'src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart';
+import 'src/features/pass_comparison/presentation/prototype_pass_selection_page.dart';
 
 void main() {
   runApp(const PassComparisonPrototypeApp());
@@ -16,6 +16,6 @@ class PassComparisonPrototypeApp extends StatelessWidget {
     debugShowCheckedModeBanner: false,
     theme: AppTheme.light,
     darkTheme: AppTheme.dark,
-    home: const PassComparisonPrototypePage(),
+    home: const PrototypePassSelectionPage(),
   );
 }

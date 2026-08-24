@@ -1,0 +1,28 @@
+from_operator,from_station,to_operator,to_station,transfer_kind,walk_minutes,source_url,notes
+Osaka Metro,梅田,阪急電鉄,大阪梅田,walk,6,https://osaka-amazing-pass.com/en/howto_about_1day.html,Official pass-area interchange complex
+Osaka Metro,梅田,阪神電鉄,大阪梅田,walk,5,https://osaka-amazing-pass.com/en/howto_about_1day.html,Official pass-area interchange complex
+阪急電鉄,大阪梅田,阪神電鉄,大阪梅田,walk,7,https://osaka-amazing-pass.com/en/howto_about_1day.html,Official pass-area interchange complex
+Osaka Metro,西中島南方,阪急電鉄,南方,walk,4,https://osaka-amazing-pass.com/en/howto_about_1day.html,Connected station pair shown on operator maps
+Osaka Metro,天神橋筋六丁目,阪急電鉄,天神橋筋六丁目,same_station,0,https://osaka-amazing-pass.com/en/howto_about_1day.html,Shared boundary station
+Osaka Metro,なんば,南海電鉄,難波,walk,6,https://osaka-amazing-pass.com/en/howto_about_1day.html,Official pass-area interchange complex
+Osaka Metro,なんば,近鉄,大阪難波,walk,4,https://osaka-amazing-pass.com/en/howto_about_1day.html,Official pass-area interchange complex
+Osaka Metro,なんば,阪神電鉄,大阪難波,walk,4,https://osaka-amazing-pass.com/en/howto_about_1day.html,Official pass-area interchange complex
+近鉄,大阪難波,阪神電鉄,大阪難波,same_station,0,https://osaka-amazing-pass.com/en/howto_about_1day.html,Shared through-service station
+Osaka Metro,日本橋,近鉄,近鉄日本橋,walk,3,https://osaka-amazing-pass.com/en/howto_about_1day.html,Connected station pair shown on operator maps
+Osaka Metro,谷町九丁目,近鉄,大阪上本町,walk,6,https://osaka-amazing-pass.com/en/howto_about_1day.html,Connected station pair shown on operator maps
+Osaka Metro,鶴橋,近鉄,鶴橋,walk,3,https://osaka-amazing-pass.com/en/howto_about_1day.html,Shared interchange station
+Osaka Metro,天王寺,近鉄,大阪阿部野橋,walk,6,https://osaka-amazing-pass.com/en/howto_about_1day.html,Connected station pair shown on operator maps
+Osaka Metro,淀屋橋,京阪電鉄,淀屋橋,walk,3,https://osaka-amazing-pass.com/en/howto_about_1day.html,Shared interchange station
+Osaka Metro,北浜,京阪電鉄,北浜,walk,3,https://osaka-amazing-pass.com/en/howto_about_1day.html,Shared interchange station
+Osaka Metro,天満橋,京阪電鉄,天満橋,walk,3,https://osaka-amazing-pass.com/en/howto_about_1day.html,Shared interchange station
+Osaka Metro,京橋,京阪電鉄,京橋,walk,5,https://osaka-amazing-pass.com/en/howto_about_1day.html,Shared interchange station
+Osaka Metro,関目成育,京阪電鉄,関目,walk,4,https://osaka-amazing-pass.com/en/howto_about_1day.html,Connected station pair shown on operator maps
+Osaka Metro,肥後橋,京阪電鉄,渡辺橋,walk,5,https://osaka-amazing-pass.com/en/howto_about_1day.html,Connected station pair shown on operator maps
+Osaka Metro,淀屋橋,京阪電鉄,大江橋,walk,6,https://osaka-amazing-pass.com/en/howto_about_1day.html,Connected station pair shown on operator maps
+Osaka Metro,北浜,京阪電鉄,なにわ橋,walk,5,https://osaka-amazing-pass.com/en/howto_about_1day.html,Connected station pair shown on operator maps
+Osaka Metro,九条,阪神電鉄,九条,walk,3,https://osaka-amazing-pass.com/en/howto_about_1day.html,Shared interchange station
+Osaka Metro,ドーム前千代崎,阪神電鉄,ドーム前,walk,3,https://osaka-amazing-pass.com/en/howto_about_1day.html,Connected station pair shown on operator maps
+Osaka Metro,野田阪神,阪神電鉄,野田,walk,4,https://osaka-amazing-pass.com/en/howto_about_1day.html,Connected station pair shown on operator maps
+Osaka Metro,動物園前,南海電鉄,新今宮,walk,5,https://osaka-amazing-pass.com/en/howto_about_1day.html,Connected station pair shown on operator maps
+Osaka Metro,天下茶屋,南海電鉄,天下茶屋,walk,3,https://osaka-amazing-pass.com/en/howto_about_1day.html,Shared interchange station
+Osaka Metro,桜川,阪神電鉄,桜川,walk,3,https://osaka-amazing-pass.com/en/howto_about_1day.html,Shared interchange station

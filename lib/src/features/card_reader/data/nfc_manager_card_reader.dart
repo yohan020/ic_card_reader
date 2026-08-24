@@ -9,7 +9,6 @@ import '../domain/card_reader.dart';
 import '../domain/card_scan_result.dart';
 import '../domain/felica_protocol.dart';
 import '../domain/raw_history_block.dart';
-import '../domain/raw_history_fixture_log.dart';
 
 class NfcManagerCardReader implements CardReader {
   NfcManagerCardReader({
@@ -166,7 +165,6 @@ class NfcManagerCardReader implements CardReader {
           '읽을 수 있는 이용내역이 없습니다.',
         );
       }
-      _logRawHistoryForFixture(blocks);
       await _finish(
         result: CardScanResult(
           scannedAt: DateTime.now(),
@@ -183,13 +181,6 @@ class NfcManagerCardReader implements CardReader {
           cause: error,
         ),
       );
-    }
-  }
-
-  void _logRawHistoryForFixture(List<RawHistoryBlock> blocks) {
-    if (!kDebugMode) return;
-    for (final line in buildRawHistoryFixtureLog(blocks)) {
-      debugPrint(line);
     }
   }
 

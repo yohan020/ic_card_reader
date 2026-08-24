@@ -26,6 +26,10 @@ test('local server only listens on loopback and disables caching', () => {
   assert.match(server, /const host = '127\.0\.0\.1'/)
   assert.match(server, /'Cache-Control': 'no-store'/)
   assert.match(server, /frame-ancestors 'none'/)
+  assert.match(server, /request\.headers\.origin !== origin/)
+  assert.match(server, /manual_station_names_ko_by_code\.csv/)
+  assert.match(server, /writeFile\(temporaryPath/)
+  assert.match(server, /rename\(temporaryPath, manualStationCsvPath\)/)
 })
 
 test('admin function limits browser origins to localhost', () => {

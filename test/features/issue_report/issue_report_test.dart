@@ -123,12 +123,16 @@ void main() {
         stationIssueScope: StationIssueScope.both,
         suggestedKoreanBoardingStationName: '메이테쓰 나고야',
         suggestedKoreanAlightingStationName: '주부 국제공항',
+        currentBoardingLineName: '메이테쓰 나고야 본선',
+        currentAlightingLineName: '공항선',
       ).toJson();
 
       expect(json['issueType'], 'KOREAN_STATION_NAME_REQUEST');
       expect(json['stationIssueScope'], 'BOTH');
       expect(json['suggestedKoreanBoardingStationName'], '메이테쓰 나고야');
       expect(json['suggestedKoreanAlightingStationName'], '주부 국제공항');
+      expect(json['currentBoardingLineName'], '메이테쓰 나고야 본선');
+      expect(json['currentAlightingLineName'], '공항선');
       expect(json['correctedBoardingStation'], isNull);
       expect(json['correctedAlightingStation'], isNull);
     },

@@ -142,6 +142,13 @@
               </details>
             </section>
 
+            <section id="manual-station-section" class="detail-section manual-station-section" hidden>
+              <h3>수동 한글 표기 반영</h3>
+              <p class="section-description">검토한 제안만 코드별 수동 CSV에 저장합니다. 이 작업은 앱에 자동 배포되지 않습니다.</p>
+              <div id="manual-station-actions" class="manual-station-actions"></div>
+              <p id="manual-station-message" class="manual-station-message" role="status"></p>
+            </section>
+
             <section class="detail-section review-section">
               <h3>처리 상태</h3>
               <form id="review-form">
@@ -194,6 +201,18 @@
       <div class="confirm-actions">
         <button id="bulk-cancel-button" class="ghost-button" type="button">취소</button>
         <button id="bulk-confirm-button" class="primary-button compact" type="button">변경하기</button>
+      </div>
+    </dialog>
+
+    <dialog id="manual-station-confirm-dialog" class="confirm-dialog">
+      <div class="confirm-icon" aria-hidden="true">가</div>
+      <p class="eyebrow">MANUAL OVERRIDE</p>
+      <h2>수동 한글 표기를 저장할까요?</h2>
+      <p id="manual-station-confirm-description" class="confirm-description"></p>
+      <p class="confirm-notice">이 localhost 도구가 프로젝트의 수동 CSV만 수정합니다. 사용자 앱에 반영하려면 이후 새 AAB를 배포해야 합니다.</p>
+      <div class="confirm-actions">
+        <button id="manual-station-cancel-button" class="ghost-button" type="button">취소</button>
+        <button id="manual-station-confirm-button" class="primary-button compact" type="button">저장하기</button>
       </div>
     </dialog>
 

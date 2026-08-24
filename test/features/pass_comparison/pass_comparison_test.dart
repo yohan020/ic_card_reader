@@ -60,6 +60,32 @@ void main() {
     expect(result.verdict, PassComparisonVerdict.insufficientData);
     expect(result.excludedFare, 900);
   });
+
+  test(
+    'uses the calendar day and only JR Tokunai coverage for Tokunai Pass',
+    () {
+      final result = PassComparisonEvaluator.evaluate(
+        product: PassProduct.tokunai1Day,
+        validFrom: DateTime(2026, 8, 12, 15),
+        segments: [
+          _segment(1, 406, TransitCoverage.tokunaiJr, DateTime(2026, 8, 12, 8)),
+          _segment(2, 406, TransitCoverage.tokunaiJr, DateTime(2026, 8, 13)),
+          _segment(
+            3,
+            178,
+            TransitCoverage.tokyoMetro,
+            DateTime(2026, 8, 12, 10),
+          ),
+        ],
+      );
+
+      expect(result.validFrom, DateTime(2026, 8, 12));
+      expect(result.validUntil, DateTime(2026, 8, 13));
+      expect(result.coveredRegularFare, 406);
+      expect(result.excludedFare, 584);
+      expect(result.verdict, PassComparisonVerdict.notBeneficial);
+    },
+  );
 }
 
 PlannedTransitSegment _segment(

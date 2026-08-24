@@ -1,0 +1,16 @@
+﻿check,result,status
+private_rail_pair_rows,512,PASS
+combined_rail_pair_rows,6394,PASS
+阪急 大阪梅田–三国,大阪梅田->三国 4.4km 200yen (none),PASS
+阪神 大阪難波–尼崎,大阪難波->尼崎 10.1km 340yen (阪神なんば線加算運賃+90),PASS
+京阪 大江橋–京橋,京橋->大江橋 3.3km 180yen (特定運賃),PASS
+近鉄 大阪難波–今里,今里->大阪難波 4.8km 240yen (none),PASS
+南海 難波–中百舌鳥,中百舌鳥->難波 13.4km 350yen (特定運賃350),PASS
+metro_physical_station_count,109,PASS
+metro_adjacent_edge_count,125,PASS
+metro_fare_equivalent_pair_count,4,PASS
+metro_special_zone_override_count,9,PASS
+metro_independently_calculated_pair_count,5882,PASS
+official_2026_zone_matrix_pairs_compared_for_validation,5882,PASS
+metro_zone_mismatch_count,0,PASS
+metro_fare_mismatch_count,0,PASS
