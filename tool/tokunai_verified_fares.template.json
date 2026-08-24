@@ -1,0 +1,12 @@
+{
+  "source": "JR East official fare search / official fare table",
+  "verifiedAt": "2026-08-23T00:00:00.000Z",
+  "fares": [
+    {
+      "from": "jr-tokunai:shibuya",
+      "to": "jr-tokunai:shinjuku",
+      "adultIcFare": 0,
+      "sourceUrl": "https://www.jreast.co.jp/2026unchin-kaitei/"
+    }
+  ]
+}

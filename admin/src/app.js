@@ -5,6 +5,7 @@ import {
   formatDate,
   formatDateTime,
   issueTypeLabels,
+  manualKoreanStationCandidates,
   reportFields,
   routeLabel,
   selectedBulkUpdateIds,
@@ -21,6 +22,7 @@ const state = {
   selectedId: null,
   selectedBulkIds: new Set(),
   pendingBulkUpdate: null,
+  pendingManualStation: null,
 }
 
 const elements = Object.fromEntries(
@@ -36,6 +38,9 @@ const elements = Object.fromEntries(
     'bulk-select-all',
     'bulk-message', 'bulk-confirm-dialog', 'bulk-confirm-description',
     'bulk-cancel-button', 'bulk-confirm-button',
+    'manual-station-section', 'manual-station-actions', 'manual-station-message',
+    'manual-station-confirm-dialog', 'manual-station-confirm-description',
+    'manual-station-cancel-button', 'manual-station-confirm-button',
   ].map((id) => [id, document.getElementById(id)]),
 )
 
@@ -48,6 +53,8 @@ elements['bulk-open-button'].addEventListener('click', openBulkConfirmation)
 elements['bulk-select-all'].addEventListener('change', toggleSelectAll)
 elements['bulk-cancel-button'].addEventListener('click', closeBulkConfirmation)
 elements['bulk-confirm-button'].addEventListener('click', saveBulkReview)
+elements['manual-station-cancel-button'].addEventListener('click', closeManualStationConfirmation)
+elements['manual-station-confirm-button'].addEventListener('click', saveManualStationName)
 for (const id of ['search-input', 'status-filter', 'type-filter']) {
   elements[id].addEventListener(id === 'search-input' ? 'input' : 'change', () => {
     state.selectedBulkIds.clear()
@@ -111,6 +118,7 @@ function signOut() {
   state.selectedId = null
   state.selectedBulkIds.clear()
   state.pendingBulkUpdate = null
+  state.pendingManualStation = null
   showLogin()
 }
 
@@ -364,6 +372,7 @@ function renderDetail() {
     elements['payload-fields'].append(row)
   }
   elements['payload-json'].textContent = JSON.stringify(payload, null, 2)
+  renderManualStationActions(report)
   elements['review-status'].value = report.review_status
   elements['applied-version'].value = report.applied_app_version ?? ''
   elements['review-note'].value = report.review_note ?? ''
@@ -381,6 +390,84 @@ function renderDetail() {
     ? '이 제보자는 현재 추가 오류 제보를 보낼 수 없습니다. 차단 해제 후 다시 제보할 수 있습니다.'
     : '차단하면 이 익명 제보자의 이후 오류 제보를 서버에서 거절합니다. 현재 문의의 처리 상태는 변경되지 않습니다.'
   elements['reporter-block-message'].textContent = ''
+}
+
+function renderManualStationActions(report) {
+  const section = elements['manual-station-section']
+  const actions = elements['manual-station-actions']
+  const message = elements['manual-station-message']
+  const candidates = manualKoreanStationCandidates(report)
+  section.hidden = candidates.length === 0
+  actions.replaceChildren()
+  message.textContent = ''
+  if (candidates.length === 0) return
+
+  for (const candidate of candidates) {
+    const item = document.createElement('div')
+    item.className = 'manual-station-item'
+    const details = document.createElement('div')
+    const heading = document.createElement('strong')
+    heading.textContent = `${candidate.label}: ${candidate.stationNameJa ?? '역명 미확인'} → ${candidate.stationNameKo ?? '제안 없음'}`
+    const meta = document.createElement('span')
+    meta.textContent = candidate.isReady
+      ? `지역 ${candidate.regionCode} / 노선 ${candidate.lineCode} / 역 ${candidate.stationCode}${candidate.parsedLineName ? ` · ${candidate.parsedLineName}` : ''}`
+      : '코드·파서 확인 역명·제안 한글 표기가 모두 있어야 추가할 수 있습니다.'
+    details.append(heading, meta)
+    const button = document.createElement('button')
+    button.type = 'button'
+    button.className = 'ghost-button'
+    button.textContent = 'CSV에 추가'
+    button.disabled = !candidate.isReady
+    button.addEventListener('click', () => openManualStationConfirmation(candidate))
+    item.append(details, button)
+    actions.append(item)
+  }
+}
+
+function openManualStationConfirmation(candidate) {
+  state.pendingManualStation = candidate
+  elements['manual-station-confirm-description'].textContent =
+    `${candidate.stationNameJa}의 한글 표기 “${candidate.stationNameKo}”를 지역 ${candidate.regionCode} / 노선 ${candidate.lineCode} / 역 ${candidate.stationCode} 코드로 수동 CSV에 저장합니다. 같은 코드가 이미 있으면 기존 행을 교체합니다.`
+  elements['manual-station-confirm-dialog'].showModal()
+}
+
+function closeManualStationConfirmation() {
+  state.pendingManualStation = null
+  elements['manual-station-confirm-dialog'].close()
+}
+
+async function saveManualStationName() {
+  const candidate = state.pendingManualStation
+  if (!candidate?.isReady) return
+  const confirmButton = elements['manual-station-confirm-button']
+  const cancelButton = elements['manual-station-cancel-button']
+  confirmButton.disabled = true
+  cancelButton.disabled = true
+  confirmButton.textContent = '저장 중…'
+  try {
+    const response = await fetch('/api/manual-station-names', {
+      method: 'POST',
+      cache: 'no-store',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'ic-card-admin',
+      },
+      body: JSON.stringify(candidate),
+    })
+    const body = await readJson(response)
+    if (!response.ok) throw new Error(body.error ?? '수동 CSV를 저장하지 못했습니다.')
+    elements['manual-station-message'].textContent = body.action === 'updated'
+      ? '같은 코드의 기존 수동 표기를 교체했습니다.'
+      : '수동 한글 표기를 CSV에 추가했습니다.'
+    closeManualStationConfirmation()
+  } catch (error) {
+    elements['manual-station-message'].textContent = `CSV에 저장하지 못했습니다. ${error.message}`
+    closeManualStationConfirmation()
+  } finally {
+    confirmButton.disabled = false
+    cancelButton.disabled = false
+    confirmButton.textContent = '저장하기'
+  }
 }
 
 async function toggleReporterBlock() {

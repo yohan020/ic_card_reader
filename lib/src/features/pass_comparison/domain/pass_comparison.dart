@@ -1,12 +1,26 @@
 enum TransitCoverage {
-  tokyoMetro('Tokyo Metro', true),
-  toeiSubway('도에이 지하철', true),
-  outside('패스 적용 외', false);
+  tokyoMetro('Tokyo Metro', tokyoSubwayTicket: true),
+  toeiSubway('도에이 지하철', tokyoSubwayTicket: true),
+  metroToToeiSubway('Metro ↔ 도에이 지하철', tokyoSubwayTicket: true),
+  tokunaiJr('도쿠나이 패스 적용 JR', tokunaiPass: true),
+  outside('패스 적용 외');
 
-  const TransitCoverage(this.label, this.isCoveredByTokyoSubwayTicket);
+  const TransitCoverage(
+    this.label, {
+    this.tokyoSubwayTicket = false,
+    this.tokunaiPass = false,
+  });
 
   final String label;
-  final bool isCoveredByTokyoSubwayTicket;
+  final bool tokyoSubwayTicket;
+  final bool tokunaiPass;
+
+  bool isCoveredBy(PassProduct product) => switch (product) {
+    PassProduct.tokyoSubway24 ||
+    PassProduct.tokyoSubway48 ||
+    PassProduct.tokyoSubway72 => tokyoSubwayTicket,
+    PassProduct.tokunai1Day => tokunaiPass,
+  };
 }
 
 enum PassProduct {
@@ -24,18 +38,38 @@ enum PassProduct {
     label: 'Tokyo Subway 72시간권',
     price: 2000,
     duration: Duration(hours: 72),
+  ),
+  tokunai1Day(
+    label: '도쿠나이 패스 1일권',
+    price: 870,
+    duration: Duration(days: 1),
+    validity: PassValidity.calendarDay,
   );
 
   const PassProduct({
     required this.label,
     required this.price,
     required this.duration,
+    this.validity = PassValidity.rolling,
   });
 
   final String label;
   final int price;
   final Duration duration;
+  final PassValidity validity;
+
+  bool get isTokyoSubwayTicket => this != PassProduct.tokunai1Day;
+
+  DateTime validityStart(DateTime selectedAt) =>
+      validity == PassValidity.calendarDay
+      ? DateTime(selectedAt.year, selectedAt.month, selectedAt.day)
+      : selectedAt;
+
+  DateTime validityEnd(DateTime selectedAt) =>
+      validityStart(selectedAt).add(duration);
 }
+
+enum PassValidity { rolling, calendarDay }
 
 class PlannedTransitSegment {
   const PlannedTransitSegment({
@@ -107,18 +141,18 @@ abstract final class PassComparisonEvaluator {
     required DateTime validFrom,
     required List<PlannedTransitSegment> segments,
   }) {
-    final validUntil = validFrom.add(product.duration);
+    final effectiveValidFrom = product.validityStart(validFrom);
+    final validUntil = product.validityEnd(validFrom);
     final evaluations = segments
         .map((segment) {
           final isWithinValidity =
-              !segment.departureAt.isBefore(validFrom) &&
+              !segment.departureAt.isBefore(effectiveValidFrom) &&
               segment.departureAt.isBefore(validUntil);
           return SegmentEvaluation(
             segment: segment,
             isWithinValidity: isWithinValidity,
             isCovered:
-                isWithinValidity &&
-                segment.coverage.isCoveredByTokyoSubwayTicket,
+                isWithinValidity && segment.coverage.isCoveredBy(product),
           );
         })
         .toList(growable: false);
@@ -140,7 +174,7 @@ abstract final class PassComparisonEvaluator {
 
     return PassComparisonResult(
       product: product,
-      validFrom: validFrom,
+      validFrom: effectiveValidFrom,
       validUntil: validUntil,
       segments: evaluations,
       coveredRegularFare: coveredRegularFare,

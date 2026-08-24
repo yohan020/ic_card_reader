@@ -1,0 +1,184 @@
+﻿operator,station_name,lines,coverage_scope,source_quality,source_url
+Osaka Metro,あびこ,御堂筋線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,だいどう豊里,今里筋線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,なかもず,御堂筋線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,なんば,千日前線;四つ橋線;御堂筋線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,コスモスクエア,中央線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,トレードセンター前,ニュートラム,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,ドーム前千代崎,長堀鶴見緑地線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,フェリーターミナル,ニュートラム,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,ポートタウン東,ニュートラム,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,ポートタウン西,ニュートラム,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,中ふ頭,ニュートラム,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,中崎町,谷町線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,中津,御堂筋線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,九条,中央線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,井高野,長堀鶴見緑地線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,京橋,長堀鶴見緑地線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,今福鶴見,長堀鶴見緑地線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,今里,今里筋線;千日前線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,住之江公園,ニュートラム;四つ橋線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,八尾南,谷町線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,出戸,谷町線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,動物園前,堺筋線;御堂筋線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,北加賀屋,四つ橋線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,北巽,千日前線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,北浜,堺筋線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,北花田,御堂筋線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,千林大宮,谷町線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,南巽,千日前線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,南森町,堺筋線;谷町線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,南港口,ニュートラム,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,南港東,ニュートラム,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,喜連瓜破,谷町線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,四ツ橋,四つ橋線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,四天王寺前夕陽ヶ丘,谷町線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,堺筋本町,中央線;堺筋線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,夢洲,中央線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,大国町,四つ橋線;御堂筋線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,大日,谷町線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,大正,堺筋線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,大阪ビジネスパーク,長堀鶴見緑地線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,大阪港,中央線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,天下茶屋,堺筋線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,天満橋,谷町線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,天王寺,御堂筋線;谷町線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,天神橋筋六丁目,千日前線;谷町線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,太子橋今市,今里筋線;谷町線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,守口,谷町線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,小路,千日前線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,岸里,四つ橋線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,平林,ニュートラム,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,平野,谷町線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,弁天町,中央線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,心斎橋,御堂筋線;長堀鶴見緑地線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,恵美須町,堺筋線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,扇町,堺筋線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,文の里,谷町線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,新大阪,御堂筋線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,新森古市,今里筋線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,新深江,千日前線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,新金岡,御堂筋線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,日本橋,千日前線;堺筋線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,昭和町,御堂筋線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,朝潮橋,中央線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,本町,中央線;四つ橋線;御堂筋線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,東三国,御堂筋線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,東梅田,谷町線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,松屋町,長堀鶴見緑地線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,桜川,千日前線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,梅田,御堂筋線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,森ノ宮,中央線;長堀鶴見緑地線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,横堤,長堀鶴見緑地線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,江坂,御堂筋線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,淀屋橋,御堂筋線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,深江橋,中央線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,清水,今里筋線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,玉出,四つ橋線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,玉川,千日前線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,玉造,長堀鶴見緑地線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,瑞光四丁目,今里筋線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,田辺,谷町線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,緑橋,中央線;今里筋線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,肥後橋,四つ橋線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,花園町,四つ橋線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,蒲生四丁目,今里筋線;長堀鶴見緑地線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,西中島南方,御堂筋線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,西大橋,長堀鶴見緑地線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,西梅田,四つ橋線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,西田辺,御堂筋線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,西長堀,千日前線;長堀鶴見緑地線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,谷町九丁目,千日前線;谷町線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,谷町六丁目,谷町線;長堀鶴見緑地線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,谷町四丁目,中央線;谷町線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,都島,谷町線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,野江内代,谷町線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,野田阪神,千日前線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,長原,谷町線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,長堀橋,堺筋線;長堀鶴見緑地線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,長居,御堂筋線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,長田,中央線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,門真南,長堀鶴見緑地線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,関目成育,今里筋線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,関目高殿,谷町線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,阿倍野,谷町線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,阿波座,中央線;千日前線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,駒川中野,谷町線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,高井田,中央線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,鴫野,今里筋線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,鶴橋,千日前線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+Osaka Metro,鶴見緑地,長堀鶴見緑地線,ALL_METRO,official_route_list+self_calculated_fares,https://subway.osakametro.co.jp/guide/routemap.php
+京阪電鉄,なにわ橋,中之島線,AMAZING_PASS_COVERED_SECTION,official,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+京阪電鉄,中之島,中之島線,AMAZING_PASS_COVERED_SECTION,official,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+京阪電鉄,京橋,京阪本線,AMAZING_PASS_COVERED_SECTION,official,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+京阪電鉄,北浜,京阪本線,AMAZING_PASS_COVERED_SECTION,official,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+京阪電鉄,千林,京阪本線,AMAZING_PASS_COVERED_SECTION,official,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+京阪電鉄,大江橋,中之島線,AMAZING_PASS_COVERED_SECTION,official,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+京阪電鉄,天満橋,中之島線;京阪本線,AMAZING_PASS_COVERED_SECTION,official,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+京阪電鉄,森小路,京阪本線,AMAZING_PASS_COVERED_SECTION,official,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+京阪電鉄,淀屋橋,京阪本線,AMAZING_PASS_COVERED_SECTION,official,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+京阪電鉄,渡辺橋,中之島線,AMAZING_PASS_COVERED_SECTION,official,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+京阪電鉄,野江,京阪本線,AMAZING_PASS_COVERED_SECTION,official,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+京阪電鉄,関目,京阪本線,AMAZING_PASS_COVERED_SECTION,official,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+南海電鉄,七道,南海本線,AMAZING_PASS_COVERED_SECTION,cross_checked,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+南海電鉄,三国ヶ丘,高野線,AMAZING_PASS_COVERED_SECTION,cross_checked,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+南海電鉄,中百舌鳥,高野線,AMAZING_PASS_COVERED_SECTION,cross_checked,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+南海電鉄,今宮戎,高野線,AMAZING_PASS_COVERED_SECTION,cross_checked,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+南海電鉄,住ノ江,南海本線,AMAZING_PASS_COVERED_SECTION,cross_checked,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+南海電鉄,住吉大社,南海本線,AMAZING_PASS_COVERED_SECTION,cross_checked,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+南海電鉄,住吉東,高野線,AMAZING_PASS_COVERED_SECTION,cross_checked,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+南海電鉄,堺,南海本線,AMAZING_PASS_COVERED_SECTION,cross_checked,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+南海電鉄,堺東,高野線,AMAZING_PASS_COVERED_SECTION,cross_checked,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+南海電鉄,天下茶屋,南海本線;高野線,AMAZING_PASS_COVERED_SECTION,cross_checked,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+南海電鉄,岸里玉出,南海本線;高野線,AMAZING_PASS_COVERED_SECTION,cross_checked,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+南海電鉄,帝塚山,高野線,AMAZING_PASS_COVERED_SECTION,cross_checked,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+南海電鉄,我孫子前,高野線,AMAZING_PASS_COVERED_SECTION,cross_checked,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+南海電鉄,新今宮,南海本線;高野線,AMAZING_PASS_COVERED_SECTION,cross_checked,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+南海電鉄,沢ノ町,高野線,AMAZING_PASS_COVERED_SECTION,cross_checked,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+南海電鉄,浅香山,高野線,AMAZING_PASS_COVERED_SECTION,cross_checked,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+南海電鉄,百舌鳥八幡,高野線,AMAZING_PASS_COVERED_SECTION,cross_checked,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+南海電鉄,粉浜,南海本線,AMAZING_PASS_COVERED_SECTION,cross_checked,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+南海電鉄,萩ノ茶屋,高野線,AMAZING_PASS_COVERED_SECTION,cross_checked,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+南海電鉄,難波,南海本線;高野線,AMAZING_PASS_COVERED_SECTION,cross_checked,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+近鉄,今川,南大阪線,AMAZING_PASS_COVERED_SECTION,official,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+近鉄,今里,難波線,AMAZING_PASS_COVERED_SECTION,official,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+近鉄,北田辺,南大阪線,AMAZING_PASS_COVERED_SECTION,official,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+近鉄,大阪上本町,難波線,AMAZING_PASS_COVERED_SECTION,official,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+近鉄,大阪阿部野橋,南大阪線,AMAZING_PASS_COVERED_SECTION,official,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+近鉄,大阪難波,難波線,AMAZING_PASS_COVERED_SECTION,official,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+近鉄,河堀口,南大阪線,AMAZING_PASS_COVERED_SECTION,official,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+近鉄,矢田,南大阪線,AMAZING_PASS_COVERED_SECTION,official,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+近鉄,近鉄日本橋,難波線,AMAZING_PASS_COVERED_SECTION,official,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+近鉄,針中野,南大阪線,AMAZING_PASS_COVERED_SECTION,official,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+近鉄,鶴橋,難波線,AMAZING_PASS_COVERED_SECTION,official,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+阪急電鉄,三国,宝塚本線,AMAZING_PASS_COVERED_SECTION,cross_checked,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+阪急電鉄,上新庄,京都本線,AMAZING_PASS_COVERED_SECTION,cross_checked,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+阪急電鉄,下新庄,千里線,AMAZING_PASS_COVERED_SECTION,cross_checked,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+阪急電鉄,中津,神戸本線,AMAZING_PASS_COVERED_SECTION,cross_checked,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+阪急電鉄,十三,京都本線;宝塚本線;神戸本線,AMAZING_PASS_COVERED_SECTION,cross_checked,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+阪急電鉄,南方,京都本線,AMAZING_PASS_COVERED_SECTION,cross_checked,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+阪急電鉄,大阪梅田,神戸本線,AMAZING_PASS_COVERED_SECTION,cross_checked,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+阪急電鉄,天神橋筋六丁目,千里線,AMAZING_PASS_COVERED_SECTION,cross_checked,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+阪急電鉄,崇禅寺,京都本線,AMAZING_PASS_COVERED_SECTION,cross_checked,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+阪急電鉄,柴島,千里線,AMAZING_PASS_COVERED_SECTION,cross_checked,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+阪急電鉄,淡路,京都本線;千里線,AMAZING_PASS_COVERED_SECTION,cross_checked,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+阪急電鉄,相川,京都本線,AMAZING_PASS_COVERED_SECTION,cross_checked,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+阪急電鉄,神崎川,神戸本線,AMAZING_PASS_COVERED_SECTION,cross_checked,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+阪神電鉄,ドーム前,阪神なんば線,AMAZING_PASS_COVERED_SECTION,official,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+阪神電鉄,九条,阪神なんば線,AMAZING_PASS_COVERED_SECTION,official,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+阪神電鉄,伝法,阪神なんば線,AMAZING_PASS_COVERED_SECTION,official,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+阪神電鉄,出来島,阪神なんば線,AMAZING_PASS_COVERED_SECTION,official,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+阪神電鉄,千船,本線,AMAZING_PASS_COVERED_SECTION,official,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+阪神電鉄,千鳥橋,阪神なんば線,AMAZING_PASS_COVERED_SECTION,official,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+阪神電鉄,大物,本線;阪神なんば線,AMAZING_PASS_COVERED_SECTION,official,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+阪神電鉄,大阪梅田,本線,AMAZING_PASS_COVERED_SECTION,official,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+阪神電鉄,大阪難波,阪神なんば線,AMAZING_PASS_COVERED_SECTION,official,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+阪神電鉄,姫島,本線,AMAZING_PASS_COVERED_SECTION,official,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+阪神電鉄,尼崎,本線,AMAZING_PASS_COVERED_SECTION,official,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+阪神電鉄,杭瀬,本線,AMAZING_PASS_COVERED_SECTION,official,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+阪神電鉄,桜川,阪神なんば線,AMAZING_PASS_COVERED_SECTION,official,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+阪神電鉄,淀川,本線,AMAZING_PASS_COVERED_SECTION,official,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+阪神電鉄,福,阪神なんば線,AMAZING_PASS_COVERED_SECTION,official,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+阪神電鉄,福島,本線,AMAZING_PASS_COVERED_SECTION,official,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+阪神電鉄,西九条,阪神なんば線,AMAZING_PASS_COVERED_SECTION,official,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php
+阪神電鉄,野田,本線,AMAZING_PASS_COVERED_SECTION,official,https://subway.osakametro.co.jp/guide/fare/category_digital_tickets/digital_tickets/digital_joshaken.php

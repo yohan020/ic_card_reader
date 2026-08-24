@@ -6,7 +6,7 @@ The project-created mapping, evidence classification, source annotations, and
 editorial arrangement in:
 
   assets/data/stations/verified_station_overrides.csv
-  assets/data/stations/manual_station_names_ko.csv
+  assets/data/stations/manual_station_names_ko_by_code.csv
 
 are licensed under the Creative Commons Attribution 4.0 International License
 (CC BY 4.0): https://creativecommons.org/licenses/by/4.0/

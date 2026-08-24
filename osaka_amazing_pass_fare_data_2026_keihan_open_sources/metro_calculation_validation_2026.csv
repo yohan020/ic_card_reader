@@ -1,0 +1,9 @@
+﻿check,result,status,notes
+metro_physical_station_count,109,PASS,Unique physical Osaka Metro/New Tram stations.
+metro_adjacent_edge_count,125,PASS,Only adjacent factual operating-distance edges retained.
+metro_fare_equivalent_pair_count,4,PASS,Umeda three-station combinations plus Shinsaibashi/Yotsubashi.
+metro_special_zone_override_count,9,PASS,Passenger Rule Art.50.
+metro_independently_calculated_pair_count,5882,PASS,"Generated from graph + rules, not from pair-table rows."
+official_2026_zone_matrix_pairs_compared_for_validation,5882,PASS,Official matrix used only as a validation oracle.
+metro_zone_mismatch_count,0,PASS,Independent calculation vs official 2026 zone table.
+metro_fare_mismatch_count,0,PASS,Same zone + same 2026 zone fare amounts + Yumeshima surcharge.

@@ -1,8 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'lib/odpt_korean_overrides.dart';
+
 const _apiBase = 'https://api.odpt.org/api/v4';
 const _outputPath = 'assets/data/pass_comparison/odpt_pass_data.json';
+const _koreanOverridePath =
+    'assets/data/pass_comparison/manual_odpt_station_names_ko.csv';
 const _operators = <String>['odpt.Operator:TokyoMetro', 'odpt.Operator:Toei'];
 
 Future<void> main() async {
@@ -15,14 +19,13 @@ Future<void> main() async {
     return;
   }
 
-  final stationRows = <Map<String, Object?>>[];
-  final railwayRows = <Map<String, Object?>>[];
-  final fareRows = <Map<String, Object?>>[];
-  for (final operatorId in _operators) {
-    stationRows.addAll(await _fetch('odpt:Station', operatorId, token));
-    railwayRows.addAll(await _fetch('odpt:Railway', operatorId, token));
-    fareRows.addAll(await _fetch('odpt:RailwayFare', operatorId, token));
-  }
+  // The search endpoint caps each response at 1,000 rows. In particular,
+  // that silently omits many Tokyo Metro fare pairs. The ODPT dump endpoint
+  // redirects to the complete JSON file, so filter the two target operators
+  // locally after fetching each complete resource.
+  final stationRows = await _fetchOperatorDump('odpt:Station', token);
+  final railwayRows = await _fetchOperatorDump('odpt:Railway', token);
+  final fareRows = await _fetchOperatorDump('odpt:RailwayFare', token);
 
   final railwayStationTitles = <String, Map<String, Object?>>{};
   for (final railway in railwayRows) {
@@ -97,6 +100,13 @@ Future<void> main() async {
     ..sort(
       (a, b) => (a['nameJa']! as String).compareTo(b['nameJa']! as String),
     );
+  final overrideFile = File(_koreanOverridePath);
+  final koreanOverrideCount = overrideFile.existsSync()
+      ? applyOdptKoreanOverrides(
+          stations,
+          parseOdptKoreanOverrides(await overrideFile.readAsString()),
+        )
+      : 0;
   final output = <String, Object?>{
     'generatedAt': DateTime.now().toUtc().toIso8601String(),
     'source': 'Public Transportation Open Data Center (ODPT)',
@@ -109,32 +119,34 @@ Future<void> main() async {
     '${const JsonEncoder.withIndent('  ').convert(output)}\n',
   );
   stdout.writeln(
-    'Imported ${stations.length} stations and ${fares.length} fares.',
+    'Imported ${stations.length} stations and ${fares.length} fares '
+    '($koreanOverrideCount Korean station overrides applied).',
   );
 }
 
-Future<List<Map<String, Object?>>> _fetch(
+Future<List<Map<String, Object?>>> _fetchOperatorDump(
   String type,
-  String operatorId,
   String token,
 ) async {
-  final uri = Uri.parse('$_apiBase/$type').replace(
-    queryParameters: {'odpt:operator': operatorId, 'acl:consumerKey': token},
-  );
+  final uri = Uri.parse(
+    '$_apiBase/$type.json',
+  ).replace(queryParameters: {'acl:consumerKey': token});
   final client = HttpClient();
   try {
     final request = await client.getUrl(uri);
+    request.followRedirects = true;
     request.headers.set(HttpHeaders.acceptHeader, 'application/json');
     final response = await request.close();
     final body = await utf8.decoder.bind(response).join();
     if (response.statusCode != HttpStatus.ok) {
       throw HttpException(
-        'ODPT returned HTTP ${response.statusCode} for $type / $operatorId',
-        uri: uri.replace(queryParameters: {'odpt:operator': operatorId}),
+        'ODPT returned HTTP ${response.statusCode} for $type dump',
+        uri: Uri.parse('$_apiBase/$type.json'),
       );
     }
     return (jsonDecode(body) as List<Object?>)
         .map((item) => Map<String, Object?>.from(item! as Map))
+        .where((item) => _operators.contains(_string(item['odpt:operator'])))
         .toList(growable: false);
   } finally {
     client.close(force: true);

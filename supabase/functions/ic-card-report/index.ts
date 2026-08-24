@@ -165,6 +165,12 @@ function validatePayload(payload: ReportPayload): string | null {
   if (!isNullableShortText(payload.suggestedKoreanAlightingStationName, 80)) {
     return 'suggestedKoreanAlightingStationName'
   }
+  if (!isNullableShortText(payload.currentBoardingLineName, 100)) {
+    return 'currentBoardingLineName'
+  }
+  if (!isNullableShortText(payload.currentAlightingLineName, 100)) {
+    return 'currentAlightingLineName'
+  }
   if (!isNullableShortText(payload.suggestedKoreanStationName, 80)) {
     return 'suggestedKoreanStationName'
   }
@@ -214,11 +220,14 @@ function validateCorrectionForIssue(payload: ReportPayload): string | null {
     payload.suggestedKoreanBoardingStationName ?? null
   const koreanAlightingStationName =
     payload.suggestedKoreanAlightingStationName ?? null
+  const currentBoardingLineName = payload.currentBoardingLineName ?? null
+  const currentAlightingLineName = payload.currentAlightingLineName ?? null
   const legacyKoreanStationName = payload.suggestedKoreanStationName ?? null
 
   if (
     issueType !== 'KOREAN_STATION_NAME_REQUEST' &&
     (koreanBoardingStationName !== null || koreanAlightingStationName !== null ||
+      currentBoardingLineName !== null || currentAlightingLineName !== null ||
       legacyKoreanStationName !== null)
   ) {
     return 'unexpectedCorrectionField'
@@ -268,7 +277,8 @@ function validateCorrectionForIssue(payload: ReportPayload): string | null {
   if (issueType === 'KOREAN_STATION_NAME_REQUEST') {
     if (!stationIssueScopes.has(scope as string)) return 'stationIssueScope'
     if (legacyKoreanStationName !== null &&
-      (koreanBoardingStationName !== null || koreanAlightingStationName !== null)) {
+      (koreanBoardingStationName !== null || koreanAlightingStationName !== null ||
+        currentBoardingLineName !== null || currentAlightingLineName !== null)) {
       return 'unexpectedCorrectionField'
     }
     const hasExpectedBoarding =
@@ -281,9 +291,16 @@ function validateCorrectionForIssue(payload: ReportPayload): string | null {
         ? koreanAlightingStationName === null ||
           isShortText(koreanAlightingStationName, 80)
         : koreanAlightingStationName === null
+    const hasExpectedBoardingLine = scope !== 'ALIGHTING'
+      ? currentBoardingLineName === null || isShortText(currentBoardingLineName, 100)
+      : currentBoardingLineName === null
+    const hasExpectedAlightingLine = scope !== 'BOARDING'
+      ? currentAlightingLineName === null || isShortText(currentAlightingLineName, 100)
+      : currentAlightingLineName === null
     const hasValidLegacyValue = legacyKoreanStationName === null ||
       isShortText(legacyKoreanStationName, 80)
-    return hasExpectedBoarding && hasExpectedAlighting && hasValidLegacyValue &&
+    return hasExpectedBoarding && hasExpectedAlighting &&
+        hasExpectedBoardingLine && hasExpectedAlightingLine && hasValidLegacyValue &&
         boarding === null && alighting === null &&
         busCompanyName === null && busCompanyCity === null && suggestion === null &&
         customSuggestion === null && payload.additionalDescription === null

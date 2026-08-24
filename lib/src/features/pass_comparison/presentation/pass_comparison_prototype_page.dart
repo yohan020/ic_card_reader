@@ -6,9 +6,14 @@ import '../data/pass_transit_data.dart';
 import '../domain/pass_comparison.dart';
 
 class PassComparisonPrototypePage extends StatefulWidget {
-  const PassComparisonPrototypePage({this.initialData, super.key});
+  const PassComparisonPrototypePage({
+    this.initialData,
+    this.initialProduct = PassProduct.tokyoSubway24,
+    super.key,
+  });
 
   final PassTransitData? initialData;
+  final PassProduct initialProduct;
 
   @override
   State<PassComparisonPrototypePage> createState() =>
@@ -17,7 +22,7 @@ class PassComparisonPrototypePage extends StatefulWidget {
 
 class _PassComparisonPrototypePageState
     extends State<PassComparisonPrototypePage> {
-  PassProduct _product = PassProduct.tokyoSubway24;
+  late PassProduct _product;
   late DateTime _validFrom;
   final List<_SegmentDraft> _drafts = [];
   PassTransitData? _transitData;
@@ -27,8 +32,9 @@ class _PassComparisonPrototypePageState
   @override
   void initState() {
     super.initState();
+    _product = widget.initialProduct;
     final now = DateTime.now();
-    _validFrom = DateTime(now.year, now.month, now.day, 9);
+    _validFrom = DateTime(now.year, now.month, now.day);
     _transitData = widget.initialData;
     _addDraft(notify: false);
     if (_transitData == null) _loadTransitData();
@@ -65,12 +71,7 @@ class _PassComparisonPrototypePageState
 
   void _addDraft({bool notify = true}) {
     void action() {
-      _drafts.add(
-        _SegmentDraft(
-          id: _nextId++,
-          departureAt: _validFrom.add(Duration(hours: _drafts.length * 2)),
-        ),
-      );
+      _drafts.add(_SegmentDraft(id: _nextId++, dayIndex: 0));
     }
 
     if (notify) {
@@ -97,7 +98,7 @@ class _PassComparisonPrototypePageState
       segments.add(
         PlannedTransitSegment(
           id: draft.id,
-          departureAt: draft.departureAt,
+          departureAt: _segmentDepartureAt(draft),
           fromStation: from.displayName,
           toStation: to.displayName,
           coverage: draft.coverage,
@@ -108,192 +109,138 @@ class _PassComparisonPrototypePageState
     return segments;
   }
 
+  DateTime _segmentDepartureAt(_SegmentDraft draft) =>
+      _product.isTokyoSubwayTicket
+      ? DateTime(
+          _validFrom.year,
+          _validFrom.month,
+          _validFrom.day + draft.dayIndex,
+        )
+      : DateTime(_validFrom.year, _validFrom.month, _validFrom.day);
+
+  void _changeProduct(PassProduct product) {
+    if (_product == product) return;
+    setState(() {
+      _product = product;
+      final dayCount = product.duration.inDays;
+      for (final draft in _drafts) {
+        if (draft.dayIndex >= dayCount) draft.dayIndex = 0;
+        _resolveDraft(draft);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final result = PassComparisonEvaluator.evaluate(
-      product: _product,
-      validFrom: _validFrom,
-      segments: _validSegments,
-    );
     return Scaffold(
+      appBar: AppBar(title: const Text('교통패스 비교')),
       body: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final wide = constraints.maxWidth >= 980;
-            return CustomScrollView(
-              slivers: [
-                SliverToBoxAdapter(child: _buildHeader(context)),
-                SliverPadding(
-                  padding: EdgeInsets.fromLTRB(
-                    wide ? 36 : 18,
-                    8,
-                    wide ? 36 : 18,
-                    40,
-                  ),
-                  sliver: SliverToBoxAdapter(
-                    child: Center(
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 1320),
-                        child: wide
-                            ? Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Expanded(flex: 7, child: _buildPlanner()),
-                                  const SizedBox(width: 24),
-                                  Expanded(
-                                    flex: 5,
-                                    child: _ResultPanel(result: result),
-                                  ),
-                                ],
-                              )
-                            : Column(
-                                children: [
-                                  _buildPlanner(),
-                                  const SizedBox(height: 20),
-                                  _ResultPanel(result: result),
-                                ],
-                              ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            );
-          },
+        top: false,
+        child: ListView(
+          key: const ValueKey('pass-comparison-planner-scroll'),
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          padding: const EdgeInsets.fromLTRB(20, 18, 20, 32),
+          children: [
+            const _PlannerProgress(),
+            const SizedBox(height: 24),
+            Text(
+              '이동 계획을 입력해 주세요',
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.w800,
+                letterSpacing: -1,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              '실제로 개찰을 통과할 출발역과 하차역을 입력하면 운임을 자동으로 찾습니다.',
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                height: 1.45,
+              ),
+            ),
+            const SizedBox(height: 20),
+            _buildPlanner(),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildHeader(BuildContext context) => Padding(
-    padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
-    child: Center(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 1320),
-        child: Row(
-          children: [
-            Container(
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                color: AppColors.skyDark,
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: const Icon(
-                Icons.confirmation_number_outlined,
-                color: Colors.white,
-              ),
-            ),
-            const SizedBox(width: 14),
-            const Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '교통패스 비교 실험실',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: -0.7,
-                    ),
-                  ),
-                  SizedBox(height: 2),
-                  Text('Tokyo Subway Ticket · 계산 엔진 프로토타입'),
-                ],
-              ),
-            ),
-            const StatusPill(
-              label: '로컬 계산',
-              icon: Icons.lock_outline_rounded,
-              color: AppColors.success,
-            ),
-          ],
-        ),
-      ),
-    ),
-  );
-
   Widget _buildPlanner() => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      if (_transitData != null)
-        NoticeBanner(
-          title: 'ODPT 실제 역·운임 데이터',
-          text:
-              '${_transitData!.stations.length}개 역 후보와 ${_transitData!.fares.length}개 성인 IC 운임을 기기 안에서 검색합니다. 데이터 기준: ${_formatDate(_transitData!.generatedAt)}',
-          tone: NoticeTone.success,
-        )
-      else if (_dataLoadError != null)
+      if (_dataLoadError != null)
         const NoticeBanner(
-          title: 'ODPT 데이터 가져오기가 필요합니다',
-          text: '개발용 가져오기 도구로 정적 데이터를 생성한 뒤 다시 실행해 주세요. 액세스 토큰은 앱에 포함되지 않습니다.',
+          title: '운임 데이터를 읽지 못했습니다',
+          text: '역과 운임 데이터를 준비한 뒤 다시 시도해 주세요.',
           tone: NoticeTone.warning,
-        )
-      else
-        const NoticeBanner(
-          title: 'ODPT 데이터 읽는 중',
-          text: '실제 역과 성인 IC 운임 데이터를 준비하고 있습니다.',
-          tone: NoticeTone.info,
         ),
+      if (_dataLoadError != null) const SizedBox(height: 12),
+      _SelectedPassSummary(product: _product, onChangeProduct: _changeProduct),
       const SizedBox(height: 20),
-      const SectionLabel('패스 설정'),
-      AppSurface(
-        child: Column(
-          children: [
-            DropdownButtonFormField<PassProduct>(
-              initialValue: _product,
-              decoration: const InputDecoration(
-                labelText: '비교할 패스',
-                prefixIcon: Icon(Icons.local_activity_outlined),
-              ),
-              items: PassProduct.values
-                  .map(
-                    (product) => DropdownMenuItem(
-                      value: product,
-                      child: Text('${product.label} · ¥${product.price}'),
-                    ),
-                  )
-                  .toList(),
-              onChanged: (value) {
-                if (value != null) setState(() => _product = value);
-              },
-            ),
-            const SizedBox(height: 14),
-            _DateTimeButton(
-              label: '사용 시작',
-              value: _validFrom,
-              onChanged: (value) => setState(() => _validFrom = value),
-            ),
-          ],
-        ),
-      ),
-      const SizedBox(height: 24),
       SectionLabel(
         '이동 구간',
         trailing: TextButton(onPressed: _clearAll, child: const Text('비우기')),
       ),
-      for (var index = 0; index < _drafts.length; index++) ...[
-        _SegmentEditor(
-          key: ValueKey(_drafts[index].id),
-          index: index,
-          draft: _drafts[index],
-          data: _transitData,
-          canRemove: _drafts.length > 1,
-          onChanged: () {
-            _resolveDraft(_drafts[index]);
-            setState(() {});
-          },
-          onRemove: () => _removeDraft(_drafts[index]),
+      AppSurface(
+        key: const ValueKey('journey-plan-card'),
+        padding: const EdgeInsets.all(14),
+        child: Column(
+          children: [
+            for (var index = 0; index < _drafts.length; index++) ...[
+              _SegmentEditor(
+                key: ValueKey(_drafts[index].id),
+                index: index,
+                draft: _drafts[index],
+                data: _transitData,
+                product: _product,
+                maxDayCount: _product.duration.inDays,
+                canRemove: _drafts.length > 1,
+                onChanged: () {
+                  _resolveDraft(_drafts[index]);
+                  setState(() {});
+                },
+                onSwap: () {
+                  _drafts[index].swapStations();
+                  _resolveDraft(_drafts[index]);
+                  setState(() {});
+                },
+                onRemove: () => _removeDraft(_drafts[index]),
+              ),
+              if (index != _drafts.length - 1) ...[
+                const SizedBox(height: 14),
+                Divider(color: Theme.of(context).colorScheme.outlineVariant),
+                const SizedBox(height: 14),
+              ],
+            ],
+          ],
         ),
-        const SizedBox(height: 12),
-      ],
+      ),
+      const SizedBox(height: 12),
       OutlinedButton.icon(
         onPressed: _addDraft,
         icon: const Icon(Icons.add_rounded),
         label: const Text('이동 구간 추가'),
       ),
+      const SizedBox(height: 18),
+      FilledButton(onPressed: _openResult, child: const Text('비교 결과 보기')),
+      const SizedBox(height: 12),
+      const _PlannerFootnote(),
     ],
   );
+
+  void _openResult() {
+    final result = PassComparisonEvaluator.evaluate(
+      product: _product,
+      validFrom: _validFrom,
+      segments: _validSegments,
+    );
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => PassComparisonResultPage(result: result),
+      ),
+    );
+  }
 
   void _resolveDraft(_SegmentDraft draft) {
     final data = _transitData;
@@ -309,27 +256,207 @@ class _PassComparisonPrototypePageState
   }
 }
 
+class _SelectedPassSummary extends StatelessWidget {
+  const _SelectedPassSummary({
+    required this.product,
+    required this.onChangeProduct,
+  });
+
+  final PassProduct product;
+  final ValueChanged<PassProduct> onChangeProduct;
+
+  @override
+  Widget build(BuildContext context) => AppSurface(
+    padding: const EdgeInsets.all(14),
+    child: Column(
+      children: [
+        Row(
+          children: [
+            Container(
+              width: 38,
+              height: 38,
+              decoration: BoxDecoration(
+                color: AppColors.skySoft,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(
+                product.isTokyoSubwayTicket
+                    ? Icons.subway_outlined
+                    : Icons.train_outlined,
+                color: AppColors.skyDark,
+              ),
+            ),
+            const SizedBox(width: 11),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    product.isTokyoSubwayTicket
+                        ? 'Tokyo Subway Ticket'
+                        : product.label,
+                    style: const TextStyle(fontWeight: FontWeight.w800),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    '¥${product.price}',
+                    style: const TextStyle(
+                      color: AppColors.skyDark,
+                      fontSize: 13,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        if (product.isTokyoSubwayTicket) ...[
+          const SizedBox(height: 10),
+          _TicketDurationSelector(value: product, onChanged: onChangeProduct),
+        ],
+      ],
+    ),
+  );
+}
+
+class _TicketDurationSelector extends StatelessWidget {
+  const _TicketDurationSelector({required this.value, required this.onChanged});
+
+  final PassProduct value;
+  final ValueChanged<PassProduct> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    const products = [
+      PassProduct.tokyoSubway24,
+      PassProduct.tokyoSubway48,
+      PassProduct.tokyoSubway72,
+    ];
+    return Row(
+      children: [
+        for (var index = 0; index < products.length; index++) ...[
+          Expanded(
+            child: _DurationOption(
+              product: products[index],
+              selected: products[index] == value,
+              onTap: () => onChanged(products[index]),
+            ),
+          ),
+          if (index != products.length - 1) const SizedBox(width: 7),
+        ],
+      ],
+    );
+  }
+}
+
+class _DurationOption extends StatelessWidget {
+  const _DurationOption({
+    required this.product,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final PassProduct product;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+    button: true,
+    selected: selected,
+    label: '${product.duration.inHours}시간권 ${product.price}엔',
+    child: InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(11),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 9),
+        decoration: BoxDecoration(
+          color: selected ? AppColors.skyDark : AppColors.skySoft,
+          borderRadius: BorderRadius.circular(11),
+        ),
+        child: Column(
+          children: [
+            Text(
+              '${product.duration.inHours}시간',
+              style: TextStyle(
+                color: selected ? Colors.white : AppColors.skyDark,
+                fontSize: 12,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              '¥${product.price}',
+              style: TextStyle(
+                color: selected
+                    ? Colors.white.withValues(alpha: .86)
+                    : AppColors.skyDark,
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+class _PlannerFootnote extends StatelessWidget {
+  const _PlannerFootnote();
+
+  @override
+  Widget build(BuildContext context) => const Row(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Icon(Icons.info_outline_rounded, size: 16, color: AppColors.muted),
+      SizedBox(width: 6),
+      Expanded(
+        child: Text(
+          '실제로 개찰을 통과해 하차한 역을 입력해 주세요. 확인되지 않은 운임은 계산하지 않습니다.',
+          style: TextStyle(color: AppColors.muted, fontSize: 12, height: 1.35),
+        ),
+      ),
+    ],
+  );
+}
+
 class _SegmentDraft {
-  _SegmentDraft({required this.id, required this.departureAt})
+  _SegmentDraft({required this.id, required this.dayIndex})
     : fromController = TextEditingController(),
       toController = TextEditingController();
 
   final int id;
   final TextEditingController fromController;
   final TextEditingController toController;
-  final FocusNode fromFocusNode = FocusNode();
-  final FocusNode toFocusNode = FocusNode();
   PassStation? fromStation;
   PassStation? toStation;
   int? resolvedFare;
-  DateTime departureAt;
+  int dayIndex;
   TransitCoverage coverage = TransitCoverage.tokyoMetro;
 
   void dispose() {
     fromController.dispose();
     toController.dispose();
-    fromFocusNode.dispose();
-    toFocusNode.dispose();
+  }
+
+  void clearStations() {
+    fromStation = null;
+    toStation = null;
+    resolvedFare = null;
+    fromController.clear();
+    toController.clear();
+  }
+
+  void swapStations() {
+    final previousFromStation = fromStation;
+    final previousFromText = fromController.text;
+    fromStation = toStation;
+    fromController.text = toController.text;
+    toStation = previousFromStation;
+    toController.text = previousFromText;
+    resolvedFare = null;
   }
 }
 
@@ -338,8 +465,11 @@ class _SegmentEditor extends StatelessWidget {
     required this.index,
     required this.draft,
     required this.data,
+    required this.product,
+    required this.maxDayCount,
     required this.canRemove,
     required this.onChanged,
+    required this.onSwap,
     required this.onRemove,
     super.key,
   });
@@ -347,275 +477,607 @@ class _SegmentEditor extends StatelessWidget {
   final int index;
   final _SegmentDraft draft;
   final PassTransitData? data;
+  final PassProduct product;
+  final int maxDayCount;
   final bool canRemove;
   final VoidCallback onChanged;
+  final VoidCallback onSwap;
   final VoidCallback onRemove;
 
   @override
-  Widget build(BuildContext context) => AppSurface(
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Container(
-              width: 30,
-              height: 30,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: AppColors.skySoft,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Text(
-                '${index + 1}',
-                style: const TextStyle(
-                  color: AppColors.skyDark,
-                  fontWeight: FontWeight.w900,
-                ),
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Row(
+        children: [
+          Container(
+            width: 28,
+            height: 28,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: AppColors.skySoft,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Text(
+              '${index + 1}',
+              style: const TextStyle(
+                color: AppColors.skyDark,
+                fontWeight: FontWeight.w900,
               ),
             ),
-            const SizedBox(width: 10),
-            const Expanded(
-              child: Text(
-                '이동 구간',
-                style: TextStyle(fontWeight: FontWeight.w800),
-              ),
+          ),
+          const SizedBox(width: 9),
+          const Expanded(
+            child: Text('이동 구간', style: TextStyle(fontWeight: FontWeight.w800)),
+          ),
+          if (canRemove)
+            IconButton(
+              tooltip: '구간 삭제',
+              onPressed: onRemove,
+              visualDensity: VisualDensity.compact,
+              constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+              icon: const Icon(Icons.delete_outline_rounded),
             ),
-            if (canRemove)
-              IconButton(
-                tooltip: '구간 삭제',
-                onPressed: onRemove,
-                icon: const Icon(Icons.delete_outline_rounded),
-              ),
-          ],
-        ),
-        const SizedBox(height: 12),
-        LayoutBuilder(
-          builder: (context, constraints) {
-            final inline = constraints.maxWidth >= 560;
-            final fromField = _StationAutocomplete(
+        ],
+      ),
+      const SizedBox(height: 9),
+      Row(
+        children: [
+          Expanded(
+            child: _StationPickerField(
               controller: draft.fromController,
-              focusNode: draft.fromFocusNode,
+              station: draft.fromStation,
               label: '출발역',
               data: data,
-              onChanged: () {
-                draft.fromStation = null;
-                draft.resolvedFare = null;
-                onChanged();
-              },
+              product: product,
               onSelected: (station) {
+                draft.fromController.text = station.displayName;
                 draft.fromStation = station;
                 onChanged();
               },
-            );
-            final toField = _StationAutocomplete(
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 5),
+            child: IconButton(
+              key: ValueKey('segment-swap-$index'),
+              tooltip: '출발역과 도착역 바꾸기',
+              onPressed: onSwap,
+              visualDensity: VisualDensity.compact,
+              constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+              style: IconButton.styleFrom(
+                foregroundColor: AppColors.skyDark,
+                backgroundColor: AppColors.skySoft,
+              ),
+              icon: const Icon(Icons.swap_horiz_rounded, size: 20),
+            ),
+          ),
+          Expanded(
+            child: _StationPickerField(
               controller: draft.toController,
-              focusNode: draft.toFocusNode,
+              station: draft.toStation,
               label: '도착역',
               data: data,
-              onChanged: () {
-                draft.toStation = null;
-                draft.resolvedFare = null;
-                onChanged();
-              },
+              product: product,
               onSelected: (station) {
+                draft.toController.text = station.displayName;
                 draft.toStation = station;
                 onChanged();
               },
-            );
-            return inline
-                ? Row(
-                    children: [
-                      Expanded(child: fromField),
-                      const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8),
-                        child: Icon(Icons.arrow_forward_rounded, size: 20),
-                      ),
-                      Expanded(child: toField),
-                    ],
-                  )
-                : Column(
-                    children: [
-                      fromField,
-                      const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 7),
-                        child: Icon(Icons.arrow_downward_rounded, size: 20),
-                      ),
-                      toField,
-                    ],
-                  );
-          },
-        ),
-        const SizedBox(height: 12),
-        LayoutBuilder(
-          builder: (context, constraints) {
-            final inline = constraints.maxWidth >= 620;
-            final coverageField = InputDecorator(
-              decoration: const InputDecoration(labelText: '적용 구분'),
-              child: Text(
-                draft.resolvedFare == null
-                    ? '역 선택 후 자동 판정'
-                    : draft.coverage.label,
-              ),
-            );
-            final fareField = InputDecorator(
-              decoration: const InputDecoration(labelText: 'ODPT 성인 IC 운임'),
-              child: Text(
-                draft.resolvedFare == null
-                    ? '해당 운임 없음'
-                    : '¥${draft.resolvedFare}',
-              ),
-            );
-            final departureField = _DateTimeButton(
-              label: '출발 예정',
-              value: draft.departureAt,
-              onChanged: (value) {
-                draft.departureAt = value;
-                onChanged();
-              },
-            );
-            return inline
-                ? Row(
-                    children: [
-                      Expanded(child: coverageField),
-                      const SizedBox(width: 10),
-                      Expanded(child: fareField),
-                      const SizedBox(width: 10),
-                      Expanded(child: departureField),
-                    ],
-                  )
-                : Column(
-                    children: [
-                      coverageField,
-                      const SizedBox(height: 10),
-                      fareField,
-                      const SizedBox(height: 10),
-                      departureField,
-                    ],
-                  );
+            ),
+          ),
+        ],
+      ),
+      const SizedBox(height: 8),
+      _ResolvedFareSummary(draft: draft, product: product),
+      if (product.isTokyoSubwayTicket) ...[
+        const SizedBox(height: 9),
+        _DaySelector(
+          value: draft.dayIndex,
+          dayCount: maxDayCount,
+          onChanged: (value) {
+            draft.dayIndex = value;
+            onChanged();
           },
         ),
       ],
-    ),
+    ],
   );
 }
 
-class _StationAutocomplete extends StatelessWidget {
-  const _StationAutocomplete({
+class _ResolvedFareSummary extends StatelessWidget {
+  const _ResolvedFareSummary({required this.draft, required this.product});
+
+  final _SegmentDraft draft;
+  final PassProduct product;
+
+  @override
+  Widget build(BuildContext context) {
+    final fare = draft.resolvedFare;
+    if (fare == null) {
+      return const Row(
+        children: [
+          Icon(Icons.info_outline_rounded, size: 17, color: AppColors.muted),
+          SizedBox(width: 7),
+          Expanded(
+            child: Text(
+              '두 역을 선택하면 운임을 자동으로 확인합니다.',
+              style: TextStyle(color: AppColors.muted, fontSize: 12),
+            ),
+          ),
+        ],
+      );
+    }
+    final covered = draft.coverage.isCoveredBy(product);
+    final color = covered ? AppColors.success : AppColors.muted;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: .09),
+        borderRadius: BorderRadius.circular(11),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            covered
+                ? Icons.check_circle_outline_rounded
+                : Icons.info_outline_rounded,
+            size: 18,
+            color: color,
+          ),
+          const SizedBox(width: 7),
+          Expanded(
+            child: Text(
+              '성인 일반 운임 · ¥$fare',
+              style: TextStyle(
+                color: color,
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DaySelector extends StatelessWidget {
+  const _DaySelector({
+    required this.value,
+    required this.dayCount,
+    required this.onChanged,
+  });
+
+  final int value;
+  final int dayCount;
+  final ValueChanged<int> onChanged;
+
+  @override
+  Widget build(BuildContext context) => Row(
+    children: [
+      const Text('이용일', style: TextStyle(fontSize: 12, color: AppColors.muted)),
+      const SizedBox(width: 10),
+      for (var day = 0; day < dayCount; day++) ...[
+        ChoiceChip(
+          label: Text('${day + 1}일차'),
+          selected: day == value,
+          onSelected: (_) => onChanged(day),
+          labelStyle: TextStyle(
+            color: day == value ? Colors.white : AppColors.skyDark,
+            fontSize: 12,
+            fontWeight: FontWeight.w700,
+          ),
+          selectedColor: AppColors.skyDark,
+          backgroundColor: AppColors.skySoft,
+          side: BorderSide.none,
+          visualDensity: VisualDensity.compact,
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        ),
+        if (day != dayCount - 1) const SizedBox(width: 6),
+      ],
+    ],
+  );
+}
+
+class _StationPickerField extends StatelessWidget {
+  const _StationPickerField({
     required this.controller,
-    required this.focusNode,
+    required this.station,
     required this.label,
     required this.data,
-    required this.onChanged,
+    required this.product,
     required this.onSelected,
   });
 
   final TextEditingController controller;
-  final FocusNode focusNode;
+  final PassStation? station;
   final String label;
   final PassTransitData? data;
-  final VoidCallback onChanged;
+  final PassProduct product;
   final ValueChanged<PassStation> onSelected;
 
   @override
-  Widget build(BuildContext context) => RawAutocomplete<PassStation>(
-    textEditingController: controller,
-    focusNode: focusNode,
-    displayStringForOption: (option) => option.displayName,
-    optionsBuilder: (value) => data?.searchStations(value.text) ?? const [],
-    onSelected: onSelected,
-    fieldViewBuilder: (context, textController, fieldFocusNode, onSubmitted) =>
-        TextField(
-          controller: textController,
-          focusNode: fieldFocusNode,
-          onChanged: (_) => onChanged(),
-          onSubmitted: (_) => onSubmitted(),
-          decoration: InputDecoration(
-            labelText: label,
-            hintText: data == null ? '데이터 준비 중' : '예: 시부야, ㅅㅂㅇ',
-            suffixIcon: const Icon(Icons.search_rounded),
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final empty = controller.text.isEmpty;
+    final radius = BorderRadius.circular(14);
+    final fieldColor = Theme.of(context).brightness == Brightness.dark
+        ? colorScheme.surface
+        : Colors.white;
+    final fieldHeight = station == null ? 60.0 : 76.0;
+    return Semantics(
+      button: true,
+      label: '$label 검색',
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          key: ValueKey('station-picker-$label'),
+          onTap: data == null ? null : () => _openSearch(context),
+          borderRadius: radius,
+          child: Ink(
+            decoration: BoxDecoration(
+              color: fieldColor,
+              borderRadius: radius,
+              border: Border.all(color: colorScheme.outlineVariant),
+            ),
+            child: SizedBox(
+              height: fieldHeight,
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        label.endsWith('역')
+                            ? label.substring(0, label.length - 1)
+                            : label,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: colorScheme.onSurfaceVariant,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        empty
+                            ? data == null
+                                  ? '데이터 준비 중'
+                                  : '역 선택'
+                            : controller.text,
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: AppColors.skyDark,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      if (station != null) ...[
+                        const SizedBox(height: 2),
+                        Text(
+                          _passOperatorLabel(station!),
+                          textAlign: TextAlign.center,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.labelSmall,
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ),
+            ),
           ),
         ),
-    optionsViewBuilder: (context, select, options) {
-      final items = options.toList(growable: false);
-      return Align(
-        alignment: Alignment.topLeft,
-        child: Material(
-          elevation: 8,
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          clipBehavior: Clip.antiAlias,
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 420, maxHeight: 320),
-            child: ListView.separated(
+      ),
+    );
+  }
+
+  Future<void> _openSearch(BuildContext context) async {
+    final transitData = data;
+    if (transitData == null) return;
+    final station = await Navigator.of(context).push<PassStation>(
+      MaterialPageRoute<PassStation>(
+        builder: (_) => _StationSearchPage(
+          title: '$label 선택',
+          data: transitData,
+          product: product,
+        ),
+      ),
+    );
+    if (station != null) onSelected(station);
+  }
+}
+
+class _StationSearchPage extends StatefulWidget {
+  const _StationSearchPage({
+    required this.title,
+    required this.data,
+    required this.product,
+  });
+
+  final String title;
+  final PassTransitData data;
+  final PassProduct product;
+
+  @override
+  State<_StationSearchPage> createState() => _StationSearchPageState();
+}
+
+String _passOperatorLabel(PassStation station) => station.operators.isEmpty
+    ? '운영사 정보 없음'
+    : station.operators.map(_passOperatorDisplayName).join(' · ');
+
+String _passOperatorDisplayName(String operator) => switch (operator) {
+  'odpt.Operator:TokyoMetro' => '도쿄메트로',
+  'odpt.Operator:Toei' => '도에이 지하철',
+  'odpt.Operator:JR-East' => 'JR 동일본',
+  _ => operator,
+};
+
+class _StationSearchPageState extends State<_StationSearchPage> {
+  final TextEditingController _controller = TextEditingController();
+  List<PassStation> _results = const [];
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _search(String query) {
+    setState(() {
+      _results = query.trim().isEmpty
+          ? const []
+          : widget.data.searchStations(query, product: widget.product);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(
+      title: Text(widget.title),
+      bottom: PreferredSize(
+        preferredSize: const Size.fromHeight(78),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 4, 20, 14),
+          child: TextField(
+            key: const ValueKey('station-search-field'),
+            controller: _controller,
+            autofocus: true,
+            textInputAction: TextInputAction.search,
+            onChanged: _search,
+            decoration: InputDecoration(
+              hintText: '역 이름을 검색해 주세요',
+              prefixIcon: const Icon(Icons.search_rounded),
+              suffixIcon: _controller.text.isEmpty
+                  ? null
+                  : IconButton(
+                      tooltip: '검색어 지우기',
+                      onPressed: () {
+                        _controller.clear();
+                        _search('');
+                      },
+                      icon: const Icon(Icons.close_rounded),
+                    ),
+              filled: true,
+              fillColor: Theme.of(context).colorScheme.surface,
+              isDense: true,
+              contentPadding: const EdgeInsets.symmetric(vertical: 15),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: BorderSide.none,
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: BorderSide(
+                  color: Theme.of(context).colorScheme.outlineVariant,
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: const BorderSide(
+                  color: AppColors.skyDark,
+                  width: 1.4,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    ),
+    body: SafeArea(
+      top: false,
+      child: _controller.text.trim().isEmpty
+          ? const _StationSearchEmptyState(
+              icon: Icons.search_rounded,
+              title: '찾고 싶은 역을 입력해 주세요',
+              description: '한국어·초성·일본어·영어로 검색할 수 있습니다.',
+            )
+          : _results.isEmpty
+          ? const _StationSearchEmptyState(
+              icon: Icons.location_off_outlined,
+              title: '일치하는 역을 찾지 못했어요',
+              description: '다른 표기나 초성으로 다시 검색해 주세요.',
+            )
+          : ListView.separated(
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               padding: const EdgeInsets.symmetric(vertical: 6),
-              shrinkWrap: true,
-              itemCount: items.length,
+              itemCount: _results.length,
               separatorBuilder: (_, _) => const Divider(height: 1),
               itemBuilder: (context, index) {
-                final station = items[index];
+                final station = _results[index];
                 return ListTile(
-                  leading: const Icon(
-                    Icons.subway_outlined,
-                    color: AppColors.skyDark,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 6,
+                  ),
+                  leading: Container(
+                    width: 42,
+                    height: 42,
+                    decoration: BoxDecoration(
+                      color: AppColors.skySoft,
+                      borderRadius: BorderRadius.circular(13),
+                    ),
+                    child: const Icon(
+                      Icons.subway_outlined,
+                      color: AppColors.skyDark,
+                    ),
                   ),
                   title: Text(
                     station.displayName,
-                    style: const TextStyle(fontWeight: FontWeight.w700),
+                    style: const TextStyle(fontWeight: FontWeight.w800),
                   ),
                   subtitle: station.secondaryLabel.isEmpty
                       ? null
                       : Text(station.secondaryLabel),
-                  onTap: () => select(station),
+                  trailing: const Icon(Icons.chevron_right_rounded),
+                  onTap: () => Navigator.of(context).pop(station),
                 );
               },
             ),
-          ),
-        ),
-      );
-    },
+    ),
   );
 }
 
-class _DateTimeButton extends StatelessWidget {
-  const _DateTimeButton({
-    required this.label,
-    required this.value,
-    required this.onChanged,
+class _StationSearchEmptyState extends StatelessWidget {
+  const _StationSearchEmptyState({
+    required this.icon,
+    required this.title,
+    required this.description,
   });
 
-  final String label;
-  final DateTime value;
-  final ValueChanged<DateTime> onChanged;
+  final IconData icon;
+  final String title;
+  final String description;
 
   @override
-  Widget build(BuildContext context) => InkWell(
-    borderRadius: BorderRadius.circular(14),
-    onTap: () => _pick(context),
-    child: InputDecorator(
-      decoration: InputDecoration(
-        labelText: label,
-        prefixIcon: const Icon(Icons.schedule_rounded),
+  Widget build(BuildContext context) => Center(
+    child: Padding(
+      padding: const EdgeInsets.all(32),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 58,
+            height: 58,
+            decoration: const BoxDecoration(
+              color: AppColors.skySoft,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: AppColors.skyDark, size: 29),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            description,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+              height: 1.4,
+            ),
+          ),
+        ],
       ),
-      child: Text(_formatDateTime(value)),
     ),
   );
+}
 
-  Future<void> _pick(BuildContext context) async {
-    final date = await showDatePicker(
-      context: context,
-      initialDate: value,
-      firstDate: DateTime(2025),
-      lastDate: DateTime(2035),
-    );
-    if (date == null || !context.mounted) return;
-    final time = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.fromDateTime(value),
-    );
-    if (time == null) return;
-    onChanged(
-      DateTime(date.year, date.month, date.day, time.hour, time.minute),
+class PassComparisonResultPage extends StatelessWidget {
+  const PassComparisonResultPage({required this.result, super.key});
+
+  final PassComparisonResult result;
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(title: const Text('비교 결과')),
+    body: SafeArea(
+      top: false,
+      child: ListView(
+        padding: const EdgeInsets.fromLTRB(20, 18, 20, 32),
+        children: [
+          const _ResultProgress(),
+          const SizedBox(height: 24),
+          _ResultPanel(result: result),
+          const SizedBox(height: 16),
+          OutlinedButton.icon(
+            onPressed: () => Navigator.of(context).pop(),
+            icon: const Icon(Icons.edit_outlined),
+            label: const Text('이동 계획 수정'),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+class _PlannerProgress extends StatelessWidget {
+  const _PlannerProgress();
+
+  @override
+  Widget build(BuildContext context) => const _ProgressBar(activeStep: 2);
+}
+
+class _ResultProgress extends StatelessWidget {
+  const _ResultProgress();
+
+  @override
+  Widget build(BuildContext context) => const _ProgressBar(activeStep: 3);
+}
+
+class _ProgressBar extends StatelessWidget {
+  const _ProgressBar({required this.activeStep});
+
+  final int activeStep;
+
+  @override
+  Widget build(BuildContext context) {
+    const labels = ['패스 선택', '이용 계획', '비교 결과'];
+    return Row(
+      children: [
+        for (var index = 0; index < labels.length; index++) ...[
+          Expanded(
+            child: Column(
+              children: [
+                Container(
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: index + 1 <= activeStep
+                        ? AppColors.skyDark
+                        : AppColors.skySoft,
+                    borderRadius: BorderRadius.circular(99),
+                  ),
+                ),
+                const SizedBox(height: 7),
+                Text(
+                  '${index + 1}. ${labels[index]}',
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: index + 1 == activeStep
+                        ? AppColors.skyDark
+                        : Theme.of(context).colorScheme.onSurfaceVariant,
+                    fontSize: 11,
+                    fontWeight: index + 1 == activeStep
+                        ? FontWeight.w800
+                        : FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (index != labels.length - 1) const SizedBox(width: 5),
+        ],
+      ],
     );
   }
 }
@@ -653,12 +1115,43 @@ class _ResultPanel extends StatelessWidget {
         Icons.route_outlined,
       ),
     };
+    if (result.verdict == PassComparisonVerdict.insufficientData) {
+      return AppSurface(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: AppColors.skySoft,
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.route_outlined, color: AppColors.skyDark),
+            ),
+            const SizedBox(height: 14),
+            const Text(
+              '아직 비교할 이동이 없어요',
+              style: TextStyle(fontSize: 21, fontWeight: FontWeight.w800),
+            ),
+            const SizedBox(height: 5),
+            Text(
+              '출발역과 도착역을 선택한 이동 구간을 추가하면 손익을 계산합니다.',
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                height: 1.4,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SectionLabel('비교 결과'),
         AppSurface(
-          padding: const EdgeInsets.all(22),
+          padding: const EdgeInsets.all(20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -682,7 +1175,7 @@ class _ResultPanel extends StatelessWidget {
               ),
               const SizedBox(height: 5),
               Text(description, style: TextStyle(color: color, fontSize: 16)),
-              const SizedBox(height: 22),
+              const SizedBox(height: 18),
               _MoneyRow(
                 label: '패스 적용 구간 일반 운임',
                 value: result.coveredRegularFare,
@@ -700,7 +1193,7 @@ class _ResultPanel extends StatelessWidget {
                 signed: true,
                 emphasized: true,
               ),
-              const SizedBox(height: 18),
+              const SizedBox(height: 14),
               DecoratedBox(
                 decoration: BoxDecoration(
                   color: AppColors.skySoft,
@@ -709,9 +1202,7 @@ class _ResultPanel extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(14),
                   child: Text(
-                    '${_formatDateTime(result.validFrom)}부터 '
-                    '${_formatDateTime(result.validUntil)} 전까지 · '
-                    '${result.coveredSegmentCount}개 구간 적용',
+                    _validitySummary(result),
                     style: const TextStyle(
                       color: AppColors.skyDark,
                       fontWeight: FontWeight.w700,
@@ -731,7 +1222,11 @@ class _ResultPanel extends StatelessWidget {
               : Column(
                   children: [
                     for (var i = 0; i < result.segments.length; i++) ...[
-                      _SegmentResultTile(item: result.segments[i]),
+                      _SegmentResultTile(
+                        item: result.segments[i],
+                        product: result.product,
+                        validFrom: result.validFrom,
+                      ),
                       if (i != result.segments.length - 1)
                         const Divider(height: 22),
                     ],
@@ -742,11 +1237,18 @@ class _ResultPanel extends StatelessWidget {
         const NoticeBanner(
           title: '결과 사용 시 주의',
           text:
-              '현재는 사용자가 입력한 운임을 기준으로 계산합니다. 패스 구매 전 공식 운임과 상품 구매 조건을 다시 확인해 주세요.',
+              'Metro↔도에이 구간은 공식 지정 환승역·60분 이내 환승·70엔 할인을 전제로 계산합니다. 패스 구매 전 공식 운임과 상품 구매 조건을 다시 확인해 주세요.',
           tone: NoticeTone.warning,
         ),
       ],
     );
+  }
+
+  String _validitySummary(PassComparisonResult result) {
+    final range = result.product.isTokyoSubwayTicket
+        ? '${result.product.duration.inHours}시간권'
+        : '1일권';
+    return '$range · ${result.coveredSegmentCount}개 구간 적용';
   }
 }
 
@@ -798,9 +1300,15 @@ class _MoneyRow extends StatelessWidget {
 }
 
 class _SegmentResultTile extends StatelessWidget {
-  const _SegmentResultTile({required this.item});
+  const _SegmentResultTile({
+    required this.item,
+    required this.product,
+    required this.validFrom,
+  });
 
   final SegmentEvaluation item;
+  final PassProduct product;
+  final DateTime validFrom;
 
   @override
   Widget build(BuildContext context) {
@@ -825,7 +1333,7 @@ class _SegmentResultTile extends StatelessWidget {
               const SizedBox(height: 3),
               Text(
                 '${item.segment.coverage.label} · '
-                '${_formatDateTime(item.segment.departureAt)}',
+                '${_usageDayLabel()}',
                 style: Theme.of(context).textTheme.bodySmall,
               ),
             ],
@@ -846,13 +1354,8 @@ class _SegmentResultTile extends StatelessWidget {
       ],
     );
   }
-}
 
-String _formatDateTime(DateTime value) {
-  String two(int number) => number.toString().padLeft(2, '0');
-  return '${value.month}/${value.day} ${two(value.hour)}:${two(value.minute)}';
+  String _usageDayLabel() => product.isTokyoSubwayTicket
+      ? '${item.segment.departureAt.difference(validFrom).inDays + 1}일차'
+      : '1일차';
 }
-
-String _formatDate(DateTime value) =>
-    '${value.year}.${value.month.toString().padLeft(2, '0')}.'
-    '${value.day.toString().padLeft(2, '0')}';

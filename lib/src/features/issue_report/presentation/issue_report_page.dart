@@ -425,6 +425,11 @@ class _IssueReportPageState extends State<IssueReportPage> {
                       '입력 없음',
                 ),
                 const Divider(),
+                DetailLine(
+                  label: '파서 확인 승차역 노선',
+                  value: widget.stations?.boarding.station?.lineName ?? 'null',
+                ),
+                const Divider(),
               ],
               if (_needsAlightingStationScope) ...[
                 DetailLine(
@@ -432,6 +437,11 @@ class _IssueReportPageState extends State<IssueReportPage> {
                   value:
                       _optionalText(_koreanAlightingStationNameController) ??
                       '입력 없음',
+                ),
+                const Divider(),
+                DetailLine(
+                  label: '파서 확인 하차역 노선',
+                  value: widget.stations?.alighting.station?.lineName ?? 'null',
                 ),
                 const Divider(),
               ],
@@ -578,6 +588,14 @@ class _IssueReportPageState extends State<IssueReportPage> {
       suggestedKoreanAlightingStationName:
           _isKoreanStationNameIssue && _needsAlightingStationScope
           ? _optionalText(_koreanAlightingStationNameController)
+          : null,
+      currentBoardingLineName:
+          _isKoreanStationNameIssue && _needsBoardingStationScope
+          ? widget.stations?.boarding.station?.lineName
+          : null,
+      currentAlightingLineName:
+          _isKoreanStationNameIssue && _needsAlightingStationScope
+          ? widget.stations?.alighting.station?.lineName
           : null,
       currentTransactionType: widget.history.transactionType.wireName,
       suggestedTransactionType: _issue == '거래 유형이 잘못됨'

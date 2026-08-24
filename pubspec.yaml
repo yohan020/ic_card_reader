@@ -25,5 +25,8 @@ flutter:
   uses-material-design: true
   assets:
     - assets/data/pass_comparison/
-    - assets/data/stations/
+    - assets/data/stations/yoiko_station_codes.csv
+    - assets/data/stations/verified_station_overrides.csv
+    - assets/data/stations/station_names_ko_by_code.csv
+    - assets/data/stations/manual_station_names_ko_by_code.csv
     - assets/licenses/
