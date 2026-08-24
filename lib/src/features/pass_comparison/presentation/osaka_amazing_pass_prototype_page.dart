@@ -274,12 +274,12 @@ class _OsakaSelectedPassSummary extends StatelessWidget {
               width: 38,
               height: 38,
               decoration: BoxDecoration(
-                color: AppColors.skySoft,
+                color: AppColors.softSurface(context),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.confirmation_number_outlined,
-                color: AppColors.skyDark,
+                color: AppColors.accent(context),
               ),
             ),
             const SizedBox(width: 11),
@@ -294,8 +294,8 @@ class _OsakaSelectedPassSummary extends StatelessWidget {
                   const SizedBox(height: 2),
                   Text(
                     '¥${value.price}',
-                    style: const TextStyle(
-                      color: AppColors.skyDark,
+                    style: TextStyle(
+                      color: AppColors.accent(context),
                       fontSize: 13,
                     ),
                   ),
@@ -353,7 +353,7 @@ class _OsakaDurationOption extends StatelessWidget {
         duration: const Duration(milliseconds: 180),
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 9),
         decoration: BoxDecoration(
-          color: selected ? AppColors.skyDark : AppColors.skySoft,
+          color: selected ? AppColors.skyDark : AppColors.softSurface(context),
           borderRadius: BorderRadius.circular(11),
         ),
         child: Column(
@@ -361,7 +361,7 @@ class _OsakaDurationOption extends StatelessWidget {
             Text(
               '${product.dayCount}일권',
               style: TextStyle(
-                color: selected ? Colors.white : AppColors.skyDark,
+                color: selected ? Colors.white : AppColors.accent(context),
                 fontSize: 12,
                 fontWeight: FontWeight.w800,
               ),
@@ -372,7 +372,7 @@ class _OsakaDurationOption extends StatelessWidget {
               style: TextStyle(
                 color: selected
                     ? Colors.white.withValues(alpha: .86)
-                    : AppColors.skyDark,
+                    : AppColors.accent(context),
                 fontSize: 11,
                 fontWeight: FontWeight.w600,
               ),
@@ -418,13 +418,13 @@ class _SegmentCard extends StatelessWidget {
               height: 28,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: AppColors.skySoft,
+                color: AppColors.softSurface(context),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Text(
                 '${index + 1}',
-                style: const TextStyle(
-                  color: AppColors.skyDark,
+                style: TextStyle(
+                  color: AppColors.accent(context),
                   fontWeight: FontWeight.w900,
                 ),
               ),
@@ -471,8 +471,8 @@ class _SegmentCard extends StatelessWidget {
                 visualDensity: VisualDensity.compact,
                 constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
                 style: IconButton.styleFrom(
-                  foregroundColor: AppColors.skyDark,
-                  backgroundColor: AppColors.skySoft,
+                  foregroundColor: AppColors.accent(context),
+                  backgroundColor: AppColors.softSurface(context),
                 ),
                 icon: const Icon(Icons.swap_horiz_rounded, size: 20),
               ),
@@ -566,7 +566,8 @@ class _StationButton extends StatelessWidget {
             },
       style: OutlinedButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-        side: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
+        backgroundColor: AppColors.fieldSurface(context),
+        side: BorderSide(color: AppColors.outline(context)),
         foregroundColor: Theme.of(context).colorScheme.onSurface,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       ),
@@ -579,8 +580,8 @@ class _StationButton extends StatelessWidget {
             station?.displayName ?? '역 선택',
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              color: AppColors.skyDark,
+            style: TextStyle(
+              color: AppColors.accent(context),
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -613,14 +614,21 @@ class _OsakaResolvedFareSummary extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (!hasBothStations) {
-      return const Row(
+      return Row(
         children: [
-          Icon(Icons.info_outline_rounded, size: 17, color: AppColors.muted),
-          SizedBox(width: 7),
+          Icon(
+            Icons.info_outline_rounded,
+            size: 17,
+            color: AppColors.mutedText(context),
+          ),
+          const SizedBox(width: 7),
           Expanded(
             child: Text(
               '두 역을 선택하면 운임을 자동으로 확인합니다.',
-              style: TextStyle(color: AppColors.muted, fontSize: 12),
+              style: TextStyle(
+                color: AppColors.mutedText(context),
+                fontSize: 12,
+              ),
             ),
           ),
         ],
@@ -630,17 +638,20 @@ class _OsakaResolvedFareSummary extends StatelessWidget {
     if (resolvedRoute == null) {
       return Row(
         children: [
-          const Icon(
+          Icon(
             Icons.info_outline_rounded,
             size: 17,
-            color: AppColors.muted,
+            color: AppColors.mutedText(context),
           ),
           const SizedBox(width: 7),
           Expanded(
             child: Text(
               '지원 데이터에서 경로를 확인할 수 없습니다.',
               key: ValueKey('osaka-segment-fare-$index'),
-              style: const TextStyle(color: AppColors.muted, fontSize: 12),
+              style: TextStyle(
+                color: AppColors.mutedText(context),
+                fontSize: 12,
+              ),
             ),
           ),
         ],
@@ -694,7 +705,10 @@ class _OsakaDaySelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Row(
     children: [
-      const Text('이용일', style: TextStyle(fontSize: 12, color: AppColors.muted)),
+      Text(
+        '이용일',
+        style: TextStyle(fontSize: 12, color: AppColors.mutedText(context)),
+      ),
       const SizedBox(width: 10),
       for (var day = 0; day < dayCount; day++) ...[
         ChoiceChip(
@@ -702,12 +716,12 @@ class _OsakaDaySelector extends StatelessWidget {
           selected: day == value,
           onSelected: (_) => onChanged(day),
           labelStyle: TextStyle(
-            color: day == value ? Colors.white : AppColors.skyDark,
+            color: day == value ? Colors.white : AppColors.accent(context),
             fontSize: 12,
             fontWeight: FontWeight.w700,
           ),
           selectedColor: AppColors.skyDark,
-          backgroundColor: AppColors.skySoft,
+          backgroundColor: AppColors.softSurface(context),
           side: BorderSide.none,
           visualDensity: VisualDensity.compact,
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -722,15 +736,23 @@ class _OsakaPlannerFootnote extends StatelessWidget {
   const _OsakaPlannerFootnote();
 
   @override
-  Widget build(BuildContext context) => const Row(
+  Widget build(BuildContext context) => Row(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Icon(Icons.info_outline_rounded, size: 16, color: AppColors.muted),
-      SizedBox(width: 6),
+      Icon(
+        Icons.info_outline_rounded,
+        size: 16,
+        color: AppColors.mutedText(context),
+      ),
+      const SizedBox(width: 6),
       Expanded(
         child: Text(
           '실제로 개찰을 통과해 하차한 역을 입력해 주세요. 추천 경로는 시간표 기반 최속 경로가 아닙니다.',
-          style: TextStyle(color: AppColors.muted, fontSize: 12, height: 1.35),
+          style: TextStyle(
+            color: AppColors.mutedText(context),
+            fontSize: 12,
+            height: 1.35,
+          ),
         ),
       ),
     ],
@@ -1147,7 +1169,7 @@ class _PrototypeProgress extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: index + 1 <= activeStep
                         ? AppColors.skyDark
-                        : AppColors.skySoft,
+                        : AppColors.softSurface(context),
                     borderRadius: BorderRadius.circular(99),
                   ),
                 ),
@@ -1156,7 +1178,7 @@ class _PrototypeProgress extends StatelessWidget {
                   '${index + 1}. ${labels[index]}',
                   style: TextStyle(
                     color: index + 1 == activeStep
-                        ? AppColors.skyDark
+                        ? AppColors.accent(context)
                         : Theme.of(context).colorScheme.onSurfaceVariant,
                     fontSize: 11,
                     fontWeight: index + 1 == activeStep
