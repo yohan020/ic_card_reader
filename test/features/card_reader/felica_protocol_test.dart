@@ -35,6 +35,19 @@ void main() {
     );
   });
 
+  test('builds a little-endian 108F service read command', () {
+    final command = FelicaProtocol.buildReadWithoutEncryptionCommand(
+      idm: idm,
+      blockIndex: 0,
+      serviceCode: 0x108F,
+    );
+
+    expect(
+      command.sublist(10),
+      Uint8List.fromList([1, 0x8F, 0x10, 1, 0x80, 0]),
+    );
+  });
+
   test('accepts a valid read response and extracts exactly 16 bytes', () {
     final block = List<int>.generate(16, (index) => index + 16);
     final response = Uint8List.fromList([29, 0x07, ...idm, 0, 0, 1, ...block]);

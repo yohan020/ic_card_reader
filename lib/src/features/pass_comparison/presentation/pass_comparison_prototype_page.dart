@@ -1015,7 +1015,9 @@ class PassComparisonResultPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('비교 결과')),
+    appBar: AppBar(
+      title: const Text('비교 결과', style: TextStyle(fontWeight: FontWeight.w700)),
+    ),
     body: SafeArea(
       top: false,
       child: ListView(
@@ -1148,7 +1150,7 @@ class _ResultPanel extends StatelessWidget {
             const SizedBox(height: 14),
             const Text(
               '아직 비교할 이동이 없어요',
-              style: TextStyle(fontSize: 21, fontWeight: FontWeight.w800),
+              style: TextStyle(fontSize: 21, fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 5),
             Text(
@@ -1184,7 +1186,7 @@ class _ResultPanel extends StatelessWidget {
                 title,
                 style: const TextStyle(
                   fontSize: 23,
-                  fontWeight: FontWeight.w900,
+                  fontWeight: FontWeight.w700,
                   letterSpacing: -0.6,
                 ),
               ),

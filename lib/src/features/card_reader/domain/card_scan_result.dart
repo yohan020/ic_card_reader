@@ -1,10 +1,16 @@
 import 'raw_history_block.dart';
+import 'current_gate_travel.dart';
 
 class CardScanResult {
-  const CardScanResult({required this.scannedAt, required this.blocks});
+  const CardScanResult({
+    required this.scannedAt,
+    required this.blocks,
+    this.currentGateTravel,
+  });
 
   final DateTime scannedAt;
   final List<RawHistoryBlock> blocks;
+  final CurrentGateTravel? currentGateTravel;
 }
 
 enum CardScanFailureKind {
