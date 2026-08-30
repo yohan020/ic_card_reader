@@ -9,6 +9,7 @@ final class FelicaProtocol {
   static Uint8List buildReadWithoutEncryptionCommand({
     required Uint8List idm,
     required int blockIndex,
+    int serviceCode = 0x090F,
   }) {
     if (idm.length != 8) {
       throw ArgumentError.value(idm.length, 'idm.length', 'must be 8');
@@ -16,15 +17,18 @@ final class FelicaProtocol {
     if (blockIndex < 0 || blockIndex >= felicaHistoryBlockLimit) {
       throw RangeError.range(blockIndex, 0, felicaHistoryBlockLimit - 1);
     }
+    if (serviceCode < 0 || serviceCode > 0xFFFF) {
+      throw RangeError.range(serviceCode, 0, 0xFFFF);
+    }
 
-    // Service code 0x090F is little-endian on the wire: 0F 09.
+    // FeliCa service codes are little-endian on the wire.
     final command = <int>[
       0,
       0x06,
       ...idm,
       0x01,
-      0x0F,
-      0x09,
+      serviceCode & 0xFF,
+      serviceCode >> 8,
       0x01,
       0x80,
       blockIndex,

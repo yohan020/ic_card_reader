@@ -7,6 +7,7 @@ import 'package:nfc_manager/nfc_manager_ios.dart';
 
 import '../domain/card_reader.dart';
 import '../domain/card_scan_result.dart';
+import '../domain/current_gate_travel.dart';
 import '../domain/felica_protocol.dart';
 import '../domain/raw_history_block.dart';
 
@@ -27,6 +28,13 @@ class NfcManagerCardReader implements CardReader {
 
   static final Uint8List _systemCode = Uint8List.fromList([0x00, 0x03]);
   static final Uint8List _historyServiceCode = Uint8List.fromList([0x0F, 0x09]);
+  static final Uint8List _gateHistoryServiceCode = Uint8List.fromList([
+    0x8F,
+    0x10,
+  ]);
+  static final Uint8List _sfEntryServiceCode = Uint8List.fromList([0xCB, 0x10]);
+  static const _gateHistoryService = 0x108F;
+  static const _sfEntryService = 0x10CB;
 
   final NfcManager _manager;
   final Stream<NfcAdapterStateAndroid>? _androidAdapterStates;
@@ -152,14 +160,14 @@ class NfcManagerCardReader implements CardReader {
   Future<void> _onDiscovered(NfcTag tag) async {
     if (_completed) return;
     try {
-      final blocks = await _readBlocks(tag);
-      if (blocks == null) {
+      final read = await _readBlocks(tag);
+      if (read == null) {
         throw const CardScanException(
           CardScanFailureKind.unsupportedTag,
           'NFC-F/FeliCa 교통계 IC 카드가 아닙니다.',
         );
       }
-      if (blocks.isEmpty) {
+      if (read.blocks.isEmpty && read.currentGateTravel == null) {
         throw const CardScanException(
           CardScanFailureKind.noHistory,
           '읽을 수 있는 이용내역이 없습니다.',
@@ -168,7 +176,8 @@ class NfcManagerCardReader implements CardReader {
       await _finish(
         result: CardScanResult(
           scannedAt: DateTime.now(),
-          blocks: List.unmodifiable(blocks),
+          blocks: List.unmodifiable(read.blocks),
+          currentGateTravel: read.currentGateTravel,
         ),
       );
     } on CardScanException catch (error) {
@@ -184,7 +193,7 @@ class NfcManagerCardReader implements CardReader {
     }
   }
 
-  Future<List<RawHistoryBlock>?> _readBlocks(NfcTag tag) async {
+  Future<_CardReadData?> _readBlocks(NfcTag tag) async {
     final android = NfcFAndroid.from(tag);
     if (android != null) return _readAndroid(android);
     final ios = FeliCaIos.from(tag);
@@ -192,7 +201,7 @@ class NfcManagerCardReader implements CardReader {
     return null;
   }
 
-  Future<List<RawHistoryBlock>> _readAndroid(NfcFAndroid tag) async {
+  Future<_CardReadData> _readAndroid(NfcFAndroid tag) async {
     // IDm is used transiently for FeliCa commands and is never returned,
     // persisted, or logged.
     final idm = Uint8List.fromList(tag.tag.id);
@@ -220,10 +229,13 @@ class NfcManagerCardReader implements CardReader {
       if (FelicaProtocol.isEmptyBlock(bytes)) break;
       blocks.add(RawHistoryBlock(index: index, bytes: bytes));
     }
-    return blocks;
+    return _CardReadData(
+      blocks: blocks,
+      currentGateTravel: await _readAndroidCurrentGateTravel(tag, idm),
+    );
   }
 
-  Future<List<RawHistoryBlock>> _readIos(FeliCaIos tag) async {
+  Future<_CardReadData> _readIos(FeliCaIos tag) async {
     await tag.polling(
       systemCode: _systemCode,
       requestCode: FeliCaPollingRequestCodeIos.systemCode,
@@ -261,7 +273,92 @@ class NfcManagerCardReader implements CardReader {
       if (FelicaProtocol.isEmptyBlock(bytes)) break;
       blocks.add(RawHistoryBlock(index: index, bytes: bytes));
     }
-    return blocks;
+    return _CardReadData(
+      blocks: blocks,
+      currentGateTravel: await _readIosCurrentGateTravel(tag),
+    );
+  }
+
+  Future<CurrentGateTravel?> _readAndroidCurrentGateTravel(
+    NfcFAndroid tag,
+    Uint8List idm,
+  ) async {
+    try {
+      final latestGateHistoryBlock = await _readAndroidServiceBlock(
+        tag,
+        idm: idm,
+        serviceCode: _gateHistoryService,
+      );
+      final sfEntryBlock = await _readAndroidServiceBlock(
+        tag,
+        idm: idm,
+        serviceCode: _sfEntryService,
+      );
+      return CurrentGateTravel.fromFeliCaServiceBlocks(
+        latestGateHistoryBlock: latestGateHistoryBlock,
+        sfEntryBlock: sfEntryBlock,
+      );
+    } catch (_) {
+      // Gate services are optional. A service read failure must not turn a
+      // successful 090F history read into a failed scan.
+      return null;
+    }
+  }
+
+  Future<Uint8List?> _readAndroidServiceBlock(
+    NfcFAndroid tag, {
+    required Uint8List idm,
+    required int serviceCode,
+  }) async {
+    final response = await tag.transceive(
+      FelicaProtocol.buildReadWithoutEncryptionCommand(
+        idm: idm,
+        blockIndex: 0,
+        serviceCode: serviceCode,
+      ),
+    );
+    return FelicaProtocol.parseReadWithoutEncryptionResponse(
+      response,
+      expectedIdm: idm,
+    );
+  }
+
+  Future<CurrentGateTravel?> _readIosCurrentGateTravel(FeliCaIos tag) async {
+    try {
+      final latestGateHistoryBlock = await _readIosServiceBlock(
+        tag,
+        serviceCode: _gateHistoryServiceCode,
+      );
+      final sfEntryBlock = await _readIosServiceBlock(
+        tag,
+        serviceCode: _sfEntryServiceCode,
+      );
+      return CurrentGateTravel.fromFeliCaServiceBlocks(
+        latestGateHistoryBlock: latestGateHistoryBlock,
+        sfEntryBlock: sfEntryBlock,
+      );
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<Uint8List?> _readIosServiceBlock(
+    FeliCaIos tag, {
+    required Uint8List serviceCode,
+  }) async {
+    final response = await tag.readWithoutEncryption(
+      serviceCodeList: [serviceCode],
+      blockList: [
+        Uint8List.fromList(const [0x80, 0]),
+      ],
+    );
+    if (response.statusFlag1 != 0 ||
+        response.statusFlag2 != 0 ||
+        response.blockData.length != 1 ||
+        response.blockData.first.length != felicaHistoryBlockLength) {
+      return null;
+    }
+    return Uint8List.fromList(response.blockData.first);
   }
 
   @override
@@ -310,4 +407,11 @@ class NfcManagerCardReader implements CardReader {
       }
     }
   }
+}
+
+class _CardReadData {
+  const _CardReadData({required this.blocks, this.currentGateTravel});
+
+  final List<RawHistoryBlock> blocks;
+  final CurrentGateTravel? currentGateTravel;
 }

@@ -19,6 +19,7 @@ import '../../transaction_history/presentation/transaction_history_labels.dart';
 import '../data/nfc_manager_card_reader.dart';
 import '../domain/card_reader.dart';
 import '../domain/card_scan_result.dart';
+import '../domain/current_gate_travel.dart';
 
 class CardReaderPage extends StatefulWidget {
   const CardReaderPage({
@@ -63,6 +64,8 @@ class _CardReaderPageState extends State<CardReaderPage> {
   bool _cancelRequested = false;
   Map<int, ResolvedStationPair> _stationPairs = const {};
   Map<int, StationResolution> _transactionLocations = const {};
+  CurrentGateTravel? _currentGateTravel;
+  StationResolution? _currentGateEntryStation;
   AppUpdateStatus _appUpdateStatus = const AppUpdateStatus.unknown();
   bool _isCheckingForUpdate = false;
   bool _isStartingUpdate = false;
@@ -92,10 +95,15 @@ class _CardReaderPageState extends State<CardReaderPage> {
       final histories = _historyParser.parse(result.blocks);
       Map<int, ResolvedStationPair> stationPairs = const {};
       Map<int, StationResolution> transactionLocations = const {};
+      StationResolution? currentGateEntryStation;
       try {
-        final locations = await _resolveLocations(histories);
+        final locations = await _resolveLocations(
+          histories,
+          result.currentGateTravel,
+        );
         stationPairs = locations.stationPairs;
         transactionLocations = locations.transactionLocations;
+        currentGateEntryStation = locations.currentGateEntryStation;
       } catch (_) {
         // Station enrichment must never turn a successful NFC read into an
         // error. Raw codes remain available as the safe fallback.
@@ -105,6 +113,8 @@ class _CardReaderPageState extends State<CardReaderPage> {
         _result = result;
         _stationPairs = stationPairs;
         _transactionLocations = transactionLocations;
+        _currentGateTravel = result.currentGateTravel;
+        _currentGateEntryStation = currentGateEntryStation;
         _flow = _ReaderFlow.success;
       });
     } on CardScanException catch (error) {
@@ -132,9 +142,13 @@ class _CardReaderPageState extends State<CardReaderPage> {
     ({
       Map<int, ResolvedStationPair> stationPairs,
       Map<int, StationResolution> transactionLocations,
+      StationResolution? currentGateEntryStation,
     })
   >
-  _resolveLocations(List<ParsedTransitHistory> histories) async {
+  _resolveLocations(
+    List<ParsedTransitHistory> histories,
+    CurrentGateTravel? currentGateTravel,
+  ) async {
     final database = await _stationDatabase;
     final stationPairs = <int, ResolvedStationPair>{};
     final transactionLocations = <int, StationResolution>{};
@@ -163,9 +177,21 @@ class _CardReaderPageState extends State<CardReaderPage> {
         );
       }
     }
+    final currentGateEntryStation = currentGateTravel == null
+        ? null
+        : database.resolve(
+            StationCode(
+              // 108F/10CB contains a line/station pair but not the normalized
+              // region used in 090F. Only a globally unique match is shown.
+              regionCode: -1,
+              lineCode: currentGateTravel.entryLineCode,
+              stationCode: currentGateTravel.entryStationCode,
+            ),
+          );
     return (
       stationPairs: stationPairs,
       transactionLocations: transactionLocations,
+      currentGateEntryStation: currentGateEntryStation,
     );
   }
 
@@ -186,6 +212,8 @@ class _CardReaderPageState extends State<CardReaderPage> {
       _message = null;
       _stationPairs = const {};
       _transactionLocations = const {};
+      _currentGateTravel = null;
+      _currentGateEntryStation = null;
     });
     ScaffoldMessenger.of(
       context,
@@ -239,6 +267,8 @@ class _CardReaderPageState extends State<CardReaderPage> {
         histories: _histories,
         stationPairs: _stationPairs,
         transactionLocations: _transactionLocations,
+        currentGateTravel: _currentGateTravel,
+        currentGateEntryStation: _currentGateEntryStation,
         stationNameDisplayMode: widget.stationNameDisplayMode,
         message: _message,
         appUpdateStatus: _appUpdateStatus,
@@ -327,6 +357,8 @@ class _HomePage extends StatelessWidget {
     required this.histories,
     required this.stationPairs,
     required this.transactionLocations,
+    required this.currentGateTravel,
+    required this.currentGateEntryStation,
     required this.stationNameDisplayMode,
     required this.message,
     required this.appUpdateStatus,
@@ -342,6 +374,8 @@ class _HomePage extends StatelessWidget {
   final List<ParsedTransitHistory> histories;
   final Map<int, ResolvedStationPair> stationPairs;
   final Map<int, StationResolution> transactionLocations;
+  final CurrentGateTravel? currentGateTravel;
+  final StationResolution? currentGateEntryStation;
   final StationNameDisplayMode stationNameDisplayMode;
   final String? message;
   final AppUpdateStatus appUpdateStatus;
@@ -355,6 +389,7 @@ class _HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final latest = histories.isEmpty ? null : histories.first;
+    final activeCurrentGateTravel = currentGateTravel;
     final latestStations = latest == null
         ? null
         : stationPairs[latest.rawBlock.index];
@@ -414,6 +449,14 @@ class _HomePage extends StatelessWidget {
             title: '카드를 읽지 못했습니다',
             text: message!,
             tone: NoticeTone.danger,
+          ),
+        ],
+        if (activeCurrentGateTravel != null) ...[
+          const SizedBox(height: 18),
+          _CurrentGateTravelCard(
+            travel: activeCurrentGateTravel,
+            station: currentGateEntryStation,
+            stationNameDisplayMode: stationNameDisplayMode,
           ),
         ],
         const SizedBox(height: 26),
@@ -575,6 +618,85 @@ class _HomePage extends StatelessWidget {
     );
   }
 }
+
+class _CurrentGateTravelCard extends StatelessWidget {
+  const _CurrentGateTravelCard({
+    required this.travel,
+    required this.station,
+    required this.stationNameDisplayMode,
+  });
+
+  final CurrentGateTravel travel;
+  final StationResolution? station;
+  final StationNameDisplayMode stationNameDisplayMode;
+
+  @override
+  Widget build(BuildContext context) {
+    final resolvedStation = station?.station;
+    final entryName = resolvedStation == null
+        ? '역 코드 ${_gateStationCode(travel)}'
+        : displayStationName(
+            japanese: resolvedStation.stationName,
+            korean: resolvedStation.stationNameKorean,
+            mode: stationNameDisplayMode,
+          );
+    final detail = resolvedStation == null
+        ? '입장역을 확인했지만 역명을 찾지 못했습니다.'
+        : '${resolvedStation.operatorName} · ${resolvedStation.lineName}';
+
+    return AppSurface(
+      child: Row(
+        children: [
+          Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              color: AppColors.success.withValues(alpha: .13),
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: const Icon(
+              Icons.directions_railway_rounded,
+              color: AppColors.success,
+            ),
+          ),
+          const SizedBox(width: 13),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  '현재 이동 중',
+                  style: TextStyle(fontWeight: FontWeight.w900),
+                ),
+                const SizedBox(height: 3),
+                Text(
+                  '$entryName에서 입장하여 이동 중입니다.',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  detail,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    fontSize: 11,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+String _gateStationCode(CurrentGateTravel travel) =>
+    '${travel.entryLineCode.toRadixString(16).padLeft(2, '0').toUpperCase()}-'
+    '${travel.entryStationCode.toRadixString(16).padLeft(2, '0').toUpperCase()}';
 
 class _PassComparisonEntryCard extends StatelessWidget {
   const _PassComparisonEntryCard({required this.onTap});

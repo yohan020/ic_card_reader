@@ -4,6 +4,7 @@ import '../../../core/design/app_theme.dart';
 import '../../../core/widgets/app_ui.dart';
 import '../data/pass_transit_data.dart';
 import '../domain/pass_comparison.dart';
+import 'kyoto_subway_bus_pass_page.dart';
 import 'osaka_amazing_pass_prototype_page.dart';
 import 'pass_comparison_prototype_page.dart';
 
@@ -81,6 +82,20 @@ class _PassSelectionPageState extends State<PassSelectionPage> {
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute<void>(
                 builder: (_) => const OsakaAmazingPassPrototypePage(),
+              ),
+            ),
+          ),
+          const SizedBox(height: 14),
+          _PassChoiceCard(
+            icon: Icons.directions_bus_filled_outlined,
+            title: '교토 지하철·버스 1일권',
+            subtitle: '교토시영 지하철 · 버스 예상 운임',
+            description: '지하철 자동 운임과 버스 이용 추정을 비교합니다.',
+            periods: const ['1일권 · ¥1,100'],
+            teal: true,
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => const KyotoSubwayBusPassPage(),
               ),
             ),
           ),

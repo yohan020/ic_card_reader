@@ -145,12 +145,6 @@ class _OsakaAmazingPassPrototypePageState
           ),
           const SizedBox(height: 12),
           const _OsakaPlannerFootnote(),
-          const SizedBox(height: 2),
-          TextButton.icon(
-            onPressed: _data == null ? null : _showDataSources,
-            icon: const Icon(Icons.info_outline_rounded),
-            label: const Text('운임 데이터 기준과 출처'),
-          ),
         ],
       ),
     ),
@@ -212,45 +206,6 @@ class _OsakaAmazingPassPrototypePageState
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text(message)));
-  }
-
-  void _showDataSources() {
-    final data = _data!;
-    showModalBottomSheet<void>(
-      context: context,
-      showDragHandle: true,
-      isScrollControlled: true,
-      builder: (context) => SafeArea(
-        child: ListView(
-          shrinkWrap: true,
-          padding: const EdgeInsets.fromLTRB(20, 4, 20, 24),
-          children: [
-            Text(
-              '운임 데이터 기준과 출처',
-              style: Theme.of(
-                context,
-              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
-            ),
-            const SizedBox(height: 6),
-            Text('${data.validFrom} 기준 · ${data.datasetVersion}'),
-            const SizedBox(height: 12),
-            for (final source in data.sources)
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: const Icon(Icons.link_rounded),
-                title: Text(source.label),
-                subtitle: SelectableText('${source.note}\n${source.url}'),
-              ),
-            const NoticeBanner(
-              title: '참고용 자동 계산',
-              text:
-                  '일부 데이터는 공개된 영업거리와 운임 규칙으로 독립 계산했습니다. 실제 구매 전 패스와 각 교통기관의 최신 공식 안내를 확인해 주세요.',
-              tone: NoticeTone.warning,
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }
 
@@ -1034,7 +989,12 @@ class _OsakaResultPage extends StatelessWidget {
       ),
     };
     return Scaffold(
-      appBar: AppBar(title: const Text('비교 결과')),
+      appBar: AppBar(
+        title: const Text(
+          '비교 결과',
+          style: TextStyle(fontWeight: FontWeight.w700),
+        ),
+      ),
       body: SafeArea(
         top: false,
         child: ListView(
@@ -1051,7 +1011,7 @@ class _OsakaResultPage extends StatelessWidget {
                     style: TextStyle(
                       color: color,
                       fontSize: 22,
-                      fontWeight: FontWeight.w900,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                   const SizedBox(height: 6),

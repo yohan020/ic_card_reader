@@ -6,6 +6,7 @@ import '../../app_update/domain/app_update_service.dart';
 import '../../card_reader/domain/card_scan_result.dart';
 import '../../station_resolver/domain/station_name_display.dart';
 import 'privacy_policy_page.dart';
+import 'pass_data_sources_page.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({
@@ -123,6 +124,17 @@ class SettingsPage extends StatelessWidget {
               icon: Icons.info_outline_rounded,
               title: '앱 버전',
               trailing: '1.0.0',
+            ),
+            const Divider(),
+            _SettingsTile(
+              icon: Icons.dataset_linked_outlined,
+              title: '데이터 출처 및 운임 기준',
+              subtitle: '교통패스별 운임 데이터·라이선스·계산 범위',
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => const PassDataSourcesPage(),
+                ),
+              ),
             ),
             const Divider(),
             _SettingsTile(

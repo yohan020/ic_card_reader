@@ -8,6 +8,7 @@ import 'package:ic_card_reader/src/core/design/app_theme.dart';
 import 'package:ic_card_reader/src/features/app_update/domain/app_update_service.dart';
 import 'package:ic_card_reader/src/features/card_reader/domain/card_reader.dart';
 import 'package:ic_card_reader/src/features/card_reader/domain/card_scan_result.dart';
+import 'package:ic_card_reader/src/features/card_reader/domain/current_gate_travel.dart';
 import 'package:ic_card_reader/src/features/card_reader/domain/raw_history_block.dart';
 import 'package:ic_card_reader/src/features/card_reader/presentation/card_reader_page.dart';
 import 'package:ic_card_reader/src/features/station_resolver/data/asset_station_database.dart';
@@ -138,6 +139,47 @@ void main() {
       tester.widget<Text>(find.text('역 정보가 없거나 잘못됨')).style?.fontWeight,
       FontWeight.w500,
     );
+  });
+
+  testWidgets('shows the current journey after a verified entry scan', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: AppTheme.light,
+        home: CardReaderPage(
+          reader: _CurrentGateTravelReader(),
+          stationDatabase: AssetStationDatabase.fromCsv(
+            'region,line,station,region_hex,line_hex,station_hex,operator,line_name,station_name\n'
+            '0,227,88,00,E3,58,東京地下鉄,千代田線,赤坂\n',
+          ),
+          themeMode: ThemeMode.system,
+          onThemeModeChanged: (_) {},
+          stationNameDisplayMode: StationNameDisplayMode.japanese,
+          onStationNameDisplayModeChanged: (_) {},
+        ),
+      ),
+    );
+
+    await Scrollable.ensureVisible(
+      tester.element(find.text('IC 카드 스캔')),
+      alignment: 0.5,
+    );
+    await tester.pump();
+    await tester.tap(find.text('IC 카드 스캔'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+    await tester.pump();
+    expect(find.text('카드를 읽었습니다'), findsOneWidget);
+    await tester.tap(find.byIcon(Icons.close_rounded));
+    await tester.pump();
+
+    expect(find.text('IC 카드 리더'), findsOneWidget);
+    expect(find.textContaining('최근 스캔'), findsOneWidget);
+    await tester.scrollUntilVisible(find.text('현재 이동 중'), 200);
+    expect(find.text('현재 이동 중'), findsOneWidget);
+    expect(find.text('赤坂에서 입장하여 이동 중입니다.'), findsOneWidget);
+    expect(find.text('東京地下鉄 · 千代田線'), findsOneWidget);
   });
 
   testWidgets('keeps the scan countdown independent from disabled animations', (
@@ -600,6 +642,23 @@ class _FakeCardReader implements CardReader {
           ]),
         ),
       ],
+    );
+  }
+}
+
+class _CurrentGateTravelReader extends _FakeCardReader {
+  @override
+  Future<CardScanResult> scan({
+    Duration timeout = const Duration(seconds: 30),
+  }) async {
+    final result = await super.scan(timeout: timeout);
+    return CardScanResult(
+      scannedAt: result.scannedAt,
+      blocks: const [],
+      currentGateTravel: const CurrentGateTravel(
+        entryLineCode: 0xE3,
+        entryStationCode: 0x58,
+      ),
     );
   }
 }
