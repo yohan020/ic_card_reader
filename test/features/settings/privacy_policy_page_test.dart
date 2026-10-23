@@ -19,6 +19,10 @@ void main() {
     expect(find.textContaining('카드 IDm 원문'), findsWidgets);
     expect(find.textContaining('기기 고유 식별자'), findsOneWidget);
 
+    await tester.scrollUntilVisible(find.text('6. 역 코드 데이터'), 300);
+    expect(find.textContaining('설정의 데이터 출처 및 운임 기준 화면'), findsOneWidget);
+    expect(find.textContaining('오픈소스 라이선스 화면'), findsNothing);
+
     await tester.scrollUntilVisible(find.text('7. 보관과 삭제'), 300);
     expect(find.textContaining('해결 후 1년간 보관'), findsOneWidget);
 

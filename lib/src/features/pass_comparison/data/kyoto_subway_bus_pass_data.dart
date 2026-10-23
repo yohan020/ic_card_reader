@@ -94,6 +94,7 @@ class KyotoSubwayBusPassData {
     final normalized = normalizeStationSearchText(query);
     if (normalized.isEmpty) return const [];
     final initials = hangulInitials(normalized);
+    final isInitialQuery = isHangulInitialSearch(normalized);
     final matches = <({KyotoSubwayStation station, int score})>[];
     for (final entry in _index) {
       var score = 1000;
@@ -104,7 +105,7 @@ class KyotoSubwayBusPassData {
         if (candidate.normalized.startsWith(normalized)) {
           score = score < 10 ? score : 10;
         }
-        if (candidate.initials.startsWith(initials)) {
+        if (isInitialQuery && candidate.initials.startsWith(initials)) {
           score = score < 20 ? score : 20;
         }
         if (candidate.normalized.contains(normalized)) {
@@ -167,7 +168,12 @@ class KyotoSubwayBusPassData {
 
 class KyotoSubwayBusPassDataRepository {
   const KyotoSubwayBusPassDataRepository();
-  Future<KyotoSubwayBusPassData> load() async =>
+
+  static Future<KyotoSubwayBusPassData>? _cachedLoad;
+
+  Future<KyotoSubwayBusPassData> load() => _cachedLoad ??= _load();
+
+  Future<KyotoSubwayBusPassData> _load() async =>
       KyotoSubwayBusPassData.fromJson(
         await rootBundle.loadString(
           'assets/data/pass_comparison/kyoto_subway_bus_1day_2026.json',
@@ -177,21 +183,14 @@ class KyotoSubwayBusPassDataRepository {
 
 class _KyotoSearchEntry {
   _KyotoSearchEntry(this.station)
-    : candidates =
-          {
-                station.nameJa,
-                station.nameKo,
-                station.lineJa,
-                station.lineKo,
-                '교토시영 지하철',
-              }
-              .map(
-                (value) => (
-                  normalized: normalizeStationSearchText(value),
-                  initials: hangulInitials(normalizeStationSearchText(value)),
-                ),
-              )
-              .toList(growable: false);
+    : candidates = {station.nameJa, station.nameKo}
+          .map(
+            (value) => (
+              normalized: normalizeStationSearchText(value),
+              initials: hangulInitials(normalizeStationSearchText(value)),
+            ),
+          )
+          .toList(growable: false);
   final KyotoSubwayStation station;
   final List<({String normalized, String initials})> candidates;
 }

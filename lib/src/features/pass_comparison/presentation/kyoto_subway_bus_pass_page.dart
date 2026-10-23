@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../../../core/design/app_theme.dart';
 import '../../../core/widgets/app_ui.dart';
+import 'widgets/pass_result_scope_note.dart';
 import '../data/kyoto_subway_bus_pass_data.dart';
 import '../domain/kyoto_subway_bus_pass.dart';
+import 'widgets/pass_segment_remove_button.dart';
+import 'widgets/pass_station_picker_field.dart';
 
 class KyotoSubwayBusPassPage extends StatefulWidget {
   const KyotoSubwayBusPassPage({super.key});
@@ -307,12 +310,7 @@ class _JourneySegment extends StatelessWidget {
                 style: TextStyle(fontWeight: FontWeight.w800),
               ),
             ),
-            if (removable)
-              IconButton(
-                onPressed: onRemove,
-                tooltip: '구간 삭제',
-                icon: const Icon(Icons.close_rounded),
-              ),
+            if (removable) PassSegmentRemoveButton(onPressed: onRemove),
           ],
         ),
         const SizedBox(height: 10),
@@ -380,50 +378,18 @@ class _StationButton extends StatelessWidget {
   final KyotoSubwayBusPassData data;
   final ValueChanged<KyotoSubwayStation> onSelected;
   @override
-  Widget build(BuildContext context) => SizedBox(
-    height: station == null ? 60 : 76,
-    child: OutlinedButton(
-      onPressed: () async {
-        final selected = await Navigator.of(context).push<KyotoSubwayStation>(
-          MaterialPageRoute(
-            builder: (_) => _StationSearchPage(title: '$label역 선택', data: data),
-          ),
-        );
-        if (selected != null) onSelected(selected);
-      },
-      style: OutlinedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 7),
-        backgroundColor: AppColors.fieldSurface(context),
-        side: BorderSide(color: AppColors.outline(context)),
-        foregroundColor: Theme.of(context).colorScheme.onSurface,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(label, style: Theme.of(context).textTheme.bodySmall),
-          const SizedBox(height: 2),
-          Text(
-            station?.displayName ?? '역 선택',
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              color: AppColors.accent(context),
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          if (station != null) ...[
-            const SizedBox(height: 2),
-            Text(
-              '교토시영 지하철',
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: Theme.of(context).textTheme.labelSmall,
-            ),
-          ],
-        ],
-      ),
-    ),
+  Widget build(BuildContext context) => PassStationPickerField(
+    label: label,
+    stationName: station?.displayName,
+    operatorLabel: station == null ? null : '교토시영 지하철',
+    onTap: () async {
+      final selected = await Navigator.of(context).push<KyotoSubwayStation>(
+        MaterialPageRoute(
+          builder: (_) => _StationSearchPage(title: '$label역 선택', data: data),
+        ),
+      );
+      if (selected != null) onSelected(selected);
+    },
   );
 }
 
@@ -437,7 +403,7 @@ class _FareHint extends StatelessWidget {
         ? '두 역을 선택하면 운임을 자동으로 확인합니다.'
         : fare == null
         ? '이 구간의 운임을 확인할 수 없습니다.'
-        : '교토시영 지하철 · 성인 일반 운임 ¥$fare';
+        : '성인 일반 운임 ¥$fare';
     final success = fare != null;
     return Row(
       children: [
@@ -824,6 +790,9 @@ class _KyotoResultPage extends StatelessWidget {
                   Text(
                     description,
                     style: TextStyle(color: AppColors.mutedText(context)),
+                  ),
+                  const PassResultScopeNote(
+                    detail: '버스 대표 요금은 실제 이용 구간의 요금과 다를 수 있습니다.',
                   ),
                   const SizedBox(height: 20),
                   _AmountRow('지하철 일반 운임', result.railFareTotal),

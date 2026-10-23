@@ -89,9 +89,9 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('¥1500'), findsNWidgets(2));
-    expect(find.text('1일차'), findsOneWidget);
-    expect(find.text('2일차'), findsOneWidget);
-    expect(find.text('3일차'), findsNothing);
+    expect(find.text('이용일'), findsNothing);
+    expect(find.text('1일차'), findsNothing);
+    expect(find.text('2일차'), findsNothing);
   });
 
   testWidgets('searches and selects a Tokunai station on a dedicated page', (

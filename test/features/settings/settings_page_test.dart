@@ -1,6 +1,5 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ic_card_reader/src/core/design/app_theme.dart';
 import 'package:ic_card_reader/src/features/card_reader/domain/card_scan_result.dart';
@@ -9,6 +8,55 @@ import 'package:ic_card_reader/src/features/settings/presentation/settings_page.
 import 'package:ic_card_reader/src/features/station_resolver/domain/station_name_display.dart';
 
 void main() {
+  testWidgets('uses installed version in settings and licenses', (
+    tester,
+  ) async {
+    const channel = MethodChannel('app.iccardreader/app_info');
+    tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+      channel,
+      (_) async => '2.3.4 (57)',
+    );
+    addTearDown(
+      () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+        channel,
+        null,
+      ),
+    );
+    await tester.pumpWidget(
+      MaterialApp(
+        home: SettingsPage(
+          themeMode: ThemeMode.system,
+          onThemeModeChanged: (_) {},
+          onClearSession: () {},
+          stationNameDisplayMode: StationNameDisplayMode.japanese,
+          onStationNameDisplayModeChanged: (_) {},
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.dragUntilVisible(
+      find.text('앱 버전'),
+      find.byType(ListView),
+      const Offset(0, -300),
+    );
+    expect(find.text('2.3.4 (57)'), findsOneWidget);
+    expect(find.text('1.0.0'), findsNothing);
+    await tester.dragUntilVisible(
+      find.text('오픈소스 라이선스'),
+      find.byType(ListView),
+      const Offset(0, -300),
+    );
+    await Scrollable.ensureVisible(
+      tester.element(find.text('오픈소스 라이선스')),
+      alignment: 0.5,
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('오픈소스 라이선스'));
+    await tester.pumpAndSettle();
+    expect(find.byType(LicensePage), findsOneWidget);
+    expect(find.text('2.3.4 (57)'), findsOneWidget);
+  });
+
   testWidgets('puts privacy last and hides development-only settings', (
     tester,
   ) async {

@@ -5,6 +5,8 @@ import '../../../core/widgets/app_ui.dart';
 import '../../app_update/domain/app_update_service.dart';
 import '../../card_reader/domain/card_scan_result.dart';
 import '../../station_resolver/domain/station_name_display.dart';
+import '../../transaction_history/data/transit_history_parser.dart';
+import '../domain/installed_app_version.dart';
 import 'privacy_policy_page.dart';
 import 'pass_data_sources_page.dart';
 
@@ -31,7 +33,12 @@ class SettingsPage extends StatelessWidget {
   final bool isCheckingForUpdate;
 
   @override
-  Widget build(BuildContext context) => AppPage(
+  Widget build(BuildContext context) => FutureBuilder<String?>(
+    future: InstalledAppVersion.current,
+    builder: (context, snapshot) => _buildPage(context, snapshot.data),
+  );
+
+  Widget _buildPage(BuildContext context, String? installedVersion) => AppPage(
     children: [
       Text('설정', style: Theme.of(context).appBarTheme.titleTextStyle),
       const SizedBox(height: 22),
@@ -120,10 +127,10 @@ class SettingsPage extends StatelessWidget {
         padding: EdgeInsets.zero,
         child: Column(
           children: [
-            const _SettingsTile(
+            _SettingsTile(
               icon: Icons.info_outline_rounded,
               title: '앱 버전',
-              trailing: '1.0.0',
+              trailing: installedVersion ?? '확인할 수 없음',
             ),
             const Divider(),
             _SettingsTile(
@@ -159,7 +166,7 @@ class SettingsPage extends StatelessWidget {
               onTap: () => showLicensePage(
                 context: context,
                 applicationName: '일본 교통카드 리더',
-                applicationVersion: '1.0.0',
+                applicationVersion: installedVersion,
               ),
             ),
           ],
@@ -186,8 +193,8 @@ class SettingsPage extends StatelessWidget {
               icon: Icons.delete_outline_rounded,
               title: '현재 이용내역 지우기',
               subtitle: result == null
-                  ? '지울 세션 데이터가 없습니다.'
-                  : '${result!.blocks.length}개의 읽기 결과가 있습니다.',
+                  ? '지울 이용내역이 없습니다.'
+                  : '${const TransitHistoryParser().parse(result!.blocks).length}개의 이용내역이 있습니다.',
               iconColor: Theme.of(context).colorScheme.error,
               onTap: result == null ? null : () => _confirmClear(context),
             ),

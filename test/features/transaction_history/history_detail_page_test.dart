@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:ic_card_reader/src/core/design/app_theme.dart';
 import 'package:ic_card_reader/src/core/widgets/app_ui.dart';
 import 'package:ic_card_reader/src/features/card_reader/domain/raw_history_block.dart';
 import 'package:ic_card_reader/src/features/station_resolver/domain/station_resolution.dart';
@@ -12,6 +13,131 @@ import 'package:ic_card_reader/src/features/transaction_history/domain/transit_t
 import 'package:ic_card_reader/src/features/transaction_history/presentation/history_pages.dart';
 
 void main() {
+  for (final dark in [false, true]) {
+    testWidgets(
+      'unavailable amount is lighter in list and detail (${dark ? 'dark' : 'light'})',
+      (tester) async {
+        final history = _history(
+          amountCalculation: const AmountCalculation.unavailable(),
+        );
+        final theme = dark ? AppTheme.dark : AppTheme.light;
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: theme,
+            home: Scaffold(
+              body: HistoryListPage(
+                histories: [history],
+                currentBalance: history.balance,
+                stationPairs: const {},
+                onScan: () {},
+              ),
+            ),
+          ),
+        );
+        await tester.scrollUntilVisible(
+          find.text('계산 불가'),
+          100,
+          scrollable: find.byType(Scrollable).first,
+        );
+        final listAmount = tester.widget<Text>(find.text('계산 불가'));
+        expect(listAmount.style?.fontSize, 14);
+        expect(listAmount.style?.fontWeight, FontWeight.w500);
+        final type = tester.widget<Text>(find.text('철도 이용'));
+        expect(type.style?.fontSize, 15);
+        expect(type.style?.fontWeight, FontWeight.w600);
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: theme,
+            home: HistoryDetailPage(history: history),
+          ),
+        );
+        final detailAmount = tester.widget<Text>(find.text('계산 불가'));
+        expect(detailAmount.style?.fontSize, 18);
+        expect(detailAmount.style?.fontWeight, FontWeight.w500);
+        expect(detailAmount.style?.color, theme.colorScheme.onSurfaceVariant);
+      },
+    );
+  }
+
+  testWidgets('compact history cards remain readable at large text', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(360, 740);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: AppTheme.light,
+        builder: (context, child) => MediaQuery(
+          data: MediaQuery.of(
+            context,
+          ).copyWith(textScaler: TextScaler.linear(1.5)),
+          child: child!,
+        ),
+        home: Scaffold(
+          body: HistoryListPage(
+            histories: [_history()],
+            currentBalance: 994,
+            stationPairs: const {},
+            onScan: () {},
+          ),
+        ),
+      ),
+    );
+    await tester.scrollUntilVisible(
+      find.text('철도 이용'),
+      100,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.text('잔액 ¥994'), findsOneWidget);
+    _expectRightAlignedBalance(tester);
+    final padding = find.ancestor(
+      of: find.text('철도 이용'),
+      matching: find.byType(Padding),
+    );
+    expect(
+      tester
+          .widgetList<Padding>(padding)
+          .any(
+            (widget) =>
+                widget.padding ==
+                const EdgeInsets.symmetric(horizontal: 17, vertical: 12),
+          ),
+      isTrue,
+    );
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets(
+    'history balance and chevron stay at the lower right at normal text',
+    (tester) async {
+      tester.view.physicalSize = const Size(360, 740);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.light,
+          home: Scaffold(
+            body: HistoryListPage(
+              histories: [_history()],
+              currentBalance: 994,
+              stationPairs: const {},
+              onScan: () {},
+            ),
+          ),
+        ),
+      );
+      await tester.scrollUntilVisible(
+        find.text('철도 이용'),
+        100,
+        scrollable: find.byType(Scrollable).first,
+      );
+      _expectRightAlignedBalance(tester);
+    },
+  );
+
   testWidgets('keeps the detail page above the system navigation area', (
     tester,
   ) async {
@@ -105,6 +231,16 @@ void main() {
   });
 }
 
+void _expectRightAlignedBalance(WidgetTester tester) {
+  final amount = tester.getRect(find.text('-¥980'));
+  final balance = tester.getRect(find.text('잔액 ¥994'));
+  final arrow = tester.getRect(find.byIcon(Icons.chevron_right_rounded));
+  expect(arrow.right, closeTo(amount.right, .1));
+  expect(balance.right, closeTo(arrow.left - 4, .1));
+  expect(balance.top, greaterThan(amount.top));
+  expect(tester.widget<Text>(find.text('잔액 ¥994')).textAlign, TextAlign.end);
+}
+
 RawHistoryBlock _rawBlock(String hexadecimal) => RawHistoryBlock(
   index: 0,
   bytes: Uint8List.fromList([
@@ -138,7 +274,9 @@ StationResolution _location({
   );
 }
 
-ParsedTransitHistory _history() => ParsedTransitHistory(
+ParsedTransitHistory _history({
+  AmountCalculation amountCalculation = const AmountCalculation.calculated(980),
+}) => ParsedTransitHistory(
   rawBlock: RawHistoryBlock(index: 0, bytes: Uint8List(16)),
   usageDate: DateTime(2026, 7, 4),
   terminalCode: 0x16,
@@ -150,5 +288,5 @@ ParsedTransitHistory _history() => ParsedTransitHistory(
   alightingStationCode: 0x38,
   balance: 994,
   transactionType: TransitTransactionType.rail,
-  amountCalculation: const AmountCalculation.calculated(980),
+  amountCalculation: amountCalculation,
 );

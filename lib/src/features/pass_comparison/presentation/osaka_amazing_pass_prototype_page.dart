@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../../../core/design/app_theme.dart';
 import '../../../core/widgets/app_ui.dart';
+import 'widgets/pass_result_scope_note.dart';
 import '../data/osaka_pass_station_data.dart';
 import '../domain/osaka_amazing_pass.dart';
+import 'widgets/pass_segment_remove_button.dart';
+import 'widgets/pass_station_picker_field.dart';
 
 class OsakaAmazingPassPrototypePage extends StatefulWidget {
   const OsakaAmazingPassPrototypePage({this.initialData, super.key});
@@ -98,7 +101,6 @@ class _OsakaAmazingPassPrototypePageState
                     index: index,
                     draft: _drafts[index],
                     data: _data,
-                    dayCount: _product.dayCount,
                     canRemove: _drafts.length > 1,
                     onChanged: () => setState(() {}),
                     onRemove: () => _remove(index),
@@ -124,11 +126,9 @@ class _OsakaAmazingPassPrototypePageState
           ),
           const SizedBox(height: 18),
           _BusRideCounter(
-            dayCount: _product.dayCount,
             ridesByDay: _busRidesByDay,
             fare: _data?.busAdultFare ?? 210,
-            onChanged: (day, value) =>
-                setState(() => _busRidesByDay[day] = value),
+            onChanged: (value) => setState(() => _busRidesByDay[0] = value),
           ),
           const SizedBox(height: 18),
           NoticeBanner(
@@ -344,7 +344,6 @@ class _SegmentCard extends StatelessWidget {
     required this.index,
     required this.draft,
     required this.data,
-    required this.dayCount,
     required this.canRemove,
     required this.onChanged,
     required this.onRemove,
@@ -353,7 +352,6 @@ class _SegmentCard extends StatelessWidget {
   final int index;
   final _OsakaSegmentDraft draft;
   final OsakaPassStationData? data;
-  final int dayCount;
   final bool canRemove;
   final VoidCallback onChanged;
   final VoidCallback onRemove;
@@ -391,12 +389,7 @@ class _SegmentCard extends StatelessWidget {
                 style: TextStyle(fontWeight: FontWeight.w800),
               ),
             ),
-            if (canRemove)
-              IconButton(
-                tooltip: '구간 삭제',
-                onPressed: onRemove,
-                icon: const Icon(Icons.close_rounded),
-              ),
+            if (canRemove) PassSegmentRemoveButton(onPressed: onRemove),
           ],
         ),
         const SizedBox(height: 10),
@@ -451,17 +444,6 @@ class _SegmentCard extends StatelessWidget {
           hasBothStations: draft.from != null && draft.to != null,
           route: route,
         ),
-        if (dayCount > 1) ...[
-          const SizedBox(height: 9),
-          _OsakaDaySelector(
-            value: draft.dayIndex,
-            dayCount: dayCount,
-            onChanged: (value) {
-              draft.dayIndex = value;
-              onChanged();
-            },
-          ),
-        ],
         if (route != null && route.transferCount > 0) ...[
           const SizedBox(height: 7),
           Align(
@@ -502,56 +484,23 @@ class _StationButton extends StatelessWidget {
   final ValueChanged<OsakaPassStation> onSelected;
 
   @override
-  Widget build(BuildContext context) => SizedBox(
-    height: station == null ? 60 : 76,
-    child: OutlinedButton(
-      onPressed: data == null
-          ? null
-          : () async {
-              final selected = await Navigator.of(context)
-                  .push<OsakaPassStation>(
-                    MaterialPageRoute<OsakaPassStation>(
-                      builder: (_) => _OsakaStationSearchPage(
-                        title: '$label역 선택',
-                        data: data!,
-                      ),
-                    ),
-                  );
-              if (selected != null) onSelected(selected);
-            },
-      style: OutlinedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-        backgroundColor: AppColors.fieldSurface(context),
-        side: BorderSide(color: AppColors.outline(context)),
-        foregroundColor: Theme.of(context).colorScheme.onSurface,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(label, style: Theme.of(context).textTheme.bodySmall),
-          const SizedBox(height: 2),
-          Text(
-            station?.displayName ?? '역 선택',
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              color: AppColors.accent(context),
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          if (station != null) ...[
-            const SizedBox(height: 2),
-            Text(
-              operatorDisplayName(station!.operator),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: Theme.of(context).textTheme.labelSmall,
-            ),
-          ],
-        ],
-      ),
-    ),
+  Widget build(BuildContext context) => PassStationPickerField(
+    label: label,
+    stationName: station?.displayName,
+    operatorLabel: station == null
+        ? null
+        : operatorDisplayName(station!.operator),
+    onTap: data == null
+        ? null
+        : () async {
+            final selected = await Navigator.of(context).push<OsakaPassStation>(
+              MaterialPageRoute<OsakaPassStation>(
+                builder: (_) =>
+                    _OsakaStationSearchPage(title: '$label역 선택', data: data!),
+              ),
+            );
+            if (selected != null) onSelected(selected);
+          },
   );
 }
 
@@ -612,79 +561,28 @@ class _OsakaResolvedFareSummary extends StatelessWidget {
         ],
       );
     }
-    final fareLabel = resolvedRoute.transferCount == 0
-        ? '성인 일반 운임 · ¥${resolvedRoute.fare}'
-        : '환승 ${resolvedRoute.transferCount}회 · 성인 일반 운임 ¥${resolvedRoute.fare}';
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: AppColors.success.withValues(alpha: .09),
-        borderRadius: BorderRadius.circular(11),
-      ),
-      child: Row(
-        children: [
-          const Icon(
-            Icons.check_circle_outline_rounded,
-            size: 18,
-            color: AppColors.success,
-          ),
-          const SizedBox(width: 7),
-          Expanded(
-            child: Text(
-              fareLabel,
-              key: ValueKey('osaka-segment-fare-$index'),
-              style: const TextStyle(
-                color: AppColors.success,
-                fontSize: 12,
-                fontWeight: FontWeight.w700,
-              ),
+    return Row(
+      children: [
+        const Icon(
+          Icons.check_circle_outline_rounded,
+          size: 18,
+          color: AppColors.success,
+        ),
+        const SizedBox(width: 7),
+        Expanded(
+          child: Text(
+            '성인 일반 운임 ¥${resolvedRoute.fare}',
+            key: ValueKey('osaka-segment-fare-$index'),
+            style: const TextStyle(
+              color: AppColors.success,
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
-}
-
-class _OsakaDaySelector extends StatelessWidget {
-  const _OsakaDaySelector({
-    required this.value,
-    required this.dayCount,
-    required this.onChanged,
-  });
-
-  final int value;
-  final int dayCount;
-  final ValueChanged<int> onChanged;
-
-  @override
-  Widget build(BuildContext context) => Row(
-    children: [
-      Text(
-        '이용일',
-        style: TextStyle(fontSize: 12, color: AppColors.mutedText(context)),
-      ),
-      const SizedBox(width: 10),
-      for (var day = 0; day < dayCount; day++) ...[
-        ChoiceChip(
-          label: Text('${day + 1}일차'),
-          selected: day == value,
-          onSelected: (_) => onChanged(day),
-          labelStyle: TextStyle(
-            color: day == value ? Colors.white : AppColors.accent(context),
-            fontSize: 12,
-            fontWeight: FontWeight.w700,
-          ),
-          selectedColor: AppColors.skyDark,
-          backgroundColor: AppColors.softSurface(context),
-          side: BorderSide.none,
-          visualDensity: VisualDensity.compact,
-          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        ),
-        if (day != dayCount - 1) const SizedBox(width: 6),
-      ],
-    ],
-  );
 }
 
 class _OsakaPlannerFootnote extends StatelessWidget {
@@ -898,16 +796,14 @@ class _OsakaStationSearchEmptyState extends StatelessWidget {
 
 class _BusRideCounter extends StatelessWidget {
   const _BusRideCounter({
-    required this.dayCount,
     required this.ridesByDay,
     required this.fare,
     required this.onChanged,
   });
 
-  final int dayCount;
   final List<int> ridesByDay;
   final int fare;
-  final void Function(int day, int value) onChanged;
+  final ValueChanged<int> onChanged;
 
   @override
   Widget build(BuildContext context) => AppSurface(
@@ -921,34 +817,33 @@ class _BusRideCounter extends StatelessWidget {
           style: Theme.of(context).textTheme.bodySmall,
         ),
         const SizedBox(height: 10),
-        for (var day = 0; day < dayCount; day++)
-          Row(
-            children: [
-              Expanded(child: Text(dayCount == 1 ? '탑승 횟수' : '${day + 1}일차')),
-              IconButton(
-                tooltip: '1회 줄이기',
-                onPressed: ridesByDay[day] == 0
-                    ? null
-                    : () => onChanged(day, ridesByDay[day] - 1),
-                icon: const Icon(Icons.remove_circle_outline_rounded),
+        Row(
+          children: [
+            const Expanded(child: Text('탑승 횟수')),
+            IconButton(
+              tooltip: '1회 줄이기',
+              onPressed: ridesByDay[0] == 0
+                  ? null
+                  : () => onChanged(ridesByDay[0] - 1),
+              icon: const Icon(Icons.remove_circle_outline_rounded),
+            ),
+            SizedBox(
+              width: 34,
+              child: Text(
+                '${ridesByDay[0]}회',
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontWeight: FontWeight.w800),
               ),
-              SizedBox(
-                width: 34,
-                child: Text(
-                  '${ridesByDay[day]}회',
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(fontWeight: FontWeight.w800),
-                ),
-              ),
-              IconButton(
-                tooltip: '1회 늘리기',
-                onPressed: ridesByDay[day] >= 20
-                    ? null
-                    : () => onChanged(day, ridesByDay[day] + 1),
-                icon: const Icon(Icons.add_circle_outline_rounded),
-              ),
-            ],
-          ),
+            ),
+            IconButton(
+              tooltip: '1회 늘리기',
+              onPressed: ridesByDay[0] >= 20
+                  ? null
+                  : () => onChanged(ridesByDay[0] + 1),
+              icon: const Icon(Icons.add_circle_outline_rounded),
+            ),
+          ],
+        ),
         Text(
           '일부 특정 노선과 온디맨드 버스는 패스 대상이 아닙니다.',
           style: Theme.of(context).textTheme.bodySmall,
@@ -1016,6 +911,9 @@ class _OsakaResultPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 6),
                   Text(description),
+                  const PassResultScopeNote(
+                    detail: '관광시설 입장·할인 혜택은 포함하지 않습니다.',
+                  ),
                   const Divider(height: 28),
                   _ResultMoneyRow(
                     label: '철도 일반 운임',
@@ -1048,28 +946,27 @@ class _OsakaResultPage extends StatelessWidget {
                   style: const TextStyle(fontWeight: FontWeight.w800),
                 ),
                 subtitle: Text(
-                  '${segment.dayIndex + 1}일차 · ${segment.journeyIndex + 1}번 이동 · ${operatorDisplayName(segment.operator)}',
+                  '${segment.journeyIndex + 1}번 이동 · ${operatorDisplayName(segment.operator)}',
                 ),
                 trailing: Text(
                   '¥${segment.regularFare}',
                   style: const TextStyle(fontWeight: FontWeight.w900),
                 ),
               ),
-            for (var day = 0; day < result.busRidesByDay.length; day++)
-              if (result.busRidesByDay[day] > 0)
-                ListTile(
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-                  leading: const Icon(Icons.directions_bus_outlined),
-                  title: Text(
-                    '오사카 시티버스 ${result.busRidesByDay[day]}회',
-                    style: const TextStyle(fontWeight: FontWeight.w800),
-                  ),
-                  subtitle: Text('${day + 1}일차 · 주유패스 대상 일반 노선'),
-                  trailing: Text(
-                    '¥${result.busRidesByDay[day] * data.busAdultFare}',
-                    style: const TextStyle(fontWeight: FontWeight.w900),
-                  ),
+            if (result.busRidesByDay.fold(0, (sum, rides) => sum + rides) > 0)
+              ListTile(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+                leading: const Icon(Icons.directions_bus_outlined),
+                title: Text(
+                  '오사카 시티버스 ${result.busRidesByDay.fold(0, (sum, rides) => sum + rides)}회',
+                  style: const TextStyle(fontWeight: FontWeight.w800),
                 ),
+                subtitle: const Text('주유패스 대상 일반 노선'),
+                trailing: Text(
+                  '¥${result.busRidesByDay.fold(0, (sum, rides) => sum + rides) * data.busAdultFare}',
+                  style: const TextStyle(fontWeight: FontWeight.w900),
+                ),
+              ),
             const SizedBox(height: 12),
             const NoticeBanner(
               title: '참고용 자동 계산 결과',

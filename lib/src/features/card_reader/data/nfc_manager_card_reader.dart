@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 import 'package:nfc_manager/nfc_manager_android.dart';
 import 'package:nfc_manager/nfc_manager_ios.dart';
@@ -51,6 +52,32 @@ class NfcManagerCardReader implements CardReader {
   Future<bool> isAvailable() async {
     final availability = await _manager.checkAvailability();
     return availability == NfcAvailability.enabled;
+  }
+
+  @override
+  Future<CardReaderAvailability> checkAvailability() async {
+    try {
+      return switch (await _manager.checkAvailability()) {
+        NfcAvailability.enabled => CardReaderAvailability.enabled,
+        NfcAvailability.disabled => CardReaderAvailability.disabled,
+        NfcAvailability.unsupported => CardReaderAvailability.unsupported,
+      };
+    } catch (_) {
+      return CardReaderAvailability.unknown;
+    }
+  }
+
+  @override
+  Future<bool> openNfcSettings() async {
+    if (kIsWeb || defaultTargetPlatform != TargetPlatform.android) return false;
+    try {
+      return await const MethodChannel(
+            'app.iccardreader/nfc_settings',
+          ).invokeMethod<bool>('open') ??
+          false;
+    } catch (_) {
+      return false;
+    }
   }
 
   @override

@@ -20,6 +20,7 @@ import '../data/nfc_manager_card_reader.dart';
 import '../domain/card_reader.dart';
 import '../domain/card_scan_result.dart';
 import '../domain/current_gate_travel.dart';
+import 'scan_guidance.dart';
 
 class CardReaderPage extends StatefulWidget {
   const CardReaderPage({
@@ -47,7 +48,8 @@ class CardReaderPage extends StatefulWidget {
   State<CardReaderPage> createState() => _CardReaderPageState();
 }
 
-class _CardReaderPageState extends State<CardReaderPage> {
+class _CardReaderPageState extends State<CardReaderPage>
+    with WidgetsBindingObserver {
   late final CardReader _reader = widget.reader ?? NfcManagerCardReader();
   late final AppUpdateService _appUpdateService =
       widget.appUpdateService ?? PlayAppUpdateService();
@@ -59,6 +61,11 @@ class _CardReaderPageState extends State<CardReaderPage> {
 
   CardScanResult? _result;
   String? _message;
+  CardScanFailureKind? _scanFailure;
+  CardReaderAvailability? _nfcAvailability;
+  int _availabilityRequest = 0;
+  bool _scanInFlight = false;
+  bool _failureSheetOpen = false;
   int _selectedTab = 0;
   _ReaderFlow _flow = _ReaderFlow.main;
   bool _cancelRequested = false;
@@ -73,7 +80,91 @@ class _CardReaderPageState extends State<CardReaderPage> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _refreshNfcStatus();
     _checkForUpdate();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _refreshNfcStatus();
+      _scheduleFailureSheet();
+    }
+  }
+
+  void _scheduleFailureSheet() {
+    final failure = _scanFailure;
+    if (failure == null ||
+        failure == CardScanFailureKind.cancelled ||
+        (_selectedTab == 0 &&
+            (failure == CardScanFailureKind.nfcUnavailable ||
+                failure == CardScanFailureKind.noHistory))) {
+      return;
+    }
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted ||
+          _failureSheetOpen ||
+          _scanInFlight ||
+          _flow != _ReaderFlow.main ||
+          _scanFailure != failure) {
+        return;
+      }
+      final lifecycle = WidgetsBinding.instance.lifecycleState;
+      if (lifecycle != null && lifecycle != AppLifecycleState.resumed) return;
+      _failureSheetOpen = true;
+      setState(() => _scanFailure = null);
+      final action = await showScanFailure(
+        context,
+        kind: failure,
+        availability: _nfcAvailability,
+      );
+      _failureSheetOpen = false;
+      if (!mounted) return;
+      if (action == ScanFailureAction.retry) {
+        await _startScan();
+      } else if (action == ScanFailureAction.help) {
+        await showScanHelp(context);
+      } else if (action == ScanFailureAction.settings) {
+        await _openNfcSettings();
+      }
+    });
+  }
+
+  Future<void> _refreshNfcStatus() async {
+    final request = ++_availabilityRequest;
+    CardReaderAvailability availability;
+    try {
+      availability = await _reader.checkAvailability();
+    } catch (_) {
+      availability = CardReaderAvailability.unknown;
+    }
+    if (!mounted || request != _availabilityRequest) return;
+    setState(() => _nfcAvailability = availability);
+  }
+
+  Future<void> _openNfcSettings() async {
+    bool opened;
+    try {
+      opened = await _reader.openNfcSettings();
+    } catch (_) {
+      opened = false;
+    }
+    if (!mounted) return;
+    if (!opened) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('NFC 설정을 열지 못했어요. 휴대폰 설정에서 NFC를 확인해 주세요.'),
+        ),
+      );
+    }
+    await _refreshNfcStatus();
   }
 
   List<ParsedTransitHistory> get _histories =>
@@ -83,9 +174,12 @@ class _CardReaderPageState extends State<CardReaderPage> {
       _result == null ? null : _historyParser.currentBalance(_result!.blocks);
 
   Future<void> _startScan() async {
+    if (_scanInFlight) return;
+    _scanInFlight = true;
     setState(() {
       _cancelRequested = false;
       _message = null;
+      _scanFailure = null;
       _flow = _ReaderFlow.scanning;
     });
 
@@ -120,15 +214,23 @@ class _CardReaderPageState extends State<CardReaderPage> {
     } on CardScanException catch (error) {
       if (!mounted || _cancelRequested) return;
       setState(() {
-        _message = error.message;
+        _scanFailure = error.kind == CardScanFailureKind.cancelled
+            ? null
+            : error.kind;
         _flow = _ReaderFlow.main;
       });
     } catch (_) {
       if (!mounted || _cancelRequested) return;
       setState(() {
-        _message = '예상하지 못한 오류가 발생했습니다. 다시 시도해 주세요.';
+        _scanFailure = CardScanFailureKind.unknown;
         _flow = _ReaderFlow.main;
       });
+    } finally {
+      _scanInFlight = false;
+      if (mounted) {
+        _refreshNfcStatus();
+        _scheduleFailureSheet();
+      }
     }
   }
 
@@ -210,6 +312,7 @@ class _CardReaderPageState extends State<CardReaderPage> {
     setState(() {
       _result = null;
       _message = null;
+      _scanFailure = null;
       _stationPairs = const {};
       _transactionLocations = const {};
       _currentGateTravel = null;
@@ -242,7 +345,10 @@ class _CardReaderPageState extends State<CardReaderPage> {
         const SnackBar(content: Text('업데이트를 시작하지 못했습니다. 잠시 후 다시 시도해 주세요.')),
       );
     } finally {
-      if (mounted) setState(() => _isStartingUpdate = false);
+      if (mounted) {
+        setState(() => _isStartingUpdate = false);
+        await _checkForUpdate();
+      }
     }
   }
 
@@ -271,6 +377,10 @@ class _CardReaderPageState extends State<CardReaderPage> {
         currentGateEntryStation: _currentGateEntryStation,
         stationNameDisplayMode: widget.stationNameDisplayMode,
         message: _message,
+        scanFailure: _scanFailure,
+        nfcAvailability: _nfcAvailability,
+        onOpenNfcSettings: _openNfcSettings,
+        onRefreshNfc: _refreshNfcStatus,
         appUpdateStatus: _appUpdateStatus,
         animateCard: _selectedTab == 0,
         onScan: _startScan,
@@ -361,6 +471,10 @@ class _HomePage extends StatelessWidget {
     required this.currentGateEntryStation,
     required this.stationNameDisplayMode,
     required this.message,
+    required this.scanFailure,
+    required this.nfcAvailability,
+    required this.onOpenNfcSettings,
+    required this.onRefreshNfc,
     required this.appUpdateStatus,
     required this.animateCard,
     required this.onScan,
@@ -378,6 +492,10 @@ class _HomePage extends StatelessWidget {
   final StationResolution? currentGateEntryStation;
   final StationNameDisplayMode stationNameDisplayMode;
   final String? message;
+  final CardScanFailureKind? scanFailure;
+  final CardReaderAvailability? nfcAvailability;
+  final VoidCallback onOpenNfcSettings;
+  final VoidCallback onRefreshNfc;
   final AppUpdateStatus appUpdateStatus;
   final bool animateCard;
   final VoidCallback onScan;
@@ -411,7 +529,7 @@ class _HomePage extends StatelessWidget {
           'IC 카드를 스캔해 주세요',
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.w900,
+            fontWeight: FontWeight.w700,
             letterSpacing: -0.5,
           ),
         ),
@@ -425,31 +543,42 @@ class _HomePage extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 13),
-        const Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            StatusPill(
-              label: 'NFC 사용 가능',
-              icon: Icons.nfc_rounded,
-              color: AppColors.success,
-            ),
-            SizedBox(width: 8),
-            StatusPill(label: '베타 · 실기기 검증 중'),
-          ],
+        NfcStatusView(
+          availability: nfcAvailability,
+          onOpenSettings: onOpenNfcSettings,
+          onRefresh: onRefreshNfc,
         ),
         const SizedBox(height: 16),
         FilledButton.icon(
-          onPressed: onScan,
+          onPressed: nfcAvailability == CardReaderAvailability.unsupported
+              ? null
+              : onScan,
           icon: const Icon(Icons.nfc_rounded),
           label: const Text('IC 카드 스캔'),
         ),
+        TextButton.icon(
+          onPressed: () => showScanHelp(context),
+          icon: const Icon(Icons.help_outline_rounded, size: 18),
+          label: const Text('카드를 어디에 대야 하나요?'),
+        ),
+        if (scanFailure == CardScanFailureKind.noHistory) ...[
+          const SizedBox(height: 8),
+          const NoticeBanner(
+            title: '읽을 수 있는 이용내역이 없어요',
+            text:
+                '카드에서 표시할 이용내역을 찾지 못했습니다. 카드 종류나 기록 상태에 따라 읽을 수 있는 정보가 다를 수 있습니다.',
+          ),
+        ],
+        if (scanFailure == CardScanFailureKind.nfcUnavailable &&
+            nfcAvailability == CardReaderAvailability.enabled) ...[
+          const SizedBox(height: 8),
+          const NoticeBanner(
+            text: 'NFC 읽기를 시작하지 못했어요. 카드를 잠시 떼었다가 다시 스캔해 주세요.',
+          ),
+        ],
         if (message != null) ...[
           const SizedBox(height: 13),
-          NoticeBanner(
-            title: '카드를 읽지 못했습니다',
-            text: message!,
-            tone: NoticeTone.danger,
-          ),
+          NoticeBanner(title: '안내', text: message!, tone: NoticeTone.danger),
         ],
         if (activeCurrentGateTravel != null) ...[
           const SizedBox(height: 18),
@@ -543,9 +672,22 @@ class _HomePage extends StatelessWidget {
                     const SizedBox(width: 8),
                     Text(
                       _homeAmountText(latest.amountCalculation),
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w900,
+                      style: TextStyle(
+                        fontSize:
+                            latest.amountCalculation.status ==
+                                AmountCalculationStatus.unavailable
+                            ? 14
+                            : 16,
+                        fontWeight:
+                            latest.amountCalculation.status ==
+                                AmountCalculationStatus.unavailable
+                            ? FontWeight.w500
+                            : FontWeight.w900,
+                        color:
+                            latest.amountCalculation.status ==
+                                AmountCalculationStatus.unavailable
+                            ? Theme.of(context).colorScheme.onSurfaceVariant
+                            : null,
                       ),
                     ),
                   ],
@@ -878,21 +1020,18 @@ class _ScanScreenState extends State<_ScanScreen>
         children: [
           const Center(child: IcCardArt(animated: true, size: 250)),
           const SizedBox(height: 10),
-          const StatusPill(
-            label: '카드 감지 대기 · 이용내역 읽기 준비',
-            icon: Icons.sync_rounded,
-          ),
+          const StatusPill(label: '교통카드를 대 주세요', icon: Icons.sync_rounded),
           const SizedBox(height: 16),
           Text(
             '카드를 움직이지 말고\n가까이 대 주세요',
             textAlign: TextAlign.center,
             style: Theme.of(
               context,
-            ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w900),
+            ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 9),
           Text(
-            '카드가 감지되면 여러 블록을 차례로 읽습니다.',
+            '휴대폰 뒷면 NFC 위치에 카드 한 장을 대고\n스캔이 완료될 때까지 기다려 주세요.',
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -912,11 +1051,11 @@ class _ScanScreenState extends State<_ScanScreen>
                   LinearProgressIndicator(
                     value: progress,
                     borderRadius: const BorderRadius.all(Radius.circular(999)),
-                    semanticsLabel: '카드 스캔 진행률',
+                    semanticsLabel: '스캔 제한 시간 경과',
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    '남은 시간 $remainingSeconds초',
+                    '스캔 대기 시간 · 남은 시간 $remainingSeconds초',
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.outline,
                       fontSize: 12,
@@ -1167,7 +1306,7 @@ String _stationLabel(
 ) {
   final station = resolution?.station;
   return station == null
-      ? fallbackCode
+      ? '역 정보 확인 불가'
       : displayStationName(
           japanese: station.stationName,
           korean: station.stationNameKorean,

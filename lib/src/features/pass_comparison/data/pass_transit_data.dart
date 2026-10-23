@@ -208,6 +208,7 @@ class PassTransitData {
     final normalizedQuery = normalizeStationSearchText(query);
     if (normalizedQuery.isEmpty) return const [];
     final queryInitials = hangulInitials(normalizedQuery);
+    final isInitialQuery = isHangulInitialSearch(normalizedQuery);
     final ranked = <({PassStation station, int score})>[];
     final availableStationIds = product == null
         ? null
@@ -227,11 +228,12 @@ class PassTransitData {
           best = 0;
         } else if (candidate.normalized.startsWith(normalizedQuery)) {
           best = best > 10 ? 10 : best;
-        } else if (candidate.initials.startsWith(queryInitials)) {
+        } else if (isInitialQuery &&
+            candidate.initials.startsWith(queryInitials)) {
           best = best > 20 ? 20 : best;
         } else if (candidate.normalized.contains(normalizedQuery)) {
           best = best > 30 ? 30 : best;
-        } else if (candidate.initials.contains(queryInitials)) {
+        } else if (isInitialQuery && candidate.initials.contains(queryInitials)) {
           best = best > 40 ? 40 : best;
         }
       }
@@ -559,11 +561,14 @@ PassTransitData _parsePassTransitData(Map<String, String> sources) {
 
 final _stationSearchSeparators = RegExp(r'[\s·・()（）\-_]');
 final _stationSuffix = RegExp(r'역$');
+final _hangulInitialSearch = RegExp(r'^[ㄱ-ㅎ]+$');
 
 String normalizeStationSearchText(String value) => value
     .toLowerCase()
     .replaceAll(_stationSearchSeparators, '')
     .replaceFirst(_stationSuffix, '');
+
+bool isHangulInitialSearch(String value) => _hangulInitialSearch.hasMatch(value);
 
 String hangulInitials(String value) {
   final buffer = StringBuffer();

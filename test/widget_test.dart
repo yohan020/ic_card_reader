@@ -22,6 +22,8 @@ void main() {
     await tester.pumpWidget(const IcCardReaderApp());
 
     expect(find.text('IC 카드 스캔'), findsOneWidget);
+    expect(find.text('베타 · 실기기 검증 중'), findsNothing);
+    expect(find.text('NFC 사용 가능'), findsNothing);
     await tester.scrollUntilVisible(find.text('카드 데이터는 이 기기에서만 처리합니다'), 200);
     expect(find.text('카드 데이터는 이 기기에서만 처리합니다'), findsOneWidget);
   });
@@ -50,9 +52,21 @@ void main() {
 
     expect(find.byKey(const ValueKey('home-update-banner')), findsOneWidget);
     expect(find.text('새 버전이 있어요'), findsOneWidget);
+    // A canceled (normally completed) Play flow must permit another attempt.
     await tester.tap(find.text('업데이트'));
     await tester.pump();
     expect(updateService.startCount, 1);
+    expect(find.text('여는 중'), findsNothing);
+    updateService.failNext = true;
+    await tester.tap(find.text('업데이트'));
+    await tester.pump();
+    expect(updateService.startCount, 2);
+    expect(find.text('여는 중'), findsNothing);
+    expect(find.text('업데이트를 시작하지 못했습니다. 잠시 후 다시 시도해 주세요.'), findsOneWidget);
+    await tester.tap(find.text('업데이트'));
+    await tester.pump();
+    expect(updateService.startCount, 3);
+    expect(find.text('여는 중'), findsNothing);
 
     await tester.tap(find.text('설정'));
     await tester.pump();
@@ -103,6 +117,9 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('금액을 계산할 수 없습니다'), findsOneWidget);
+    expect(find.byType(ExpansionTile), findsNothing);
+    expect(find.text('기술 정보'), findsNothing);
+    expect(find.text('단말 / 처리 코드'), findsNothing);
     expect(find.textContaining('그보다 오래된 잔액 기록이 없어'), findsOneWidget);
     final routeNames = tester.widgetList<Text>(find.text('역 정보 미등록'));
     expect(routeNames, hasLength(2));
@@ -117,6 +134,11 @@ void main() {
       find.byType(ListView),
       const Offset(0, -200),
     );
+    await Scrollable.ensureVisible(
+      tester.element(find.text('이 내역의 오류 제보하기')),
+      alignment: 0.5,
+    );
+    await tester.pumpAndSettle();
     await tester.tap(find.text('이 내역의 오류 제보하기'));
     await tester.pumpAndSettle();
 
@@ -211,12 +233,12 @@ void main() {
     await tester.tap(find.text('IC 카드 스캔'));
     await tester.pump();
 
-    expect(find.text('남은 시간 30초'), findsOneWidget);
+    expect(find.text('스캔 대기 시간 · 남은 시간 30초'), findsOneWidget);
     await tester.pump(const Duration(seconds: 2));
-    expect(find.text('남은 시간 0초'), findsNothing);
-    expect(find.text('남은 시간 28초'), findsOneWidget);
+    expect(find.text('스캔 대기 시간 · 남은 시간 0초'), findsNothing);
+    expect(find.text('스캔 대기 시간 · 남은 시간 28초'), findsOneWidget);
 
-    await tester.tap(find.byIcon(Icons.close_rounded).first);
+    await tester.tap(find.byTooltip('스캔 취소'));
     await tester.pump();
     expect(reader.cancelled, isTrue);
   });
@@ -247,7 +269,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('버스 회사'), findsOneWidget);
-    expect(find.text('미확인 · 회사 고유 코드 미해석'), findsOneWidget);
+    expect(find.text('버스 회사 확인 불가'), findsOneWidget);
   });
 
   testWidgets('shows the physical simple-gate rail route', (tester) async {
@@ -608,6 +630,13 @@ RawHistoryBlock _rawBlock(int index, String hexadecimal) => RawHistoryBlock(
 
 class _FakeCardReader implements CardReader {
   @override
+  Future<CardReaderAvailability> checkAvailability() async =>
+      CardReaderAvailability.enabled;
+
+  @override
+  Future<bool> openNfcSettings() async => true;
+
+  @override
   Future<void> cancel() async {}
 
   @override
@@ -664,6 +693,13 @@ class _CurrentGateTravelReader extends _FakeCardReader {
 }
 
 class _PendingCardReader implements CardReader {
+  @override
+  Future<CardReaderAvailability> checkAvailability() async =>
+      CardReaderAvailability.enabled;
+
+  @override
+  Future<bool> openNfcSettings() async => true;
+
   final Completer<CardScanResult> _result = Completer<CardScanResult>();
   bool cancelled = false;
 
@@ -691,6 +727,7 @@ class _FakeAppUpdateService implements AppUpdateService {
 
   final AppUpdateStatus status;
   int startCount = 0;
+  bool failNext = false;
 
   @override
   Future<AppUpdateStatus> checkForUpdate() async => status;
@@ -698,5 +735,9 @@ class _FakeAppUpdateService implements AppUpdateService {
   @override
   Future<void> startUpdate(AppUpdateStatus status) async {
     startCount += 1;
+    if (failNext) {
+      failNext = false;
+      throw StateError('Play update failed');
+    }
   }
 }

@@ -100,12 +100,11 @@ String chargeLocationDetail(
   if (station != null) {
     return '${displayStationName(japanese: station.stationName, korean: station.stationNameKorean, mode: stationNameDisplayMode)} · ${station.lineName}';
   }
-  final code = transactionLocationCode(history);
-  return code == null ? '확인할 수 없음' : '미등록 · $code';
+  return '역 정보 확인 불가';
 }
 
 String busOperatorLabel(ParsedTransitHistory history) =>
-    history.busOperatorName ?? '미확인 · 회사 고유 코드 미해석';
+    history.busOperatorName ?? '버스 회사 확인 불가';
 
 String purchaseSummary(ParsedTransitHistory history) =>
     isCashCombinedPurchase(history) ? '물품 구매 · 현금 병용' : '물품 구매';

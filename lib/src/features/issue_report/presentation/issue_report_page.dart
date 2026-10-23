@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/design/app_theme.dart';
 import '../../../core/widgets/app_ui.dart';
+import '../../settings/domain/installed_app_version.dart';
 import '../../station_resolver/data/asset_station_database.dart';
 import '../../station_resolver/domain/station_resolution.dart';
 import '../../transaction_history/data/transit_history_parser.dart';
@@ -527,7 +528,11 @@ class _IssueReportPageState extends State<IssueReportPage> {
       _submissionError = null;
     });
     try {
-      final receipt = await _repository.submit(_createReport());
+      final installedVersion = await InstalledAppVersion.current;
+      if (!mounted) return;
+      final receipt = await _repository.submit(
+        _createReport(appVersion: installedVersion ?? 'unknown'),
+      );
       if (!mounted) return;
       await showDialog<void>(
         context: context,
@@ -549,7 +554,7 @@ class _IssueReportPageState extends State<IssueReportPage> {
     }
   }
 
-  IssueReport _createReport() {
+  IssueReport _createReport({required String appVersion}) {
     final description = _descriptionController.text.trim();
     return IssueReport(
       anonymousReportId: _uuidV4(),
@@ -612,7 +617,7 @@ class _IssueReportPageState extends State<IssueReportPage> {
       additionalDescription: description.isEmpty ? null : description,
       parserVersion: TransitHistoryParser.version,
       stationDatabaseVersion: AssetStationDatabase.version,
-      appVersion: '1.0.0+1',
+      appVersion: appVersion,
       platform: kIsWeb ? 'web' : defaultTargetPlatform.name,
       osVersion: kIsWeb ? 'web' : Platform.operatingSystemVersion,
     );

@@ -8,6 +8,7 @@ import 'package:ic_card_reader/src/features/card_reader/domain/raw_history_block
 import 'package:ic_card_reader/src/features/issue_report/domain/issue_report.dart';
 import 'package:ic_card_reader/src/features/issue_report/domain/issue_report_repository.dart';
 import 'package:ic_card_reader/src/features/issue_report/presentation/issue_report_page.dart';
+import 'package:ic_card_reader/src/features/settings/domain/installed_app_version.dart';
 import 'package:ic_card_reader/src/features/transaction_history/data/transit_history_parser.dart';
 
 void main() {
@@ -167,6 +168,16 @@ void main() {
   testWidgets('submits the selected history through the repository', (
     tester,
   ) async {
+    tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+      InstalledAppVersion.channel,
+      (call) async => '2.3.4 (57)',
+    );
+    addTearDown(
+      () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+        InstalledAppVersion.channel,
+        null,
+      ),
+    );
     await tester.binding.setSurfaceSize(const Size(800, 1000));
     addTearDown(() => tester.binding.setSurfaceSize(null));
     final repository = _RecordingRepository();
@@ -219,6 +230,8 @@ void main() {
     await tester.pump(const Duration(milliseconds: 300));
 
     expect(repository.submitted, hasLength(1));
+    expect(repository.submitted.single.appVersion, '2.3.4 (57)');
+    expect(repository.submitted.single.toJson()['appVersion'], '2.3.4 (57)');
     expect(
       repository.submitted.single.anonymousRawRecord,
       history.rawBlock.hexadecimal,

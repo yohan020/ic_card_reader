@@ -77,6 +77,71 @@ region_code,line_code,station_code,station_name_ja,station_name_ko,source_note
 
 ## 교통패스 비교용 도쿠나이 역 목록
 
+## 삿포로 지하철 1일권·도니치카 킵 파생 운임 데이터
+
+`삿포로 지하철 1일권`과 `도니치카 킵`은 46개 물리 역의 인접 영업거리로 최단 영업거리를 계산하고, 2026년 성인 거리 구간 운임을 적용한다. 삿포로·오도리 환승역은 각 한 역으로 통합한다.
+
+- 상품 조건: 지하철 전용 1일 승차권 성인 ¥830, `ドニチカキップ` 성인 ¥520. 앱은 성인 일반 운임만 비교한다.
+- 사용 범위: 삿포로시 지하철 전 구간. `ドニチカキップ`은 토·일·공휴일 및 12월 29일~1월 3일에만 이용할 수 있으며, 앱은 이용일을 판정하지 않고 사용자가 조건을 확인한 뒤 직접 선택하게 한다.
+- 상품 공식 안내: `https://www.city.sapporo.jp/st/josyaken/card.html`
+- 운임 기준·오픈데이터: `https://www.city.sapporo.jp/st/josyaken/ryokin/ryoukin.html`, `https://ckan.pf-sapporo.jp/dataset/st_ryoukin`
+- 라이선스·앱 내 고지: `assets/licenses/sapporo-subway-1day-DATA-NOTICE.md`
+
+운임 구간 규칙은 札幌市交通局事業管理部営業課의 CC BY 4.0 공개 데이터와 공식 안내를 대조했다. 역 순서·인접 영업거리 기반 파생 데이터는 Wikipedia contributors의 CC BY-SA 4.0을 따른다. 다른 회사 환승, 할인 및 소아요금은 자동 계산하지 않는다.
+
+## 나가사키 전기궤도 1일·24시간권 파생 운임 데이터
+
+`나가사키 전기궤도 패스`는 사용자 제공 검증 패키지의 38개 정류장과 1,406개 방향별 성인 IC·터치 결제 운임을 앱용 CSV로 포함한다. `昭和町通`의 단방향 정차를 반영하므로 운임표는 무방향 역쌍이 아니라 출발→도착 순서를 보존한다.
+
+- 상품 조건: 一日乗車券 성인 ¥600, 24時間乗車券 성인 ¥700
+- 사용 범위: 長崎電気軌道 노면전차 전 노선. 버스는 포함하지 않는다.
+- 운임 기준: IC·터치 2구간 이내 ¥110, 그 외 ¥150. 지정 정류장에서 동일 카드로 30분 안에 환승하면 적용되는 조건부 할인값을 포함한다.
+- 앱 asset: `assets/data/pass_comparison/nagasaki_electric_tramway_stations_2026.csv`, `assets/data/pass_comparison/nagasaki_electric_tramway_fares_2026.csv`
+- 공식 검증: `https://www.naga-den.com/relays/download/9/1789/155//?file=/files/libs/6996//202603271529469650.pdf`, `https://www.naga-den.com/relays/download/382/1540/41//?file=/files/libs/6413//202510010100435309.pdf`
+- 라이선스·앱 내 고지: `assets/licenses/nagasaki-electric-tramway-DATA-NOTICE.md` (Wikipedia contributors의 CC BY-SA 4.0 출처·변경 고지 유지)
+
+공식 PDF·운임표·노선도·로고는 검증용으로만 사용하며 앱에 포함하지 않는다. 실제 환승 시간·탑승 경로 및 기간 한정 할인은 자동 판정하지 않는다.
+
+## 교토 지하철 1일권 파생 운임 데이터
+
+`교토 지하철 1일권`은 기존 `교토 지하철·버스 1일권`과 같은 교토시영 지하철 역·역간거리·성인 운임대 asset을 공유한다. 별도 복제 asset을 만들지 않아 앱 진입 후 같은 캐시 결과를 재사용한다.
+
+- 상품 조건: 성인 ¥800, 어린이 ¥400. 앱은 성인 일반 운임만 비교한다.
+- 사용 범위: 교토시영 지하철 전 구간, 이용일 당일 영업 종료까지. 24시간권이 아니다.
+- 상품 공식 안내: `https://www.city.kyoto.lg.jp/kotsu/page/0000028376.html`
+- 운임 원천: 교토시 오픈데이터 `京都市営地下鉄 駅間距離・運賃` (`https://data.city.kyoto.lg.jp/dataset/00024/`)
+- 라이선스·앱 내 고지: `assets/licenses/kyoto-subway-1day-DATA-NOTICE.md`, CC BY 4.0
+
+다른 회사 환승, 할인, 별도 요금 및 소아요금은 비교하지 않는다.
+
+## 오카야마·구라시키 tabiwa 구루링 패스 파생 운임 데이터
+
+앱은 사용자 제공 검증 패키지에서 정리한 JR 서일본 적용 구간의 역·운임 데이터와 시내 교통 대표 운임을 앱용 CSV로 포함한다.
+
+- JR 역·운임 asset: `assets/data/pass_comparison/okayama_kurashiki_gururin_stations_2026.csv`, `assets/data/pass_comparison/okayama_kurashiki_gururin_fares_2026.csv`
+- 운임 기준: 오카야마 전기궤도 전선 성인 정액 ¥160은 정확 운임으로, 시모덴 버스는 노선별 대표 운임으로 분리한다.
+- 공식 조건 확인: JR 서일본 tabiwa의 `岡山・倉敷 tabiwaぐるりんパス` 상품 안내 및 tabiwa 상품 페이지
+- 데이터 라이선스: CC BY-SA 4.0. 원본 패키지의 `LICENSE_DATA.md`, `THIRD_PARTY_NOTICES.md`, `SOURCE_MANIFEST.csv`의 저작자 표시·변경 고지를 유지한다.
+- 앱 내 고지: `assets/licenses/okayama-kurashiki-gururin-fares-DATA-NOTICE.md`
+
+JR 운임은 패스 대상 35개 역의 방향별 성인 운임만 비교한다. 시모덴 버스는 실제 정류장·노선·운행일·할인에 따라 운임이 달라질 수 있으므로 대표값을 추정으로 표시한다. 관광시설, 렌터사이클, 특별 좌석, 할인 및 대상 밖 환승은 손익 계산에서 제외한다. 공식 원문 운임표·이미지·로고는 asset에 포함하지 않는다.
+
+## 홋카이도 레일패스 파생 운임 데이터
+
+앱은 아래의 사용자 제공 검증 패키지에서 생성한 앱용 asset을 포함한다. 원본 CSV는 검증·갱신용으로 보관하고, 95,790개 기본 운임은 역 번호 기반 binary 인덱스(`hokkaido_rail_pass_minimum_fares_2026.bin`)로 변환해 배포한다.
+
+- 역 master: `assets/data/pass_comparison/hokkaido_rail_pass_stations_2026.csv`
+- 성인 기본 운임: `assets/data/pass_comparison/hokkaido_rail_pass_minimum_fares_2026.csv`
+- 보수적으로 검증된 특급 역쌍: `assets/data/pass_comparison/hokkaido_rail_pass_limited_express_safe_pairs_2026.csv`
+- 원본 검증 패키지: `hokkaido_rail_pass_fare_db_2026/`
+- 데이터 라이선스: CC BY-SA 4.0. 원본의 `LICENSE_DATA.md`, `THIRD_PARTY_NOTICES.md`, `SOURCE_MANIFEST.csv`와 변경 고지를 유지한다.
+
+일반 운임은 JR홋카이도 재래선의 성인 기본 운임만 사용한다. 특급은 `limited_express_safe_pairs`에 있는 정규 열차·방향별 공통 정차역쌍에서만 선택할 수 있으며, 보통차 지정석 포함 운임을 적용한다. 특급 정차역의 공식 시간표·안내는 검증용으로만 사용하고, 원문 표·PDF·이미지는 앱에 포함하지 않는다. JR홋카이도 버스는 정확 운임이 아니라 1회 ¥300 예상값만 합산한다. 그린차, 관광·계절·SL 열차, 홋카이도 신칸센과 타사 구간은 계산 대상에서 제외한다.
+
+정차역·다이어가 변경되면 특급 선택지와 운임표를 최신 공식 자료로 다시 검증해야 한다. 이 데이터는 실시간 운행 여부를 판정하지 않는다.
+
+## 교통패스 비교용 도쿠나이 역 목록
+
 도쿠나이 패스 Web 프로토타입의 역 자동완성은 JR 동일본의 도쿠나이 패스 공식 이용 가능 지역 안내를 바탕으로 만든 74개 역의 검색용 목록이다.
 
 - asset: `assets/data/pass_comparison/tokunai_jr_data.json`
@@ -100,6 +165,17 @@ Web 검증 프로토타입과 Android 앱은 `assets/data/pass_comparison/osaka_
 생성기는 역·운임 행 개수, 누락 역, 중복 역쌍, 양수 운임, 2026년 패스 가격, 오사카 시티버스 운임과 게이한 출처 도메인을 검사하며 하나라도 어긋나면 asset을 교체하지 않는다. 파생 운임의 정확성을 보장하지 않으므로 프로토타입은 참고용으로 표시하고 실제 구매 전 최신 공식 안내 확인을 요구한다. 이 고지는 제3자 자료를 프로젝트 MIT License로 재라이선스하지 않는다.
 
 ## 데이터 해석 원칙
+
+## 유이레일 패스 파생 운임 데이터
+
+`assets/data/pass_comparison/yui_rail_stations_2026.csv`와 `yui_rail_fares_2026.csv`는 유이레일 19개 역·342개 방향별 성인 일반 운임을 포함한다. 역 순서와 영업거리는 Japanese Wikipedia의 `沖縄都市モノレール線`을 정규화한 CC BY-SA 4.0 파생 데이터이며, 유이레일 공식 운임 규칙·역별 운임 페이지 171개 고유 역쌍과 대조했다. 공식 전체 운임표·PDF·로고는 포함하지 않는다.
+
+- 상품 조건: 24시간 ¥1,000 / 48시간 ¥1,800
+- 출처·제한 고지: `assets/licenses/yui-rail-pass-DATA-NOTICE.md`
+- 공식 확인: `https://www.yui-rail.co.jp/ticketinfo-ticket/ticketinfo/1day-pass/`
+- 라이선스: [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+
+OKICA 등 결제수단별 할인, 다른 회사 환승과 소아요금은 자동 계산하지 않는다.
 
 - 데이터 정확성은 보장되지 않으므로 역명 조회 결과를 카드 원문보다 우선하는 권위 정보로 취급하지 않는다.
 - 지역 코드는 데이터에 `00`~`03`이 있고 기존 서비스의 경험적 힌트 `50 -> 01`, `F0 -> 03`을 제한적으로 사용한다. 공식 의미가 확인되지 않았으므로 확정 규칙으로 간주하지 않는다.
