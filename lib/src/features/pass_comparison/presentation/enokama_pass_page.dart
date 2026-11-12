@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'pass_strings.dart';
+
 import '../../../core/design/app_theme.dart';
 import '../../../core/widgets/app_ui.dart';
 import 'widgets/pass_result_scope_note.dart';
@@ -29,7 +31,7 @@ class _EnokamaPassPageState extends State<EnokamaPassPage> {
   Future<void> _load() async {
     setState(() => _loadError = null);
     try {
-      final data = await const EnokamaPassDataRepository().load();
+      final data = await EnokamaPassDataRepository().load();
       if (mounted) setState(() => _data = data);
     } catch (error) {
       if (mounted) setState(() => _loadError = error);
@@ -40,49 +42,52 @@ class _EnokamaPassPageState extends State<EnokamaPassPage> {
   Widget build(BuildContext context) {
     final data = _data;
     return Scaffold(
-      appBar: AppBar(title: const Text('교통패스 비교')),
+      appBar: AppBar(title: Text(passText(context, '교통패스 비교'))),
       body: data == null
           ? _loadError == null
-                ? const Center(child: CircularProgressIndicator())
+                ? Center(child: CircularProgressIndicator())
                 : _LoadFailure(onRetry: _load)
           : SafeArea(
               top: false,
               child: ListView(
-                padding: const EdgeInsets.fromLTRB(20, 18, 20, 32),
+                padding: EdgeInsets.fromLTRB(20, 18, 20, 32),
                 children: [
-                  const _Steps(active: 1),
-                  const SizedBox(height: 24),
+                  _Steps(active: 1),
+                  SizedBox(height: 24),
                   Text(
-                    '이동 계획을 입력해 주세요',
+                    passText(context, '이동 계획을 입력해 주세요'),
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  const SizedBox(height: 6),
+                  SizedBox(height: 6),
                   Text(
-                    '패스 출발역과 에노덴·오다큐 프리구간 이동을 입력하면 성인 IC 기준 운임을 비교합니다.',
+                    passText(
+                      context,
+                      '패스 출발역과 에노덴·오다큐 프리구간 이동을 입력하면 성인 IC 기준 운임을 비교합니다.',
+                    ),
                     style: TextStyle(
                       color: AppColors.mutedText(context),
                       height: 1.45,
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20),
                   _OriginCard(
                     origin: _origin,
                     data: data,
                     onSelected: (value) => setState(() => _origin = value),
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20),
                   SectionLabel(
-                    '이동 구간',
+                    passText(context, '이동 구간'),
                     trailing: TextButton(
                       onPressed: _clear,
-                      child: const Text('비우기'),
+                      child: Text(passText(context, '비우기')),
                     ),
                   ),
                   AppSurface(
-                    key: const ValueKey('enokama-journey-plan-card'),
-                    padding: const EdgeInsets.all(14),
+                    key: ValueKey('enokama-journey-plan-card'),
+                    padding: EdgeInsets.all(14),
                     child: Column(
                       children: [
                         for (
@@ -100,7 +105,7 @@ class _EnokamaPassPageState extends State<EnokamaPassPage> {
                                 setState(() => _segments.removeAt(index)),
                           ),
                           if (index != _segments.length - 1)
-                            const Padding(
+                            Padding(
                               padding: EdgeInsets.symmetric(vertical: 12),
                               child: Divider(),
                             ),
@@ -108,19 +113,19 @@ class _EnokamaPassPageState extends State<EnokamaPassPage> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12),
                   OutlinedButton.icon(
                     onPressed: () => setState(() => _segments.add(_Draft())),
-                    icon: const Icon(Icons.add_rounded),
-                    label: const Text('이동 구간 추가'),
+                    icon: Icon(Icons.add_rounded),
+                    label: Text(passText(context, '이동 구간 추가')),
                   ),
-                  const SizedBox(height: 18),
+                  SizedBox(height: 18),
                   FilledButton(
                     onPressed: () => _showResult(data),
-                    child: const Text('비교 결과 보기'),
+                    child: Text(passText(context, '비교 결과 보기')),
                   ),
-                  const SizedBox(height: 12),
-                  const _Footnote(),
+                  SizedBox(height: 12),
+                  _Footnote(),
                 ],
               ),
             ),
@@ -170,7 +175,7 @@ class _LoadFailure extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Center(
     child: Padding(
-      padding: const EdgeInsets.all(28),
+      padding: EdgeInsets.all(28),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -179,22 +184,22 @@ class _LoadFailure extends StatelessWidget {
             color: AppColors.mutedText(context),
             size: 40,
           ),
-          const SizedBox(height: 12),
-          const Text(
-            '패스 데이터를 불러오지 못했어요',
+          SizedBox(height: 12),
+          Text(
+            passText(context, '패스 데이터를 불러오지 못했어요'),
             style: TextStyle(fontWeight: FontWeight.w700),
           ),
-          const SizedBox(height: 6),
+          SizedBox(height: 6),
           Text(
-            '앱을 다시 실행하거나 다시 시도해 주세요.',
+            passText(context, '앱을 다시 실행하거나 다시 시도해 주세요.'),
             textAlign: TextAlign.center,
             style: TextStyle(color: AppColors.mutedText(context)),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           OutlinedButton.icon(
             onPressed: onRetry,
-            icon: const Icon(Icons.refresh_rounded),
-            label: const Text('다시 시도'),
+            icon: Icon(Icons.refresh_rounded),
+            label: Text(passText(context, '다시 시도')),
           ),
         ],
       ),
@@ -223,9 +228,12 @@ class _Steps extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                const SizedBox(height: 6),
+                SizedBox(height: 6),
                 Text(
-                  '${i + 1}. ${['패스 선택', '이용 계획', '비교 결과'][i]}',
+                  passText(
+                    context,
+                    '${i + 1}. ${passText(context, ['패스 선택', '이용 계획', '비교 결과'][i])}',
+                  ),
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: i == active ? FontWeight.w800 : FontWeight.w500,
@@ -271,19 +279,19 @@ class _OriginCard extends StatelessWidget {
                 color: AppColors.accent(context),
               ),
             ),
-            const SizedBox(width: 11),
+            SizedBox(width: 11),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    '에노시마·가마쿠라 프리패스 1일권',
+                  Text(
+                    passText(context, '에노시마·가마쿠라 프리패스 1일권'),
                     style: TextStyle(fontWeight: FontWeight.w800),
                   ),
                   if (origin != null) ...[
-                    const SizedBox(height: 2),
+                    SizedBox(height: 2),
                     Text(
-                      '¥${origin!.passPrice}',
+                      passText(context, '¥${origin!.passPrice}'),
                       style: TextStyle(
                         color: AppColors.accent(context),
                         fontWeight: FontWeight.w700,
@@ -295,7 +303,7 @@ class _OriginCard extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: 12),
         OutlinedButton(
           onPressed: () async {
             final selected = await Navigator.of(context).push<EnokamaOrigin>(
@@ -304,21 +312,24 @@ class _OriginCard extends StatelessWidget {
             if (selected != null) onSelected(selected);
           },
           style: OutlinedButton.styleFrom(
-            minimumSize: const Size.fromHeight(52),
+            minimumSize: Size.fromHeight(52),
             alignment: Alignment.centerLeft,
             backgroundColor: AppColors.fieldSurface(context),
           ),
           child: Row(
             children: [
-              const Icon(Icons.train_outlined),
-              const SizedBox(width: 9),
+              Icon(Icons.train_outlined),
+              SizedBox(width: 9),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      origin?.displayName ?? '패스 출발역 선택',
+                      passText(
+                        context,
+                        origin?.passName(context) ?? '패스 출발역 선택',
+                      ),
                       style: TextStyle(
                         color: AppColors.accent(context),
                         fontWeight: FontWeight.w800,
@@ -326,13 +337,16 @@ class _OriginCard extends StatelessWidget {
                     ),
                     if (origin != null)
                       Text(
-                        '${origin!.nameJa} · ${origin!.roundTripApplicable ? '후지사와 왕복 포함' : '프리구간 내부 출발역'}',
+                        passText(
+                          context,
+                          '${origin!.nameJa} · ${origin!.roundTripApplicable ? '후지사와 왕복 포함' : '프리구간 내부 출발역'}',
+                        ),
                         style: Theme.of(context).textTheme.labelSmall,
                       ),
                   ],
                 ),
               ),
-              const Icon(Icons.chevron_right_rounded),
+              Icon(Icons.chevron_right_rounded),
             ],
           ),
         ),
@@ -375,24 +389,24 @@ class _SegmentEditor extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Text(
-                '${index + 1}',
+                passText(context, '${index + 1}'),
                 style: TextStyle(
                   color: AppColors.accent(context),
                   fontWeight: FontWeight.w900,
                 ),
               ),
             ),
-            const SizedBox(width: 8),
-            const Expanded(
+            SizedBox(width: 8),
+            Expanded(
               child: Text(
-                '이동 구간',
+                passText(context, '이동 구간'),
                 style: TextStyle(fontWeight: FontWeight.w800),
               ),
             ),
             if (removable) PassSegmentRemoveButton(onPressed: onRemove),
           ],
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10),
         Row(
           children: [
             Expanded(
@@ -407,7 +421,7 @@ class _SegmentEditor extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 5),
+              padding: EdgeInsets.symmetric(horizontal: 5),
               child: IconButton(
                 onPressed: () {
                   final from = draft.from;
@@ -415,12 +429,12 @@ class _SegmentEditor extends StatelessWidget {
                   draft.to = from;
                   onChanged();
                 },
-                tooltip: '출발·도착 바꾸기',
+                tooltip: passText(context, '출발·도착 바꾸기'),
                 style: IconButton.styleFrom(
                   backgroundColor: AppColors.softSurface(context),
                   foregroundColor: AppColors.accent(context),
                 ),
-                icon: const Icon(Icons.swap_horiz_rounded),
+                icon: Icon(Icons.swap_horiz_rounded),
               ),
             ),
             Expanded(
@@ -436,7 +450,7 @@ class _SegmentEditor extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8),
         _FareHint(hasBoth: draft.from != null && draft.to != null, fare: fare),
       ],
     );
@@ -457,10 +471,10 @@ class _StationButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) => PassStationPickerField(
     label: label,
-    stationName: station?.displayName,
+    stationName: station?.passName(context),
     operatorLabel: station == null
         ? null
-        : station!.secondaryLabel.split(' · ').last,
+        : station!.passSecondary(context).split(' · ').last,
     onTap: () async {
       final selected = await Navigator.of(context).push<EnokamaStation>(
         MaterialPageRoute(
@@ -493,11 +507,12 @@ class _FareHint extends StatelessWidget {
           size: 18,
           color: success ? AppColors.success : AppColors.mutedText(context),
         ),
-        const SizedBox(width: 7),
+        SizedBox(width: 7),
         Expanded(
           child: Text(
-            message,
+            passText(context, message),
             style: TextStyle(
+              fontSize: hasBoth ? null : 11,
               color: success ? AppColors.success : AppColors.mutedText(context),
               fontWeight: success ? FontWeight.w700 : FontWeight.w400,
             ),
@@ -512,7 +527,10 @@ class _Footnote extends StatelessWidget {
   const _Footnote();
   @override
   Widget build(BuildContext context) => Text(
-    '패스 출발역과 후지사와 사이의 왕복 1회, 에노덴 전선과 오다큐 후지사와–가타세에노시마 구간만 계산합니다. 프리구간 밖 추가 이동, 특급·좌석요금과 할인은 포함하지 않습니다.',
+    passText(
+      context,
+      '패스 출발역과 후지사와 사이의 왕복 1회, 에노덴 전선과 오다큐 후지사와–가타세에노시마 구간만 계산합니다. 프리구간 밖 추가 이동, 특급·좌석요금과 할인은 포함하지 않습니다.',
+    ),
     style: TextStyle(
       color: AppColors.mutedText(context),
       fontSize: 12,
@@ -531,7 +549,7 @@ class _StationSearchPage extends StatefulWidget {
 
 class _StationSearchPageState extends State<_StationSearchPage> {
   final _controller = TextEditingController();
-  List<EnokamaStation> _results = const [];
+  List<EnokamaStation> _results = [];
   @override
   void dispose() {
     _controller.dispose();
@@ -561,7 +579,7 @@ class _OriginListPage extends StatefulWidget {
 
 class _OriginListPageState extends State<_OriginListPage> {
   final _controller = TextEditingController();
-  List<EnokamaOrigin> _results = const [];
+  List<EnokamaOrigin> _results = [];
 
   @override
   void dispose() {
@@ -578,54 +596,54 @@ class _OriginListPageState extends State<_OriginListPage> {
       'Tama Line': '다마선',
     };
     return Scaffold(
-      appBar: AppBar(title: const Text('패스 출발역 선택')),
+      appBar: AppBar(title: Text(passText(context, '패스 출발역 선택'))),
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
+        padding: EdgeInsets.fromLTRB(20, 12, 20, 28),
         children: [
           Text(
-            '오다큐 출발역을 선택해 주세요',
+            passText(context, '오다큐 출발역을 선택해 주세요'),
             style: Theme.of(
               context,
             ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
           ),
-          const SizedBox(height: 5),
+          SizedBox(height: 5),
           Text(
-            '출발역에 따라 패스 가격이 달라집니다.',
+            passText(context, '출발역에 따라 패스 가격이 달라집니다.'),
             style: TextStyle(color: AppColors.mutedText(context)),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           TextField(
             controller: _controller,
             onChanged: (query) => setState(
               () => _results = query.trim().isEmpty
-                  ? const []
+                  ? []
                   : widget.data.searchOrigins(query),
             ),
             decoration: InputDecoration(
-              hintText: '출발역 검색',
-              prefixIcon: const Icon(Icons.search_rounded),
+              hintText: passText(context, '출발역 검색'),
+              prefixIcon: Icon(Icons.search_rounded),
               suffixIcon: _controller.text.isEmpty
                   ? null
                   : IconButton(
                       onPressed: () {
                         _controller.clear();
-                        setState(() => _results = const []);
+                        setState(() => _results = []);
                       },
-                      icon: const Icon(Icons.close_rounded),
+                      icon: Icon(Icons.close_rounded),
                     ),
               filled: true,
               isDense: true,
             ),
           ),
-          const SizedBox(height: 18),
+          SizedBox(height: 18),
           if (_controller.text.isNotEmpty) ...[
-            SectionLabel('검색 결과 ${_results.length}개'),
+            SectionLabel(passText(context, '검색 결과 ${_results.length}개')),
             if (_results.isEmpty)
-              const _OriginEmptyState()
+              _OriginEmptyState()
             else
               _OriginRows(origins: _results),
           ] else ...[
-            const SectionLabel('노선 선택'),
+            SectionLabel(passText(context, '노선 선택')),
             for (final line in lines) ...[
               _OriginLineCard(
                 label: labels[line]!,
@@ -649,7 +667,7 @@ class _OriginListPageState extends State<_OriginListPage> {
                         Navigator.of(context).pop(origin);
                     }),
               ),
-              const SizedBox(height: 10),
+              SizedBox(height: 10),
             ],
           ],
         ],
@@ -673,9 +691,12 @@ class _OriginLineCard extends StatelessWidget {
     padding: EdgeInsets.zero,
     child: ListTile(
       leading: Icon(Icons.train_outlined, color: AppColors.accent(context)),
-      title: Text(label, style: const TextStyle(fontWeight: FontWeight.w700)),
-      subtitle: Text('$count개 출발역'),
-      trailing: const Icon(Icons.chevron_right_rounded),
+      title: Text(
+        passText(context, label),
+        style: TextStyle(fontWeight: FontWeight.w700),
+      ),
+      subtitle: Text(passText(context, '$count개 출발역')),
+      trailing: Icon(Icons.chevron_right_rounded),
       onTap: onTap,
     ),
   );
@@ -693,22 +714,22 @@ class _OriginLinePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: Text(label)),
+    appBar: AppBar(title: Text(passText(context, label))),
     body: ListView(
-      padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
+      padding: EdgeInsets.fromLTRB(20, 12, 20, 28),
       children: [
         Text(
-          '$label 출발역',
+          passText(context, '$label 출발역'),
           style: Theme.of(
             context,
           ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
         ),
-        const SizedBox(height: 5),
+        SizedBox(height: 5),
         Text(
-          '출발역을 선택하면 해당 패스 가격을 적용합니다.',
+          passText(context, '출발역을 선택하면 해당 패스 가격을 적용합니다.'),
           style: TextStyle(color: AppColors.mutedText(context)),
         ),
-        const SizedBox(height: 18),
+        SizedBox(height: 18),
         _OriginRows(origins: origins),
       ],
     ),
@@ -726,14 +747,14 @@ class _OriginRows extends StatelessWidget {
       children: [
         for (final origin in origins)
           ListTile(
-            leading: const Icon(Icons.train_outlined),
+            leading: Icon(Icons.train_outlined),
             title: Text(
-              origin.displayName,
-              style: const TextStyle(fontWeight: FontWeight.w700),
+              passText(context, origin.passName(context)),
+              style: TextStyle(fontWeight: FontWeight.w700),
             ),
-            subtitle: Text(origin.secondaryLabel),
+            subtitle: Text(passText(context, origin.passSecondary(context))),
             trailing: Text(
-              '¥${origin.passPrice}',
+              passText(context, '¥${origin.passPrice}'),
               style: TextStyle(
                 color: AppColors.accent(context),
                 fontSize: 17,
@@ -752,7 +773,7 @@ class _OriginEmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) => AppSurface(
     child: Text(
-      '일치하는 출발역을 찾지 못했어요. 한글·초성·일본어로 다시 검색해 주세요.',
+      passText(context, '일치하는 출발역을 찾지 못했어요. 한글·초성·일본어로 다시 검색해 주세요.'),
       style: TextStyle(color: AppColors.mutedText(context)),
     ),
   );
@@ -778,17 +799,17 @@ class _SearchScaffold<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(
-      title: Text(title),
+      title: Text(passText(context, title)),
       bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(72),
+        preferredSize: Size.fromHeight(72),
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 2, 20, 12),
+          padding: EdgeInsets.fromLTRB(20, 2, 20, 12),
           child: TextField(
             controller: controller,
             autofocus: true,
             onChanged: onChanged,
-            decoration: const InputDecoration(
-              hintText: '역 이름을 검색해 주세요',
+            decoration: InputDecoration(
+              hintText: passText(context, '역 이름을 검색해 주세요'),
               prefixIcon: Icon(Icons.search_rounded),
               filled: true,
               isDense: true,
@@ -800,16 +821,16 @@ class _SearchScaffold<T> extends StatelessWidget {
     body: controller.text.trim().isEmpty
         ? Center(
             child: Text(
-              emptyText,
+              passText(context, emptyText),
               textAlign: TextAlign.center,
               style: TextStyle(color: AppColors.mutedText(context)),
             ),
           )
         : results.isEmpty
-        ? const Center(child: Text('일치하는 역을 찾지 못했어요'))
+        ? Center(child: Text(passText(context, '일치하는 역을 찾지 못했어요')))
         : ListView.separated(
             itemCount: results.length,
-            separatorBuilder: (_, _) => const Divider(height: 1),
+            separatorBuilder: (_, _) => Divider(height: 1),
             itemBuilder: (_, index) => item(results[index]),
           ),
   );
@@ -820,13 +841,13 @@ class _StationTile extends StatelessWidget {
   final EnokamaStation station;
   @override
   Widget build(BuildContext context) => ListTile(
-    leading: const Icon(Icons.train_outlined),
+    leading: Icon(Icons.train_outlined),
     title: Text(
-      station.displayName,
-      style: const TextStyle(fontWeight: FontWeight.w700),
+      passText(context, station.passName(context)),
+      style: TextStyle(fontWeight: FontWeight.w700),
     ),
-    subtitle: Text(station.secondaryLabel),
-    trailing: const Icon(Icons.chevron_right_rounded),
+    subtitle: Text(passText(context, station.passSecondary(context))),
+    trailing: Icon(Icons.chevron_right_rounded),
     onTap: () => Navigator.of(context).pop(station),
   );
 }
@@ -847,19 +868,19 @@ class _ResultPage extends StatelessWidget {
         : '개별 결제가 더 저렴해요';
     final price = result.origin?.passPrice ?? 0;
     return Scaffold(
-      appBar: AppBar(title: const Text('비교 결과')),
+      appBar: AppBar(title: Text(passText(context, '비교 결과'))),
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(20, 10, 20, 28),
+        padding: EdgeInsets.fromLTRB(20, 10, 20, 28),
         children: [
-          const _Steps(active: 2),
-          const SizedBox(height: 28),
+          _Steps(active: 2),
+          SizedBox(height: 28),
           Text(
-            '비교 결과',
+            passText(context, '비교 결과'),
             style: Theme.of(
               context,
             ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
           ),
-          const SizedBox(height: 14),
+          SizedBox(height: 14),
           AppSurface(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -871,9 +892,9 @@ class _ResultPage extends StatelessWidget {
                       : AppColors.accent(context),
                   size: 34,
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12),
                 Text(
-                  title,
+                  passText(context, title),
                   style: TextStyle(
                     fontWeight: FontWeight.w700,
                     fontSize: 22,
@@ -882,23 +903,25 @@ class _ResultPage extends StatelessWidget {
                         : AppColors.mutedText(context),
                   ),
                 ),
-                const SizedBox(height: 20),
-                const PassResultScopeNote(),
+                SizedBox(height: 20),
+                PassResultScopeNote(),
                 _AmountRow('일반 운임 합계', result.total),
                 if (result.origin?.roundTripApplicable == true)
                   _AmountRow('출발역 ↔ 후지사와 왕복 포함', result.origin!.roundTripFare),
-                const Divider(height: 26),
+                Divider(height: 26),
                 _AmountRow('패스 가격', price),
-                const Divider(height: 26),
+                Divider(height: 26),
                 _AmountRow('예상 손익', result.savings, bold: true, signed: true),
               ],
             ),
           ),
-          const SizedBox(height: 18),
-          const NoticeBanner(
-            title: '계산 기준',
-            text:
-                '선택한 오다큐 출발역의 패스 가격과 후지사와 왕복 성인 IC 운임, 프리구간의 실제 입력 이동만 비교합니다.',
+          SizedBox(height: 18),
+          NoticeBanner(
+            title: passText(context, '계산 기준'),
+            text: passText(
+              context,
+              '선택한 오다큐 출발역의 패스 가격과 후지사와 왕복 성인 IC 운임, 프리구간의 실제 입력 이동만 비교합니다.',
+            ),
             tone: NoticeTone.info,
           ),
         ],
@@ -920,19 +943,19 @@ class _AmountRow extends StatelessWidget {
   final bool signed;
   @override
   Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.symmetric(vertical: 4),
+    padding: EdgeInsets.symmetric(vertical: 4),
     child: Row(
       children: [
         Expanded(
           child: Text(
-            label,
+            passText(context, label),
             style: TextStyle(
               fontWeight: bold ? FontWeight.w800 : FontWeight.w500,
             ),
           ),
         ),
         Text(
-          '${signed && amount > 0 ? '+' : ''}¥$amount',
+          passText(context, '${signed && amount > 0 ? '+' : ''}¥$amount'),
           style: TextStyle(
             fontWeight: bold ? FontWeight.w900 : FontWeight.w700,
             fontSize: bold ? 19 : 16,

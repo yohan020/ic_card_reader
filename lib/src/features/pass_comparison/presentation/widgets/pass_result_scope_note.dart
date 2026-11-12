@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../pass_strings.dart';
 
 /// Keep the calculation's limits visible next to its verdict.
 class PassResultScopeNote extends StatelessWidget {
@@ -10,8 +11,8 @@ class PassResultScopeNote extends StatelessWidget {
   Widget build(BuildContext context) => Padding(
     padding: const EdgeInsets.only(top: 10),
     child: Text(
-      '입력한 교통 이용 기준의 예상 비교입니다.'
-      '${detail == null ? '' : '\n$detail'}',
+      '${strings(context).passEstimateNote}'
+      '${detail == null ? '' : '\n${passText(context, detail!)}'}',
       style: TextStyle(
         fontSize: 13,
         height: 1.45,

@@ -2,9 +2,15 @@ import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
 
+import 'pass_named_place.dart';
+import 'pass_station_english.g.dart';
+
 import 'pass_transit_data.dart';
 
-class HokkaidoRailPassStation {
+class HokkaidoRailPassStation implements PassNamedPlace {
+  @override
+  String get nameEn => passStationEnglish['hokkaido:$id'] ?? '';
+
   const HokkaidoRailPassStation({
     required this.id,
     required this.nameJa,
@@ -12,10 +18,13 @@ class HokkaidoRailPassStation {
   });
 
   final String id;
+  @override
   final String nameJa;
+  @override
   final String nameKo;
 
   String get displayName => nameKo;
+  @override
   String get secondaryLabel => '$nameJa · JR 홋카이도';
 }
 
@@ -222,17 +231,19 @@ class HokkaidoRailPassDataRepository {
   Future<HokkaidoRailPassData> load() => _cachedLoad ??= _load();
 
   Future<HokkaidoRailPassData> _load() async {
-    final assets = await Future.wait<Object>([
-      rootBundle.loadString(
-        'assets/data/pass_comparison/hokkaido_rail_pass_stations_2026.csv',
-      ),
-      rootBundle.load(
-        'assets/data/pass_comparison/hokkaido_rail_pass_minimum_fares_2026.bin',
-      ),
-      rootBundle.loadString(
-        'assets/data/pass_comparison/hokkaido_rail_pass_limited_express_safe_pairs_2026.csv',
-      ),
-    ]);
+    final assets = await Future.wait<Object>(
+      <Future<Object>>[
+        rootBundle.loadString(
+          'assets/data/pass_comparison/hokkaido_rail_pass_stations_2026.csv',
+        ),
+        rootBundle.load(
+          'assets/data/pass_comparison/hokkaido_rail_pass_minimum_fares_2026.bin',
+        ),
+        rootBundle.loadString(
+          'assets/data/pass_comparison/hokkaido_rail_pass_limited_express_safe_pairs_2026.csv',
+        ),
+      ].map(Future<Object>.value),
+    );
     return HokkaidoRailPassData.fromBinary(
       stationsCsv: assets[0] as String,
       minimumFaresBinary: assets[1] as ByteData,
@@ -243,7 +254,7 @@ class HokkaidoRailPassDataRepository {
 
 class _SearchEntry {
   _SearchEntry(this.station)
-    : candidates = {station.nameJa, station.nameKo}
+    : candidates = {station.nameJa, station.nameKo, station.nameEn}
           .map(normalizeStationSearchText)
           .where((value) => value.isNotEmpty)
           .map((value) => (normalized: value, initials: hangulInitials(value)))

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/design/app_theme.dart';
+import '../pass_strings.dart';
 
 /// The fixed station-field layout used throughout transport-pass planning.
 ///
@@ -31,7 +32,9 @@ class PassStationPickerField extends StatelessWidget {
 
     return Semantics(
       button: true,
-      label: semanticLabel ?? '$label역 검색',
+      label: semanticLabel == null
+          ? strings(context).passSearchStation(passText(context, label))
+          : passText(context, semanticLabel!),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
@@ -53,7 +56,9 @@ class PassStationPickerField extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        label,
+                        passText(context, label),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: AppColors.mutedText(context),
@@ -63,7 +68,7 @@ class PassStationPickerField extends StatelessWidget {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        stationName ?? emptyLabel,
+                        stationName ?? passText(context, emptyLabel),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         textAlign: TextAlign.center,
@@ -76,7 +81,7 @@ class PassStationPickerField extends StatelessWidget {
                       if (selected && operatorLabel != null) ...[
                         const SizedBox(height: 2),
                         Text(
-                          operatorLabel!,
+                          passText(context, operatorLabel!),
                           textAlign: TextAlign.center,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,

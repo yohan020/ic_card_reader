@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'pass_strings.dart';
+
 import '../../../core/design/app_theme.dart';
 import '../../../core/widgets/app_ui.dart';
 import 'widgets/pass_result_scope_note.dart';
@@ -31,7 +33,7 @@ class _HokkaidoRailPassPageState extends State<HokkaidoRailPassPage> {
   Future<void> _load() async {
     setState(() => _error = null);
     try {
-      final data = await const HokkaidoRailPassDataRepository().load();
+      final data = await HokkaidoRailPassDataRepository().load();
       if (mounted) setState(() => _data = data);
     } catch (error) {
       if (mounted) setState(() => _error = error);
@@ -42,45 +44,45 @@ class _HokkaidoRailPassPageState extends State<HokkaidoRailPassPage> {
   Widget build(BuildContext context) {
     final data = _data;
     return Scaffold(
-      appBar: AppBar(title: const Text('교통패스 비교')),
+      appBar: AppBar(title: Text(passText(context, '교통패스 비교'))),
       body: data == null
           ? _error == null
-                ? const Center(child: CircularProgressIndicator())
+                ? Center(child: CircularProgressIndicator())
                 : _LoadFailure(onRetry: _load)
           : AppPage(
-              padding: const EdgeInsets.fromLTRB(20, 18, 20, 32),
+              padding: EdgeInsets.fromLTRB(20, 18, 20, 32),
               children: [
-                const _Steps(active: 1),
-                const SizedBox(height: 24),
+                _Steps(active: 1),
+                SizedBox(height: 24),
                 Text(
-                  '이동 계획을 입력해 주세요',
+                  passText(context, '이동 계획을 입력해 주세요'),
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                const SizedBox(height: 7),
+                SizedBox(height: 7),
                 Text(
-                  'JR 홋카이도 역을 선택하면 성인 일반 운임을 자동으로 찾습니다.',
+                  passText(context, 'JR 홋카이도 역을 선택하면 성인 일반 운임을 자동으로 찾습니다.'),
                   style: TextStyle(
                     color: AppColors.mutedText(context),
                     height: 1.45,
                   ),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: 20),
                 _PassSummary(
                   days: _days,
                   onDaysSelected: (value) => setState(() => _days = value),
                 ),
-                const SizedBox(height: 24),
+                SizedBox(height: 24),
                 SectionLabel(
-                  '이동 구간',
+                  passText(context, '이동 구간'),
                   trailing: TextButton(
                     onPressed: _clear,
-                    child: const Text('비우기'),
+                    child: Text(passText(context, '비우기')),
                   ),
                 ),
                 AppSurface(
-                  padding: const EdgeInsets.all(14),
+                  padding: EdgeInsets.all(14),
                   child: Column(
                     children: [
                       for (
@@ -98,7 +100,7 @@ class _HokkaidoRailPassPageState extends State<HokkaidoRailPassPage> {
                               setState(() => _segments.removeAt(index)),
                         ),
                         if (index + 1 < _segments.length)
-                          const Padding(
+                          Padding(
                             padding: EdgeInsets.symmetric(vertical: 12),
                             child: Divider(),
                           ),
@@ -106,26 +108,26 @@ class _HokkaidoRailPassPageState extends State<HokkaidoRailPassPage> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12),
                 OutlinedButton.icon(
                   onPressed: () =>
                       setState(() => _segments.add(_DraftSegment())),
-                  icon: const Icon(Icons.add_rounded),
-                  label: const Text('이동 구간 추가'),
+                  icon: Icon(Icons.add_rounded),
+                  label: Text(passText(context, '이동 구간 추가')),
                 ),
-                const SizedBox(height: 18),
+                SizedBox(height: 18),
                 _BusEstimate(
                   rides: _estimatedBusRides,
                   onChanged: (value) =>
                       setState(() => _estimatedBusRides = value),
                 ),
-                const SizedBox(height: 18),
+                SizedBox(height: 18),
                 FilledButton(
                   onPressed: () => _showResult(data),
-                  child: const Text('비교 결과 보기'),
+                  child: Text(passText(context, '비교 결과 보기')),
                 ),
-                const SizedBox(height: 12),
-                const _Footnote(),
+                SizedBox(height: 12),
+                _Footnote(),
               ],
             ),
     );
@@ -201,9 +203,12 @@ class _Steps extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                const SizedBox(height: 6),
+                SizedBox(height: 6),
                 Text(
-                  '${index + 1}. ${labels[index]}',
+                  passText(
+                    context,
+                    '${index + 1}. ${passText(context, labels[index])}',
+                  ),
                   style: TextStyle(
                     color: index == active
                         ? AppColors.accent(context)
@@ -217,7 +222,7 @@ class _Steps extends StatelessWidget {
               ],
             ),
           ),
-          if (index != labels.length - 1) const SizedBox(width: 5),
+          if (index != labels.length - 1) SizedBox(width: 5),
         ],
       ],
     );
@@ -232,7 +237,7 @@ class _PassSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => AppSurface(
-    padding: const EdgeInsets.all(15),
+    padding: EdgeInsets.all(15),
     child: Column(
       children: [
         Row(
@@ -249,18 +254,21 @@ class _PassSummary extends StatelessWidget {
                 color: AppColors.accent(context),
               ),
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '홋카이도 레일패스 $days일권',
-                    style: const TextStyle(fontWeight: FontWeight.w800),
+                    passText(context, '홋카이도 레일패스 $days일권'),
+                    style: TextStyle(fontWeight: FontWeight.w800),
                   ),
-                  const SizedBox(height: 2),
+                  SizedBox(height: 2),
                   Text(
-                    '¥${HokkaidoRailPassData.stationPurchasePrices[days]}',
+                    passText(
+                      context,
+                      '¥${HokkaidoRailPassData.stationPurchasePrices[days]}',
+                    ),
                     style: TextStyle(
                       color: AppColors.accent(context),
                       fontSize: 15,
@@ -271,7 +279,7 @@ class _PassSummary extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 14),
+        SizedBox(height: 14),
         Row(
           children: [
             for (final option in [5, 7, 10]) ...[
@@ -283,13 +291,13 @@ class _PassSummary extends StatelessWidget {
                   onTap: () => onDaysSelected(option),
                 ),
               ),
-              if (option != 10) const SizedBox(width: 7),
+              if (option != 10) SizedBox(width: 7),
             ],
           ],
         ),
-        const SizedBox(height: 9),
+        SizedBox(height: 9),
         Text(
-          '역 구매 가격 · 사전 구매 시 ¥1,000 저렴',
+          passText(context, '역 구매 가격 · 사전 구매 시 ¥1,000 저렴'),
           style: TextStyle(color: AppColors.mutedText(context), fontSize: 11),
         ),
       ],
@@ -316,7 +324,7 @@ class _PeriodOption extends StatelessWidget {
     return Semantics(
       button: true,
       selected: selected,
-      label: '$days일권 ¥$price',
+      label: passText(context, '$days일권 ¥$price'),
       child: Material(
         color: Colors.transparent,
         borderRadius: BorderRadius.circular(11),
@@ -324,7 +332,7 @@ class _PeriodOption extends StatelessWidget {
           onTap: onTap,
           borderRadius: BorderRadius.circular(11),
           child: Ink(
-            height: 58,
+            padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 4),
             decoration: BoxDecoration(
               color: selected
                   ? AppColors.skyDark
@@ -332,19 +340,20 @@ class _PeriodOption extends StatelessWidget {
               borderRadius: BorderRadius.circular(11),
             ),
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  '$days일권',
+                  passText(context, '$days일권'),
                   style: TextStyle(
                     color: foreground,
                     fontSize: 12,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
-                const SizedBox(height: 2),
+                SizedBox(height: 2),
                 Text(
-                  '¥$price',
+                  passText(context, '¥$price'),
                   style: TextStyle(
                     color: foreground,
                     fontSize: 11,
@@ -402,24 +411,24 @@ class _SegmentEditor extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Text(
-                '${index + 1}',
+                passText(context, '${index + 1}'),
                 style: TextStyle(
                   color: AppColors.accent(context),
                   fontWeight: FontWeight.w900,
                 ),
               ),
             ),
-            const SizedBox(width: 8),
-            const Expanded(
+            SizedBox(width: 8),
+            Expanded(
               child: Text(
-                '이동 구간',
+                passText(context, '이동 구간'),
                 style: TextStyle(fontWeight: FontWeight.w800),
               ),
             ),
             if (removable) PassSegmentRemoveButton(onPressed: onRemove),
           ],
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10),
         Row(
           children: [
             Expanded(
@@ -435,7 +444,7 @@ class _SegmentEditor extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 5),
+              padding: EdgeInsets.symmetric(horizontal: 5),
               child: IconButton(
                 onPressed: () {
                   final from = draft.from;
@@ -444,12 +453,12 @@ class _SegmentEditor extends StatelessWidget {
                   _resetUnsupportedMode();
                   onChanged();
                 },
-                tooltip: '출발·도착 바꾸기',
+                tooltip: passText(context, '출발·도착 바꾸기'),
                 style: IconButton.styleFrom(
                   backgroundColor: AppColors.softSurface(context),
                   foregroundColor: AppColors.accent(context),
                 ),
-                icon: const Icon(Icons.swap_horiz_rounded, size: 20),
+                icon: Icon(Icons.swap_horiz_rounded, size: 20),
               ),
             ),
             Expanded(
@@ -467,7 +476,7 @@ class _SegmentEditor extends StatelessWidget {
           ],
         ),
         if (limitedExpressFare != null) ...[
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           _TravelModeSelector(
             selected: draft.mode,
             onSelected: (mode) {
@@ -476,7 +485,7 @@ class _SegmentEditor extends StatelessWidget {
             },
           ),
         ],
-        const SizedBox(height: 8),
+        SizedBox(height: 8),
         _FareHint(fare: fare, hasBoth: draft.from != null && draft.to != null),
       ],
     );
@@ -503,11 +512,11 @@ class _TravelModeSelector extends StatelessWidget {
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      const Text(
-        '이용 열차',
+      Text(
+        passText(context, '이용 열차'),
         style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
       ),
-      const SizedBox(height: 7),
+      SizedBox(height: 7),
       Row(
         children: [
           Expanded(
@@ -517,7 +526,7 @@ class _TravelModeSelector extends StatelessWidget {
               onTap: () => onSelected(HokkaidoRailTravelMode.localRapid),
             ),
           ),
-          const SizedBox(width: 7),
+          SizedBox(width: 7),
           Expanded(
             child: _TravelModeOption(
               label: '특급',
@@ -546,7 +555,7 @@ class _TravelModeOption extends StatelessWidget {
   Widget build(BuildContext context) => Semantics(
     button: true,
     selected: selected,
-    label: label,
+    label: passText(context, label),
     child: Material(
       color: Colors.transparent,
       borderRadius: BorderRadius.circular(11),
@@ -563,7 +572,7 @@ class _TravelModeOption extends StatelessWidget {
           ),
           child: Center(
             child: Text(
-              label,
+              passText(context, label),
               style: TextStyle(
                 color: selected ? Colors.white : AppColors.accent(context),
                 fontSize: 12,
@@ -593,8 +602,8 @@ class _StationButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) => PassStationPickerField(
     label: label,
-    stationName: station?.displayName,
-    operatorLabel: station?.secondaryLabel.split(' · ').last,
+    stationName: station?.passName(context),
+    operatorLabel: station?.passSecondary(context).split(' · ').last,
     onTap: () async {
       final value = await Navigator.of(context).push<HokkaidoRailPassStation>(
         MaterialPageRoute(
@@ -629,11 +638,12 @@ class _FareHint extends StatelessWidget {
           size: 18,
           color: valid ? AppColors.success : AppColors.mutedText(context),
         ),
-        const SizedBox(width: 7),
+        SizedBox(width: 7),
         Expanded(
           child: Text(
-            text,
+            passText(context, text),
             style: TextStyle(
+              fontSize: hasBoth ? null : 11,
               color: valid ? AppColors.success : AppColors.mutedText(context),
               fontWeight: valid ? FontWeight.w700 : FontWeight.w400,
             ),
@@ -652,42 +662,45 @@ class _BusEstimate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => AppSurface(
-    padding: const EdgeInsets.all(15),
+    padding: EdgeInsets.all(15),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('JR 홋카이도 버스', style: TextStyle(fontWeight: FontWeight.w800)),
-        const SizedBox(height: 3),
         Text(
-          '1회 예상 ¥300',
+          passText(context, 'JR 홋카이도 버스'),
+          style: TextStyle(fontWeight: FontWeight.w800),
+        ),
+        SizedBox(height: 3),
+        Text(
+          passText(context, '1회 예상 ¥300'),
           style: TextStyle(color: AppColors.mutedText(context), fontSize: 12),
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: 12),
         Row(
           children: [
-            const Expanded(
+            Expanded(
               child: Text(
-                '이용 횟수',
+                passText(context, '이용 횟수'),
                 style: TextStyle(fontWeight: FontWeight.w700),
               ),
             ),
             IconButton(
               onPressed: rides == 0 ? null : () => onChanged(rides - 1),
-              tooltip: '버스 이용 횟수 줄이기',
-              icon: const Icon(Icons.remove_circle_outline_rounded),
+              tooltip: passText(context, '버스 이용 횟수 줄이기'),
+              icon: Icon(Icons.remove_circle_outline_rounded),
             ),
             SizedBox(
               width: 38,
               child: Text(
-                '$rides회',
+                passText(context, '$rides회'),
                 textAlign: TextAlign.center,
-                style: const TextStyle(fontWeight: FontWeight.w800),
+                style: TextStyle(fontWeight: FontWeight.w800),
               ),
             ),
             IconButton(
               onPressed: () => onChanged(rides + 1),
-              tooltip: '버스 이용 횟수 늘리기',
-              icon: const Icon(Icons.add_circle_outline_rounded),
+              tooltip: passText(context, '버스 이용 횟수 늘리기'),
+              icon: Icon(Icons.add_circle_outline_rounded),
             ),
           ],
         ),
@@ -708,10 +721,10 @@ class _Footnote extends StatelessWidget {
         size: 17,
         color: AppColors.mutedText(context),
       ),
-      const SizedBox(width: 7),
+      SizedBox(width: 7),
       Expanded(
         child: Text(
-          '특급은 보통차 지정석 기준으로 계산합니다. 버스는 1회 ¥300의 예상값입니다.',
+          passText(context, '특급은 보통차 지정석 기준으로 계산합니다. 버스는 1회 ¥300의 예상값입니다.'),
           style: TextStyle(
             color: AppColors.mutedText(context),
             fontSize: 12,
@@ -735,7 +748,7 @@ class _StationSearchPage extends StatefulWidget {
 
 class _StationSearchPageState extends State<_StationSearchPage> {
   final _controller = TextEditingController();
-  List<HokkaidoRailPassStation> _results = const [];
+  List<HokkaidoRailPassStation> _results = [];
 
   @override
   void dispose() {
@@ -746,19 +759,19 @@ class _StationSearchPageState extends State<_StationSearchPage> {
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(
-      title: Text(widget.title),
+      title: Text(passText(context, widget.title)),
       bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(78),
+        preferredSize: Size.fromHeight(78),
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 4, 20, 14),
+          padding: EdgeInsets.fromLTRB(20, 4, 20, 14),
           child: TextField(
-            key: const ValueKey('hokkaido-rail-pass-station-search-field'),
+            key: ValueKey('hokkaido-rail-pass-station-search-field'),
             controller: _controller,
             autofocus: true,
             onChanged: _search,
             decoration: InputDecoration(
-              hintText: '역 이름을 검색해 주세요',
-              prefixIcon: const Icon(Icons.search_rounded),
+              hintText: passText(context, '역 이름을 검색해 주세요'),
+              prefixIcon: Icon(Icons.search_rounded),
               suffixIcon: _controller.text.isEmpty
                   ? null
                   : IconButton(
@@ -766,35 +779,35 @@ class _StationSearchPageState extends State<_StationSearchPage> {
                         _controller.clear();
                         _search('');
                       },
-                      icon: const Icon(Icons.close_rounded),
+                      icon: Icon(Icons.close_rounded),
                     ),
               isDense: true,
-              contentPadding: const EdgeInsets.symmetric(vertical: 15),
+              contentPadding: EdgeInsets.symmetric(vertical: 15),
             ),
           ),
         ),
       ),
     ),
     body: _controller.text.trim().isEmpty
-        ? const _SearchState(
+        ? _SearchState(
             icon: Icons.search_rounded,
             title: '찾고 싶은 역을 입력해 주세요',
-            description: '한국어·초성·일본어로 검색할 수 있습니다.',
+            description: '한국어·초성·일본어·영어로 검색할 수 있습니다.',
           )
         : _results.isEmpty
-        ? const _SearchState(
+        ? _SearchState(
             icon: Icons.location_off_outlined,
             title: '일치하는 역을 찾지 못했어요',
             description: '다른 표기나 초성으로 다시 검색해 주세요.',
           )
         : ListView.separated(
-            padding: const EdgeInsets.symmetric(vertical: 6),
+            padding: EdgeInsets.symmetric(vertical: 6),
             itemCount: _results.length,
-            separatorBuilder: (_, _) => const Divider(height: 1),
+            separatorBuilder: (_, _) => Divider(height: 1),
             itemBuilder: (_, index) {
               final station = _results[index];
               return ListTile(
-                contentPadding: const EdgeInsets.symmetric(
+                contentPadding: EdgeInsets.symmetric(
                   horizontal: 20,
                   vertical: 6,
                 ),
@@ -805,17 +818,16 @@ class _StationSearchPageState extends State<_StationSearchPage> {
                     color: AppColors.skySoft,
                     borderRadius: BorderRadius.circular(13),
                   ),
-                  child: const Icon(
-                    Icons.train_outlined,
-                    color: AppColors.skyDark,
-                  ),
+                  child: Icon(Icons.train_outlined, color: AppColors.skyDark),
                 ),
                 title: Text(
-                  station.displayName,
-                  style: const TextStyle(fontWeight: FontWeight.w800),
+                  passText(context, station.passName(context)),
+                  style: TextStyle(fontWeight: FontWeight.w800),
                 ),
-                subtitle: Text(station.secondaryLabel),
-                trailing: const Icon(Icons.chevron_right_rounded),
+                subtitle: Text(
+                  passText(context, station.passSecondary(context)),
+                ),
+                trailing: Icon(Icons.chevron_right_rounded),
                 onTap: () => Navigator.of(context).pop(station),
               );
             },
@@ -823,8 +835,7 @@ class _StationSearchPageState extends State<_StationSearchPage> {
   );
 
   void _search(String value) => setState(
-    () =>
-        _results = value.trim().isEmpty ? const [] : widget.data.search(value),
+    () => _results = value.trim().isEmpty ? [] : widget.data.search(value),
   );
 }
 
@@ -842,28 +853,28 @@ class _SearchState extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Center(
     child: Padding(
-      padding: const EdgeInsets.all(32),
+      padding: EdgeInsets.all(32),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
             width: 58,
             height: 58,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               color: AppColors.skySoft,
               shape: BoxShape.circle,
             ),
             child: Icon(icon, color: AppColors.skyDark, size: 29),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           Text(
-            title,
+            passText(context, title),
             textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
           ),
-          const SizedBox(height: 6),
+          SizedBox(height: 6),
           Text(
-            description,
+            passText(context, description),
             textAlign: TextAlign.center,
             style: TextStyle(color: AppColors.mutedText(context), height: 1.4),
           ),
@@ -880,18 +891,21 @@ class _LoadFailure extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Center(
     child: Padding(
-      padding: const EdgeInsets.all(28),
+      padding: EdgeInsets.all(28),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.error_outline_rounded, size: 38),
-          const SizedBox(height: 12),
-          const Text(
-            '패스 데이터를 불러오지 못했어요',
+          Icon(Icons.error_outline_rounded, size: 38),
+          SizedBox(height: 12),
+          Text(
+            passText(context, '패스 데이터를 불러오지 못했어요'),
             style: TextStyle(fontWeight: FontWeight.w700),
           ),
-          const SizedBox(height: 10),
-          OutlinedButton(onPressed: onRetry, child: const Text('다시 시도')),
+          SizedBox(height: 10),
+          OutlinedButton(
+            onPressed: onRetry,
+            child: Text(passText(context, '다시 시도')),
+          ),
         ],
       ),
     ),
@@ -927,19 +941,19 @@ class _ResultPage extends StatelessWidget {
       ),
     };
     return Scaffold(
-      appBar: AppBar(title: const Text('비교 결과')),
+      appBar: AppBar(title: Text(passText(context, '비교 결과'))),
       body: AppPage(
-        padding: const EdgeInsets.fromLTRB(20, 18, 20, 32),
+        padding: EdgeInsets.fromLTRB(20, 18, 20, 32),
         children: [
-          const _Steps(active: 2),
-          const SizedBox(height: 26),
+          _Steps(active: 2),
+          SizedBox(height: 26),
           Text(
-            '비교 결과',
+            passText(context, '비교 결과'),
             style: Theme.of(
               context,
             ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
           ),
-          const SizedBox(height: 14),
+          SizedBox(height: 14),
           AppSurface(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -949,64 +963,72 @@ class _ResultPage extends StatelessWidget {
                   color: color,
                   size: 34,
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12),
                 Text(
-                  title,
+                  passText(context, title),
                   style: TextStyle(
                     color: color,
                     fontSize: 22,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                const SizedBox(height: 5),
+                SizedBox(height: 5),
                 Text(
-                  description,
+                  passText(context, description),
                   style: TextStyle(color: AppColors.mutedText(context)),
                 ),
-                const PassResultScopeNote(
+                PassResultScopeNote(
                   detail: '버스는 추정 요금이며, 실제 경로·환승 운임에 따라 차이가 날 수 있습니다.',
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: 20),
                 _AmountRow('철도 일반 운임', result.railFareTotal),
                 if (result.estimatedBusValue > 0) ...[
-                  const Divider(height: 26),
+                  Divider(height: 26),
                   _AmountRow('버스 예상 운임', result.estimatedBusValue),
                 ],
-                const Divider(height: 26),
+                Divider(height: 26),
                 _AmountRow('패스 가격', result.passPrice),
-                const Divider(height: 26),
+                Divider(height: 26),
                 _AmountRow('예상 손익', result.savings, bold: true, signed: true),
               ],
             ),
           ),
-          const SizedBox(height: 18),
-          const NoticeBanner(
-            title: '계산 기준',
-            text:
-                'JR 홋카이도선의 성인 운임을 계산합니다. 특급은 보통차 지정석만, 버스는 1회 ¥300 예상값만 반영합니다.',
+          SizedBox(height: 18),
+          NoticeBanner(
+            title: passText(context, '계산 기준'),
+            text: passText(
+              context,
+              'JR 홋카이도선의 성인 운임을 계산합니다. 특급은 보통차 지정석만, 버스는 1회 ¥300 예상값만 반영합니다.',
+            ),
           ),
           if (result.segments.isNotEmpty) ...[
-            const SizedBox(height: 18),
-            const SectionLabel('이동별 상세'),
-            const SizedBox(height: 8),
+            SizedBox(height: 18),
+            SectionLabel(passText(context, '이동별 상세')),
+            SizedBox(height: 8),
             AppSurface(
               padding: EdgeInsets.zero,
               child: Column(
                 children: [
                   for (final segment in result.segments)
                     ListTile(
-                      leading: const Icon(Icons.train_outlined),
+                      leading: Icon(Icons.train_outlined),
                       title: Text(
-                        '${segment.from.displayName} → ${segment.to.displayName}',
+                        passText(
+                          context,
+                          '${segment.from.passName(context)} → ${segment.to.passName(context)}',
+                        ),
                       ),
                       subtitle: Text(
-                        segment.mode == HokkaidoRailTravelMode.limitedExpress
-                            ? 'JR 홋카이도 · 특급'
-                            : 'JR 홋카이도 · 보통·쾌속',
+                        passText(
+                          context,
+                          segment.mode == HokkaidoRailTravelMode.limitedExpress
+                              ? 'JR 홋카이도 · 특급'
+                              : 'JR 홋카이도 · 보통·쾌속',
+                        ),
                       ),
                       trailing: Text(
-                        '¥${segment.fare}',
-                        style: const TextStyle(fontWeight: FontWeight.w800),
+                        passText(context, '¥${segment.fare}'),
+                        style: TextStyle(fontWeight: FontWeight.w800),
                       ),
                     ),
                 ],
@@ -1037,9 +1059,9 @@ class _AmountRow extends StatelessWidget {
     final prefix = signed && amount > 0 ? '+' : '';
     return Row(
       children: [
-        Expanded(child: Text(label)),
+        Expanded(child: Text(passText(context, label))),
         Text(
-          '$prefix¥$amount',
+          passText(context, '$prefix¥$amount'),
           style: TextStyle(
             fontWeight: bold ? FontWeight.w800 : FontWeight.w700,
           ),

@@ -2,9 +2,15 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 
+import 'pass_named_place.dart';
+import 'pass_station_english.g.dart';
+
 import 'pass_transit_data.dart';
 
-class OsakaPassStation {
+class OsakaPassStation implements PassNamedPlace {
+  @override
+  String get nameEn => passStationEnglish['osaka:$id'] ?? '';
+
   const OsakaPassStation({
     required this.nameJa,
     required this.nameKo,
@@ -24,12 +30,15 @@ class OsakaPassStation {
 
   final String id;
   final String operator;
+  @override
   final String nameJa;
+  @override
   final String nameKo;
   final List<String> lines;
 
   String get lookupId => id.isEmpty ? '$operator::$nameJa' : id;
   String get displayName => nameKo.isEmpty ? nameJa : nameKo;
+  @override
   String get secondaryLabel => [
     if (nameKo.isNotEmpty) nameJa,
     operatorDisplayName(operator),
@@ -413,7 +422,7 @@ class OsakaPassStationDataRepository {
 
 class _OsakaSearchEntry {
   _OsakaSearchEntry(this.station)
-    : candidates = {station.nameJa, station.nameKo}
+    : candidates = {station.nameJa, station.nameKo, station.nameEn}
           .where((value) => value.isNotEmpty)
           .map((value) {
             final normalized = normalizeStationSearchText(value);

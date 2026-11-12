@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'pass_strings.dart';
+
 import '../../../core/design/app_theme.dart';
 import '../../../core/widgets/app_ui.dart';
 import '../data/hakone_freepass_data.dart';
@@ -23,7 +25,7 @@ class _HakoneFreepassPageState extends State<HakoneFreepassPage> {
   @override
   void initState() {
     super.initState();
-    const HakoneFreepassDataRepository().load().then((value) {
+    HakoneFreepassDataRepository().load().then((value) {
       if (mounted) setState(() => _data = value);
     });
   }
@@ -32,31 +34,31 @@ class _HakoneFreepassPageState extends State<HakoneFreepassPage> {
   Widget build(BuildContext context) {
     final data = _data;
     if (data == null)
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+      return Scaffold(body: Center(child: CircularProgressIndicator()));
     final price = _departure == null
         ? null
         : data.passPrice(_departure!, _days);
     return Scaffold(
-      appBar: AppBar(title: const Text('교통패스 비교')),
+      appBar: AppBar(title: Text(passText(context, '교통패스 비교'))),
       body: SafeArea(
         top: false,
         child: ListView(
-          padding: const EdgeInsets.fromLTRB(20, 18, 20, 32),
+          padding: EdgeInsets.fromLTRB(20, 18, 20, 32),
           children: [
-            const _Steps(),
-            const SizedBox(height: 24),
+            _Steps(),
+            SizedBox(height: 24),
             Text(
-              '이동 계획을 입력해 주세요',
+              passText(context, '이동 계획을 입력해 주세요'),
               style: Theme.of(
                 context,
               ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
             ),
-            const SizedBox(height: 6),
+            SizedBox(height: 6),
             Text(
-              '성인 일반 운임만 기준으로 하코네 프리패스의 손익을 비교합니다.',
+              passText(context, '성인 일반 운임만 기준으로 하코네 프리패스의 손익을 비교합니다.'),
               style: TextStyle(color: AppColors.mutedText(context)),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
             _HakoneOriginCard(
               departure: _departure,
               price: price,
@@ -64,13 +66,16 @@ class _HakoneFreepassPageState extends State<HakoneFreepassPage> {
               onPick: () => _pickDeparture(data),
               onDaysChanged: (value) => setState(() => _days = value),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
             SectionLabel(
-              '이동 구간',
-              trailing: TextButton(onPressed: _clear, child: const Text('비우기')),
+              passText(context, '이동 구간'),
+              trailing: TextButton(
+                onPressed: _clear,
+                child: Text(passText(context, '비우기')),
+              ),
             ),
             AppSurface(
-              padding: const EdgeInsets.all(14),
+              padding: EdgeInsets.all(14),
               child: Column(
                 children: [
                   for (var index = 0; index < _segments.length; index++) ...[
@@ -83,7 +88,7 @@ class _HakoneFreepassPageState extends State<HakoneFreepassPage> {
                       onRemove: () => setState(() => _segments.removeAt(index)),
                     ),
                     if (index != _segments.length - 1)
-                      const Padding(
+                      Padding(
                         padding: EdgeInsets.symmetric(vertical: 12),
                         child: Divider(),
                       ),
@@ -91,29 +96,31 @@ class _HakoneFreepassPageState extends State<HakoneFreepassPage> {
                 ],
               ),
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12),
             OutlinedButton.icon(
               onPressed: () => setState(() => _segments.add(_Draft())),
-              icon: const Icon(Icons.add_rounded),
-              label: const Text('이동 구간 추가'),
+              icon: Icon(Icons.add_rounded),
+              label: Text(passText(context, '이동 구간 추가')),
             ),
-            const SizedBox(height: 18),
+            SizedBox(height: 18),
             _BusEstimateCard(
               data: data,
               counts: _busCounts,
               onChanged: (id, value) => setState(() => _busCounts[id] = value),
             ),
-            const SizedBox(height: 16),
-            const NoticeBanner(
+            SizedBox(height: 16),
+            NoticeBanner(
               tone: NoticeTone.info,
-              title: '버스 운임은 예상값입니다',
-              text:
-                  '등산전차·케이블카·로프웨이·해적선은 정확 운임으로, 버스는 평균 운임과 횟수로 계산합니다. 로망스카 특급권은 포함하지 않습니다.',
+              title: passText(context, '버스 운임은 예상값입니다'),
+              text: passText(
+                context,
+                '등산전차·케이블카·로프웨이·해적선은 정확 운임으로, 버스는 평균 운임과 횟수로 계산합니다. 로망스카 특급권은 포함하지 않습니다.',
+              ),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
             FilledButton(
               onPressed: price == null ? null : () => _showResult(data, price),
-              child: const Text('비교 결과 보기'),
+              child: Text(passText(context, '비교 결과 보기')),
             ),
           ],
         ),
@@ -153,14 +160,19 @@ class _HakoneFreepassPageState extends State<HakoneFreepassPage> {
     showDialog<void>(
       context: context,
       builder: (_) => AlertDialog(
-        title: Text(total > price ? '패스가 더 이득이에요' : '개별 결제가 더 저렴해요'),
+        title: Text(
+          passText(context, total > price ? '패스가 더 이득이에요' : '개별 결제가 더 저렴해요'),
+        ),
         content: Text(
-          '입력한 교통 이용 기준의 예상 비교입니다.\n버스는 추정 요금이며 실제 요금과 다를 수 있습니다.\n\n패스 가격 ¥$price\n입력 구간 운임 ¥$exactFare\n버스 예상 운임 ¥$busEstimate\n예상 손익 ¥${total - price}',
+          passText(
+            context,
+            '입력한 교통 이용 기준의 예상 비교입니다.\n버스는 추정 요금이며 실제 요금과 다를 수 있습니다.\n\n패스 가격 ¥$price\n입력 구간 운임 ¥$exactFare\n버스 예상 운임 ¥$busEstimate\n예상 손익 ¥${total - price}',
+          ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('확인'),
+            child: Text(passText(context, '확인')),
           ),
         ],
       ),
@@ -208,19 +220,22 @@ class _HakoneOriginCard extends StatelessWidget {
                 color: AppColors.accent(context),
               ),
             ),
-            const SizedBox(width: 11),
+            SizedBox(width: 11),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    departure == null ? '하코네 프리패스' : '하코네 프리패스 ${days}일권',
-                    style: const TextStyle(fontWeight: FontWeight.w800),
+                    passText(
+                      context,
+                      departure == null ? '하코네 프리패스' : '하코네 프리패스 ${days}일권',
+                    ),
+                    style: TextStyle(fontWeight: FontWeight.w800),
                   ),
                   if (price != null) ...[
-                    const SizedBox(height: 2),
+                    SizedBox(height: 2),
                     Text(
-                      '¥$price',
+                      passText(context, '¥$price'),
                       style: TextStyle(
                         color: AppColors.accent(context),
                         fontWeight: FontWeight.w700,
@@ -232,25 +247,28 @@ class _HakoneOriginCard extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: 12),
         OutlinedButton(
           onPressed: onPick,
           style: OutlinedButton.styleFrom(
-            minimumSize: const Size.fromHeight(52),
+            minimumSize: Size.fromHeight(52),
             alignment: Alignment.centerLeft,
             backgroundColor: AppColors.fieldSurface(context),
           ),
           child: Row(
             children: [
-              const Icon(Icons.train_outlined),
-              const SizedBox(width: 9),
+              Icon(Icons.train_outlined),
+              SizedBox(width: 9),
               Expanded(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      departure?.displayName ?? '패스 출발역 선택',
+                      passText(
+                        context,
+                        departure?.passName(context) ?? '패스 출발역 선택',
+                      ),
                       style: TextStyle(
                         color: AppColors.accent(context),
                         fontWeight: FontWeight.w800,
@@ -258,18 +276,18 @@ class _HakoneOriginCard extends StatelessWidget {
                     ),
                     if (departure != null)
                       Text(
-                        '${departure!.ja} · 오다와라 왕복 1회 포함',
+                        passText(context, '${departure!.ja} · 오다와라 왕복 1회 포함'),
                         style: Theme.of(context).textTheme.labelSmall,
                       ),
                   ],
                 ),
               ),
-              const Icon(Icons.chevron_right_rounded),
+              Icon(Icons.chevron_right_rounded),
             ],
           ),
         ),
         if (departure != null) ...[
-          const SizedBox(height: 10),
+          SizedBox(height: 10),
           Row(
             children: [
               for (final value in [2, 3]) ...[
@@ -281,7 +299,7 @@ class _HakoneOriginCard extends StatelessWidget {
                     onTap: () => onDaysChanged(value),
                   ),
                 ),
-                if (value == 2) const SizedBox(width: 7),
+                if (value == 2) SizedBox(width: 7),
               ],
             ],
           ),
@@ -307,13 +325,13 @@ class _HakoneDurationOption extends StatelessWidget {
   Widget build(BuildContext context) => Semantics(
     button: true,
     selected: selected,
-    label: '$days일권 $price엔',
+    label: passText(context, '$days일권 $price엔'),
     child: InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(11),
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 180),
-        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 9),
+        duration: Duration(milliseconds: 180),
+        padding: EdgeInsets.symmetric(horizontal: 6, vertical: 9),
         decoration: BoxDecoration(
           color: selected ? AppColors.skyDark : AppColors.softSurface(context),
           borderRadius: BorderRadius.circular(11),
@@ -321,16 +339,16 @@ class _HakoneDurationOption extends StatelessWidget {
         child: Column(
           children: [
             Text(
-              '$days일권',
+              passText(context, '$days일권'),
               style: TextStyle(
                 color: selected ? Colors.white : AppColors.accent(context),
                 fontSize: 12,
                 fontWeight: FontWeight.w800,
               ),
             ),
-            const SizedBox(height: 2),
+            SizedBox(height: 2),
             Text(
-              '¥$price',
+              passText(context, '¥$price'),
               style: TextStyle(
                 color: selected
                     ? Colors.white.withValues(alpha: .86)
@@ -366,9 +384,12 @@ class _Steps extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                const SizedBox(height: 6),
+                SizedBox(height: 6),
                 Text(
-                  '${index + 1}. ${['패스 선택', '이용 계획', '비교 결과'][index]}',
+                  passText(
+                    context,
+                    '${index + 1}. ${passText(context, ['패스 선택', '이용 계획', '비교 결과'][index])}',
+                  ),
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: index == 1 ? FontWeight.w800 : FontWeight.w500,
@@ -420,24 +441,24 @@ class _SegmentEditor extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Text(
-                '${index + 1}',
+                passText(context, '${index + 1}'),
                 style: TextStyle(
                   color: AppColors.accent(context),
                   fontWeight: FontWeight.w900,
                 ),
               ),
             ),
-            const SizedBox(width: 8),
-            const Expanded(
+            SizedBox(width: 8),
+            Expanded(
               child: Text(
-                '이동 구간',
+                passText(context, '이동 구간'),
                 style: TextStyle(fontWeight: FontWeight.w800),
               ),
             ),
             if (removable) PassSegmentRemoveButton(onPressed: onRemove),
           ],
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: 16),
         _ModePicker(
           mode: draft.mode,
           onChanged: (value) {
@@ -448,7 +469,7 @@ class _SegmentEditor extends StatelessWidget {
             onChanged();
           },
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: 12),
         Row(
           children: [
             Expanded(
@@ -464,7 +485,7 @@ class _SegmentEditor extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 5),
+              padding: EdgeInsets.symmetric(horizontal: 5),
               child: IconButton(
                 onPressed: () {
                   final from = draft.from;
@@ -473,12 +494,12 @@ class _SegmentEditor extends StatelessWidget {
                     ..to = from;
                   onChanged();
                 },
-                tooltip: '출발·도착 바꾸기',
+                tooltip: passText(context, '출발·도착 바꾸기'),
                 style: IconButton.styleFrom(
                   backgroundColor: AppColors.softSurface(context),
                   foregroundColor: AppColors.accent(context),
                 ),
-                icon: const Icon(Icons.swap_horiz_rounded),
+                icon: Icon(Icons.swap_horiz_rounded),
               ),
             ),
             Expanded(
@@ -495,7 +516,7 @@ class _SegmentEditor extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8),
         _FareHint(hasBoth: draft.from != null && draft.to != null, fare: fare),
       ],
     );
@@ -518,7 +539,7 @@ class _PlaceButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) => PassStationPickerField(
     label: label,
-    stationName: place?.displayName,
+    stationName: place?.passName(context),
     operatorLabel: place == null ? null : place!.detail.split(' · ').last,
     onTap: () async {
       final selected = await Navigator.of(context).push<HakonePlace>(
@@ -527,7 +548,7 @@ class _PlaceButton extends StatelessWidget {
             title: '$label역 선택',
             items: data.placesForMode(mode),
             search: (query) => data.searchPlace(query, mode),
-            label: (item) => item.displayName,
+            label: (item) => item.passName(context),
             detail: (item) => item.detailForMode(mode),
           ),
         ),
@@ -558,11 +579,12 @@ class _FareHint extends StatelessWidget {
           size: 18,
           color: success ? AppColors.success : AppColors.mutedText(context),
         ),
-        const SizedBox(width: 7),
+        SizedBox(width: 7),
         Expanded(
           child: Text(
-            message,
+            passText(context, message),
             style: TextStyle(
+              fontSize: hasBoth ? null : 11,
               color: success ? AppColors.success : AppColors.mutedText(context),
               fontWeight: success ? FontWeight.w700 : FontWeight.w400,
             ),
@@ -589,7 +611,7 @@ class _ModePicker extends StatelessWidget {
     return OutlinedButton(
       onPressed: () => _showPicker(context),
       style: OutlinedButton.styleFrom(
-        minimumSize: const Size.fromHeight(52),
+        minimumSize: Size.fromHeight(52),
         alignment: Alignment.centerLeft,
         foregroundColor: AppColors.accent(context),
         backgroundColor: AppColors.fieldSurface(context),
@@ -597,14 +619,14 @@ class _ModePicker extends StatelessWidget {
       child: Row(
         children: [
           Icon(current.$2, size: 20),
-          const SizedBox(width: 10),
+          SizedBox(width: 10),
           Expanded(
             child: Text(
-              current.$1,
-              style: const TextStyle(fontWeight: FontWeight.w800),
+              passText(context, current.$1),
+              style: TextStyle(fontWeight: FontWeight.w800),
             ),
           ),
-          const Icon(Icons.keyboard_arrow_down_rounded),
+          Icon(Icons.keyboard_arrow_down_rounded),
         ],
       ),
     );
@@ -615,16 +637,16 @@ class _ModePicker extends StatelessWidget {
     showDragHandle: true,
     builder: (sheetContext) => SafeArea(
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 2, 20, 24),
+        padding: EdgeInsets.fromLTRB(20, 2, 20, 24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              '교통수단 선택',
+            Text(
+              passText(context, '교통수단 선택'),
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12),
             for (final entry in _modes.entries) ...[
               _ModeOption(
                 label: entry.value.$1,
@@ -635,7 +657,7 @@ class _ModePicker extends StatelessWidget {
                   onChanged(entry.key);
                 },
               ),
-              if (entry.key != _modes.keys.last) const SizedBox(height: 8),
+              if (entry.key != _modes.keys.last) SizedBox(height: 8),
             ],
           ],
         ),
@@ -663,15 +685,15 @@ class _ModeOption extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(14),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+        padding: EdgeInsets.symmetric(horizontal: 14, vertical: 14),
         child: Row(
           children: [
             Icon(icon, color: AppColors.accent(context)),
-            const SizedBox(width: 12),
+            SizedBox(width: 12),
             Expanded(
               child: Text(
-                label,
-                style: const TextStyle(fontWeight: FontWeight.w700),
+                passText(context, label),
+                style: TextStyle(fontWeight: FontWeight.w700),
               ),
             ),
             if (selected)
@@ -697,10 +719,13 @@ class _BusEstimateCard extends StatelessWidget {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('버스 이용 추정', style: TextStyle(fontWeight: FontWeight.w800)),
-        const SizedBox(height: 4),
         Text(
-          '정류장별 운임이 아닌 사업자별 평균 성인 운임입니다.',
+          passText(context, '버스 이용 추정'),
+          style: TextStyle(fontWeight: FontWeight.w800),
+        ),
+        SizedBox(height: 4),
+        Text(
+          passText(context, '정류장별 운임이 아닌 사업자별 평균 성인 운임입니다.'),
           style: TextStyle(color: AppColors.mutedText(context), fontSize: 12),
         ),
         for (final item in data.bus)
@@ -732,19 +757,22 @@ class _Counter extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(label, style: const TextStyle(fontWeight: FontWeight.w700)),
-            Text(note),
+            Text(
+              passText(context, label),
+              style: TextStyle(fontWeight: FontWeight.w700),
+            ),
+            Text(passText(context, note)),
           ],
         ),
       ),
       IconButton(
         onPressed: value == 0 ? null : () => onChanged(value - 1),
-        icon: const Icon(Icons.remove_circle_outline),
+        icon: Icon(Icons.remove_circle_outline),
       ),
-      Text('$value회'),
+      Text(passText(context, '$value회')),
       IconButton(
         onPressed: () => onChanged(value + 1),
-        icon: const Icon(Icons.add_circle_outline),
+        icon: Icon(Icons.add_circle_outline),
       ),
     ],
   );
@@ -760,7 +788,7 @@ class _HakoneOriginListPage extends StatefulWidget {
 
 class _HakoneOriginListPageState extends State<_HakoneOriginListPage> {
   final _controller = TextEditingController();
-  List<HakoneDeparture> _results = const [];
+  List<HakoneDeparture> _results = [];
   @override
   void dispose() {
     _controller.dispose();
@@ -771,54 +799,54 @@ class _HakoneOriginListPageState extends State<_HakoneOriginListPage> {
   Widget build(BuildContext context) {
     const lines = ['Odawara Line', 'Enoshima Line', 'Tama Line'];
     return Scaffold(
-      appBar: AppBar(title: const Text('패스 출발역 선택')),
+      appBar: AppBar(title: Text(passText(context, '패스 출발역 선택'))),
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
+        padding: EdgeInsets.fromLTRB(20, 12, 20, 28),
         children: [
           Text(
-            '오다큐 출발역을 선택해 주세요',
+            passText(context, '오다큐 출발역을 선택해 주세요'),
             style: Theme.of(
               context,
             ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
           ),
-          const SizedBox(height: 5),
+          SizedBox(height: 5),
           Text(
-            '출발역에 따라 ${widget.days}일권 가격이 달라집니다.',
+            passText(context, '출발역에 따라 ${widget.days}일권 가격이 달라집니다.'),
             style: TextStyle(color: AppColors.mutedText(context)),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           TextField(
             controller: _controller,
             onChanged: (query) => setState(
               () => _results = query.trim().isEmpty
-                  ? const []
+                  ? []
                   : widget.data.searchDeparture(query),
             ),
             decoration: InputDecoration(
-              hintText: '출발역 검색',
-              prefixIcon: const Icon(Icons.search_rounded),
+              hintText: passText(context, '출발역 검색'),
+              prefixIcon: Icon(Icons.search_rounded),
               suffixIcon: _controller.text.isEmpty
                   ? null
                   : IconButton(
                       onPressed: () {
                         _controller.clear();
-                        setState(() => _results = const []);
+                        setState(() => _results = []);
                       },
-                      icon: const Icon(Icons.close_rounded),
+                      icon: Icon(Icons.close_rounded),
                     ),
               filled: true,
               isDense: true,
             ),
           ),
-          const SizedBox(height: 18),
+          SizedBox(height: 18),
           if (_controller.text.isNotEmpty) ...[
-            SectionLabel('검색 결과 ${_results.length}개'),
+            SectionLabel(passText(context, '검색 결과 ${_results.length}개')),
             if (_results.isEmpty)
-              const _OriginEmptyState()
+              _OriginEmptyState()
             else
               _HakoneOriginRows(origins: _results),
           ] else ...[
-            const SectionLabel('노선 선택'),
+            SectionLabel(passText(context, '노선 선택')),
             for (final line in lines) ...[
               _HakoneOriginLineCard(
                 label: _lineLabel(line),
@@ -842,7 +870,7 @@ class _HakoneOriginListPageState extends State<_HakoneOriginListPage> {
                         Navigator.of(context).pop(origin);
                     }),
               ),
-              const SizedBox(height: 10),
+              SizedBox(height: 10),
             ],
           ],
         ],
@@ -865,9 +893,12 @@ class _HakoneOriginLineCard extends StatelessWidget {
     padding: EdgeInsets.zero,
     child: ListTile(
       leading: Icon(Icons.train_outlined, color: AppColors.accent(context)),
-      title: Text(label, style: const TextStyle(fontWeight: FontWeight.w700)),
-      subtitle: Text('$count개 출발역'),
-      trailing: const Icon(Icons.chevron_right_rounded),
+      title: Text(
+        passText(context, label),
+        style: TextStyle(fontWeight: FontWeight.w700),
+      ),
+      subtitle: Text(passText(context, '$count개 출발역')),
+      trailing: Icon(Icons.chevron_right_rounded),
       onTap: onTap,
     ),
   );
@@ -884,22 +915,22 @@ class _HakoneOriginLinePage extends StatelessWidget {
   final int days;
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: Text(label)),
+    appBar: AppBar(title: Text(passText(context, label))),
     body: ListView(
-      padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
+      padding: EdgeInsets.fromLTRB(20, 12, 20, 28),
       children: [
         Text(
-          '$label 출발역',
+          passText(context, '$label 출발역'),
           style: Theme.of(
             context,
           ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
         ),
-        const SizedBox(height: 5),
+        SizedBox(height: 5),
         Text(
-          '출발역을 선택하면 $days일권 가격을 적용합니다.',
+          passText(context, '출발역을 선택하면 $days일권 가격을 적용합니다.'),
           style: TextStyle(color: AppColors.mutedText(context)),
         ),
-        const SizedBox(height: 18),
+        SizedBox(height: 18),
         _HakoneOriginRows(origins: origins),
       ],
     ),
@@ -916,12 +947,14 @@ class _HakoneOriginRows extends StatelessWidget {
       children: [
         for (final origin in origins)
           ListTile(
-            leading: const Icon(Icons.train_outlined),
+            leading: Icon(Icons.train_outlined),
             title: Text(
-              origin.displayName,
-              style: const TextStyle(fontWeight: FontWeight.w700),
+              passText(context, origin.passName(context)),
+              style: TextStyle(fontWeight: FontWeight.w700),
             ),
-            subtitle: Text('${origin.ja} · ${_lineLabel(origin.line)}'),
+            subtitle: Text(
+              passText(context, '${origin.ja} · ${_lineLabel(origin.line)}'),
+            ),
             trailing: _OriginPrices(origin: origin),
             onTap: () => Navigator.of(context).pop(origin),
           ),
@@ -940,7 +973,7 @@ class _OriginPrices extends StatelessWidget {
     crossAxisAlignment: CrossAxisAlignment.end,
     children: [
       _PriceLine(label: '2일', price: origin.adult2),
-      const SizedBox(height: 2),
+      SizedBox(height: 2),
       _PriceLine(label: '3일', price: origin.adult3),
     ],
   );
@@ -953,7 +986,7 @@ class _PriceLine extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Text(
-    '$label ¥$price',
+    passText(context, '$label ¥$price'),
     style: TextStyle(
       color: AppColors.accent(context),
       fontSize: 12,
@@ -967,7 +1000,7 @@ class _OriginEmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) => AppSurface(
     child: Text(
-      '일치하는 출발역을 찾지 못했어요. 한글·초성·일본어로 다시 검색해 주세요.',
+      passText(context, '일치하는 출발역을 찾지 못했어요. 한글·초성·일본어로 다시 검색해 주세요.'),
       style: TextStyle(color: AppColors.mutedText(context)),
     ),
   );
@@ -995,17 +1028,17 @@ class _SearchState<T> extends State<_Search<T>> {
   Widget build(BuildContext context) {
     final items = _query.isEmpty ? widget.items : widget.search(_query);
     return Scaffold(
-      appBar: AppBar(title: Text(widget.title)),
+      appBar: AppBar(title: Text(passText(context, widget.title))),
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16),
             child: TextField(
               autofocus: true,
               onChanged: (value) => setState(() => _query = value),
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 prefixIcon: Icon(Icons.search_rounded),
-                hintText: '역 이름을 검색해 주세요',
+                hintText: passText(context, '역 이름을 검색해 주세요'),
               ),
             ),
           ),
@@ -1013,8 +1046,8 @@ class _SearchState<T> extends State<_Search<T>> {
             child: ListView.builder(
               itemCount: items.length,
               itemBuilder: (_, index) => ListTile(
-                title: Text(widget.label(items[index])),
-                subtitle: Text(widget.detail(items[index])),
+                title: Text(passText(context, widget.label(items[index]))),
+                subtitle: Text(passText(context, widget.detail(items[index]))),
                 onTap: () => Navigator.of(context).pop(items[index]),
               ),
             ),

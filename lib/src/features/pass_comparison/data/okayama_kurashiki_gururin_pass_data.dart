@@ -1,5 +1,7 @@
 import 'package:flutter/services.dart';
 
+import 'pass_named_place.dart';
+
 import 'pass_transit_data.dart';
 
 const _koreanNames = <String, String>{
@@ -40,7 +42,7 @@ const _koreanNames = <String, String>{
   '宇野': '우노',
 };
 
-class OkayamaKurashikiGururinStation {
+class OkayamaKurashikiGururinStation implements PassNamedPlace {
   const OkayamaKurashikiGururinStation({
     required this.id,
     required this.nameJa,
@@ -48,11 +50,15 @@ class OkayamaKurashikiGururinStation {
   });
 
   final String id;
+  @override
   final String nameJa;
+  @override
   final String nameEn;
 
+  @override
   String get nameKo => _koreanNames[nameJa] ?? nameJa;
   String get displayName => nameKo;
+  @override
   String get secondaryLabel => '$nameJa · JR 서일본';
 }
 

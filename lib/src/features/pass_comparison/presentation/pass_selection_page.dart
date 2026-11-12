@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'pass_strings.dart';
+
 import '../../../core/design/app_theme.dart';
 import '../../../core/widgets/app_ui.dart';
 import 'enoden_noriorikun_pass_page.dart';
@@ -72,7 +74,7 @@ class PassSelectionPage extends StatefulWidget {
 
 class _PassSelectionPageState extends State<PassSelectionPage> {
   final PassTransitDataRepository _transitRepository =
-      const PassTransitDataRepository();
+      PassTransitDataRepository();
 
   @override
   void initState() {
@@ -100,7 +102,7 @@ class _PassSelectionPageState extends State<PassSelectionPage> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('교통패스 비교')),
+    appBar: AppBar(title: Text(passText(context, '교통패스 비교'))),
     body: widget.region == null
         ? _RegionSelection(
             passEntries: _passEntries(),
@@ -116,32 +118,39 @@ class _PassSelectionPageState extends State<PassSelectionPage> {
         : SafeArea(
             top: false,
             child: ListView(
-              padding: const EdgeInsets.fromLTRB(20, 18, 20, 32),
+              padding: EdgeInsets.fromLTRB(20, 18, 20, 32),
               children: [
-                const _ProgressSteps(activeStep: 1),
-                const SizedBox(height: 26),
+                _ProgressSteps(activeStep: 1),
+                SizedBox(height: 26),
                 Text(
-                  '${widget.region!.label}의\n교통패스를 선택해 주세요',
+                  passText(
+                    context,
+                    strings(context).passChooseInRegion(
+                      passText(context, widget.region!.label),
+                    ),
+                  ),
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.w700,
                     letterSpacing: -1,
                   ),
                 ),
-                const SizedBox(height: 8),
+                SizedBox(height: 8),
                 Text(
-                  '입력한 이동 계획을 기준으로 일반 운임과 패스 가격을 비교합니다.',
+                  passText(context, '입력한 이동 계획을 기준으로 일반 운임과 패스 가격을 비교합니다.'),
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                     height: 1.45,
                   ),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: 20),
                 ..._passCardsForRegion(context),
-                const SizedBox(height: 6),
-                const NoticeBanner(
-                  title: '계산 기준',
-                  text:
-                      '지원 데이터로 확인되는 이동만 계산합니다. 확인할 수 없는 운임은 합산하지 않으며, 구매 전 공식 상품 조건과 운임을 확인해 주세요.',
+                SizedBox(height: 6),
+                NoticeBanner(
+                  title: passText(context, '계산 기준'),
+                  text: passText(
+                    context,
+                    '지원 데이터로 확인되는 이동만 계산합니다. 확인할 수 없는 운임은 합산하지 않으며, 구매 전 공식 상품 조건과 운임을 확인해 주세요.',
+                  ),
                   tone: NoticeTone.info,
                 ),
               ],
@@ -176,7 +185,7 @@ class _PassSelectionPageState extends State<PassSelectionPage> {
     return [
       for (final entry in entries) ...[
         entry.cardBuilder(context),
-        const SizedBox(height: 14),
+        SizedBox(height: 14),
       ],
     ];
   }
@@ -189,12 +198,10 @@ class _PassSelectionPageState extends State<PassSelectionPage> {
         title: '삿포로 지하철 1일권',
         subtitle: '삿포로시 지하철 · 전 구간',
         description: '지하철 전 구간의 일반 운임과 비교합니다.',
-        periods: const ['1일권 · ¥830'],
+        periods: ['1일권 · ¥830'],
         teal: true,
         onTap: () => Navigator.of(context).push(
-          MaterialPageRoute<void>(
-            builder: (_) => const SapporoSubwayPassPage(),
-          ),
+          MaterialPageRoute<void>(builder: (_) => SapporoSubwayPassPage()),
         ),
       ),
     ),
@@ -205,11 +212,11 @@ class _PassSelectionPageState extends State<PassSelectionPage> {
         title: '홋카이도 레일패스',
         subtitle: 'JR 홋카이도선 · 보통차 지정석',
         description: '5·7·10일권과 철도·버스 이동 예상 운임을 비교합니다.',
-        periods: const ['5일권 · ¥23,000', '7일권 · ¥29,000', '10일권 · ¥38,000'],
+        periods: ['5일권 · ¥23,000', '7일권 · ¥29,000', '10일권 · ¥38,000'],
         teal: true,
-        onTap: () => Navigator.of(context).push(
-          MaterialPageRoute<void>(builder: (_) => const HokkaidoRailPassPage()),
-        ),
+        onTap: () => Navigator.of(
+          context,
+        ).push(MaterialPageRoute<void>(builder: (_) => HokkaidoRailPassPage())),
       ),
     ),
     _PassListEntry(
@@ -219,7 +226,7 @@ class _PassSelectionPageState extends State<PassSelectionPage> {
         title: 'Tokyo Subway Ticket',
         subtitle: 'Tokyo Metro · 도에이 지하철',
         description: '24·48·72시간권의 손익을 비교합니다.',
-        periods: const ['24시간', '48시간', '72시간'],
+        periods: ['24시간', '48시간', '72시간'],
         onTap: () => _open(context, PassProduct.tokyoSubway24),
       ),
     ),
@@ -230,11 +237,11 @@ class _PassSelectionPageState extends State<PassSelectionPage> {
         title: '에노시마·가마쿠라 프리패스',
         subtitle: '에노덴 · 오다큐 전철',
         description: '출발역별 가격과 프리구간 운임을 비교합니다.',
-        periods: const ['1일권 · 발역별 가격'],
+        periods: ['1일권 · 발역별 가격'],
         teal: true,
-        onTap: () => Navigator.of(context).push(
-          MaterialPageRoute<void>(builder: (_) => const EnokamaPassPage()),
-        ),
+        onTap: () => Navigator.of(
+          context,
+        ).push(MaterialPageRoute<void>(builder: (_) => EnokamaPassPage())),
       ),
     ),
     _PassListEntry(
@@ -244,12 +251,10 @@ class _PassSelectionPageState extends State<PassSelectionPage> {
         title: '에노덴 1일 승차권',
         subtitle: '에노시마 전철 · 에노덴 전선',
         description: '에노덴 내부 이동의 일반 운임과 비교합니다.',
-        periods: const ['1일권 · ¥800'],
+        periods: ['1일권 · ¥800'],
         teal: true,
         onTap: () => Navigator.of(context).push(
-          MaterialPageRoute<void>(
-            builder: (_) => const EnodenNoriorikunPassPage(),
-          ),
+          MaterialPageRoute<void>(builder: (_) => EnodenNoriorikunPassPage()),
         ),
       ),
     ),
@@ -260,11 +265,11 @@ class _PassSelectionPageState extends State<PassSelectionPage> {
         title: '하코네 프리패스',
         subtitle: '오다큐 70개 출발역 · 하코네 교통수단',
         description: '출발역별 성인 가격과 하코네 현지 운임을 비교합니다.',
-        periods: const ['2일권', '3일권'],
+        periods: ['2일권', '3일권'],
         teal: true,
-        onTap: () => Navigator.of(context).push(
-          MaterialPageRoute<void>(builder: (_) => const HakoneFreepassPage()),
-        ),
+        onTap: () => Navigator.of(
+          context,
+        ).push(MaterialPageRoute<void>(builder: (_) => HakoneFreepassPage())),
       ),
     ),
     _PassListEntry(
@@ -274,7 +279,7 @@ class _PassSelectionPageState extends State<PassSelectionPage> {
         title: '도쿠나이 패스',
         subtitle: '도쿄 23구 내 지정 JR 구간',
         description: '1일권과 적용 JR 구간의 일반 운임을 비교합니다.',
-        periods: const ['1일권 · ¥870'],
+        periods: ['1일권 · ¥870'],
         teal: true,
         onTap: () => _open(context, PassProduct.tokunai1Day),
       ),
@@ -286,12 +291,10 @@ class _PassSelectionPageState extends State<PassSelectionPage> {
         title: '교토 지하철 1일권',
         subtitle: '교토시영 지하철 · 전 구간',
         description: '지하철 전 구간의 일반 운임과 비교합니다.',
-        periods: const ['1일권 · ¥800'],
+        periods: ['1일권 · ¥800'],
         teal: true,
         onTap: () => Navigator.of(context).push(
-          MaterialPageRoute<void>(
-            builder: (_) => const KyotoSubway1DayPassPage(),
-          ),
+          MaterialPageRoute<void>(builder: (_) => KyotoSubway1DayPassPage()),
         ),
       ),
     ),
@@ -302,11 +305,11 @@ class _PassSelectionPageState extends State<PassSelectionPage> {
         title: '오사카 주유패스',
         subtitle: '오사카 메트로 · 사철 · 시티버스',
         description: '1·2일권과 환승 경로의 일반 운임을 비교합니다.',
-        periods: const ['1일권 · ¥3,500', '2일권 · ¥5,000'],
+        periods: ['1일권 · ¥3,500', '2일권 · ¥5,000'],
         teal: true,
         onTap: () => Navigator.of(context).push(
           MaterialPageRoute<void>(
-            builder: (_) => const OsakaAmazingPassPrototypePage(),
+            builder: (_) => OsakaAmazingPassPrototypePage(),
           ),
         ),
       ),
@@ -318,12 +321,10 @@ class _PassSelectionPageState extends State<PassSelectionPage> {
         title: '교토 지하철·버스 1일권',
         subtitle: '교토시영 지하철 · 버스 예상 운임',
         description: '지하철 자동 운임과 버스 이용 추정을 비교합니다.',
-        periods: const ['1일권 · ¥1,100'],
+        periods: ['1일권 · ¥1,100'],
         teal: true,
         onTap: () => Navigator.of(context).push(
-          MaterialPageRoute<void>(
-            builder: (_) => const KyotoSubwayBusPassPage(),
-          ),
+          MaterialPageRoute<void>(builder: (_) => KyotoSubwayBusPassPage()),
         ),
       ),
     ),
@@ -334,26 +335,24 @@ class _PassSelectionPageState extends State<PassSelectionPage> {
         title: '한큐패스 1일권',
         subtitle: '한큐 전철 전 노선',
         description: '한큐 전철 내부 이동의 일반 운임과 비교합니다.',
-        periods: const ['1일권 · ¥1,300'],
+        periods: ['1일권 · ¥1,300'],
         teal: true,
-        onTap: () => Navigator.of(context).push(
-          MaterialPageRoute<void>(builder: (_) => const Hankyu1DayPassPage()),
-        ),
+        onTap: () => Navigator.of(
+          context,
+        ).push(MaterialPageRoute<void>(builder: (_) => Hankyu1DayPassPage())),
       ),
     ),
     _PassListEntry(
       region: PassRegion.kansai,
       cardBuilder: (context) => _PassChoiceCard(
         icon: Icons.confirmation_number_outlined,
-        title: '긴테쓰 레일 패스 5일권',
+        title: '긴테쓰 레일 패스',
         subtitle: '긴테쓰 전철 · 이가철도 · 케이블카',
-        description: '5일권과 기본 승차운임 합계를 비교합니다.',
-        periods: const ['5일권 · ¥4,900'],
+        description: '권종별 적용 구간과 일반 운임을 비교합니다.',
+        periods: ['1일권', '2일권', '5일권', '5일권 Plus'],
         teal: true,
         onTap: () => Navigator.of(context).push(
-          MaterialPageRoute<void>(
-            builder: (_) => const KintetsuRailPass5DayPage(),
-          ),
+          MaterialPageRoute<void>(builder: (_) => KintetsuRailPass5DayPage()),
         ),
       ),
     ),
@@ -364,11 +363,11 @@ class _PassSelectionPageState extends State<PassSelectionPage> {
         title: '오카야마·구라시키 tabiwa 구루링 패스',
         subtitle: 'JR 서일본 · 오카야마 전기궤도 · 시모덴 버스',
         description: '3일권과 철도·노면전차·버스 이동 운임을 비교합니다.',
-        periods: const ['3일권 · ¥3,800'],
+        periods: ['3일권 · ¥3,800'],
         teal: true,
         onTap: () => Navigator.of(context).push(
           MaterialPageRoute<void>(
-            builder: (_) => const OkayamaKurashikiGururinPassPage(),
+            builder: (_) => OkayamaKurashikiGururinPassPage(),
           ),
         ),
       ),
@@ -380,11 +379,11 @@ class _PassSelectionPageState extends State<PassSelectionPage> {
         title: '히로덴 전차 패스',
         subtitle: '히로시마 전철 · 전차 전 노선',
         description: '일반 운임과 1일·8시간·24시간권을 비교합니다.',
-        periods: const ['1일권 · ¥700', '8시간권 · ¥600', '24시간권 · ¥700'],
+        periods: ['1일권 · ¥700', '8시간권 · ¥600', '24시간권 · ¥700'],
         teal: true,
-        onTap: () => Navigator.of(context).push(
-          MaterialPageRoute<void>(builder: (_) => const HirodenPassPage()),
-        ),
+        onTap: () => Navigator.of(
+          context,
+        ).push(MaterialPageRoute<void>(builder: (_) => HirodenPassPage())),
       ),
     ),
     _PassListEntry(
@@ -394,11 +393,11 @@ class _PassSelectionPageState extends State<PassSelectionPage> {
         title: '나가사키 전기궤도 패스',
         subtitle: '나가사키 전기궤도 · 노면전차 전 노선',
         description: 'IC·터치 기준 일반 운임과 1일·24시간권을 비교합니다.',
-        periods: const ['1일권 · ¥600', '24시간권 · ¥700'],
+        periods: ['1일권 · ¥600', '24시간권 · ¥700'],
         teal: true,
         onTap: () => Navigator.of(context).push(
           MaterialPageRoute<void>(
-            builder: (_) => const NagasakiElectricTramwayPassPage(),
+            builder: (_) => NagasakiElectricTramwayPassPage(),
           ),
         ),
       ),
@@ -410,12 +409,10 @@ class _PassSelectionPageState extends State<PassSelectionPage> {
         title: '후쿠오카 지하철 1일권',
         subtitle: '후쿠오카시 지하철 · 3개 노선',
         description: '지하철 전 구간의 일반 운임과 비교합니다.',
-        periods: const ['1일권 · ¥640'],
+        periods: ['1일권 · ¥640'],
         teal: true,
         onTap: () => Navigator.of(context).push(
-          MaterialPageRoute<void>(
-            builder: (_) => const FukuokaCitySubwayPassPage(),
-          ),
+          MaterialPageRoute<void>(builder: (_) => FukuokaCitySubwayPassPage()),
         ),
       ),
     ),
@@ -426,11 +423,11 @@ class _PassSelectionPageState extends State<PassSelectionPage> {
         title: '유이레일 패스',
         subtitle: '오키나와 도시 모노레일 · 전 노선',
         description: '24·48시간권과 유이레일 일반 운임을 비교합니다.',
-        periods: const ['24시간 · ¥1,000', '48시간 · ¥1,800'],
+        periods: ['24시간 · ¥1,000', '48시간 · ¥1,800'],
         teal: true,
-        onTap: () => Navigator.of(context).push(
-          MaterialPageRoute<void>(builder: (_) => const YuiRailPassPage()),
-        ),
+        onTap: () => Navigator.of(
+          context,
+        ).push(MaterialPageRoute<void>(builder: (_) => YuiRailPassPage())),
       ),
     ),
   ];
@@ -453,33 +450,33 @@ class _RegionSelection extends StatelessWidget {
   Widget build(BuildContext context) => SafeArea(
     top: false,
     child: ListView(
-      padding: const EdgeInsets.fromLTRB(20, 18, 20, 32),
+      padding: EdgeInsets.fromLTRB(20, 18, 20, 32),
       children: [
-        const _ProgressSteps(activeStep: 1),
-        const SizedBox(height: 26),
+        _ProgressSteps(activeStep: 1),
+        SizedBox(height: 26),
         Text(
-          '비교할 지역을\n선택해 주세요',
+          passText(context, '비교할 지역을\n선택해 주세요'),
           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: -1,
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8),
         Text(
-          '여행할 지역을 먼저 선택하면 해당 지역의 교통패스를 볼 수 있습니다.',
+          passText(context, '여행할 지역을 먼저 선택하면 해당 지역의 교통패스를 볼 수 있습니다.'),
           style: TextStyle(
             color: Theme.of(context).colorScheme.onSurfaceVariant,
             height: 1.45,
           ),
         ),
-        const SizedBox(height: 20),
+        SizedBox(height: 20),
         for (final region in _orderedRegions()) ...[
           _RegionChoiceCard(
             region: region,
             passCount: _passCountFor(region),
             onSelected: onSelected,
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
         ],
       ],
     ),
@@ -518,7 +515,7 @@ class _RegionChoiceCard extends StatelessWidget {
     final accent = AppColors.accent(context);
     final muted = Theme.of(context).colorScheme.onSurfaceVariant;
     final surface = isDark
-        ? const Color(0xFF17242A)
+        ? Color(0xFF17242A)
         : Theme.of(context).colorScheme.surface;
     final border = isAvailable
         ? (isDark ? accent.withValues(alpha: .38) : AppColors.skySoft)
@@ -528,8 +525,12 @@ class _RegionChoiceCard extends StatelessWidget {
       button: isAvailable,
       enabled: isAvailable,
       label: isAvailable
-          ? '${region.label} 교통패스 $passCount개 보기'
-          : '${region.label} 교통패스 준비 중',
+          ? strings(
+              context,
+            ).passViewRegion(passText(context, region.label), passCount)
+          : strings(
+              context,
+            ).passRegionComingSoon(passText(context, region.label)),
       child: Material(
         color: Colors.transparent,
         borderRadius: BorderRadius.circular(18),
@@ -546,7 +547,7 @@ class _RegionChoiceCard extends StatelessWidget {
             hoverColor: accent.withValues(alpha: .05),
             onTap: isAvailable ? () => onSelected(region) : null,
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 17, vertical: 16),
+              padding: EdgeInsets.symmetric(horizontal: 17, vertical: 16),
               child: Row(
                 children: [
                   Expanded(
@@ -554,47 +555,57 @@ class _RegionChoiceCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          region.label,
+                          passText(context, region.label),
                           style: TextStyle(
                             color: isAvailable ? null : muted,
                             fontSize: 16,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
-                        const SizedBox(height: 4),
+                        SizedBox(height: 4),
                         Text(
-                          region.description,
+                          passText(context, region.description),
                           style: TextStyle(color: muted, fontSize: 12),
                         ),
                       ],
                     ),
                   ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 6,
-                    ),
-                    decoration: BoxDecoration(
-                      color: isAvailable
-                          ? (isDark
-                                ? accent.withValues(alpha: .18)
-                                : AppColors.skySoft)
-                          : (isDark
-                                ? Colors.white.withValues(alpha: .08)
-                                : AppColors.softSurface(context)),
-                      borderRadius: BorderRadius.circular(99),
-                    ),
-                    child: Text(
-                      isAvailable ? '$passCount개' : '준비 중',
-                      style: TextStyle(
-                        color: isAvailable ? accent : muted,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w700,
+                  Flexible(
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: isAvailable
+                              ? (isDark
+                                    ? accent.withValues(alpha: .18)
+                                    : AppColors.skySoft)
+                              : (isDark
+                                    ? Colors.white.withValues(alpha: .08)
+                                    : AppColors.softSurface(context)),
+                          borderRadius: BorderRadius.circular(99),
+                        ),
+                        child: Text(
+                          passText(
+                            context,
+                            isAvailable
+                                ? strings(context).passCount(passCount)
+                                : strings(context).passComingSoon,
+                          ),
+                          style: TextStyle(
+                            color: isAvailable ? accent : muted,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
                       ),
                     ),
                   ),
                   if (isAvailable) ...[
-                    const SizedBox(width: 8),
+                    SizedBox(width: 8),
                     Icon(Icons.chevron_right_rounded, color: accent),
                   ],
                 ],
@@ -630,9 +641,12 @@ class _ProgressSteps extends StatelessWidget {
                     borderRadius: BorderRadius.circular(99),
                   ),
                 ),
-                const SizedBox(height: 7),
+                SizedBox(height: 7),
                 Text(
-                  '${index + 1}. ${labels[index]}',
+                  passText(
+                    context,
+                    '${index + 1}. ${passText(context, labels[index])}',
+                  ),
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     color: index + 1 == activeStep
@@ -647,7 +661,7 @@ class _ProgressSteps extends StatelessWidget {
               ],
             ),
           ),
-          if (index != labels.length - 1) const SizedBox(width: 5),
+          if (index != labels.length - 1) SizedBox(width: 5),
         ],
       ],
     );
@@ -678,12 +692,12 @@ class _PassChoiceCard extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final color = teal
         ? isDark
-              ? const Color(0xFF35C4C7)
-              : const Color(0xFF008E9B)
+              ? Color(0xFF35C4C7)
+              : Color(0xFF008E9B)
         : AppColors.accent(context);
     return Semantics(
       button: true,
-      label: '$title 비교 시작',
+      label: strings(context).passStartComparison(passText(context, title)),
       child: Material(
         color: Colors.transparent,
         borderRadius: BorderRadius.circular(22),
@@ -691,7 +705,7 @@ class _PassChoiceCard extends StatelessWidget {
         child: Ink(
           decoration: BoxDecoration(
             color: isDark
-                ? const Color(0xFF17242A)
+                ? Color(0xFF17242A)
                 : Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(22),
             border: Border.all(
@@ -706,7 +720,7 @@ class _PassChoiceCard extends StatelessWidget {
             hoverColor: color.withValues(alpha: .05),
             onTap: onTap,
             child: Padding(
-              padding: const EdgeInsets.all(17),
+              padding: EdgeInsets.all(17),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -724,40 +738,40 @@ class _PassChoiceCard extends StatelessWidget {
                     ),
                     child: Icon(icon, color: Colors.white, size: 34),
                   ),
-                  const SizedBox(width: 14),
+                  SizedBox(width: 14),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          title,
-                          style: const TextStyle(
+                          passText(context, title),
+                          style: TextStyle(
                             fontSize: 17,
                             fontWeight: FontWeight.w800,
                           ),
                         ),
-                        const SizedBox(height: 4),
+                        SizedBox(height: 4),
                         Text(
-                          subtitle,
+                          passText(context, subtitle),
                           style: TextStyle(
                             color: color,
                             fontSize: 12,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
-                        const SizedBox(height: 8),
+                        SizedBox(height: 8),
                         Text(
-                          description,
-                          style: const TextStyle(fontSize: 12, height: 1.35),
+                          passText(context, description),
+                          style: TextStyle(fontSize: 12, height: 1.35),
                         ),
-                        const SizedBox(height: 11),
+                        SizedBox(height: 11),
                         Wrap(
                           spacing: 6,
                           runSpacing: 6,
                           children: periods
                               .map(
                                 (period) => Container(
-                                  padding: const EdgeInsets.symmetric(
+                                  padding: EdgeInsets.symmetric(
                                     horizontal: 9,
                                     vertical: 5,
                                   ),
@@ -768,7 +782,7 @@ class _PassChoiceCard extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(9),
                                   ),
                                   child: Text(
-                                    period,
+                                    passText(context, period),
                                     style: TextStyle(
                                       color: color,
                                       fontSize: 11,
@@ -782,7 +796,7 @@ class _PassChoiceCard extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const SizedBox(width: 4),
+                  SizedBox(width: 4),
                   Icon(Icons.chevron_right_rounded, color: color),
                 ],
               ),

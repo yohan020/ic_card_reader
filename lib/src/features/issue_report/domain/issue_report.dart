@@ -6,6 +6,7 @@ enum IssueType {
   stationNotResolved,
   busCompanyNotResolved,
   koreanStationNameRequest,
+  englishStationNameRequest,
   wrongTransactionType,
   wrongAmountOrBalance,
   other,
@@ -56,6 +57,8 @@ class IssueReport {
     this.suggestedBusCompanyCity,
     this.suggestedKoreanBoardingStationName,
     this.suggestedKoreanAlightingStationName,
+    this.suggestedEnglishBoardingStationName,
+    this.suggestedEnglishAlightingStationName,
     this.currentBoardingLineName,
     this.currentAlightingLineName,
     this.suggestedTransactionType,
@@ -84,6 +87,8 @@ class IssueReport {
   final String? suggestedBusCompanyCity;
   final String? suggestedKoreanBoardingStationName;
   final String? suggestedKoreanAlightingStationName;
+  final String? suggestedEnglishBoardingStationName;
+  final String? suggestedEnglishAlightingStationName;
   final String? currentBoardingLineName;
   final String? currentAlightingLineName;
   final String currentTransactionType;
@@ -120,6 +125,12 @@ class IssueReport {
     'suggestedBusCompanyCity': suggestedBusCompanyCity,
     'suggestedKoreanBoardingStationName': suggestedKoreanBoardingStationName,
     'suggestedKoreanAlightingStationName': suggestedKoreanAlightingStationName,
+    if (issueType == IssueType.englishStationNameRequest) ...{
+      'suggestedEnglishBoardingStationName':
+          suggestedEnglishBoardingStationName,
+      'suggestedEnglishAlightingStationName':
+          suggestedEnglishAlightingStationName,
+    },
     'currentBoardingLineName': currentBoardingLineName,
     'currentAlightingLineName': currentAlightingLineName,
     'currentTransactionType': currentTransactionType,
@@ -150,6 +161,7 @@ extension on IssueType {
     IssueType.stationNotResolved => 'STATION_NOT_RESOLVED',
     IssueType.busCompanyNotResolved => 'BUS_COMPANY_NOT_RESOLVED',
     IssueType.koreanStationNameRequest => 'KOREAN_STATION_NAME_REQUEST',
+    IssueType.englishStationNameRequest => 'ENGLISH_STATION_NAME_REQUEST',
     IssueType.wrongTransactionType => 'WRONG_TRANSACTION_TYPE',
     IssueType.wrongAmountOrBalance => 'WRONG_AMOUNT_OR_BALANCE',
     IssueType.other => 'OTHER',

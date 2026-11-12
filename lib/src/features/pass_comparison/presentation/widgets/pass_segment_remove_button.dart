@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../pass_strings.dart';
 
 /// Keeps a removable journey header the same 28dp height as a single segment.
 ///
@@ -17,7 +18,7 @@ class PassSegmentRemoveButton extends StatelessWidget {
     height: 28,
     child: IconButton(
       onPressed: onPressed,
-      tooltip: '구간 삭제',
+      tooltip: strings(context).passRemoveSegment,
       padding: EdgeInsets.zero,
       constraints: const BoxConstraints.tightFor(width: 28, height: 28),
       visualDensity: VisualDensity.compact,

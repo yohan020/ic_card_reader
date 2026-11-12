@@ -10,6 +10,7 @@ import 'package:ic_card_reader/src/features/card_reader/domain/card_scan_result.
 import 'package:ic_card_reader/src/features/card_reader/domain/current_gate_travel.dart';
 import 'package:ic_card_reader/src/features/card_reader/presentation/card_reader_page.dart';
 import 'package:ic_card_reader/src/features/card_reader/presentation/scan_guidance.dart';
+import 'package:ic_card_reader/src/features/settings/presentation/settings_page.dart';
 import 'package:ic_card_reader/src/features/station_resolver/data/asset_station_database.dart';
 import 'package:ic_card_reader/src/features/station_resolver/domain/station_name_display.dart';
 
@@ -188,19 +189,38 @@ void main() {
       expect(find.text('스캔 완료'), findsOneWidget);
       await tester.tap(find.byIcon(Icons.close_rounded).first);
       await tester.pump();
+      final priorResult = tester
+          .widget<SettingsPage>(find.byType(SettingsPage, skipOffstage: false))
+          .result;
+      expect(priorResult, isNotNull);
       reader.failure = CardScanFailureKind.tagLost;
       await _tapVisible(tester, find.text('IC 카드 스캔'));
       await tester.pump(const Duration(milliseconds: 400));
       expect(find.text('카드와 통신을 완료하지 못했어요'), findsOneWidget);
       expect(find.byType(BottomSheet), findsOneWidget);
-      expect(find.textContaining('최근 스캔 ·'), findsOneWidget);
+      expect(
+        tester
+            .widget<SettingsPage>(
+              find.byType(SettingsPage, skipOffstage: false),
+            )
+            .result,
+        same(priorResult),
+      );
       reader.failure = CardScanFailureKind.noHistory;
       await _tapVisible(tester, find.text('다시 스캔'));
       await tester.pump(const Duration(milliseconds: 400));
       await tester.pump();
       expect(find.text('읽을 수 있는 이용내역이 없어요'), findsOneWidget);
       expect(find.byType(BottomSheet), findsNothing);
-      expect(find.textContaining('최근 스캔 ·'), findsOneWidget);
+      expect(
+        tester
+            .widget<SettingsPage>(
+              find.byType(SettingsPage, skipOffstage: false),
+            )
+            .result,
+        same(priorResult),
+      );
+      expect(find.textContaining('최근 스캔 ·'), findsNothing);
       expect(reader.scans, 3);
     },
   );
@@ -285,6 +305,48 @@ void main() {
   });
 
   for (final dark in [false, true]) {
+    for (final largeText in [false, true]) {
+      testWidgets(
+        'scan status fits content and centers dark=$dark large=$largeText',
+        (tester) async {
+          final width = largeText ? 320.0 : 430.0;
+          tester.view.physicalSize = Size(width, 950);
+          tester.view.devicePixelRatio = 1;
+          addTearDown(tester.view.resetPhysicalSize);
+          addTearDown(tester.view.resetDevicePixelRatio);
+          final reader = _Reader()..pending = Completer<CardScanResult>();
+          await _pumpHome(
+            tester,
+            reader,
+            dark: dark,
+            textScale: largeText ? 1.7 : 1,
+          );
+          await _tapVisible(tester, find.text('IC 카드 스캔'));
+          final pill = find.byKey(const ValueKey('scan-status-pill'));
+          await tester.ensureVisible(pill);
+          await tester.pump();
+          final label = find.text('교통카드를 대 주세요');
+          expect(tester.getCenter(pill).dx, closeTo(width / 2, .1));
+          // Background fits text + 15dp icon + 5dp gap + 20dp padding.
+          expect(
+            tester.getSize(pill).width,
+            closeTo(tester.getSize(label).width + 40, .1),
+          );
+          expect(tester.getSize(pill).width, lessThanOrEqualTo(width - 48));
+          expect(tester.widget<Text>(label).style!.fontSize, 12);
+          expect(tester.widget<Text>(label).style!.color, AppColors.skyDark);
+          expect(reader.scans, 1);
+          expect(tester.takeException(), isNull);
+          await tester.tap(find.byTooltip('스캔 취소'));
+          await tester.pump();
+          await tester.pump();
+          expect(find.text('카드 스캔'), findsNothing);
+          expect(reader.pending!.isCompleted, isTrue);
+          expect(tester.takeException(), isNull);
+        },
+      );
+    }
+
     testWidgets(
       'failure sheet scrolls at large text in ${dark ? 'dark' : 'light'} mode',
       (tester) async {

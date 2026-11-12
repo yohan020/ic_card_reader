@@ -41,10 +41,11 @@ class ParsedTransitHistory {
   final int? transactionLocationLineCode;
   final int? transactionLocationStationCode;
 
-  int get sequenceNumber =>
-      (rawBlock.bytes[12] << 16) |
-      (rawBlock.bytes[13] << 8) |
-      rawBlock.bytes[14];
+  int? get sequenceNumber => rawBlock.format == HistoryRecordFormat.ica
+      ? null
+      : (rawBlock.bytes[12] << 16) |
+            (rawBlock.bytes[13] << 8) |
+            rawBlock.bytes[14];
 
   bool get hasTransactionLocationCode =>
       transactionLocationRegionCode != null &&

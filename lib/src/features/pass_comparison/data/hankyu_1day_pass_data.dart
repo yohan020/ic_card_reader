@@ -2,9 +2,15 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 
+import 'pass_named_place.dart';
+import 'pass_station_english.g.dart';
+
 import 'pass_transit_data.dart';
 
-class HankyuStation {
+class HankyuStation implements PassNamedPlace {
+  @override
+  String get nameEn => passStationEnglish['hankyu:$id'] ?? '';
+
   const HankyuStation({
     required this.id,
     required this.nameJa,
@@ -18,10 +24,13 @@ class HankyuStation {
   );
 
   final String id;
+  @override
   final String nameJa;
+  @override
   final String nameKo;
 
   String get displayName => nameKo.isEmpty ? nameJa : nameKo;
+  @override
   String get secondaryLabel => '$nameJa · 한큐 전철';
 }
 
@@ -107,7 +116,7 @@ class Hankyu1DayPassDataRepository {
 
 class _HankyuSearchEntry {
   _HankyuSearchEntry(this.station)
-    : candidates = {station.nameJa, station.nameKo}
+    : candidates = {station.nameJa, station.nameKo, station.nameEn}
           .map(
             (value) => (
               normalized: normalizeStationSearchText(value),

@@ -2,9 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 
+import 'pass_named_place.dart';
+
 import 'pass_transit_data.dart';
 
-class KintetsuStation {
+class KintetsuStation implements PassNamedPlace {
   const KintetsuStation({
     required this.id,
     required this.nameJa,
@@ -25,8 +27,11 @@ class KintetsuStation {
       );
 
   final String id;
+  @override
   final String nameJa;
+  @override
   final String nameEn;
+  @override
   final String nameKo;
   final String operator;
   final String lines;
@@ -37,6 +42,7 @@ class KintetsuStation {
       ? nameKo.substring(0, nameKo.length - 1)
       : nameKo;
   String get operatorLabel => operator == 'Iga Railway' ? '이가철도' : '긴테쓰 전철';
+  @override
   String get secondaryLabel => '$nameJa · $operatorLabel';
 }
 

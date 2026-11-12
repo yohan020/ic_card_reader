@@ -1,0 +1,1420 @@
+{
+  "@@locale": "en",
+  "appTitle": "Japan IC Card Reader",
+  "home": "Home",
+  "history": "History",
+  "tools": "Tools",
+  "settings": "Settings",
+  "homeTitle": "IC Card Reader",
+  "scanPrompt": "Scan your IC card",
+  "homeNfcHint": "Hold your card against the back of your phone to read recent transactions.",
+  "scanCard": "Scan IC card",
+  "compareBalances": "Compare card balances",
+  "whereToTap": "Where do I hold my card?",
+  "noReadableHistory": "No readable transactions",
+  "noReadableHistoryHint": "No transactions could be displayed. The information available depends on the card and its records.",
+  "nfcStartRetry": "Couldn’t start NFC. Move the card away, then scan again.",
+  "notice": "Notice",
+  "recentHistory": "Recent transactions",
+  "viewAll": "View all",
+  "noScannedCard": "No card scanned yet.",
+  "noHistoryFound": "No transactions to display for this card.",
+  "balanceAfterLabel": "Balance after",
+  "supportedCards": "Supported cards",
+  "supportedCardsHint": "Suica, PASMO, ICOCA and other interoperable Japanese transit IC cards",
+  "pitapaLimit": "PiTaPa postpaid and some transactions may not be supported.",
+  "localCardData": "Card data is processed on this device",
+  "stationCode": "Station code {code}",
+  "entryStationUnknown": "An entry was detected, but the station name is unknown.",
+  "tripInProgress": "Trip in progress",
+  "enteredAt": "Entered at {station}.",
+  "newVersion": "Update available",
+  "newVersionHint": "Get the latest features and improvements.",
+  "opening": "Opening",
+  "update": "Update",
+  "cancelScan": "Cancel scan",
+  "scanTitle": "Scan card",
+  "holdTransitCard": "Hold your transit card near the phone",
+  "holdCardStill": "Hold your card close and keep it still",
+  "scanWaitHint": "Hold one card against the NFC area on the back of your phone until the scan finishes.",
+  "scanTimeElapsed": "Scan time elapsed",
+  "scanTimeLeft": "Time left: {seconds}s",
+  "retryWithoutClosing": "If the scan fails, you can try again without closing the app.",
+  "scanComplete": "Scan complete",
+  "cardRead": "Card scanned",
+  "brandCardRead": "{brand} card scanned",
+  "blocksRead": "Blocks read",
+  "decodedRecords": "Records decoded",
+  "needsReview": "Needs review",
+  "someDataUnconfirmed": "Some details are unavailable",
+  "someDataUnconfirmedHint": "The card records were read successfully, but some station or transaction details aren’t recognized yet.",
+  "historyOnDevice": "Scanned transactions are displayed on this device",
+  "idmNotStored": "The raw card IDm is not stored or displayed.",
+  "viewHistory": "View transactions",
+  "scanAgain": "Scan again",
+  "unavailableAmount": "Unavailable",
+  "unknownBus": "Unknown bus operator",
+  "refund": "Refund",
+  "adjustment": "Fare adjustment",
+  "unknownTransaction": "Unknown transaction type",
+  "stationUnavailable": "Station unknown",
+  "nfcSettingsError": "Couldn’t open NFC settings. Check NFC in your phone’s settings.",
+  "sessionCleared": "Session history cleared.",
+  "updateStartError": "Couldn’t start the update. Try again in a moment.",
+  "checkingNfc": "Checking NFC",
+  "nfcOn": "NFC is on",
+  "turnNfcOn": "Turn on NFC",
+  "nfcUnsupported": "This device doesn’t support NFC scanning",
+  "nfcUnknown": "Couldn’t check NFC status",
+  "openNfcSettings": "Open NFC settings",
+  "checkAgain": "Check again",
+  "couldNotStartNfc": "Couldn’t start NFC",
+  "nfcUnsupportedHint": "Use an Android device that supports NFC-F (FeliCa).",
+  "nfcEnabledHint": "Make sure NFC is on. On Samsung devices with an NFC mode setting, choose standard mode and try again.",
+  "checkCardSupport": "Check whether your card is supported",
+  "checkCardSupportHint": "Scan one supported card at a time, such as Suica, PASMO or ICOCA. Your phone must support NFC-F (FeliCa).",
+  "scanTimedOut": "Scan timed out",
+  "scanTimedOutHint": "Take the card out of your wallet and try a few spots on the back of your phone. Card type and NFC-F support can affect scanning.",
+  "cardConnectionLost": "The card connection was interrupted",
+  "cardConnectionLostHint": "Hold one card close to the NFC area and keep it still until the scan finishes.",
+  "couldNotReadCard": "Couldn’t read the card",
+  "couldNotReadCardHint": "Try scanning again. This error doesn’t mean your card or its balance is damaged.",
+  "scanFailed": "Couldn’t complete the scan",
+  "scanFailedHint": "Move the card away, then try again. If it still fails, check your NFC settings and supported cards.",
+  "scanHelp": "Scan help",
+  "dismissNotice": "Dismiss notice",
+  "howToScan": "How to scan a card",
+  "closeHelp": "Close help",
+  "holdOneCard": "Hold one transit card against the back of your phone.",
+  "prepareOneCard": "Get one card ready",
+  "prepareOneCardHint": "Take one physical transit card out of your wallet. On Samsung devices, check that NFC is in standard mode if available.",
+  "tapScanHold": "Tap Scan and hold the card in place",
+  "tapScanHoldHint": "Once the scan screen opens, hold the card over the NFC area on the back of your phone. Its location varies by device.",
+  "waitForScan": "Keep the card still until the scan finishes",
+  "waitForScanHint": "If nothing happens, shift the card slightly or remove a thick case or metal accessory, then try again.",
+  "deviceRequirements": "Device requirements",
+  "felicaRequired": "Your device must support NFC-F (FeliCa). Having NFC turned on doesn’t guarantee support.",
+  "readOnlyPhysicalCard": "These steps are for physical cards. The app can’t top up a card or change its records.",
+  "close": "Close",
+  "placementSemantics": "Example showing one physical transit card held against the back of a phone",
+  "nfcPlacementVaries": "The NFC area varies by device",
+  "noMatchingHistory": "No transactions match this filter.",
+  "unknownTotalExplanation": "Unknown transaction types are not included in totals.",
+  "topUpTotalExplanation": "Only confirmed top-ups count. They are not included in spending.",
+  "spendingTotalExplanation": "Top-ups, special transactions and amounts that can’t be verified are excluded.",
+  "unknownRecordCount": "{count, plural, one{{count} unknown record} other{{count} unknown records}}",
+  "noTopUpTotal": "No top-ups to add up",
+  "noSpendingTotal": "No spending to add up",
+  "totalCount": "Included: {included} · Excluded: {excluded}",
+  "recentTotalHint": "Totals only include recent records read from the card.\n{explanation}",
+  "currentBalance": "Current card balance",
+  "currentBrandBalance": "Current {brand} balance",
+  "balanceAfterScan": "Shown after scanning",
+  "initialBalanceBasis": "From the initial balance record",
+  "latestBalanceBasis": "From the latest record",
+  "noDisplayableHistory": "No transactions to display for this card",
+  "noHistoryYet": "No transactions yet",
+  "initialBalanceOnly": "Only the initial balance was found.",
+  "scanFromHome": "Scan an IC card from Home.",
+  "balanceValue": "Balance {amount}",
+  "historyDetail": "Transaction details",
+  "boarding": "Boarding",
+  "alighting": "Alighting",
+  "balanceAfterValue": "Balance after: {amount}",
+  "cantCalculateAmount": "Amount unavailable",
+  "icaZeroAmount": "This ICa record stores ¥0, so no transaction amount is shown.",
+  "multipleStationCandidates": "More than one station matches",
+  "stationInfoNeedsReview": "Some stations couldn’t be identified",
+  "multipleStationHint": "We couldn’t identify a single station. Use the report button below to tell us which station it was.",
+  "stationInfoNeedsReviewHint": "Some station names couldn’t be identified. Use the report button below to tell us the correct names.",
+  "details": "Details",
+  "transactionType": "Transaction type",
+  "boardingStation": "Boarding station",
+  "alightingStation": "Alighting station",
+  "busOperator": "Bus operator",
+  "paymentMethod": "Payment method",
+  "combinedCash": "Partly paid in cash",
+  "transactionTime": "Transaction time",
+  "topUpMethod": "Top-up method",
+  "topUpLocation": "Top-up location",
+  "processingLocation": "Processing location",
+  "processingDetail": "Processing details",
+  "unknown": "Unknown",
+  "balance": "Balance",
+  "reportTransaction": "Report a problem with this transaction",
+  "stationNotRegistered": "Station not in database",
+  "spendingTotal": "Total spent",
+  "topUpTotal": "Total topped up",
+  "unknownRecords": "Unknown records",
+  "all": "All",
+  "transport": "Transit",
+  "purchases": "Purchases",
+  "topUp": "Top-up",
+  "unconfirmed": "Unknown",
+  "checkAmount": "Amount needs review",
+  "oldestRecord": "This is the oldest record on the card. There is no earlier balance to calculate the amount.",
+  "noDecrease": "The balance didn’t decrease. This could be a top-up or refund, so it isn’t shown as spending.",
+  "notEnoughBalances": "There aren’t enough balance records to calculate the amount.",
+  "unknownTransactionSummary": "Unknown transaction type",
+  "busOrTram": "Bus or tram ride",
+  "railRide": "Train ride",
+  "busRide": "Bus ride",
+  "purchase": "Purchase",
+  "gateWindow": "Fare gate assistance",
+  "unknownType": "Unknown type",
+  "ticketMachine": "Ticket machine",
+  "stationGateTerminal": "Fare gate terminal",
+  "stationTerminal": "Station terminal",
+  "mobile": "Mobile",
+  "mobileBenefit": "Mobile reward",
+  "storeTerminal": "Store terminal",
+  "ticketMachineTopUp": "Ticket machine top-up",
+  "ticketMachineTopUpAt": "Ticket machine top-up · {station}",
+  "gateTerminalTopUp": "Fare gate terminal top-up",
+  "topUpAt": "Top-up · {station}",
+  "stationTerminalTopUp": "Station terminal top-up",
+  "mobileBenefitTopUp": "Mobile reward top-up",
+  "mobileTopUp": "Mobile top-up",
+  "storeTopUp": "In-store top-up",
+  "cardTopUp": "Card top-up",
+  "unknownBusOperator": "Unknown bus operator",
+  "purchaseWithCash": "Purchase · partly paid in cash",
+  "gateWindowAt": "Fare gate assistance · {station}",
+  "displaySettings": "Display",
+  "theme": "Theme",
+  "system": "System",
+  "light": "Light",
+  "dark": "Dark",
+  "stationNames": "Station names",
+  "stationNamesHint": "Korean names are shown where available.",
+  "stationFallbackHint": "Japanese names are shown when a verified name isn’t available.",
+  "japanese": "Japanese",
+  "korean": "Korean",
+  "english": "English",
+  "both": "Korean + Japanese",
+  "appLanguage": "App language",
+  "deviceLanguage": "Device language",
+  "appInfo": "About the app",
+  "appVersion": "App version",
+  "dataSources": "Data sources and fare rules",
+  "dataSourcesHint": "Fare data, licenses and coverage for transit passes",
+  "appUpdate": "App update",
+  "openSource": "Open-source licenses",
+  "privacyData": "Privacy and data",
+  "privacyPolicy": "Privacy policy",
+  "privacyPolicyHint": "How NFC and report data are handled",
+  "clearCurrentHistory": "Clear current history",
+  "nothingToClear": "No transactions to clear.",
+  "transactionCount": "{count, plural, one{{count} transaction} other{{count} transactions}}",
+  "support": "Support",
+  "cardSupport": "Card scanning support",
+  "cardSupportHint": "Report scanning or card identification issues",
+  "developerTools": "Developer tools",
+  "cardDiagnostics": "Card brand diagnostics",
+  "cardDiagnosticsHint": "Select or enter a brand and check its metadata",
+  "japanIcCards": "Interoperable Japanese transit IC cards",
+  "checkingUpdates": "Checking for updates…",
+  "automaticUpdateCheck": "The app checks for updates when it opens.",
+  "appUpToDate": "You’re using the latest version.",
+  "updateShownOnHome": "The new version is shown on Home.",
+  "updateStatusUnavailable": "Couldn’t check for updates right now.",
+  "clearHistoryQuestion": "Clear current history?",
+  "clearHistoryHint": "This removes the transactions and raw records from the current session.",
+  "physicalCardUnchanged": "The data on your card won’t change.",
+  "clearHistory": "Clear history",
+  "cancel": "Cancel",
+  "comparePasses": "Compare transit passes",
+  "comparePassesHint": "Compare pass prices with estimated fares",
+  "contactlessRoutes": "Contactless routes",
+  "contactlessRoutesHint": "Check tap-to-ride support by operator and line",
+  "findLockers": "Find coin lockers",
+  "findLockersHint": "Find lockers at major stations and airports",
+  "comparisonUnavailable": "Card comparison isn’t available with this scanning method.",
+  "comparisonUpdated": "Updated the balance for {card}.",
+  "comparisonAdded": "Added {card}.",
+  "checkNfcSettings": "Check NFC in your phone’s settings.",
+  "scanStillEnding": "The scan is still closing. Try again in a moment.",
+  "renameCard": "Rename card",
+  "cardName": "Card name",
+  "enterCardName": "Enter a name.",
+  "saveName": "Save",
+  "comparisonHelpHint": "Scan up to 10 cards, one at a time. Tap a card to see its transactions.\n\nBalances are from the last scan and don’t refresh automatically. Scan a card again to update its entry.\n\nThe comparison is cleared when you exit it or the app closes. This doesn’t change the transactions shown on Home.",
+  "exitComparison": "Exit comparison",
+  "comparisonHelp": "Comparison help",
+  "comparingCount": "{count, plural, one{{count} card in comparison} other{{count} cards in comparison}}",
+  "deleteAll": "Clear all",
+  "tapCardHistory": "Tap a card to view its transactions.",
+  "addCardsToCompare": "Add cards to compare",
+  "scanOneAtATime": "Scan one card at a time.",
+  "cardMenu": "Menu for {card}",
+  "rename": "Rename",
+  "delete": "Remove",
+  "addCard": "Add card",
+  "comparisonLimit": "You can compare up to 10 cards. Use a card’s menu to scan it again.",
+  "checkedAt": "Scanned {date}",
+  "exitComparisonQuestion": "Exit balance comparison?",
+  "exitComparisonHint": "The cards and transactions in this comparison aren’t saved and will be cleared when you exit.",
+  "exit": "Exit",
+  "clearComparisonQuestion": "Clear the comparison list?",
+  "clearComparisonHint": "This removes the cards and transactions from the comparison.",
+  "balancesUnchanged": "The balances on your cards won’t change.",
+  "mapOffline": "Check your connection, then refresh the map.",
+  "mapStationsUnavailable": "The map isn’t available because the station locations couldn’t be found.",
+  "mapConfigUnavailable": "The map isn’t configured for this device. Station details are shown above.",
+  "mapPreparationFailed": "Couldn’t load the map. Try again in a moment.",
+  "stationLocations": "Station locations",
+  "mapLegend": "Blue: boarding · Red: alighting",
+  "mapCandidates": "Possible locations for station groups and segments",
+  "mapLoading": "Loading map…",
+  "refreshMap": "Refresh map",
+  "mapAttribution": "Station coordinates: Wikidata · CC0",
+  "mapBoth": "Boarding and alighting · {station}",
+  "mapBoarding": "Boarding · {station}",
+  "mapAlighting": "Alighting · {station}",
+  "mapCandidateRole": "Possible {role} point",
+  "comparisonUnidentified": "Couldn’t identify the card. Scan it again.",
+  "comparisonBalanceUnavailable": "Couldn’t read the balance. Scan the card again.",
+  "comparisonDifferentCard": "This is a different card. Scan the original card again.",
+  "comparisonAtLimit": "You can compare up to 10 cards.",
+  "defaultCardName": "Card {number}",
+  "reportTitle": "Report an issue",
+  "reportQuestion": "What information is incorrect?",
+  "reportChooseClosest": "Choose the option that fits best.",
+  "reportStationIssue": "Missing or incorrect station information",
+  "reportKoreanNameIssue": "Request an English station name",
+  "reportBusIssue": "Missing or incorrect bus operator",
+  "reportTypeIssue": "Incorrect transaction type",
+  "reportAmountIssue": "Incorrect amount or balance",
+  "reportOther": "Other",
+  "reportNext": "Next",
+  "reportWhichKoreanStation": "Which station needs an English name?",
+  "reportWhichStation": "Which station is affected?",
+  "reportChooseStations": "Choose the boarding or alighting station",
+  "reportCorrectBoarding": "Correct boarding station",
+  "reportCorrectAlighting": "Correct alighting station",
+  "reportCorrectType": "Correct transaction type",
+  "reportChooseType": "Choose a type",
+  "reportCustomType": "Custom transaction type",
+  "reportTicketExample": "e.g. Ticket purchase",
+  "reportTransactionType": "Transaction type",
+  "reportKoreanBoarding": "Boarding station in English",
+  "reportKoreanAlighting": "Alighting station in English",
+  "reportOptionalDetails": "Additional details (optional)",
+  "reportDetailsHint": "Add any helpful details. Do not include personal information.",
+  "reportBack": "Back",
+  "reportReview": "Review",
+  "reportReviewTitle": "Review before sending",
+  "reportIssueType": "Issue type",
+  "reportAffectedStation": "Affected station",
+  "reportNotSelected": "Not selected",
+  "reportSuggestedType": "Suggested transaction type",
+  "reportActualBus": "Actual bus operator",
+  "reportBusArea": "Operating city or region",
+  "reportSuggestedKoreanBoarding": "Suggested boarding name in English",
+  "reportNoInput": "Not provided",
+  "reportParsedBoardingLine": "Detected boarding line",
+  "reportSuggestedKoreanAlighting": "Suggested alighting name in English",
+  "reportParsedAlightingLine": "Detected alighting line",
+  "reportSelectedRecord": "Selected record",
+  "reportTypeAmount": "Type / amount",
+  "reportUsageDate": "Date of use",
+  "reportAnonymousRecord": "Anonymous raw record",
+  "reportPrivacy": "Privacy",
+  "reportRecordPrivacy": "Your card IDm is not included. Only the selected record, the station, city, line, bus operator, operating area or transaction type you enter, and your report details are prepared for sending.",
+  "reportSendConsent": "I agree to send the information above.",
+  "reportSendFailedTitle": "Couldn’t send your report",
+  "reportSendAnonymous": "Send anonymously",
+  "reportUnexpectedError": "An unexpected error occurred. Please try again later.",
+  "reportStationRequired": "Choose the affected station.",
+  "reportTypeRequired": "Choose the correct transaction type.",
+  "reportCorrectStationInfo": "Correct station information",
+  "reportBusInfo": "Bus operator information",
+  "reportSuggestKorean": "Suggest an English station name",
+  "reportDetails": "Additional details",
+  "reportStationGuide": "Enter the station name and city or region. Add the line name only if you know it.",
+  "reportTypeGuide": "Choose a type from the list, or enter one if it is not listed.",
+  "reportBusGuide": "Enter the actual bus operator and its operating city or region.",
+  "reportKoreanGuide": "Choose the boarding station, alighting station, or both. Enter the English spelling only if you know it.",
+  "reportGeneralGuide": "Any details you know can help us improve how records are interpreted.",
+  "reportNoCustomInput": "No custom type provided",
+  "reportStationName": "Station name",
+  "reportCity": "City or region",
+  "reportOptionalLine": "Line name (optional)",
+  "reportKoreanName": "English name",
+  "reportKoreanExample": "e.g. Shibuya (leave blank if unsure)",
+  "reportBusOperator": "Bus operator",
+  "reportSelectKoreanStation": "Choose the station to add an English name for.",
+  "reportSelectIncorrectStation": "Choose the station with missing or incorrect information.",
+  "reportSelectCorrectType": "Choose the correct transaction type",
+  "reportCustomTypeGuide": "If the type is not listed, you can enter it yourself.",
+  "reportBoarding": "Boarding station",
+  "reportAlighting": "Alighting station",
+  "reportBothStations": "Both boarding and alighting stations",
+  "reportRail": "Rail travel",
+  "reportBus": "Bus travel",
+  "reportPurchase": "Purchase",
+  "reportCharge": "Top-up",
+  "reportGateWindow": "Gate or ticket counter transaction",
+  "reportRefund": "Refund",
+  "reportAdjustment": "Fare adjustment",
+  "reportCustomOption": "Not listed / enter manually",
+  "reportSelectedHistory": "Selected transaction",
+  "reportUnknownBus": "Unknown bus operator",
+  "reportUnknownType": "Unknown transaction type",
+  "reportAmountUnavailable": "Unavailable",
+  "reportNeedsReview": "Needs review",
+  "reportDiagnosticsUnsupported": "Card diagnostics are not supported by this reader.",
+  "reportScanPrompt": "Hold one card against the NFC area on the back of your phone.",
+  "reportDiagnosticsReady": "Diagnostic information is ready. Nothing has been sent to the server.",
+  "reportDiagnosticsCancelled": "Diagnostics cancelled.",
+  "reportEnableNfc": "Turn on NFC and try again.",
+  "reportDiagnosticsTimeout": "The scan timed out. Run diagnostics again.",
+  "reportMetadataFailed": "Couldn’t read the metadata. You can still send a report with only a minimal error code and your description.",
+  "reportDiagnosticsFailed": "Couldn’t complete diagnostics. Please try again.",
+  "reportViewPayload": "View all data to be sent",
+  "reportPayloadNotice": "Only the data below will be sent. Opening this screen does not send anything.",
+  "reportClose": "Close",
+  "reportSupportReceived": "Your inquiry has been received",
+  "reportSupportPrivacy": "Your card IDm, balance and transaction history were not sent.",
+  "reportConnectionRetry": "Couldn’t send. Check your connection and try again.",
+  "reportCardSupport": "Card recognition support",
+  "reportUnreadableQuestion": "Having trouble reading a card?",
+  "reportSupportIntro": "Report card reading or brand identification problems.\nThis does not change records from normal scans.",
+  "reportSupportTopic": "Inquiry type",
+  "reportOptionalBrand": "Card brand (optional)",
+  "reportBrandExample": "e.g. Kitaca · Leave blank if unsure",
+  "reportOptionalProblem": "Problem description (optional)",
+  "reportProblemHint": "What went wrong?",
+  "reportNoPersonalInfo": "Do not enter your name, card number or contact details.",
+  "reportMinimalDiagnostics": "Minimal diagnostics",
+  "reportDiagnosticsPrivacy": "We check only system codes, manufacturer information (PMm), the presence of selected services and communication error codes.\nWe do not collect a full card dump, service contents, IDm, card number, balance or transaction history.",
+  "reportScanConsent": "I agree to the minimal diagnostic check.",
+  "reportCheckingCard": "Checking card…",
+  "reportDiagnosticScan": "Scan card for diagnostics",
+  "reportCancelDiagnostics": "Cancel diagnostics",
+  "reportReviewPayload": "Review data to be sent",
+  "reportSendInquiry": "Send inquiry",
+  "reportSupportRetention": "Your inquiry, minimal diagnostics, app/OS versions, report ID and consent version are sent to Supabase to improve card recognition.\nResolved inquiries are deleted after one year; inquiries under review are retained. An anonymous authentication ID is used to limit submissions.",
+  "reportSupportConsent": "I agree to send this inquiry.",
+  "reportSupportUnavailable": "The inquiry service is not available. Contact us using the email address in Settings.",
+  "reportSending": "Sending…",
+  "reportAgreeSend": "Agree and send",
+  "reportEmailContact": "For a personal reply: iccardreader10@gmail.com",
+  "reportReadingError": "Card reading error",
+  "reportBrandProblem": "Card brand identification",
+  "reportChooseTopic": "Choose an inquiry type",
+  "reportReportReceived": "Your report has been received",
+  "reportReportPrivacy": "Your card IDm and other transaction records were not sent.",
+  "reportReceiptUnknown": "Couldn’t confirm receipt of your inquiry. Please try again.",
+  "reportSupportRateLimit": "Too many inquiries. Please try again in 10 minutes.",
+  "reportSupportRestricted": "Sending inquiries is restricted. Contact us using the email address in Settings.",
+  "reportInvalidDiagnostics": "Couldn’t validate the data. Please run diagnostics again.",
+  "reportSupportConnection": "Couldn’t connect to the inquiry service. Please try again later.",
+  "reportCheckConnection": "Check your internet connection and try again.",
+  "reportReportNotReceived": "Couldn’t submit your report. Please try again later.",
+  "reportInvalidResponse": "Couldn’t verify the server response. Please try again later.",
+  "reportAnonymousConnection": "Couldn’t start an anonymous connection. Check your internet connection.",
+  "reportAlreadyReceived": "This report has already been received.",
+  "reportReportRateLimit": "Too many reports in a short time. Please try again in 10 minutes.",
+  "reportReportRestricted": "Sending reports is restricted. Contact us using the email address in Settings.",
+  "reportInvalidReport": "Couldn’t validate your report. Please check what you entered.",
+  "reportServerConnection": "Couldn’t connect to the server. Please try again later.",
+  "reportReportUnavailable": "The report service is not configured. Please check the app settings.",
+  "reportUnreadableDescription": "I can’t read my card",
+  "reportBrandDescription": "The card brand is missing or incorrect",
+  "reportStep": "Step {step} of 3",
+  "@reportStep": {
+    "placeholders": {
+      "step": {
+        "type": "int"
+      }
+    }
+  },
+  "reportRequiredField": "Enter {label}.",
+  "@reportRequiredField": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "reportReceiptHelp": "We’ll review your report and use it\nto improve the app.",
+  "reportReceiptId": "Report ID",
+  "reportDone": "Done",
+  "privacyOverviewTitle": "Card information is normally processed on your device",
+  "privacyOverviewBody": "Recent transit card records are read using NFC and displayed on screen. They are not retained after the app closes. The raw card IDm is used only temporarily during NFC communication and is not stored, displayed or transmitted.",
+  "privacyNfcTitle": "1. Why we use NFC",
+  "privacyNfcBody": "NFC permission is used to read records and identify the type of Japanese transit IC card when you start a scan. In a separate card recognition inquiry, only minimal metadata is checked with your consent. The app does not write to or modify your card.",
+  "privacyOnDeviceTitle": "2. Information processed on your device",
+  "privacyOnDeviceBody": "The app interprets and displays the original 16-byte records, dates, transaction types, station codes and names, amounts and balances from recent transactions on your device. Records are not stored permanently. Scanning another card in the normal scan flow replaces the current results.\n\nThe multiple-card balance comparison feature keeps the names, balances, check times and records of up to 10 cards only in the comparison screen’s memory. To distinguish cards, it uses a session-only comparison value created with a random key for each comparison session; the raw IDm is not retained. Comparison values, keys and card names are not saved to files or transmitted to a server. They are cleared when the comparison ends or the app process exits. Deleting an individual card also removes its comparison information. A comparison scan does not change the existing card results on the home screen.",
+  "privacyReportsTitle": "3. Information sent with an issue report",
+  "privacyReportsBody": "Issue reports are optional. Only after you review the preview and give your consent does the app send the selected transaction’s raw record, codes and interpreted information, date, amount and balance, the station, city, line or bus operator, operating city/region and description you enter, app, parser and station data versions, platform and OS version to Supabase. This information is used to improve the app.\n\nA separate card recognition inquiry is different from a transaction report. With your consent to a diagnostic scan, the app checks only system codes, manufacturer information (PMm), the presence of selected permitted services and communication error codes on your device. Only after you review the data, purpose and retention period and give separate, explicit consent are these minimal diagnostics, the card type and description you enter, app/OS versions, report ID and consent document version sent to Supabase. They are used to improve card identification and reading errors. A full card dump, service contents, balance and transaction history are not included in this inquiry. The app does not retain the inquiry contents after you leave the screen.",
+  "privacyNotSentTitle": "4. Information not included in reports",
+  "privacyNotSentBody": "The raw card IDm, other unselected transaction records, your name, email address, unique device identifiers, current location and travel route are not included in report data.",
+  "privacyServicesTitle": "5. External processing services",
+  "privacyServicesBody": "Issue reports use Supabase’s anonymous authentication, server and database services. An anonymous authentication ID is used only within the server to limit submissions to five per 10 minutes and block abusive reports. It is not an email address, card IDm or unique device ID. It is not shown in the app and is used with report information only on the access-restricted server. Reports are processed through Supabase infrastructure. Technical information associated with network connections may be processed under the service’s operating policies.",
+  "privacyMapsTitle": "5-1. Google Maps",
+  "privacyMapsBody": "When you open rail transaction details, a Google Maps SDK map is displayed automatically if the app confirms an internet connection, station locations and map configuration. Possible locations are shown for station groups and segments. The area around the stations and their coordinates are used in map requests. Google may process IP addresses, device, OS and SDK information, SDK-specific pseudonymous identifiers, diagnostics and usage information. The app does not request current-location permission or pass your card IDm, card number, balance or raw transaction records to the map SDK. Google’s Privacy Policy (https://policies.google.com/privacy) applies. If an internet connection cannot be confirmed, the map is not displayed; you can retry using Refresh map after connecting. Connection status is checked on your device using Android network capability information, without contacting a separate connectivity-check server. Stopping or refreshing a map does not cancel or delete requests already made. Card reading and the transaction list remain available without a map connection. The app does not separately store map usage history. Google’s retention and deletion rules are governed by its policies.",
+  "privacyStationDataTitle": "6. Station code data",
+  "privacyStationDataBody": "Station names are looked up using licensed Yoiko station code data bundled with the app. Lookups take place on your device; card records are not sent to an external server to identify station names. You can find the terms of use under Data sources and fare rules in Settings.",
+  "privacyRetentionTitle": "7. Retention and deletion",
+  "privacyRetentionBody": "The app does not permanently store records read from your card. Optional reports that have been applied or rejected, together with their review histories, are retained for one year after resolution and then deleted by a monthly automatic task. Inquiries still under review are not automatically deleted, to avoid accidental loss. Information used to block abusive reports is retained only for server security. Where retention is required by law, information may be kept for the required period.",
+  "privacyContactTitle": "8. Policy changes and contact",
+  "privacyContactBody": "If our data processing practices change, we will update this policy and its effective date. For requests to access or delete your information, app errors, usage questions or other inquiries, contact iccardreader10@gmail.com. Public policy: https://yohan020.github.io/ic_card_reader/privacy-en.html",
+  "privacyEffectiveDate": "Effective date: October 27, 2026",
+  "passRegionHokkaido": "Hokkaido",
+  "passRegionTohoku": "Tohoku",
+  "passRegionKanto": "Tokyo & Kanto",
+  "passRegionChubu": "Chubu",
+  "passRegionKansai": "Kansai",
+  "passRegionChugoku": "Chugoku",
+  "passRegionShikoku": "Shikoku",
+  "passRegionKyushu": "Kyushu",
+  "passRegionOkinawa": "Okinawa",
+  "passRegionHokkaidoHint": "Sapporo, Hakodate and more",
+  "passRegionTohokuHint": "Sendai, Aomori and more",
+  "passRegionKantoHint": "Passes for Tokyo and Kanagawa",
+  "passRegionChubuHint": "Nagoya, Hokuriku and more",
+  "passRegionKansaiHint": "Passes for Osaka, Kyoto and Nara",
+  "passRegionChugokuHint": "Hiroshima, Okayama and more",
+  "passRegionShikokuHint": "Matsuyama, Takamatsu and more",
+  "passRegionKyushuHint": "Passes for Fukuoka",
+  "passRegionOkinawaHint": "Naha and Okinawa",
+  "passTitle": "Compare transit passes",
+  "passIntro": "Compare regular fares with pass prices based on your travel plan.",
+  "passCalculationBasis": "Calculation basis",
+  "passCalculationNotice": "Only journeys covered by the available data are calculated. Unknown fares are excluded. Check the official product conditions and fares before buying.",
+  "passSapporo": "Sapporo Subway One-Day Ticket",
+  "passSapporoScope": "Sapporo City Subway · All sections",
+  "passSubwayDescription": "Compare with regular fares across the subway network.",
+  "passSapporoPeriod": "1 day · ¥830",
+  "passHokkaido": "Hokkaido Rail Pass",
+  "passHokkaidoScope": "JR Hokkaido lines · Ordinary reserved seats",
+  "passHokkaidoDescription": "Compare 5-, 7- and 10-day passes with estimated rail and bus fares.",
+  "passHokkaidoFive": "5 days · ¥23,000",
+  "passHokkaidoSeven": "7 days · ¥29,000",
+  "passHokkaidoTen": "10 days · ¥38,000",
+  "passTokyoScope": "Tokyo Metro · Toei Subway",
+  "passTokyoDescription": "Compare the value of 24-, 48- and 72-hour tickets.",
+  "passHours24": "24 hours",
+  "passHours48": "48 hours",
+  "passHours72": "72 hours",
+  "passEnokama": "Enoshima-Kamakura Freepass",
+  "passEnokamaScope": "Enoden · Odakyu Railway",
+  "passEnokamaDescription": "Compare prices by starting station with fares in the free-travel area.",
+  "passEnokamaPeriod": "1 day · Price varies by starting station",
+  "passEnoden": "Enoden One-Day Pass",
+  "passEnodenScope": "Enoshima Electric Railway · All Enoden sections",
+  "passEnodenDescription": "Compare regular fares for journeys within Enoden.",
+  "passEnodenPeriod": "1 day · ¥800",
+  "passHakone": "Hakone Freepass",
+  "passHakoneScope": "70 Odakyu starting stations · Hakone transport",
+  "passHakoneDescription": "Compare adult prices by starting station with local Hakone fares.",
+  "passDaysTwo": "2 days",
+  "passDaysThree": "3 days",
+  "passTokunai": "Tokunai Pass",
+  "passTokunaiScope": "Designated JR sections within Tokyo’s 23 wards",
+  "passTokunaiDescription": "Compare the one-day pass with regular fares on covered JR sections.",
+  "passTokunaiPeriod": "1 day · ¥870",
+  "passKyotoSubway": "Kyoto Subway One-Day Pass",
+  "passKyotoSubwayScope": "Kyoto Municipal Subway · All sections",
+  "passOsaka": "Osaka Amazing Pass",
+  "passOsakaScope": "Osaka Metro · Private railways · City buses",
+  "passOsakaDescription": "Compare 1- and 2-day passes with regular fares, including transfers.",
+  "passOsakaOne": "1 day · ¥3,500",
+  "passOsakaTwo": "2 days · ¥5,000",
+  "passKyotoBus": "Kyoto Subway & Bus One-Day Pass",
+  "passKyotoBusScope": "Kyoto Municipal Subway · Estimated bus fares",
+  "passKyotoBusDescription": "Compare automatically calculated subway fares and estimated bus costs.",
+  "passKyotoBusPeriod": "1 day · ¥1,100",
+  "passHankyu": "Hankyu One-Day Pass",
+  "passHankyuScope": "All Hankyu Railway lines",
+  "passHankyuDescription": "Compare regular fares for journeys within Hankyu Railway.",
+  "passHankyuPeriod": "1 day · ¥1,300",
+  "passKintetsu": "KINTETSU RAIL PASS",
+  "passKintetsuScope": "Kintetsu Railway · Iga Railway · Cable cars",
+  "passKintetsuDescription": "Compare regular fares within each pass’s coverage.",
+  "passDaysOne": "1 day",
+  "passDaysFive": "5 days",
+  "passDaysFivePlus": "5 days Plus",
+  "passOkayama": "Okayama & Kurashiki tabiwa Gururin Pass",
+  "passOkayamaScope": "JR West · Okayama Electric Tramway · Shimoden Bus",
+  "passOkayamaDescription": "Compare the 3-day pass with rail, tram and bus fares.",
+  "passOkayamaPeriod": "3 days · ¥3,800",
+  "passHiroden": "Hiroden Tram Pass",
+  "passHirodenScope": "Hiroshima Electric Railway · All tram lines",
+  "passHirodenDescription": "Compare regular fares with 1-day, 8-hour and 24-hour passes.",
+  "passHirodenOne": "1 day · ¥700",
+  "passHirodenEight": "8 hours · ¥600",
+  "passHirodenTwentyFour": "24 hours · ¥700",
+  "passNagasaki": "Nagasaki Electric Tramway Pass",
+  "passNagasakiScope": "Nagasaki Electric Tramway · All tram lines",
+  "passNagasakiDescription": "Compare IC/contactless regular fares with 1-day and 24-hour passes.",
+  "passNagasakiOne": "1 day · ¥600",
+  "passFukuoka": "Fukuoka City Subway One-Day Pass",
+  "passFukuokaScope": "Fukuoka City Subway · 3 lines",
+  "passFukuokaPeriod": "1 day · ¥640",
+  "passYui": "Yui Rail Pass",
+  "passYuiScope": "Okinawa Urban Monorail · All lines",
+  "passYuiDescription": "Compare 24- and 48-hour passes with regular Yui Rail fares.",
+  "passYuiOne": "24 hours · ¥1,000",
+  "passYuiTwo": "48 hours · ¥1,800",
+  "passChooseRegion": "Choose a region\nto compare passes",
+  "passChooseRegionHint": "Choose where you’re travelling to see available transit passes.",
+  "passComingSoon": "Coming soon",
+  "passStepSelect": "Choose pass",
+  "passStepPlan": "Plan travel",
+  "passStepResult": "Results",
+  "passSelectStation": "Choose station",
+  "passRemoveSegment": "Remove journey",
+  "passEstimateNote": "An estimated comparison based on the journeys you entered.",
+  "passChooseInRegion": "Choose a transit pass\nfor {region}",
+  "@passChooseInRegion": {
+    "placeholders": {
+      "region": {
+        "type": "String"
+      }
+    }
+  },
+  "passViewRegion": "View {count, plural, =1{1 transit pass} other{{count} transit passes}} for {region}",
+  "@passViewRegion": {
+    "placeholders": {
+      "region": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "passRegionComingSoon": "Transit passes for {region} are coming soon",
+  "@passRegionComingSoon": {
+    "placeholders": {
+      "region": {
+        "type": "String"
+      }
+    }
+  },
+  "passCount": "{count, plural, =1{1 pass} other{{count} passes}}",
+  "@passCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "passStartComparison": "Compare {title}",
+  "@passStartComparison": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "passSearchStation": "Search {label} station",
+  "@passSearchStation": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "passDeparture": "Departure",
+  "passArrival": "Arrival",
+  "passFlow001": "Journeys",
+  "passFlow002": "View comparison",
+  "passFlow003": "Clear",
+  "passFlow004": "Adult regular fare ¥{arg0}",
+  "@passFlow004": {
+    "placeholders": {
+      "arg0": {
+        "type": "String"
+      }
+    }
+  },
+  "passFlow005": "Search for a station",
+  "passFlow006": "Enter your travel plan",
+  "passFlow007": "Add journey",
+  "passFlow008": "The pass saves you money",
+  "passFlow009": "Choose {arg0} station",
+  "@passFlow009": {
+    "placeholders": {
+      "arg0": {
+        "type": "String"
+      }
+    }
+  },
+  "passFlow010": "Choose two stations to see the fare automatically.",
+  "passFlow011": "Estimated savings",
+  "passFlow012": "The cost is the same",
+  "passFlow013": "No matching stations found",
+  "passFlow014": "Swap departure and arrival",
+  "passFlow015": "Paying separately costs less",
+  "passFlow016": "Try another spelling or Korean initials.",
+  "passFlow017": "Not enough journeys to compare",
+  "passFlow018": "The fare for this journey is unavailable.",
+  "passFlow019": "Enter the station you’re looking for",
+  "passFlow020": "Pass price",
+  "passFlow021": "Save ¥{arg0} on transport",
+  "@passFlow021": {
+    "placeholders": {
+      "arg0": {
+        "type": "String"
+      }
+    }
+  },
+  "passFlow022": "Journey details",
+  "passFlow023": "The pass price equals the estimated pay-as-you-go total",
+  "passFlow024": "A difference of ¥{arg0} for this plan",
+  "@passFlow024": {
+    "placeholders": {
+      "arg0": {
+        "type": "String"
+      }
+    }
+  },
+  "passFlow025": "Try again",
+  "passFlow026": "Couldn’t load pass data",
+  "passFlow027": "Search in Korean, Japanese or English, or use Korean initials.",
+  "passFlow028": "Search in Korean or Japanese, or use Korean initials.",
+  "passFlow029": "{arg0} rides",
+  "@passFlow029": {
+    "placeholders": {
+      "arg0": {
+        "type": "String"
+      }
+    }
+  },
+  "passFlow030": "Kyoto Municipal Subway",
+  "passFlow031": "Choose the pass starting station",
+  "passFlow032": "{arg0}-day pass",
+  "@passFlow032": {
+    "placeholders": {
+      "arg0": {
+        "type": "String"
+      }
+    }
+  },
+  "passFlow033": "Add one ride",
+  "passFlow034": "Remove one ride",
+  "passFlow035": "{arg0} starting station",
+  "@passFlow035": {
+    "placeholders": {
+      "arg0": {
+        "type": "String"
+      }
+    }
+  },
+  "passFlow036": "{arg0} starting stations",
+  "@passFlow036": {
+    "placeholders": {
+      "arg0": {
+        "type": "String"
+      }
+    }
+  },
+  "passFlow037": "{arg0} hours",
+  "@passFlow037": {
+    "placeholders": {
+      "arg0": {
+        "type": "String"
+      }
+    }
+  },
+  "passFlow038": "{arg0}-day pass, ¥{arg1}",
+  "@passFlow038": {
+    "placeholders": {
+      "arg0": {
+        "type": "String"
+      },
+      "arg1": {
+        "type": "String"
+      }
+    }
+  },
+  "passFlow039": "¥{arg0} per ride",
+  "@passFlow039": {
+    "placeholders": {
+      "arg0": {
+        "type": "String"
+      }
+    }
+  },
+  "passFlow040": "24-hour pass",
+  "passFlow041": "{arg0} search results",
+  "@passFlow041": {
+    "placeholders": {
+      "arg0": {
+        "type": "String"
+      }
+    }
+  },
+  "passFlow042": "Clear search",
+  "passFlow043": "All Kintetsu lines and Iga Railway",
+  "passFlow044": "Nagasaki Electric Tramway",
+  "passFlow045": "Choose a line",
+  "passFlow046": "Tama Line",
+  "passFlow047": "Donichika Ticket",
+  "passFlow048": "Toei Subway",
+  "passFlow049": "Estimated bus fare",
+  "passFlow050": "Sapporo City Subway",
+  "passFlow051": "Enter the stations where you will actually enter and exit the gates to look up the fare automatically.",
+  "passFlow052": "Enoshima Line",
+  "passFlow053": "Odawara Line",
+  "passFlow054": "Choose an Odakyu starting station",
+  "passFlow055": "Couldn’t read fare data",
+  "passFlow056": "Yui Rail",
+  "passFlow057": "Estimated pay-as-you-go total",
+  "passFlow058": "No matching starting stations found. Try Korean, Japanese or Korean initials.",
+  "passFlow059": "Regular rail fares",
+  "passFlow060": "Search starting stations",
+  "passFlow061": "Hankyu Railway",
+  "passFlow062": "Fukuoka City Subway",
+  "passFlow063": "Hiroshima Electric Railway",
+  "passFlow064": "JR West",
+  "passFlow065": " Only bus fares you enter manually are included.",
+  "passFlow066": "{arg0} · {arg1} journeys covered",
+  "@passFlow066": {
+    "placeholders": {
+      "arg0": {
+        "type": "String"
+      },
+      "arg1": {
+        "type": "String"
+      }
+    }
+  },
+  "passFlow067": "{arg0} · One round trip to Odawara included",
+  "@passFlow067": {
+    "placeholders": {
+      "arg0": {
+        "type": "String"
+      }
+    }
+  },
+  "passFlow068": "{arg0} price",
+  "@passFlow068": {
+    "placeholders": {
+      "arg0": {
+        "type": "String"
+      }
+    }
+  },
+  "passFlow069": "Search {arg0}",
+  "@passFlow069": {
+    "placeholders": {
+      "arg0": {
+        "type": "String"
+      }
+    }
+  },
+  "passFlow070": "Adds adult regular fares on Sapporo City Subway based on {arg0}. Transfers to other operators, discounts and child fares are excluded.",
+  "@passFlow070": {
+    "placeholders": {
+      "arg0": {
+        "type": "String"
+      }
+    }
+  },
+  "passFlow071": "Adds adult regular fares of ¥240 per ride based on {arg0}. Each journey entered is treated as a separately charged ride. MOBIRY DAYS discounts and automatic transfer or reboarding detection are excluded.",
+  "@passFlow071": {
+    "placeholders": {
+      "arg0": {
+        "type": "String"
+      }
+    }
+  },
+  "passFlow072": "Adds adult IC/contactless fares based on {arg0}. Includes the transfer discount for using the same card within 30 minutes at designated stops. Cash fares, buses and child fares are excluded.",
+  "@passFlow072": {
+    "placeholders": {
+      "arg0": {
+        "type": "String"
+      }
+    }
+  },
+  "passFlow073": "Choose {arg0}",
+  "@passFlow073": {
+    "placeholders": {
+      "arg0": {
+        "type": "String"
+      }
+    }
+  },
+  "passFlow074": "Journey {arg0} · {arg1}",
+  "@passFlow074": {
+    "placeholders": {
+      "arg0": {
+        "type": "String"
+      },
+      "arg1": {
+        "type": "String"
+      }
+    }
+  },
+  "passFlow075": "{arg0} hours, ¥{arg1}",
+  "@passFlow075": {
+    "placeholders": {
+      "arg0": {
+        "type": "String"
+      },
+      "arg1": {
+        "type": "String"
+      }
+    }
+  },
+  "passFlow076": "{arg0}-hour pass",
+  "@passFlow076": {
+    "placeholders": {
+      "arg0": {
+        "type": "String"
+      }
+    }
+  },
+  "passFlow077": "{arg0}-hour pass, ¥{arg1}",
+  "@passFlow077": {
+    "placeholders": {
+      "arg0": {
+        "type": "String"
+      },
+      "arg1": {
+        "type": "String"
+      }
+    }
+  },
+  "passFlow078": "{arg0}-day pass, ¥{arg1}",
+  "@passFlow078": {
+    "placeholders": {
+      "arg0": {
+        "type": "String"
+      },
+      "arg1": {
+        "type": "String"
+      }
+    }
+  },
+  "passFlow079": "1 day · Derived JR fares",
+  "passFlow080": "1 day ¥3,500 · 2 days ¥5,000 · Automatic transfer calculation",
+  "passFlow081": "Estimated ¥300 per ride",
+  "passFlow082": "24 / 48 / 72 hours · Automatic fares",
+  "passFlow083": "2 days",
+  "passFlow084": "The same Nara Kotsu sections as the 2-day pass, plus designated Mie Kotsu and Toba City Kamome Bus sections",
+  "passFlow085": "3 days",
+  "passFlow086": "8-hour pass",
+  "passFlow087": "Loading verified rail and bus fare data.",
+  "passFlow088": "Choose a pass to test",
+  "passFlow089": "Before using these results",
+  "passFlow090": "Automatically adds rail fares verified against published distance and fare rules, and regular Osaka City Bus fares. The value of free admission to attractions is excluded.",
+  "passFlow091": "Couldn’t open the official information.",
+  "passFlow092": "Enter only the total adult regular fares for buses confirmed as covered in the official information. The app does not determine bus coverage.",
+  "passFlow093": "Check official coverage",
+  "passFlow094": "Admission and discount benefits at attractions are excluded.",
+  "passFlow095": "Attraction benefits, buses outside the pass coverage, limited express tickets and seat charges are excluded. Journeys involving different operators use a recommended route based on distances in the supported station graph. Check your actual route and the latest official conditions before buying.",
+  "passFlow096": "Attraction benefits are excluded. Representative bus fares may differ from actual fares.",
+  "passFlow097": "Visiting attractions may provide additional value.",
+  "passFlow098": "Sightseeing limited express bus",
+  "passFlow099": "Estimated Kyoto bus use",
+  "passFlow100": "Enter the number of rides for the Kyoto Subway & Bus One-Day Pass.",
+  "passFlow101": "Choose Kyoto Municipal Subway stations to look up adult regular fares automatically.",
+  "passFlow102": "Enter your Kyoto Municipal Subway journeys.",
+  "passFlow103": "Kyoto Municipal Subway regular fares",
+  "passFlow104": "Calculates adult regular fares across Kyoto Municipal Subway only. Transfers to other operators and discounts are excluded.",
+  "passFlow105": "Adds adult regular fares across Kyoto Municipal Subway only. The one-day pass is valid until the end of service on the day of use. Transfers to other operators and discounts are excluded.",
+  "passFlow106": "Subway fares are adult regular fares based on selected stations. Bus fares are estimates based on the number of rides entered.",
+  "passFlow107": "Choose Kyoto Municipal Subway stations to look up adult fares automatically.",
+  "passFlow108": "Paying separately costs less for transport alone",
+  "passFlow109": "Transport costs only",
+  "passFlow110": "Save ¥{arg0} on transport alone",
+  "@passFlow110": {
+    "placeholders": {
+      "arg0": {
+        "type": "String"
+      }
+    }
+  },
+  "passFlow111": "Choose a transport mode",
+  "passFlow112": "Transit pass comparison prototype",
+  "passFlow113": "Coverage by journey",
+  "passFlow114": "Only journeys within this pass’s coverage are calculated. Limited express tickets, ropeways, discounts and other benefits are excluded.",
+  "passFlow115": "Enter the Kintetsu stations where you will actually enter and exit the gates to look up adult regular fares automatically.",
+  "passFlow116": "Nagasaki Electric Tramway One-Day Pass",
+  "passFlow117": "Nagasaki Electric Tramway 24-Hour Pass",
+  "passFlow118": "Enter your Nagasaki Electric Tramway journeys.",
+  "passFlow119": "Nagasaki Electric Tramway regular fares",
+  "passFlow120": "Choose Nagasaki Electric Tramway stops to look up adult IC/contactless regular fares automatically.",
+  "passFlow121": "Nara Kotsu: designated Nara Park, Nishinokyo and Horyuji sections",
+  "passFlow122": "Nara Kotsu: designated Nara Park, Nishinokyo, Horyuji, Asuka, Muro and Yamanobe-no-Michi sections",
+  "passFlow123": "Tram and bus rides",
+  "passFlow124": "Regular tram and bus fares",
+  "passFlow125": "Preparing data",
+  "passFlow126": "Arrival station",
+  "passFlow127": "Tokyo Metro",
+  "passFlow128": "Tokunai One-Day Pass",
+  "passFlow129": "JR sections covered by the Tokunai Pass",
+  "passFlow130": "Choose two locations to see the adult regular fare.",
+  "passFlow131": "Hakone Tozan Railway",
+  "passFlow132": "Railway, cable car, ropeway and sightseeing cruise use exact fares. Bus costs use average fares and ride counts. Romancecar limited express tickets are excluded.",
+  "passFlow133": "Ropeway",
+  "passFlow134": "Representative bus fares may differ from the fares for your actual journeys.",
+  "passFlow135": "Bus fare (optional)",
+  "passFlow136": "Bus fares are estimates",
+  "passFlow137": "Estimated bus use",
+  "passFlow138": "Add a bus ride",
+  "passFlow139": "Remove a bus ride",
+  "passFlow140": "Bus fares are estimates and may differ depending on your actual route and transfer fares.",
+  "passFlow141": "Bus fares are estimated from ride counts",
+  "passFlow142": "Local / Rapid",
+  "passFlow143": "Excluded from comparison",
+  "passFlow144": "Fares outside coverage, excluded from comparison",
+  "passFlow145": "Not enough travel to compare",
+  "passFlow146": "Choose Sapporo City Subway stations to look up adult regular fares automatically.",
+  "passFlow147": "Enter your Sapporo City Subway journeys.",
+  "passFlow148": "Sapporo City Subway regular fares",
+  "passFlow149": "Calculates adult regular fares on Sapporo City Subway only. Transfers to other operators and discounts are excluded.",
+  "passFlow150": "Adds adult basic fares within the selected pass coverage only. Fare adjustments for travel beyond that area, limited express tickets, ropeways, discounts and other benefits are excluded.{arg0}",
+  "@passFlow150": {
+    "placeholders": {
+      "arg0": {
+        "type": "String"
+      }
+    }
+  },
+  "passFlow151": "Compares the pass price from your chosen Odakyu station with the adult IC round-trip fare to Fujisawa and the journeys you enter within the free-travel area.",
+  "passFlow152": "Compares the value of the Hakone Freepass using adult regular fares only.",
+  "passFlow153": "Calculates adult regular fares at ¥240 per ride. Each journey entered is treated as a separately charged ride. MOBIRY DAYS discounts and automatic transfer or reboarding detection are excluded.",
+  "passFlow154": "Calculates adult IC/contactless fares. Includes the transfer discount for using the same card within 30 minutes at designated stops. Cash fares, buses and child fares are excluded.",
+  "passFlow155": "Representative Shimoden Bus fares",
+  "passFlow156": "Regular city bus fares",
+  "passFlow157": "Enter the station where you will actually exit the gates. The recommended route is not the fastest route based on a timetable.",
+  "passFlow158": "Enter the station where you will actually exit the gates. Unverified fares are not calculated.",
+  "passFlow159": "No journeys to compare yet",
+  "passFlow160": "Restart the app or try again.",
+  "passFlow161": "Approx. ¥{arg0} per ride",
+  "@passFlow161": {
+    "placeholders": {
+      "arg0": {
+        "type": "String"
+      }
+    }
+  },
+  "passFlow162": "Enter your Enoden journeys.",
+  "passFlow163": "Enoden regular fares",
+  "passFlow164": "Adds adult regular fares across all 15 Enoden stations only. Other benefits, discounts and transfers to other operators are excluded.",
+  "passFlow165": "Calculates adult regular fares for journeys within Enoden only. Other benefits, discounts and transfers to other operators are excluded.",
+  "passFlow166": "Search for stations in the Enoden and Odakyu free-travel area.",
+  "passFlow167": "Enter the Enoden stations where you will actually enter and exit the gates to look up adult regular fares automatically.",
+  "passFlow168": "Enoshima Electric Railway",
+  "passFlow169": "Enoshima Electric Railway · Enoden",
+  "passFlow170": "Enoshima-Kamakura One-Day Freepass",
+  "passFlow171": "Station",
+  "passFlow172": "Station purchase price · ¥1,000 less when bought in advance",
+  "passFlow173": "Prepare the station and fare data, then try again.",
+  "passFlow174": "e.g. 800",
+  "passFlow175": "No difference in estimated cost",
+  "passFlow176": "Estimated savings ¥{arg0}",
+  "@passFlow176": {
+    "placeholders": {
+      "arg0": {
+        "type": "String"
+      }
+    }
+  },
+  "passFlow177": "Osaka City Bus",
+  "passFlow178": "Osaka City Bus · {arg0} rides",
+  "@passFlow178": {
+    "placeholders": {
+      "arg0": {
+        "type": "String"
+      }
+    }
+  },
+  "passFlow179": "Osaka Amazing Pass · 1 day",
+  "passFlow180": "Osaka Amazing Pass · 2 days",
+  "passFlow181": "Kintetsu lines in Osaka, Nara and Kyoto (Osaka Line as far as Sanbonmatsu)",
+  "passFlow182": "Osaka-Namba–Kintetsu-Nara, Kyoto–Tsutsui, Nagata–Ikoma, Toriimae–Ikoma-sanjō",
+  "passFlow183": "For Osaka, only transport costs are compared",
+  "passFlow184": "Okayama & Kurashiki tabiwa Gururin Pass · 3 days",
+  "passFlow185": "Operator information unavailable",
+  "passFlow186": "Yui Rail · {arg0}",
+  "@passFlow186": {
+    "placeholders": {
+      "arg0": {
+        "type": "String"
+      }
+    }
+  },
+  "passFlow187": "Choose Yui Rail stations to look up adult regular fares automatically.",
+  "passFlow188": "Enter your Yui Rail journeys.",
+  "passFlow189": "Yui Rail regular fares",
+  "passFlow190": "Calculates adult regular fares on Yui Rail only. Transfers to other operators and discounts are excluded.",
+  "passFlow191": "Adds adult regular fares on Yui Rail only. The {arg0}-hour pass is valid from the time of issue. Transfers to other operators and discounts are excluded.",
+  "@passFlow191": {
+    "placeholders": {
+      "arg0": {
+        "type": "String"
+      }
+    }
+  },
+  "passFlow192": "Outside the validity period",
+  "passFlow193": "Enter valid journeys to see the basis for the comparison.",
+  "passFlow194": "Outside this pass’s coverage. Excluded from the comparison total.",
+  "passFlow195": "Edit travel plan",
+  "passFlow196": "Enter only journeys made on the day of use.",
+  "passFlow197": "Enter only journeys within {arg0} consecutive days from the first day of use.",
+  "@passFlow197": {
+    "placeholders": {
+      "arg0": {
+        "type": "String"
+      }
+    }
+  },
+  "passFlow198": "Train type",
+  "passFlow199": "Ride count",
+  "passFlow200": "Enter the number of rides for each transport mode.",
+  "passFlow201": "Standard one-day pass",
+  "passFlow202": "Paying separately costs less",
+  "passFlow203": "Regular city bus",
+  "passFlow204": "Adds only regular city bus and sightseeing limited express bus ride counts. Actual routes, operators, adjusted-fare sections, late-night surcharges and routes excluded from the pass are not determined automatically.",
+  "passFlow205": "Regular fare total",
+  "passFlow206": "Some specific routes and on-demand buses are not covered by the pass.",
+  "passFlow207": "An estimated comparison based on the journeys you entered.\nBus fares are estimates and may differ from actual fares.\n\nPass price ¥{arg0}\nJourney fares ¥{arg1}\nEstimated bus fares ¥{arg2}\nEstimated savings ¥{arg3}",
+  "@passFlow207": {
+    "placeholders": {
+      "arg0": {
+        "type": "String"
+      },
+      "arg1": {
+        "type": "String"
+      },
+      "arg2": {
+        "type": "String"
+      },
+      "arg3": {
+        "type": "String"
+      }
+    }
+  },
+  "passFlow208": "Covered bus fares (enter manually)",
+  "passFlow209": "Covered bus fare total",
+  "passFlow210": "Outside coverage · Excluded from total",
+  "passFlow211": "Covered regular rail fares",
+  "passFlow212": "These are average adult fares by operator, not stop-specific fares.",
+  "passFlow213": "Regular routes covered by the Amazing Pass",
+  "passFlow214": "Rides on regular routes covered by the Amazing Pass · ¥{arg0} per ride",
+  "@passFlow214": {
+    "placeholders": {
+      "arg0": {
+        "type": "String"
+      }
+    }
+  },
+  "passFlow215": "No route found in the supported data.",
+  "passFlow216": "No route or fare found between these stations in the supported data.",
+  "passFlow217": "Enter subway journeys or the number of bus rides.",
+  "passFlow218": "Regular subway fares",
+  "passFlow219": "Enter the subway station where you will actually exit the gates. Bus fare assumptions are explained under Data sources and fare rules in Settings.",
+  "passFlow220": "Automatically calculated reference result",
+  "passFlow221": "Uses {arg0} rail stations, {arg1} transfer connections and regular city bus fares. Attraction benefits are excluded.",
+  "@passFlow221": {
+    "placeholders": {
+      "arg0": {
+        "type": "String"
+      },
+      "arg1": {
+        "type": "String"
+      }
+    }
+  },
+  "passFlow222": "Choose rail journeys or enter the number of bus rides.",
+  "passFlow223": "Departure station",
+  "passFlow224": "One round trip between your starting station and Fujisawa included",
+  "passFlow225": "Swap departure and arrival stations",
+  "passFlow226": "Choose both departure and arrival stations.",
+  "passFlow227": "Add journeys with departure and arrival stations to calculate savings.",
+  "passFlow228": "Choose departure and arrival stations",
+  "passFlow229": "The {arg0}-day pass price varies by starting station.",
+  "@passFlow229": {
+    "placeholders": {
+      "arg0": {
+        "type": "String"
+      }
+    }
+  },
+  "passFlow230": "The pass price varies by starting station.",
+  "passFlow231": "Choose a starting station to apply the {arg0}-day pass price.",
+  "@passFlow231": {
+    "placeholders": {
+      "arg0": {
+        "type": "String"
+      }
+    }
+  },
+  "passFlow232": "Choose a starting station to apply its pass price.",
+  "passFlow233": "Cable car",
+  "passFlow234": "Number of rides",
+  "passFlow235": "Available only on Saturdays, Sundays, public holidays and December 29–January 3.",
+  "passFlow236": "Limited express",
+  "passFlow237": "Limited express fares use ordinary reserved seats. Bus fares are estimated at ¥300 per ride.",
+  "passFlow238": "¥{arg0} less than the pass price.",
+  "@passFlow238": {
+    "placeholders": {
+      "arg0": {
+        "type": "String"
+      }
+    }
+  },
+  "passFlow239": "Covered by pass",
+  "passFlow240": "Regular fares for covered journeys",
+  "passFlow241": "Enter covered journeys and fares",
+  "passFlow242": "Outside the pass coverage.",
+  "passFlow243": "Not covered by pass",
+  "passFlow244": "Choose the pass starting station and journeys in the Enoden/Odakyu free-travel area to compare adult IC fares.",
+  "passFlow245": "Calculates one round trip between the pass starting station and Fujisawa, all Enoden sections and the Odakyu Fujisawa–Katase-Enoshima section only. Additional journeys outside the free-travel area, limited express tickets, seat charges and discounts are excluded.",
+  "passFlow246": "Enter journeys covered by the pass.",
+  "passFlow247": "The pass costs ¥{arg0} more",
+  "@passFlow247": {
+    "placeholders": {
+      "arg0": {
+        "type": "String"
+      }
+    }
+  },
+  "passFlow248": "Prototype",
+  "passFlow249": "Regenerate the prototype assets before running the app.",
+  "passFlow250": "Starting station within the free-travel area",
+  "passFlow251": "Hakone Freepass · {arg0} days",
+  "@passFlow251": {
+    "placeholders": {
+      "arg0": {
+        "type": "String"
+      }
+    }
+  },
+  "passFlow252": "Adds adult regular fares for 87 Hankyu Railway stations only. The Kobe Rapid Transit Line and transfers to other operators are excluded.",
+  "passFlow253": "Calculates journeys within Hankyu Railway only. The Kobe Rapid Transit Line, limited express tickets, seat charges, discounts and transfers to other operators are excluded.",
+  "passFlow254": "Choose Hankyu Railway stations to look up adult regular fares automatically.",
+  "passFlow255": "Enter your Hankyu Railway journeys.",
+  "passFlow256": "Hankyu Railway regular fares",
+  "passFlow257": "Hakone Sightseeing Cruise",
+  "passFlow258": "Hokkaido Rail Pass · {arg0} days",
+  "@passFlow258": {
+    "placeholders": {
+      "arg0": {
+        "type": "String"
+      }
+    }
+  },
+  "passFlow259": "OK",
+  "passFlow260": "Ride count details",
+  "passFlow261": "Fujisawa round trip included",
+  "passFlow262": "Choose Fukuoka City Subway stations to look up adult regular fares automatically.",
+  "passFlow263": "Enter your Fukuoka City Subway journeys.",
+  "passFlow264": "Fukuoka City Subway regular fares",
+  "passFlow265": "Calculates adult regular fares on Fukuoka City Subway only. Transfers to other operators and discounts are excluded.",
+  "passFlow266": "Adds adult regular fares on Fukuoka City Subway only. The one-day pass is valid from the first to the last train on the day you use the gates. Transfers to other operators and discounts are excluded.",
+  "passFlow267": "Hiroden Tram One-Day Pass",
+  "passFlow268": "Hiroden Tram 24-Hour Pass",
+  "passFlow269": "Hiroden Tram 8-Hour Pass",
+  "passFlow270": "Enter your Hiroshima Electric Railway journeys.",
+  "passFlow271": "Hiroshima Electric Railway regular fares",
+  "passFlow272": "Choose Hiroshima Electric Railway stops to look up adult regular fares automatically.",
+  "passFlow273": "JR East",
+  "passFlow274": "Choose JR West stations to look up adult regular fares automatically.",
+  "passFlow275": "JR West regular fares",
+  "passFlow276": "Enter JR journeys or tram and bus ride counts.",
+  "passFlow277": "JR Hokkaido · Local / Rapid",
+  "passFlow278": "JR Hokkaido · Limited express",
+  "passFlow279": "JR Hokkaido Bus",
+  "passFlow280": "Choose JR Hokkaido stations to look up adult regular fares automatically.",
+  "passFlow281": "Calculates adult fares on JR Hokkaido lines. Includes only ordinary reserved seats for limited express trains and estimated bus fares of ¥300 per ride.",
+  "passFlow282": "Adds JR and tram fares and the selected Shimoden Bus ride counts. Attraction admission, bicycle-rental benefits, limited express charges, discounts and transfers to other operators are excluded.",
+  "passFlow283": "Adds adult regular fares for JR and Okayama Electric Tramway. Representative Shimoden Bus fares may differ from actual stop-specific fares. Attraction and bicycle-rental benefits are excluded.",
+  "passFlow284": "Metro ↔ Toei Subway",
+  "passFlow285": "Metro↔Toei journeys assume officially designated transfer stations, a transfer within 60 minutes and a ¥70 discount. Recheck official fares and purchase conditions before buying a pass.",
+  "passFlow286": "Tokyo Subway 24-Hour Ticket",
+  "passFlow287": "Tokyo Subway 48-Hour Ticket",
+  "passFlow288": "Tokyo Subway 72-Hour Ticket",
+  "passFlow289": "Only products verified in the web prototype are included in the Android app.",
+  "passSource001": "Kyoto City Transportation Bureau subway fares",
+  "passSource002": "Kyoto Open Data: 京都市営地下鉄 駅間距離・運賃",
+  "passSource003": "Adapted from 京都市営地下鉄 駅間距離・運賃 (Kyoto City), CC BY 4.0. The one-day pass is valid until the end of service on the day of use. Transfers to other operators, discounts and child fares are excluded.",
+  "passSource004": "Adapted from 京都市営地下鉄 駅間距離・運賃 (Kyoto City), CC BY 4.0. Bus routes, operators, variable-fare sections, late-night surcharges and excluded routes are not checked automatically.",
+  "passSource005": "Only journeys covered by the selected pass are included, using adult basic fares for 301 stations and 45,150 station pairs. Designated buses use only fares entered manually after confirming eligibility.",
+  "passSource006": "Looks up adult basic fares for 310 JR Hokkaido stations. Verified limited-express station pairs offer ordinary-car reserved-seat fares. JR Hokkaido Bus uses an estimate of ¥300 per ride, multiplied by the number entered.",
+  "passSource007": "Looks up 1,260 directional adult regular fares between 36 physical stations on the device. Interchange line codes at Nakasu-Kawabata and Hakata are grouped into one physical station to avoid duplicate calculations.",
+  "passSource008": "Looks up 1,406 directional adult IC/contactless fares between 38 stops on the device. Showamachi-dori serves only the Akasako direction, so departure and arrival directions are distinguished.",
+  "passSource009": "Calculates adult regular fares using adjacent operating distances between 46 physical stations and official distance bands. Sapporo and Odori each count as one physical station, regardless of interchange lines.",
+  "passSource010": "Applies the adult regular fare of ¥240 when two different stops among 77 stops are selected. Each journey entered counts as one separately charged ride.",
+  "passSource011": "Enoden 1-Day Pass “Noriorikun” · Entire Enoden line",
+  "passSource012": "Kyoto Subway One-Day Pass",
+  "passSource013": "Kyoto Subway One-Day Pass: official information",
+  "passSource014": "Kyoto Subway & Bus One-Day Pass",
+  "passSource015": "Kyoto Subway & Bus One-Day Pass: official information",
+  "passSource016": "Kyoto Municipal Subway · User-entered estimated bus fares",
+  "passSource017": "Kyoto Municipal Subway · All sections",
+  "passSource018": "Calculates Kyoto Municipal Subway regular fares using station distances and adult fare bands, then compares the total of all entered journeys with the ¥800 adult one-day pass.",
+  "passSource019": "Subway fares use Kyoto Municipal Subway station distances and adult fare bands. Bus estimates use only the ride counts entered: ¥230 for regular city buses and ¥500 for sightseeing express buses.",
+  "passSource020": "Data sources by transit pass",
+  "passSource021": "KINTETSU RAIL PASS",
+  "passSource022": "Nagasaki Electric Tramway: 2026 routes and fares",
+  "passSource023": "Nagasaki Electric Tramway: passenger transport rules",
+  "passSource024": "Nagasaki Electric Tramway Pass",
+  "passSource025": "Data sources",
+  "passSource026": "Data sources & fare basis",
+  "passSource027": "Uses an offline fare table derived from operating distances between 77 Tokunai Pass stations and JR East adult IC fare tables.",
+  "passSource028": "Tokunai Pass",
+  "passSource029": "Select a pass to see how fares are calculated, along with sources and limitations.",
+  "passSource030": "Sapporo Subway One-Day Ticket",
+  "passSource031": "Sapporo Subway One-Day Pass: official information",
+  "passSource032": "Sapporo subway fares: open dataset",
+  "passSource033": "Sapporo subway fares",
+  "passSource034": "Compares the selected Odakyu departure-station pass price with the adult IC round-trip fare to Fujisawa and fares for entered journeys within the Enoden/Odakyu free area.",
+  "passSource035": "Compares the adult one-day pass (¥600) and 24-hour pass (¥700). Fares are based on IC/contactless payment, including eligible same-card transfers within 30 minutes at designated stops. Derived station, line and fare-rule data follows Wikipedia contributors’ CC BY-SA 4.0 terms; official PDF originals are not bundled. Cash, bus and child fares are excluded.",
+  "passSource036": "Looks up adult two- and three-day pass prices from 70 Odakyu departure stations. Mountain railway, cable car, ropeway and sightseeing cruise fares are exact; bus totals are estimates using each operator’s average fare and entered ride counts.",
+  "passSource037": "Compares the adult subway one-day pass (¥830) with the Donichika Ticket (¥520). Donichika is valid only on Saturdays, Sundays, public holidays and December 29–January 3. Fare bands were checked against Sapporo City open data (CC BY 4.0) and official guidance. Derived station-order and adjacent-distance data follows Wikipedia contributors’ CC BY-SA 4.0 terms. Transfers to other operators, discounts and child fares are excluded.",
+  "passSource038": "Timetable-based fastest routes, attraction benefits, excluded buses, limited-express and seat charges are excluded. Some Keihan operating-distance data follows Wikipedia contributors’ CC BY-SA 4.0 terms.",
+  "passSource039": "Shimoden Bus fare revision notice",
+  "passSource040": "Calculates fares between two stations using operating distances for Enoden’s 15 stations and adult regular-fare distance bands.",
+  "passSource041": "Enoden One-Day Pass",
+  "passSource042": "Enoden One-Day Pass “Noriorikun”: official information",
+  "passSource043": "Adapted from Enoden station, operating-distance and fare-band data. The derived fare data follows Wikipedia contributors’ CC BY-SA 4.0 terms. Benefits, discounts and transfers to other operators are excluded.",
+  "passSource044": "Entire Enoden line · Odakyu Fujisawa–Katase-Enoshima",
+  "passSource045": "Enoshima-Kamakura Freepass",
+  "passSource046": "Enoshima-Kamakura Freepass: official information",
+  "passSource047": "Derived station-order and operating-distance data follows Wikipedia contributors’ CC BY-SA 4.0 terms. Fares were checked against official station fares across the network. OKICA and other payment-specific discounts, transfers to other operators and child fares are excluded.",
+  "passSource048": "Station location map",
+  "passSource049": "Station information was checked against Fukuoka City open data (CC BY) and current official guidance. Adult fares as of September 3, 2026 are used. The one-day pass is valid from the first to last train on the day of entry. Transfers to other operators, discounts and child fares are excluded.",
+  "passSource050": "Derived station, fare and stop-order data retains CC BY-SA 4.0 terms and original attribution. Limited-express options are available only for verified station pairs served by regular trains. Bus amounts are estimates, not exact fares. Green Cars and sightseeing, seasonal and steam trains are excluded.",
+  "passSource051": "Adapted from Odakyu operating distances and fare bands, and Enoden operating-distance data. The derived data follows Wikipedia contributors’ CC BY-SA 4.0 terms. Limited-express and seat charges, discounts and extra travel outside the free area are excluded.",
+  "passSource052": "Odakyu departure-station prices · Designated Hakone transport",
+  "passSource053": "The Odakyu section includes only one return trip between the departure station and Odawara. Romancecar limited-express tickets are extra. Derived station/distance data follows Wikipedia contributors’ CC BY-SA 4.0 terms; structured identifiers follow Wikidata CC0. Bus results are estimates.",
+  "passSource054": "Osaka Metro · Private railways · City buses",
+  "passSource055": "Osaka City Bus information",
+  "passSource056": "Osaka Amazing Pass",
+  "passSource057": "Osaka Amazing Pass: official information",
+  "passSource058": "Okayama Electric Tramway fares",
+  "passSource059": "Okayama & Kurashiki tabiwa Gururin Pass",
+  "passSource060": "Okayama-Kurashiki tabiwa Gururin Pass: official information",
+  "passSource061": "Okinawa Urban Monorail · All lines",
+  "passSource062": "Fare calculation basis",
+  "passSource063": "Fares and pass conditions may change. Check official information before purchasing.",
+  "passSource064": "Looks up 342 directional adult regular fares between Yui Rail’s 19 stations on the device. Compares all entered journeys with the price of a 24-hour or 48-hour pass.",
+  "passSource065": "Yui Rail fares: official information",
+  "passSource066": "Yui Rail Pass",
+  "passSource067": "Yui Rail unlimited-ride tickets: official information",
+  "passSource068": "Station coordinates in journey details were generated from Wikidata P625 (CC0). Station codes, names, operators and lines are cross-checked; unverified locations are not displayed. These are reference station locations, not actual travel routes. Google Maps provides the map background, subject to its displayed attribution.\nhttps://www.wikidata.org/wiki/Wikidata:Licensing",
+  "passSource069": "Japanese Wikipedia: Kintetsu and Iga Railway lines",
+  "passSource070": "Japanese Wikipedia: Enoshima Electric Railway and its line",
+  "passSource071": "Japanese Wikipedia: Odakyu and Enoden lines",
+  "passSource072": "Japanese Wikipedia: Okinawa Urban Monorail line",
+  "passSource073": "Japanese Wikipedia: 長崎電気軌道",
+  "passSource074": "Japanese Wikipedia: Hankyu station and operating-distance data",
+  "passSource075": "Nagasaki Electric Tramway · One-day and 24-hour passes · All tram lines",
+  "passSource076": "Tram one-day ticket · Digital 8-hour and 24-hour passes",
+  "passSource077": "Compares the paper tram one-day ticket (¥700), digital 8-hour pass (¥600) and 24-hour pass (¥700). Stop identifiers follow Wikidata CC0; normalized station codes, fares and product facts retain Wikimedia-based CC BY-SA 4.0 terms. MOBIRY DAYS distance discounts, automatic transfer/reboarding decisions, buses, ferries and child fares are excluded.",
+  "passSource078": "Subway One-Day Pass · Donichika Ticket · All Sapporo subway lines",
+  "passSource079": "Results are estimates for reference. Check coverage and current fares before travelling.",
+  "passSource080": "Calculates regular fares using published operator fares, distances between stations and interchange connections.",
+  "passSource081": "Hankyu 1day Pass · All Hankyu lines (excluding the Kobe Kosoku Line)",
+  "passSource082": "Hankyu 1day Pass: official information",
+  "passSource083": "Hakone Navi: ropeway and sightseeing cruise fares",
+  "passSource084": "Hakone Freepass",
+  "passSource085": "Hakone Freepass: official price list",
+  "passSource086": "Hakone Freepass: official information",
+  "passSource087": "Adapted from operating distances between adjacent stations on Hankyu lines. The derived fare data follows Wikipedia contributors’ CC BY-SA 4.0 terms. The Kobe Kosoku Line, limited-express and seat charges, discounts, special IC rules and transfers to other operators are excluded.",
+  "passSource088": "Hankyu passenger business rules",
+  "passSource089": "Uses regular fares calculated from adjacent operating distances between 87 Hankyu stations and adult ordinary-fare distance bands.",
+  "passSource090": "Hankyu One-Day Pass",
+  "passSource091": "Hokkaido Rail Pass",
+  "passSource092": "Hokkaido Rail Pass: official information",
+  "passSource093": "Things to check",
+  "passSource094": "Fukuoka City Subway One-Day Pass",
+  "passSource095": "Fukuoka City station open dataset",
+  "passSource096": "Fukuoka City Subway",
+  "passSource097": "Fukuoka City Subway One-Day Pass: official information",
+  "passSource098": "Fukuoka City Subway fares",
+  "passSource099": "Hiroden Tram Pass",
+  "passSource100": "Hiroshima Electric Railway fare revision",
+  "passSource101": "Hiroshima Electric Railway tram passes: official information",
+  "passSource102": "Designated JR East services within Tokyo’s 23 wards",
+  "passSource103": "JR East Tokunai Pass: official information",
+  "passSource104": "JR East fare and charge information",
+  "passSource105": "JR West · Okayama Electric Tramway · Shimoden Bus",
+  "passSource106": "Looks up 1,190 adult regular fares between 35 eligible JR West stations. Okayama Electric Tramway is added at the exact fare of ¥160 per ride. Shimoden Bus uses entered ride counts and representative fares for the selected service.",
+  "passSource107": "Derived JR station-distance data follows Wikipedia contributors’ CC BY-SA 4.0 terms. Shimoden Bus Kojima–Kurashiki and Tokohai-go use representative fares, which may differ by stop. Attraction and bicycle-rental benefits, limited-express services, discounts and transfers to other operators are excluded.",
+  "passSource108": "JR Hokkaido train information",
+  "passSource109": "JR Hokkaido lines · 5-, 7- and 10-day passes",
+  "passSource110": "KINTETSU RAIL PASS · 1-day, 2-day, 5-day and 5-day Plus",
+  "passSource111": "KINTETSU RAIL PASS: official information by type",
+  "passSource112": "MOBIRY DAYS fares",
+  "passSource113": "ODPT Public Transportation Open Data Center",
+  "passSource114": "Calculates covered Tokyo Metro and Toei Subway fares using ODPT station and adult IC-fare data.",
+  "passSource115": "Osaka Metro fares",
+  "passSource116": "tabiwa product details",
+  "passSource117": "Tokyo Metro · Toei Subway",
+  "passSource118": "Tokyo Subway Ticket: official information",
+  "passSource119": "Derived from Wikidata (CC0) and Wikipedia/Wikimedia operating-distance facts (CC BY-SA 4.0). Limited-express services require a separate ticket. Ropeways, discounts and benefits are excluded.",
+  "passMeta001": "Enoshima Electric Railway",
+  "passMeta002": "Enoden",
+  "passMeta003": "Odakyu Railway",
+  "passMeta004": "Odakyu Tama Line",
+  "passMeta005": "Odakyu Enoshima Line",
+  "passMeta006": "Odakyu Odawara Line",
+  "passMeta007": "Hankyu Railway",
+  "passMeta008": "JR Hokkaido",
+  "passMeta009": "Kyoto Municipal Subway",
+  "passMeta010": "Karasuma Line",
+  "passMeta011": "Tozai Line",
+  "passMeta012": "Osaka Metro",
+  "passMeta013": "Osaka City Bus",
+  "passMeta014": "Hanshin Railway",
+  "passMeta015": "Keihan Railway",
+  "passMeta016": "Kintetsu Railway",
+  "passMeta017": "Kintetsu Railway",
+  "passMeta018": "Iga Railway",
+  "passMeta019": "Nankai Railway",
+  "passMeta020": "Sapporo City Subway",
+  "passMeta021": "Hiroshima Electric Railway",
+  "passMeta022": "Nagasaki Electric Tramway",
+  "passMeta023": "JR West",
+  "passMeta024": "Yui Rail",
+  "passMeta025": "Hakone Tozan Railway",
+  "passMeta026": "Cable car",
+  "passMeta027": "Ropeway",
+  "passMeta028": "Hakone Sightseeing Cruise",
+  "passMeta029": "Toei Subway",
+  "passMeta030": "Midosuji Line",
+  "passMeta031": "Imazatosuji Line",
+  "passMeta032": "Sennichimae Line",
+  "passMeta033": "Yotsubashi Line",
+  "passMeta034": "Chuo Line",
+  "passMeta035": "New Tram",
+  "passMeta036": "Nagahori Tsurumi-ryokuchi Line",
+  "passMeta037": "Tanimachi Line",
+  "passMeta038": "Sakaisuji Line",
+  "passMeta039": "Nakanoshima Line",
+  "passMeta040": "Keihan Main Line",
+  "passMeta041": "Nankai Main Line",
+  "passMeta042": "Koya Line",
+  "passMeta043": "Minami Osaka Line",
+  "passMeta044": "Namba Line",
+  "passMeta045": "Takarazuka Main Line",
+  "passMeta046": "Kyoto Main Line",
+  "passMeta047": "Senri Line",
+  "passMeta048": "Kobe Main Line",
+  "passMeta049": "Hanshin Namba Line",
+  "passMeta050": "Main Line",
+  "passMeta051": "JR sections covered by the Tokunai Pass",
+  "passMeta052": "JR East",
+  "passMeta053": "Metro ↔ Toei Subway",
+  "passMeta054": "Okayama Electric Tramway",
+  "passMeta055": "Shimoden Bus: Kojima–Kurashiki",
+  "passMeta056": "Tokohai-go",
+  "passMeta057": "Jeans Bus",
+  "passMeta058": "Washuzan Sunset Bus",
+  "passMeta059": "Flat fare across the line",
+  "passMeta060": "Representative fare for the full route",
+  "passMeta061": "Representative fare",
+  "passMeta062": "Runs on Fridays, Saturdays, Sundays and public holidays",
+  "passMeta063": "Runs on Fridays, Saturdays and days before public holidays",
+  "passMeta064": "Karasuma / Tozai lines"
+}

@@ -1,8 +1,10 @@
 import 'package:flutter/services.dart';
 
+import 'pass_named_place.dart';
+
 import 'pass_transit_data.dart';
 
-class HirodenStation {
+class HirodenStation implements PassNamedPlace {
   const HirodenStation({
     required this.id,
     required this.nameJa,
@@ -11,11 +13,15 @@ class HirodenStation {
   });
 
   final String id;
+  @override
   final String nameJa;
+  @override
   final String nameEn;
+  @override
   final String nameKo;
 
   String get displayName => nameKo;
+  @override
   String get secondaryLabel => '$nameJa · 히로시마 전철';
 }
 

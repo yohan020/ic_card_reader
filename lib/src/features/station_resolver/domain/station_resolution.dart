@@ -44,6 +44,7 @@ class StationRecord {
     required this.stationName,
     required this.source,
     this.stationNameKorean,
+    this.stationNameEnglish,
     this.evidence,
     this.sourceNote,
   });
@@ -53,6 +54,7 @@ class StationRecord {
   final String lineName;
   final String stationName;
   final String? stationNameKorean;
+  final String? stationNameEnglish;
   final String source;
   final String? evidence;
   final String? sourceNote;

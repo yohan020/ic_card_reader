@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../pass_comparison/presentation/pass_strings.dart';
+
 import '../../../core/design/app_theme.dart';
 import '../../../core/widgets/app_ui.dart';
 
@@ -333,14 +335,14 @@ class PassDataSourcesPage extends StatelessWidget {
     ),
     _PassDataSource(
       icon: Icons.confirmation_number_outlined,
-      title: '긴테쓰 레일 패스 5일권',
-      subtitle: 'KINTETSU RAIL PASS 5day · 긴테쓰 전 노선·이가철도·케이블카',
+      title: '긴테쓰 레일 패스',
+      subtitle: 'KINTETSU RAIL PASS · 1일권·2일권·5일권·5일권 Plus',
       calculation:
-          '301개 역의 사전계산 성인 기본 운임 45,150개 역쌍을 사용해, 5일 동안 입력한 이동의 일반 운임 합계와 비교합니다.',
+          '301개 역, 45,150개 역쌍의 성인 기본 운임 중 권종에 적용되는 구간만 합산합니다. 지정 버스는 적용을 확인한 뒤 직접 입력한 운임만 반영합니다.',
       sources: [
         _SourceLink(
-          'KINTETSU RAIL PASS 5day 공식 안내',
-          'https://www.kintetsu.co.jp/foreign/korean/ticket/krp_5day.html',
+          'KINTETSU RAIL PASS 권종별 공식 안내',
+          'https://www.kintetsu.co.jp/foreign/guidebook/korean/',
         ),
         _SourceLink('Wikidata', 'https://www.wikidata.org/'),
         _SourceLink('일본어 위키백과: 긴테쓰·이가철도 노선 정보', 'https://ja.wikipedia.org/'),
@@ -352,28 +354,43 @@ class PassDataSourcesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('데이터 출처 및 운임 기준')),
+    appBar: AppBar(title: Text(passText(context, '데이터 출처 및 운임 기준'))),
     body: AppPage(
       children: [
         Text(
-          '교통패스별 데이터 출처',
+          passText(context, '역 위치 지도'),
+          style: Theme.of(
+            context,
+          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+        ),
+        SizedBox(height: 6),
+        Text(
+          passText(
+            context,
+            '이용내역 상세의 역 좌표는 Wikidata P625(CC0)에서 생성했습니다. 역 코드·역명·사업자·노선을 대조하며 미확인 위치는 표시하지 않습니다. 실제 이동 경로가 아닌 역 위치 참고용입니다. 지도 배경은 Google Maps가 제공하며 지도 안의 저작권 표기를 따릅니다.\nhttps://www.wikidata.org/wiki/Wikidata:Licensing',
+          ),
+          style: TextStyle(color: AppColors.mutedText(context), height: 1.4),
+        ),
+        SizedBox(height: 24),
+        Text(
+          passText(context, '교통패스별 데이터 출처'),
           style: Theme.of(
             context,
           ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
         ),
-        const SizedBox(height: 6),
+        SizedBox(height: 6),
         Text(
-          '비교할 패스를 선택하면 운임 계산 기준, 출처와 제한사항을 확인할 수 있습니다.',
+          passText(context, '비교할 패스를 선택하면 운임 계산 기준, 출처와 제한사항을 확인할 수 있습니다.'),
           style: TextStyle(color: AppColors.mutedText(context), height: 1.4),
         ),
-        const SizedBox(height: 18),
+        SizedBox(height: 18),
         AppSurface(
           padding: EdgeInsets.zero,
           child: Column(
             children: [
               for (var index = 0; index < _entries.length; index++) ...[
                 _PassSourceTile(source: _entries[index]),
-                if (index != _entries.length - 1) const Divider(height: 1),
+                if (index != _entries.length - 1) Divider(height: 1),
               ],
             ],
           ),
@@ -389,7 +406,7 @@ class _PassSourceTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ListTile(
-    contentPadding: const EdgeInsets.symmetric(horizontal: 17, vertical: 5),
+    contentPadding: EdgeInsets.symmetric(horizontal: 17, vertical: 5),
     leading: Container(
       width: 40,
       height: 40,
@@ -400,11 +417,11 @@ class _PassSourceTile extends StatelessWidget {
       child: Icon(source.icon, color: AppColors.skyDark, size: 21),
     ),
     title: Text(
-      source.title,
-      style: const TextStyle(fontWeight: FontWeight.w800),
+      passText(context, source.title),
+      style: TextStyle(fontWeight: FontWeight.w800),
     ),
-    subtitle: Text(source.subtitle),
-    trailing: const Icon(Icons.chevron_right_rounded),
+    subtitle: Text(passText(context, source.subtitle)),
+    trailing: Icon(Icons.chevron_right_rounded),
     onTap: () => Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (_) => _PassSourceDetailPage(source: source),
@@ -419,7 +436,7 @@ class _PassSourceDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: Text(source.title)),
+    appBar: AppBar(title: Text(passText(context, source.title))),
     body: SelectionArea(
       child: AppPage(
         children: [
@@ -435,18 +452,18 @@ class _PassSourceDetailPage extends StatelessWidget {
                   ),
                   child: Icon(source.icon, color: AppColors.accent(context)),
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: 12),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        source.title,
-                        style: const TextStyle(fontWeight: FontWeight.w900),
+                        passText(context, source.title),
+                        style: TextStyle(fontWeight: FontWeight.w900),
                       ),
-                      const SizedBox(height: 2),
+                      SizedBox(height: 2),
                       Text(
-                        source.subtitle,
+                        passText(context, source.subtitle),
                         style: TextStyle(color: AppColors.mutedText(context)),
                       ),
                     ],
@@ -455,43 +472,42 @@ class _PassSourceDetailPage extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 20),
-          const SectionLabel('운임 계산 기준'),
+          SizedBox(height: 20),
+          SectionLabel(passText(context, '운임 계산 기준')),
           AppSurface(
             child: Text(
-              source.calculation,
-              style: const TextStyle(height: 1.45),
+              passText(context, source.calculation),
+              style: TextStyle(height: 1.45),
             ),
           ),
-          const SizedBox(height: 20),
-          const SectionLabel('데이터 출처'),
+          SizedBox(height: 20),
+          SectionLabel(passText(context, '데이터 출처')),
           AppSurface(
             padding: EdgeInsets.zero,
             child: Column(
               children: [
                 for (var index = 0; index < source.sources.length; index++) ...[
                   ListTile(
-                    contentPadding: const EdgeInsets.symmetric(
+                    contentPadding: EdgeInsets.symmetric(
                       horizontal: 17,
                       vertical: 5,
                     ),
-                    leading: const Icon(Icons.link_rounded),
+                    leading: Icon(Icons.link_rounded),
                     title: Text(
-                      source.sources[index].label,
-                      style: const TextStyle(fontWeight: FontWeight.w700),
+                      passText(context, source.sources[index].label),
+                      style: TextStyle(fontWeight: FontWeight.w700),
                     ),
                     subtitle: SelectableText(source.sources[index].url),
                   ),
-                  if (index != source.sources.length - 1)
-                    const Divider(height: 1),
+                  if (index != source.sources.length - 1) Divider(height: 1),
                 ],
               ],
             ),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 20),
           NoticeBanner(
-            title: '확인할 점',
-            text: source.note,
+            title: passText(context, '확인할 점'),
+            text: passText(context, source.note),
             tone: NoticeTone.info,
           ),
         ],

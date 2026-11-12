@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/localization/app_strings.dart';
+import '../../card_reader/presentation/card_brand_name.dart';
+
 import '../../../core/design/app_theme.dart';
 import '../../../core/widgets/app_ui.dart';
+import '../../../core/widgets/main_page_header.dart';
+import '../../card_reader/domain/raw_history_block.dart';
+import '../../card_reader/domain/card_brand_identity.dart';
+import '../../card_reader/presentation/widgets/card_brand_icon.dart';
 import '../../issue_report/presentation/issue_report_page.dart';
 import '../../issue_report/domain/issue_report_repository.dart';
 import '../../station_resolver/domain/station_resolution.dart';
@@ -11,6 +18,7 @@ import '../domain/history_total.dart';
 import '../domain/parsed_transit_history.dart';
 import '../domain/transit_transaction_type.dart';
 import 'transaction_history_labels.dart';
+import 'widgets/history_station_map.dart';
 
 class HistoryListPage extends StatefulWidget {
   const HistoryListPage({
@@ -22,10 +30,12 @@ class HistoryListPage extends StatefulWidget {
     this.issueReportRepository,
     this.transactionLocations = const {},
     this.stationNameDisplayMode = StationNameDisplayMode.japanese,
+    this.brandIdentity,
   });
 
   final List<ParsedTransitHistory> histories;
   final int? currentBalance;
+  final CardBrandIdentity? brandIdentity;
   final Map<int, ResolvedStationPair> stationPairs;
   final VoidCallback onScan;
   final IssueReportRepository? issueReportRepository;
@@ -43,40 +53,14 @@ class _HistoryListPageState extends State<HistoryListPage> {
   @override
   Widget build(BuildContext context) {
     final filtered = widget.histories.where(_filter.matches).toList();
+    final dateGroups = _groupByDate(filtered);
     return AppPage(
+      padding: MainPageHeader.pagePadding,
       children: [
-        Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '이용내역',
-                    style: Theme.of(context).appBarTheme.titleTextStyle,
-                  ),
-                  const SizedBox(height: 3),
-                  Text(
-                    widget.histories.isEmpty
-                        ? '카드를 스캔하면 최근 이용내역이 표시됩니다.'
-                        : '최근 스캔 · ${widget.histories.length}개 기록',
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            IconButton.filled(
-              onPressed: widget.onScan,
-              tooltip: 'IC 카드 스캔',
-              icon: const Icon(Icons.nfc_rounded),
-            ),
-          ],
-        ),
-        const SizedBox(height: 14),
+        MainPageHeader(title: strings(context).history, onScan: widget.onScan),
         _CurrentBalanceCard(
           balance: widget.currentBalance,
+          brandIdentity: widget.brandIdentity,
           isInitializationBalance:
               widget.currentBalance != null && widget.histories.isEmpty,
         ),
@@ -87,7 +71,7 @@ class _HistoryListPageState extends State<HistoryListPage> {
             children: [
               for (final filter in _HistoryFilter.values) ...[
                 FilterChip(
-                  label: Text(filter.label),
+                  label: Text(filter.label(strings(context))),
                   selected: _filter == filter,
                   onSelected: (_) => setState(() {
                     _filter = filter;
@@ -102,7 +86,7 @@ class _HistoryListPageState extends State<HistoryListPage> {
         const SizedBox(height: 18),
         if (filtered.isNotEmpty) ...[
           _HistoryTotalCard(
-            title: _filter.totalLabel,
+            title: _filter.totalLabel(strings(context)),
             total: HistoryTotal.calculate(filtered, kind: _filter.totalKind),
             expanded: _totalExpanded,
             onToggle: () => setState(() => _totalExpanded = !_totalExpanded),
@@ -112,38 +96,106 @@ class _HistoryListPageState extends State<HistoryListPage> {
         if (widget.histories.isEmpty)
           _EmptyHistory(hasCardData: widget.currentBalance != null)
         else if (filtered.isEmpty)
-          const AppSurface(
+          AppSurface(
             child: Padding(
               padding: EdgeInsets.symmetric(vertical: 28),
-              child: Center(child: Text('해당 조건의 이용내역이 없습니다.')),
+              child: Center(child: Text(strings(context).noMatchingHistory)),
             ),
           )
         else
-          for (final history in filtered) ...[
-            _HistoryTile(
-              history: history,
-              stations: widget.stationPairs[history.rawBlock.index],
-              transactionLocation:
-                  widget.transactionLocations[history.rawBlock.index],
-              stationNameDisplayMode: widget.stationNameDisplayMode,
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute<void>(
-                  builder: (_) => HistoryDetailPage(
-                    history: history,
-                    stations: widget.stationPairs[history.rawBlock.index],
-                    transactionLocation:
-                        widget.transactionLocations[history.rawBlock.index],
-                    stationNameDisplayMode: widget.stationNameDisplayMode,
-                    issueReportRepository: widget.issueReportRepository,
+          for (final group in dateGroups)
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(4, 4, 4, 8),
+                  child: Semantics(
+                    header: true,
+                    child: Text(
+                      group.label,
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                    ),
                   ),
                 ),
-              ),
+                AppSurface(
+                  key: ValueKey(
+                    'history-date-group-${group.records.first.rawBlock.index}',
+                  ),
+                  padding: EdgeInsets.zero,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(18),
+                    child: Column(
+                      children: [
+                        for (final (index, history)
+                            in group.records.indexed) ...[
+                          if (index > 0)
+                            const Divider(height: 1, indent: 14, endIndent: 14),
+                          _HistoryTile(
+                            key: ValueKey(
+                              'history-row-${history.rawBlock.index}',
+                            ),
+                            history: history,
+                            stations:
+                                widget.stationPairs[history.rawBlock.index],
+                            transactionLocation: widget
+                                .transactionLocations[history.rawBlock.index],
+                            stationNameDisplayMode:
+                                widget.stationNameDisplayMode,
+                            onTap: () => Navigator.of(context).push(
+                              MaterialPageRoute<void>(
+                                builder: (_) => HistoryDetailPage(
+                                  history: history,
+                                  stations: widget
+                                      .stationPairs[history.rawBlock.index],
+                                  transactionLocation:
+                                      widget.transactionLocations[history
+                                          .rawBlock
+                                          .index],
+                                  stationNameDisplayMode:
+                                      widget.stationNameDisplayMode,
+                                  issueReportRepository:
+                                      widget.issueReportRepository,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 18),
+              ],
             ),
-            const SizedBox(height: 10),
-          ],
       ],
     );
   }
+}
+
+class _HistoryDateGroup {
+  _HistoryDateGroup(this.label, ParsedTransitHistory first) : records = [first];
+
+  final String label;
+  final List<ParsedTransitHistory> records;
+}
+
+/// Group adjacent calendar dates without sorting or changing card record order.
+/// Unknown dates retain their existing label, never borrowing a nearby date.
+List<_HistoryDateGroup> _groupByDate(List<ParsedTransitHistory> histories) {
+  final groups = <_HistoryDateGroup>[];
+  for (final history in histories) {
+    final label = formatDate(history.usageDate);
+    if (groups.isEmpty || groups.last.label != label) {
+      groups.add(_HistoryDateGroup(label, history));
+    } else {
+      groups.last.records.add(history);
+    }
+  }
+  return groups;
 }
 
 class _HistoryTotalCard extends StatelessWidget {
@@ -164,10 +216,10 @@ class _HistoryTotalCard extends StatelessWidget {
     final unidentified = total.kind == HistoryTotalKind.unidentified;
     final isCharge = total.kind == HistoryTotalKind.charge;
     final explanation = unidentified
-        ? '거래 유형이 확인되지 않아 금액은 합산하지 않습니다.'
+        ? strings(context).unknownTotalExplanation
         : isCharge
-        ? '확인된 충전액만 합산하며 지출에는 포함하지 않습니다.'
-        : '충전·계산 불가·확인 필요·특수 거래는 지출에서 제외합니다.';
+        ? strings(context).topUpTotalExplanation
+        : strings(context).spendingTotalExplanation;
     return AppSurface(
       key: const ValueKey('history-filter-total'),
       padding: EdgeInsets.zero,
@@ -180,12 +232,7 @@ class _HistoryTotalCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           child: Padding(
             padding: const EdgeInsets.all(16),
-            child: AnimatedSize(
-              duration: MediaQuery.disableAnimationsOf(context)
-                  ? Duration.zero
-                  : const Duration(milliseconds: 200),
-              alignment: Alignment.topCenter,
-              curve: Curves.easeInOut,
+            child: _HistoryTotalTransition(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -212,7 +259,9 @@ class _HistoryTotalCard extends StatelessWidget {
                       if (unidentified)
                         Expanded(
                           child: Text(
-                            '미확인 ${total.recordCount}건',
+                            strings(
+                              context,
+                            ).unknownRecordCount(total.recordCount),
                             textAlign: TextAlign.end,
                             style: const TextStyle(
                               fontSize: 18,
@@ -227,9 +276,9 @@ class _HistoryTotalCard extends StatelessWidget {
                             key: const ValueKey('history-filter-total-amount'),
                             textAlign: TextAlign.end,
                             style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.accent(context),
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              color: Theme.of(context).colorScheme.onSurface,
                             ),
                           ),
                         ),
@@ -247,7 +296,9 @@ class _HistoryTotalCard extends StatelessWidget {
                   if (!unidentified && total.amount == null) ...[
                     const SizedBox(height: 7),
                     Text(
-                      isCharge ? '합산 가능한 충전 기록이 없어요' : '합산 가능한 지출 기록이 없어요',
+                      isCharge
+                          ? strings(context).noTopUpTotal
+                          : strings(context).noSpendingTotal,
                       style: TextStyle(
                         fontSize: 14,
                         color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -258,7 +309,9 @@ class _HistoryTotalCard extends StatelessWidget {
                     const Divider(height: 24),
                     if (!unidentified)
                       Text(
-                        '합산 ${total.includedCount}건 · 합계 제외 ${total.excludedCount}건',
+                        strings(
+                          context,
+                        ).totalCount(total.includedCount, total.excludedCount),
                         style: TextStyle(
                           fontSize: 12,
                           color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -266,7 +319,7 @@ class _HistoryTotalCard extends StatelessWidget {
                       ),
                     const SizedBox(height: 8),
                     Text(
-                      '카드에서 읽은 최근 기록만 합산합니다.\n$explanation',
+                      strings(context).recentTotalHint(explanation),
                       key: const ValueKey('history-filter-total-details'),
                       style: TextStyle(
                         fontSize: 11,
@@ -285,59 +338,73 @@ class _HistoryTotalCard extends StatelessWidget {
   }
 }
 
+class _HistoryTotalTransition extends StatelessWidget {
+  const _HistoryTotalTransition({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => MediaQuery.disableAnimationsOf(context)
+      ? child
+      : AnimatedSize(
+          duration: const Duration(milliseconds: 200),
+          alignment: Alignment.topCenter,
+          curve: Curves.easeInOut,
+          child: child,
+        );
+}
+
 class _CurrentBalanceCard extends StatelessWidget {
   const _CurrentBalanceCard({
     required this.balance,
     required this.isInitializationBalance,
+    this.brandIdentity,
   });
 
   final int? balance;
   final bool isInitializationBalance;
+  final CardBrandIdentity? brandIdentity;
 
   @override
   Widget build(BuildContext context) => AppSurface(
-    padding: const EdgeInsets.symmetric(horizontal: 17, vertical: 14),
-    child: Row(
+    key: const ValueKey('history-current-balance'),
+    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+    child: Column(
       children: [
-        Container(
-          width: 42,
-          height: 42,
-          decoration: BoxDecoration(
-            color: AppColors.skySoft,
-            borderRadius: BorderRadius.circular(13),
-          ),
-          child: const Icon(
-            Icons.account_balance_wallet_outlined,
-            color: AppColors.skyDark,
-          ),
-        ),
-        const SizedBox(width: 13),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                '현재 카드 잔액',
-                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                balance == null
-                    ? '카드 스캔 후 표시'
-                    : isInitializationBalance
-                    ? '초기 잔액 기록 기준'
-                    : '가장 최근 기록 기준',
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  fontSize: 11,
+        CardBrandIcon(identity: brandIdentity, prominent: true),
+        const SizedBox(height: 10),
+        Text(
+          brandIdentity?.label == null
+              ? strings(context).currentBalance
+              : strings(context).currentBrandBalance(
+                  cardBrandName(brandIdentity!, strings(context)),
                 ),
-              ),
-            ],
-          ),
+          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+          textAlign: TextAlign.center,
         ),
+        const SizedBox(height: 4),
         Text(
           balance == null ? '—' : yen(balance!),
-          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
+          key: const ValueKey('history-current-balance-amount'),
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            fontSize: 40,
+            fontWeight: FontWeight.w600,
+            height: 1.15,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          balance == null
+              ? strings(context).balanceAfterScan
+              : isInitializationBalance
+              ? strings(context).initialBalanceBasis
+              : strings(context).latestBalanceBasis,
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+            fontSize: 11,
+          ),
+          textAlign: TextAlign.center,
         ),
       ],
     ),
@@ -362,12 +429,16 @@ class _EmptyHistory extends StatelessWidget {
           ),
           const SizedBox(height: 14),
           Text(
-            hasCardData ? '이 카드에는 표시할 이용내역이 없습니다' : '아직 읽은 이용내역이 없습니다',
+            hasCardData
+                ? strings(context).noDisplayableHistory
+                : strings(context).noHistoryYet,
             style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w800),
           ),
           const SizedBox(height: 6),
           Text(
-            hasCardData ? '초기 잔액 기록만 확인되었습니다.' : '홈에서 IC 카드를 스캔해 주세요.',
+            hasCardData
+                ? strings(context).initialBalanceOnly
+                : strings(context).scanFromHome,
             style: TextStyle(
               color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
@@ -382,6 +453,7 @@ class _HistoryTile extends StatelessWidget {
   const _HistoryTile({
     required this.history,
     required this.onTap,
+    super.key,
     this.stations,
     this.transactionLocation,
     this.stationNameDisplayMode = StationNameDisplayMode.japanese,
@@ -395,121 +467,131 @@ class _HistoryTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final amount = _amountText(history.amountCalculation);
+    final amount = _amountText(history.amountCalculation, strings(context));
     final typeColors = _typeColors(
       history.transactionType,
       Theme.of(context).brightness,
     );
-    return Card(
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(18),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 17, vertical: 12),
-          child: Row(
-            children: [
-              Container(
-                width: 44,
-                height: 44,
-                decoration: BoxDecoration(
-                  color: typeColors.background,
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                child: Icon(
-                  _typeIcon(history.transactionType),
-                  color: typeColors.foreground,
-                ),
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(18),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        child: Row(
+          children: [
+            Container(
+              key: ValueKey('history-type-icon-${history.rawBlock.index}'),
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: typeColors.background,
+                borderRadius: BorderRadius.circular(14),
               ),
-              const SizedBox(width: 13),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            transactionTypeLabel(history),
-                            style: const TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w600,
-                              height: 1.3,
-                            ),
-                          ),
-                        ),
-                        Text(
-                          amount,
-                          style: TextStyle(
-                            color:
-                                history.amountCalculation.status ==
-                                    AmountCalculationStatus.unavailable
-                                ? Theme.of(context).colorScheme.onSurfaceVariant
-                                : history.transactionType ==
-                                      TransitTransactionType.charge
-                                ? AppColors.success
-                                : null,
-                            fontWeight:
-                                history.amountCalculation.status ==
-                                    AmountCalculationStatus.unavailable
-                                ? FontWeight.w500
-                                : FontWeight.w700,
-                            fontSize:
-                                history.amountCalculation.status ==
-                                    AmountCalculationStatus.unavailable
-                                ? 14
-                                : 16,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      _routeSummary(
-                        history,
-                        stations,
-                        transactionLocation,
-                        stationNameDisplayMode,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        fontSize: 13,
-                        height: 1.3,
-                      ),
-                    ),
-                    const SizedBox(height: 3),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            formatDate(history.usageDate),
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.outline,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            '잔액 ${yen(history.balance)}',
-                            textAlign: TextAlign.end,
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.outline,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 4),
-                        const Icon(Icons.chevron_right_rounded, size: 18),
-                      ],
-                    ),
-                  ],
-                ),
+              child: Icon(
+                _typeIcon(history.transactionType),
+                color: typeColors.foreground,
               ),
-            ],
-          ),
+            ),
+            const SizedBox(width: 13),
+            Expanded(
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final stacked =
+                      constraints.maxWidth < 200 ||
+                      MediaQuery.textScalerOf(context).scale(15) > 20;
+                  final title = Text(
+                    transactionTypeLabel(history, strings(context)),
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      height: 1.3,
+                    ),
+                  );
+                  final amountLabel = Text(
+                    amount,
+                    textAlign: TextAlign.end,
+                    style: TextStyle(
+                      color:
+                          history.amountCalculation.status ==
+                              AmountCalculationStatus.unavailable
+                          ? Theme.of(context).colorScheme.onSurfaceVariant
+                          : history.transactionType ==
+                                TransitTransactionType.charge
+                          ? AppColors.success
+                          : null,
+                      fontWeight:
+                          history.amountCalculation.status ==
+                              AmountCalculationStatus.unavailable
+                          ? FontWeight.w500
+                          : FontWeight.w700,
+                      fontSize:
+                          history.amountCalculation.status ==
+                              AmountCalculationStatus.unavailable
+                          ? 14
+                          : 16,
+                    ),
+                  );
+                  final route = Text(
+                    _routeSummary(
+                      strings(context),
+                      history,
+                      stations,
+                      transactionLocation,
+                      stationNameDisplayMode,
+                    ),
+                    maxLines: stacked ? null : 1,
+                    overflow: stacked ? null : TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      fontSize: 13,
+                      height: 1.3,
+                    ),
+                  );
+                  final balance = Text(
+                    strings(context).balanceValue(yen(history.balance)),
+                    textAlign: TextAlign.end,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      fontSize: 12,
+                    ),
+                  );
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (stacked) ...[
+                        title,
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: amountLabel,
+                        ),
+                      ] else
+                        Row(
+                          children: [
+                            Expanded(child: title),
+                            const SizedBox(width: 8),
+                            amountLabel,
+                          ],
+                        ),
+                      const SizedBox(height: 2),
+                      if (stacked) route,
+                      if (stacked) const SizedBox(height: 3),
+                      Row(
+                        children: [
+                          if (!stacked) ...[
+                            Expanded(child: route),
+                            const SizedBox(width: 8),
+                          ],
+                          Expanded(child: balance),
+                          const SizedBox(width: 4),
+                          const Icon(Icons.chevron_right_rounded, size: 18),
+                        ],
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -534,7 +616,7 @@ class HistoryDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('이용내역 상세')),
+    appBar: AppBar(title: Text(strings(context).historyDetail)),
     body: SafeArea(
       top: false,
       child: AppPage(
@@ -542,7 +624,7 @@ class HistoryDetailPage extends StatelessWidget {
           Row(
             children: [
               StatusPill(
-                label: transactionTypeLabel(history),
+                label: transactionTypeLabel(history, strings(context)),
                 icon: _typeIcon(history.transactionType),
               ),
               const Spacer(),
@@ -563,7 +645,7 @@ class HistoryDetailPage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       _RoutePoint(
-                        label: '승차',
+                        label: strings(context).boarding,
                         code: _boardingCode(history),
                         resolution: stations?.boarding,
                         routeOperatorName: stations?.routeOperatorName,
@@ -578,7 +660,7 @@ class HistoryDetailPage extends StatelessWidget {
                         ),
                       ),
                       _RoutePoint(
-                        label: '하차',
+                        label: strings(context).alighting,
                         code: _alightingCode(history),
                         resolution: stations?.alighting,
                         routeOperatorName: stations?.routeOperatorName,
@@ -592,7 +674,7 @@ class HistoryDetailPage extends StatelessWidget {
                   const SizedBox(height: 16),
                 ],
                 Text(
-                  _amountText(history.amountCalculation),
+                  _amountText(history.amountCalculation, strings(context)),
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     color:
                         history.amountCalculation.status ==
@@ -616,7 +698,7 @@ class HistoryDetailPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  '이용 후 잔액 ${yen(history.balance)}',
+                  strings(context).balanceAfterValue(yen(history.balance)),
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
@@ -628,8 +710,13 @@ class HistoryDetailPage extends StatelessWidget {
               AmountCalculationStatus.unavailable) ...[
             const SizedBox(height: 14),
             NoticeBanner(
-              title: '금액을 계산할 수 없습니다',
-              text: _amountUnavailableExplanation(history.amountCalculation),
+              title: strings(context).cantCalculateAmount,
+              text: history.rawBlock.format == HistoryRecordFormat.ica
+                  ? strings(context).icaZeroAmount
+                  : _amountUnavailableExplanation(
+                      history.amountCalculation,
+                      strings(context),
+                    ),
             ),
           ],
           if (history.transactionType == TransitTransactionType.rail &&
@@ -637,28 +724,29 @@ class HistoryDetailPage extends StatelessWidget {
             const SizedBox(height: 14),
             NoticeBanner(
               title: _hasMultipleCandidates(stations)
-                  ? '여러 역 후보가 있습니다'
-                  : '일부 역 정보 확인이 필요합니다',
+                  ? strings(context).multipleStationCandidates
+                  : strings(context).stationInfoNeedsReview,
               text: _hasMultipleCandidates(stations)
-                  ? '역 후보가 여러 개여서 특정 역으로 확정할 수 없습니다. 아래 오류 제보에서 올바른 역을 알려 주세요.'
-                  : '일부 역명을 확인할 수 없습니다. 아래 오류 제보에서 올바른 역을 알려 주세요.',
+                  ? strings(context).multipleStationHint
+                  : strings(context).stationInfoNeedsReviewHint,
               tone: NoticeTone.warning,
             ),
           ],
           const SizedBox(height: 24),
-          const SectionLabel('상세 정보'),
+          SectionLabel(strings(context).details),
           AppSurface(
             child: Column(
               children: [
                 DetailLine(
-                  label: '거래 유형',
-                  value: transactionTypeLabel(history),
+                  label: strings(context).transactionType,
+                  value: transactionTypeLabel(history, strings(context)),
                 ),
                 if (history.transactionType == TransitTransactionType.rail) ...[
                   const Divider(),
                   DetailLine(
-                    label: '승차역',
+                    label: strings(context).boardingStation,
                     value: _stationDetail(
+                      strings(context),
                       stations?.boarding,
                       _boardingCode(history),
                       routeLineName: stations?.routeLineName,
@@ -667,8 +755,9 @@ class HistoryDetailPage extends StatelessWidget {
                   ),
                   const Divider(),
                   DetailLine(
-                    label: '하차역',
+                    label: strings(context).alightingStation,
                     value: _stationDetail(
+                      strings(context),
                       stations?.alighting,
                       _alightingCode(history),
                       routeLineName: stations?.routeLineName,
@@ -678,18 +767,24 @@ class HistoryDetailPage extends StatelessWidget {
                 ],
                 if (history.transactionType == TransitTransactionType.bus) ...[
                   const Divider(),
-                  DetailLine(label: '버스 회사', value: busOperatorLabel(history)),
+                  DetailLine(
+                    label: strings(context).busOperator,
+                    value: busOperatorLabel(history, strings(context)),
+                  ),
                 ],
                 if (history.transactionType ==
                     TransitTransactionType.purchase) ...[
                   if (isCashCombinedPurchase(history)) ...[
                     const Divider(),
-                    const DetailLine(label: '결제 방식', value: '현금 병용'),
+                    DetailLine(
+                      label: strings(context).paymentMethod,
+                      value: strings(context).combinedCash,
+                    ),
                   ],
                   if (history.transactionDateTime != null) ...[
                     const Divider(),
                     DetailLine(
-                      label: '거래 시각',
+                      label: strings(context).transactionTime,
                       value: _formatTime(history.transactionDateTime!),
                     ),
                   ],
@@ -697,11 +792,15 @@ class HistoryDetailPage extends StatelessWidget {
                 if (history.transactionType ==
                     TransitTransactionType.charge) ...[
                   const Divider(),
-                  DetailLine(label: '충전 방식', value: chargeMethodLabel(history)),
+                  DetailLine(
+                    label: strings(context).topUpMethod,
+                    value: chargeMethodLabel(history, strings(context)),
+                  ),
                   const Divider(),
                   DetailLine(
-                    label: '충전 장소',
+                    label: strings(context).topUpLocation,
                     value: chargeLocationDetail(
+                      l10n: strings(context),
                       history,
                       transactionLocation: transactionLocation,
                       stationNameDisplayMode: stationNameDisplayMode,
@@ -712,21 +811,35 @@ class HistoryDetailPage extends StatelessWidget {
                     TransitTransactionType.gateWindowProcessing) ...[
                   const Divider(),
                   DetailLine(
-                    label: '처리 장소',
+                    label: strings(context).processingLocation,
                     value: chargeLocationDetail(
+                      l10n: strings(context),
                       history,
                       transactionLocation: transactionLocation,
                       stationNameDisplayMode: stationNameDisplayMode,
                     ),
                   ),
                   const Divider(),
-                  const DetailLine(label: '세부 처리', value: '확인할 수 없음'),
+                  DetailLine(
+                    label: strings(context).processingDetail,
+                    value: strings(context).unknown,
+                  ),
                 ],
                 const Divider(),
-                DetailLine(label: '잔액', value: yen(history.balance)),
+                DetailLine(
+                  label: strings(context).balance,
+                  value: yen(history.balance),
+                ),
               ],
             ),
           ),
+          if (history.transactionType == TransitTransactionType.rail) ...[
+            const SizedBox(height: 24),
+            HistoryStationMap(
+              stations: stations,
+              displayMode: stationNameDisplayMode,
+            ),
+          ],
           const SizedBox(height: 24),
           OutlinedButton.icon(
             onPressed: () => Navigator.of(context).push(
@@ -740,7 +853,7 @@ class HistoryDetailPage extends StatelessWidget {
               ),
             ),
             icon: const Icon(Icons.flag_outlined),
-            label: const Text('이 내역의 오류 제보하기'),
+            label: Text(strings(context).reportTransaction),
           ),
         ],
       ),
@@ -779,10 +892,11 @@ class _RoutePoint extends StatelessWidget {
         const SizedBox(height: 5),
         Text(
           resolution?.station == null
-              ? '역 정보 미등록'
+              ? strings(context).stationNotRegistered
               : displayStationName(
                   japanese: resolution!.station!.stationName,
                   korean: resolution!.station!.stationNameKorean,
+                  english: resolution!.station!.stationNameEnglish,
                   mode: stationNameDisplayMode,
                 ),
           textAlign: TextAlign.center,
@@ -828,20 +942,20 @@ extension on _HistoryFilter {
     _ => HistoryTotalKind.spending,
   };
 
-  String get totalLabel => switch (this) {
-    _HistoryFilter.all => '지출 합계',
-    _HistoryFilter.transport => '지출 합계',
-    _HistoryFilter.purchase => '지출 합계',
-    _HistoryFilter.charge => '충전 합계',
-    _HistoryFilter.unknown => '미확인 기록',
+  String totalLabel(AppLocalizations l10n) => switch (this) {
+    _HistoryFilter.all => l10n.spendingTotal,
+    _HistoryFilter.transport => l10n.spendingTotal,
+    _HistoryFilter.purchase => l10n.spendingTotal,
+    _HistoryFilter.charge => l10n.topUpTotal,
+    _HistoryFilter.unknown => l10n.unknownRecords,
   };
 
-  String get label => switch (this) {
-    _HistoryFilter.all => '전체',
-    _HistoryFilter.transport => '교통',
-    _HistoryFilter.purchase => '결제',
-    _HistoryFilter.charge => '충전',
-    _HistoryFilter.unknown => '미확인',
+  String label(AppLocalizations l10n) => switch (this) {
+    _HistoryFilter.all => l10n.all,
+    _HistoryFilter.transport => l10n.transport,
+    _HistoryFilter.purchase => l10n.purchases,
+    _HistoryFilter.charge => l10n.topUp,
+    _HistoryFilter.unknown => l10n.unconfirmed,
   };
 
   bool matches(ParsedTransitHistory history) => switch (this) {
@@ -916,22 +1030,21 @@ IconData _typeIcon(TransitTransactionType type) => switch (type) {
   );
 }
 
-String _amountText(AmountCalculation calculation) =>
+String _amountText(AmountCalculation calculation, AppLocalizations l10n) =>
     switch (calculation.status) {
       AmountCalculationStatus.calculated => '-${yen(calculation.amount!)}',
       AmountCalculationStatus.balanceIncrease => '+${yen(calculation.amount!)}',
-      AmountCalculationStatus.unavailable => '계산 불가',
-      AmountCalculationStatus.suspicious => '금액 확인 필요',
+      AmountCalculationStatus.unavailable => l10n.unavailableAmount,
+      AmountCalculationStatus.suspicious => l10n.checkAmount,
     };
 
 String _amountUnavailableExplanation(
   AmountCalculation calculation,
+  AppLocalizations l10n,
 ) => switch (calculation.unavailableReason) {
-  AmountUnavailableReason.noOlderRecord =>
-    '이 기록은 카드에 남아 있는 가장 오래된 이용내역입니다. 그보다 오래된 잔액 기록이 없어 잔액 차이로 이용 금액을 계산할 수 없습니다.',
-  AmountUnavailableReason.balanceDidNotDecrease =>
-    '이전 기록과 비교했을 때 잔액이 줄지 않았습니다. 충전·환불 등일 수 있어 일반 이용 금액으로 표시하지 않습니다.',
-  null => '비교할 수 있는 잔액 정보가 부족해 이용 금액을 계산할 수 없습니다.',
+  AmountUnavailableReason.noOlderRecord => l10n.oldestRecord,
+  AmountUnavailableReason.balanceDidNotDecrease => l10n.noDecrease,
+  null => l10n.notEnoughBalances,
 };
 
 String _boardingCode(ParsedTransitHistory history) =>
@@ -939,30 +1052,33 @@ String _boardingCode(ParsedTransitHistory history) =>
 String _alightingCode(ParsedTransitHistory history) =>
     '${hexByte(history.regionCode)}-${hexByte(history.alightingLineCode)}-${hexByte(history.alightingStationCode)}';
 String _routeSummary(
+  AppLocalizations l10n,
   ParsedTransitHistory history,
   ResolvedStationPair? stations,
   StationResolution? transactionLocation,
   StationNameDisplayMode stationNameDisplayMode,
 ) => switch (history.transactionType) {
   TransitTransactionType.rail =>
-    '${_displayStation(stations?.boarding, _boardingCode(history), stationNameDisplayMode)}'
+    '${_displayStation(stations?.boarding, _boardingCode(history), stationNameDisplayMode, l10n)}'
         '  →  '
-        '${_displayStation(stations?.alighting, _alightingCode(history), stationNameDisplayMode)}',
-  TransitTransactionType.bus => history.busOperatorName ?? '버스 회사 미확인',
-  TransitTransactionType.purchase => purchaseSummary(history),
+        '${_displayStation(stations?.alighting, _alightingCode(history), stationNameDisplayMode, l10n)}',
+  TransitTransactionType.bus => history.busOperatorName ?? l10n.unknownBus,
+  TransitTransactionType.purchase => purchaseSummary(history, l10n),
   TransitTransactionType.charge => chargeSummary(
     history,
+    l10n: l10n,
     transactionLocation: transactionLocation,
     stationNameDisplayMode: stationNameDisplayMode,
   ),
   TransitTransactionType.gateWindowProcessing => gateWindowSummary(
     history,
+    l10n: l10n,
     transactionLocation: transactionLocation,
     stationNameDisplayMode: stationNameDisplayMode,
   ),
-  TransitTransactionType.refund => '환불',
-  TransitTransactionType.adjustment => '정산',
-  TransitTransactionType.unknown => '거래 유형을 확인할 수 없습니다',
+  TransitTransactionType.refund => l10n.refund,
+  TransitTransactionType.adjustment => l10n.adjustment,
+  TransitTransactionType.unknown => l10n.unknownTransactionSummary,
 };
 
 String _formatTime(DateTime value) =>
@@ -971,27 +1087,30 @@ String _formatTime(DateTime value) =>
     '${value.second.toString().padLeft(2, '0')}';
 
 String _stationDetail(
+  AppLocalizations l10n,
   StationResolution? resolution,
   String fallbackCode, {
   String? routeLineName,
   required StationNameDisplayMode stationNameDisplayMode,
 }) {
   final station = resolution?.station;
-  if (station == null) return '역 정보 확인 불가';
-  return '${displayStationName(japanese: station.stationName, korean: station.stationNameKorean, mode: stationNameDisplayMode)} · ${routeLineName ?? station.lineName}';
+  if (station == null) return l10n.stationUnavailable;
+  return '${displayStationName(japanese: station.stationName, korean: station.stationNameKorean, english: station.stationNameEnglish, mode: stationNameDisplayMode)} · ${routeLineName ?? station.lineName}';
 }
 
 String _displayStation(
   StationResolution? resolution,
   String fallbackCode,
   StationNameDisplayMode mode,
+  AppLocalizations l10n,
 ) {
   final station = resolution?.station;
   return station == null
-      ? '역 정보 확인 불가'
+      ? l10n.stationUnavailable
       : displayStationName(
           japanese: station.stationName,
           korean: station.stationNameKorean,
+          english: station.stationNameEnglish,
           mode: mode,
         );
 }

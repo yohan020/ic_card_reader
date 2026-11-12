@@ -2,9 +2,15 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 
+import 'pass_named_place.dart';
+import 'pass_station_english.g.dart';
+
 import 'pass_transit_data.dart';
 
-class KyotoSubwayStation {
+class KyotoSubwayStation implements PassNamedPlace {
+  @override
+  String get nameEn => passStationEnglish['kyoto:$id'] ?? '';
+
   const KyotoSubwayStation({
     required this.id,
     required this.nameJa,
@@ -22,12 +28,15 @@ class KyotoSubwayStation {
   );
 
   final String id;
+  @override
   final String nameJa;
+  @override
   final String nameKo;
   final String lineJa;
   final String lineKo;
 
   String get displayName => nameKo.isEmpty ? nameJa : nameKo;
+  @override
   String get secondaryLabel => '$nameJa · 교토시영 지하철 · $lineKo';
 }
 
@@ -183,7 +192,7 @@ class KyotoSubwayBusPassDataRepository {
 
 class _KyotoSearchEntry {
   _KyotoSearchEntry(this.station)
-    : candidates = {station.nameJa, station.nameKo}
+    : candidates = {station.nameJa, station.nameKo, station.nameEn}
           .map(
             (value) => (
               normalized: normalizeStationSearchText(value),

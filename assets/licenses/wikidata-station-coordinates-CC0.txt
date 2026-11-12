@@ -1,0 +1,18 @@
+Station coordinates: Wikidata property P625, CC0 1.0 Universal.
+https://www.wikidata.org/wiki/Wikidata:Licensing
+https://creativecommons.org/publicdomain/zero/1.0/
+
+Generated 2026-10-27 by tool/generate_station_coordinates.mjs.
+Public coordinates only; no card/user information is included.
+The coordinate asset retains Wikidata item IDs for provenance.
+Initial coverage: 8,475 station-code records (444 additions, 164 identity corrections,
+one incorrect homonym withheld). Area/special/composite codes are not points.
+Follow-up: 8,479 single positions plus 22 explicit multi-location groups
+(72 member references); three museums and one junction were added.
+Composite locations are candidates, not a confirmed boarding/alighting point.
+Area and ticket codes without a physical place remain unlocated.
+Static source snapshots: tool/station_coordinate_{supplement,corrections}.json.
+Japanese Wikipedia pageprops were used only to discover Wikidata identifiers;
+no Wikipedia prose, images, or coordinates were incorporated.
+Yoiko station code data is separately permissioned; its terms are unchanged.
+Google map imagery and map content are not part of this CC0 dataset.

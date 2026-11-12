@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/localization/app_strings.dart';
+
 import '../../../core/design/app_theme.dart';
 import '../../../core/widgets/app_ui.dart';
 import '../domain/card_reader.dart';
@@ -22,11 +24,11 @@ class NfcStatusView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final label = switch (availability) {
-      null => 'NFC 상태 확인 중',
-      CardReaderAvailability.enabled => 'NFC가 켜져 있어요',
-      CardReaderAvailability.disabled => 'NFC를 켜 주세요',
-      CardReaderAvailability.unsupported => '이 기기는 NFC 읽기를 지원하지 않아요',
-      CardReaderAvailability.unknown => 'NFC 상태를 확인하지 못했어요',
+      null => strings(context).checkingNfc,
+      CardReaderAvailability.enabled => strings(context).nfcOn,
+      CardReaderAvailability.disabled => strings(context).turnNfcOn,
+      CardReaderAvailability.unsupported => strings(context).nfcUnsupported,
+      CardReaderAvailability.unknown => strings(context).nfcUnknown,
     };
     final color = switch (availability) {
       CardReaderAvailability.enabled =>
@@ -73,9 +75,15 @@ class NfcStatusView extends StatelessWidget {
           ),
         ),
         if (showActions && availability == CardReaderAvailability.disabled)
-          TextButton(onPressed: onOpenSettings, child: const Text('NFC 설정 열기')),
+          TextButton(
+            onPressed: onOpenSettings,
+            child: Text(strings(context).openNfcSettings),
+          ),
         if (showActions && availability == CardReaderAvailability.unknown)
-          TextButton(onPressed: onRefresh, child: const Text('다시 확인')),
+          TextButton(
+            onPressed: onRefresh,
+            child: Text(strings(context).checkAgain),
+          ),
       ],
     );
   }
@@ -104,37 +112,58 @@ class ScanFailureView extends StatelessWidget {
     if (kind == CardScanFailureKind.cancelled) return const SizedBox.shrink();
     final (title, description) = switch (kind) {
       CardScanFailureKind.nfcUnavailable => (
-        'NFC 읽기를 시작하지 못했어요',
+        strings(context).couldNotStartNfc,
         availability == CardReaderAvailability.unsupported
-            ? '이 기기는 NFC 읽기를 지원하지 않습니다. NFC-F/FeliCa 읽기를 지원하는 Android 기기를 이용해 주세요.'
-            : 'NFC가 켜져 있는지 확인해 주세요. Samsung 기기는 NFC를 기본 모드로 설정한 뒤 다시 시도해 주세요.',
+            ? strings(context).nfcUnsupportedHint
+            : strings(context).nfcEnabledHint,
       ),
       CardScanFailureKind.unsupportedTag => (
-        '지원하는 교통카드인지 확인해 주세요',
-        'Suica·PASMO·ICOCA 등 일본 전국호환 교통계 IC 카드를 한 장만 대 주세요. NFC-F/FeliCa 읽기를 지원하는 기기가 필요합니다.',
+        strings(context).checkCardSupport,
+        strings(context).checkCardSupportHint,
       ),
       CardScanFailureKind.timedOut => (
-        '시간 안에 스캔을 완료하지 못했어요',
-        '카드를 지갑에서 꺼내 휴대폰 뒷면의 위치를 조금씩 바꿔 다시 시도해 주세요. 카드 종류나 기기의 NFC-F 지원 여부도 영향을 줄 수 있습니다.',
+        strings(context).scanTimedOut,
+        strings(context).scanTimedOutHint,
       ),
       CardScanFailureKind.tagLost => (
-        '카드와 통신을 완료하지 못했어요',
-        '카드 한 장을 NFC 위치에 가까이 대고 완료될 때까지 움직이지 말아 주세요.',
+        strings(context).cardConnectionLost,
+        strings(context).cardConnectionLostHint,
       ),
       CardScanFailureKind.invalidResponse => (
-        '카드 정보를 읽지 못했어요',
-        '카드를 다시 대 주세요. 이 메시지만으로 카드 고장이나 잔액 이상을 의미하지는 않습니다.',
+        strings(context).couldNotReadCard,
+        strings(context).couldNotReadCardHint,
       ),
       CardScanFailureKind.noHistory => (
-        '읽을 수 있는 이용내역이 없어요',
-        '카드에서 표시할 이용내역을 찾지 못했습니다. 카드 종류나 기록 상태에 따라 읽을 수 있는 정보가 다를 수 있습니다.',
+        strings(context).noReadableHistory,
+        strings(context).noReadableHistoryHint,
       ),
-      _ => (
-        '스캔을 완료하지 못했어요',
-        '카드를 잠시 떼었다가 다시 시도해 주세요. 계속되면 NFC 설정과 지원 카드 안내를 확인해 주세요.',
-      ),
+      _ => (strings(context).scanFailed, strings(context).scanFailedHint),
     };
     final unsupported = availability == CardReaderAvailability.unsupported;
+    final buttonStyle = OutlinedButton.styleFrom(
+      minimumSize: const Size(0, 48),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      textStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+      ),
+    );
+    final helpButton = OutlinedButton(
+      key: const ValueKey('scan-failure-help'),
+      style: buttonStyle.copyWith(
+        foregroundColor: WidgetStatePropertyAll(AppColors.accent(context)),
+        side: WidgetStatePropertyAll(
+          BorderSide(color: AppColors.accent(context)),
+        ),
+      ),
+      onPressed: onHelp,
+      child: Text(strings(context).scanHelp),
+    );
+    final showSettings =
+        kind == CardScanFailureKind.nfcUnavailable &&
+        availability != CardReaderAvailability.enabled &&
+        !unsupported;
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -142,11 +171,12 @@ class ScanFailureView extends StatelessWidget {
         Row(
           children: [
             Container(
-              width: 44,
-              height: 44,
+              key: const ValueKey('scan-failure-icon'),
+              width: 40,
+              height: 40,
               decoration: BoxDecoration(
                 color: AppColors.softSurface(context),
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(
                 kind == CardScanFailureKind.noHistory
@@ -155,42 +185,69 @@ class ScanFailureView extends StatelessWidget {
                 color: AppColors.accent(context),
               ),
             ),
-            const Spacer(),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Semantics(
+                header: true,
+                child: Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    height: 1.3,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ),
             if (onClose != null)
               IconButton(
                 onPressed: onClose,
-                tooltip: '안내 닫기',
+                tooltip: strings(context).dismissNotice,
                 icon: const Icon(Icons.close_rounded),
               ),
           ],
         ),
-        const SizedBox(height: 16),
-        Text(
-          title,
-          style: Theme.of(
-            context,
-          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
-        ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 14),
         Text(
           description,
           style: TextStyle(
+            fontSize: 14,
             height: 1.5,
             color: Theme.of(context).colorScheme.onSurfaceVariant,
           ),
         ),
-        const SizedBox(height: 24),
-        if (kind == CardScanFailureKind.nfcUnavailable &&
-            availability != CardReaderAvailability.enabled &&
-            !unsupported)
-          FilledButton(
-            onPressed: onOpenSettings,
-            child: const Text('NFC 설정 열기'),
-          )
-        else if (!unsupported)
-          FilledButton(onPressed: onRetry, child: const Text('다시 스캔')),
-        const SizedBox(height: 6),
-        TextButton(onPressed: onHelp, child: const Text('스캔 도움말')),
+        const SizedBox(height: 20),
+        if (unsupported)
+          helpButton
+        else
+          IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(child: helpButton),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: FilledButton(
+                    key: const ValueKey('scan-failure-primary'),
+                    style: buttonStyle.copyWith(
+                      backgroundColor: const WidgetStatePropertyAll(
+                        AppColors.skyDark,
+                      ),
+                      foregroundColor: const WidgetStatePropertyAll(
+                        Colors.white,
+                      ),
+                    ),
+                    onPressed: showSettings ? onOpenSettings : onRetry,
+                    child: Text(
+                      showSettings
+                          ? strings(context).openNfcSettings
+                          : strings(context).scanAgain,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
       ],
     );
   }
@@ -209,12 +266,18 @@ Future<ScanFailureAction?> showScanFailure(
     isScrollControlled: true,
     useSafeArea: true,
     showDragHandle: true,
+    backgroundColor: Theme.of(context).cardTheme.color,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+    ),
+    clipBehavior: Clip.antiAlias,
     constraints: BoxConstraints(
       maxHeight: MediaQuery.sizeOf(context).height * .9,
     ),
     builder: (context) {
       sheetRoute = ModalRoute.of(context);
       return _SheetBody(
+        padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
         child: ScanFailureView(
           kind: kind,
           availability: availability,
@@ -249,7 +312,7 @@ Future<void> showScanHelp(BuildContext context) => showModalBottomSheet<void>(
           children: [
             Expanded(
               child: Text(
-                '카드 스캔 방법',
+                strings(context).howToScan,
                 style: Theme.of(
                   context,
                 ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
@@ -257,14 +320,14 @@ Future<void> showScanHelp(BuildContext context) => showModalBottomSheet<void>(
             ),
             IconButton(
               onPressed: () => Navigator.pop(context),
-              tooltip: '도움말 닫기',
+              tooltip: strings(context).closeHelp,
               icon: const Icon(Icons.close_rounded),
             ),
           ],
         ),
         const SizedBox(height: 8),
         Text(
-          '휴대폰 뒷면에 교통카드 한 장을 대 주세요.',
+          strings(context).holdOneCard,
           style: TextStyle(
             color: Theme.of(context).colorScheme.onSurfaceVariant,
           ),
@@ -272,44 +335,42 @@ Future<void> showScanHelp(BuildContext context) => showModalBottomSheet<void>(
         const SizedBox(height: 16),
         const _CardPlacementDiagram(),
         const SizedBox(height: 20),
-        const _HelpStep(
+        _HelpStep(
           number: '1',
-          title: '카드 한 장 준비',
-          text: '지갑에서 실물 교통카드 한 장을 꺼내 주세요. Samsung 기기는 NFC 기본 모드를 확인해 주세요.',
+          title: strings(context).prepareOneCard,
+          text: strings(context).prepareOneCardHint,
         ),
-        const _HelpStep(
+        _HelpStep(
           number: '2',
-          title: '스캔을 누르고 뒷면에 대기',
-          text: '스캔 화면이 열리면 카드를 휴대폰 뒷면 NFC 위치에 대 주세요. NFC 위치는 기기마다 다릅니다.',
+          title: strings(context).tapScanHold,
+          text: strings(context).tapScanHoldHint,
         ),
-        const _HelpStep(
+        _HelpStep(
           number: '3',
-          title: '완료될 때까지 고정',
-          text: '반응이 없으면 카드 위치를 조금씩 바꾸거나 두꺼운 케이스·금속 부착물을 분리한 뒤 다시 시도해 주세요.',
+          title: strings(context).waitForScan,
+          text: strings(context).waitForScanHint,
         ),
         AppSurface(
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                '지원 카드',
+              Text(
+                strings(context).supportedCards,
                 style: TextStyle(fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: 4),
-              const Text('Suica · PASMO · ICOCA 등 일본 전국호환 교통계 IC 카드'),
+              Text(strings(context).supportedCardsHint),
               const SizedBox(height: 12),
-              const Text(
-                '기기 조건',
+              Text(
+                strings(context).deviceRequirements,
                 style: TextStyle(fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: 4),
-              const Text(
-                'NFC-F/FeliCa 읽기 지원이 필요합니다. NFC 켜짐 표시만으로 지원이 확인되는 것은 아닙니다.',
-              ),
+              Text(strings(context).felicaRequired),
               const SizedBox(height: 10),
               Text(
-                'PiTaPa 포스트페이 및 일부 거래는 지원되지 않을 수 있습니다.',
+                strings(context).pitapaLimit,
                 style: TextStyle(
                   fontSize: 12,
                   height: 1.4,
@@ -321,7 +382,7 @@ Future<void> showScanHelp(BuildContext context) => showModalBottomSheet<void>(
         ),
         const SizedBox(height: 12),
         Text(
-          '실물 카드 스캔 기준입니다. 카드 충전이나 기록 변경은 하지 않습니다.',
+          strings(context).readOnlyPhysicalCard,
           style: TextStyle(
             fontSize: 12,
             height: 1.4,
@@ -331,7 +392,7 @@ Future<void> showScanHelp(BuildContext context) => showModalBottomSheet<void>(
         const SizedBox(height: 20),
         OutlinedButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('닫기'),
+          child: Text(strings(context).close),
         ),
       ],
     ),
@@ -339,15 +400,16 @@ Future<void> showScanHelp(BuildContext context) => showModalBottomSheet<void>(
 );
 
 class _SheetBody extends StatelessWidget {
-  const _SheetBody({required this.child});
+  const _SheetBody({
+    required this.child,
+    this.padding = const EdgeInsets.fromLTRB(24, 0, 24, 24),
+  });
   final Widget child;
+  final EdgeInsets padding;
   @override
   Widget build(BuildContext context) => SafeArea(
     top: false,
-    child: SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
-      child: child,
-    ),
+    child: SingleChildScrollView(padding: padding, child: child),
   );
 }
 
@@ -363,7 +425,7 @@ class _CardPlacementDiagram extends StatelessWidget {
     child: Column(
       children: [
         Semantics(
-          label: '휴대폰 뒷면에 실물 교통카드 한 장을 가까이 대는 예시',
+          label: strings(context).placementSemantics,
           image: true,
           child: SizedBox(
             height: 140,
@@ -378,7 +440,7 @@ class _CardPlacementDiagram extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Text(
-          'NFC 위치는 기기마다 달라요',
+          strings(context).nfcPlacementVaries,
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 12,

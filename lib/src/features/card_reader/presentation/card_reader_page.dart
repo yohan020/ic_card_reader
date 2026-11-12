@@ -1,7 +1,17 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/localization/app_language.dart';
+import '../../../core/localization/app_strings.dart';
+import 'card_brand_name.dart';
+import '../../contactless/presentation/contactless_page.dart';
+import '../../tools/presentation/tools_page.dart';
+import '../../coin_locker/presentation/coin_locker_page.dart';
+import '../../issue_report/domain/card_support_report.dart';
+import '../../issue_report/presentation/card_support_page.dart';
+
 import '../../../core/design/app_theme.dart';
 import '../../../core/widgets/app_ui.dart';
+import '../../../core/widgets/main_page_header.dart';
 import '../../app_update/data/play_app_update_service.dart';
 import '../../app_update/domain/app_update_service.dart';
 import '../../issue_report/domain/issue_report_repository.dart';
@@ -21,6 +31,9 @@ import '../domain/card_reader.dart';
 import '../domain/card_scan_result.dart';
 import '../domain/current_gate_travel.dart';
 import 'scan_guidance.dart';
+import 'card_comparison_page.dart';
+import 'card_diagnostics_page.dart';
+import '../domain/card_diagnostics.dart';
 
 class CardReaderPage extends StatefulWidget {
   const CardReaderPage({
@@ -29,12 +42,16 @@ class CardReaderPage extends StatefulWidget {
     required this.stationNameDisplayMode,
     required this.onStationNameDisplayModeChanged,
     super.key,
+    this.appLanguage = AppLanguage.system,
+    this.onAppLanguageChanged,
     this.reader,
     this.stationDatabase,
     this.issueReportRepository,
     this.appUpdateService,
   });
 
+  final AppLanguage appLanguage;
+  final ValueChanged<AppLanguage>? onAppLanguageChanged;
   final CardReader? reader;
   final AssetStationDatabase? stationDatabase;
   final IssueReportRepository? issueReportRepository;
@@ -159,9 +176,7 @@ class _CardReaderPageState extends State<CardReaderPage>
     if (!mounted) return;
     if (!opened) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('NFC 설정을 열지 못했어요. 휴대폰 설정에서 NFC를 확인해 주세요.'),
-        ),
+        SnackBar(content: Text(strings(context).nfcSettingsError)),
       );
     }
     await _refreshNfcStatus();
@@ -308,6 +323,22 @@ class _CardReaderPageState extends State<CardReaderPage>
     ).push(MaterialPageRoute<void>(builder: (_) => const PassSelectionPage()));
   }
 
+  Future<void> _openCardComparison() async {
+    if (_scanInFlight) return;
+    await Navigator.of(context).push<void>(
+      MaterialPageRoute(
+        builder: (_) => CardComparisonPage(
+          reader: _reader,
+          stationDatabase: _stationDatabase,
+          stationNameDisplayMode: widget.stationNameDisplayMode,
+          issueReportRepository: widget.issueReportRepository,
+          scanScreenBuilder: (onCancel) => _ScanScreen(onCancel: onCancel),
+        ),
+      ),
+    );
+    if (mounted) await _refreshNfcStatus();
+  }
+
   void _clearSession() {
     setState(() {
       _result = null;
@@ -320,7 +351,7 @@ class _CardReaderPageState extends State<CardReaderPage>
     });
     ScaffoldMessenger.of(
       context,
-    ).showSnackBar(const SnackBar(content: Text('현재 세션의 이용내역을 지웠습니다.')));
+    ).showSnackBar(SnackBar(content: Text(strings(context).sessionCleared)));
   }
 
   Future<void> _checkForUpdate() async {
@@ -342,7 +373,7 @@ class _CardReaderPageState extends State<CardReaderPage>
     } catch (_) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('업데이트를 시작하지 못했습니다. 잠시 후 다시 시도해 주세요.')),
+        SnackBar(content: Text(strings(context).updateStartError)),
       );
     } finally {
       if (mounted) {
@@ -385,12 +416,13 @@ class _CardReaderPageState extends State<CardReaderPage>
         animateCard: _selectedTab == 0,
         onScan: _startScan,
         onOpenHistory: _openHistory,
-        onOpenPassComparison: _openPassComparison,
+        onOpenCardComparison: _openCardComparison,
         onStartUpdate: _startUpdate,
         isStartingUpdate: _isStartingUpdate,
       ),
       HistoryListPage(
         histories: _histories,
+        brandIdentity: _result?.brandIdentity,
         currentBalance: _currentBalance,
         issueReportRepository: widget.issueReportRepository,
         stationPairs: _stationPairs,
@@ -398,62 +430,90 @@ class _CardReaderPageState extends State<CardReaderPage>
         stationNameDisplayMode: widget.stationNameDisplayMode,
         onScan: _startScan,
       ),
+      ToolsPage(
+        onOpenPassComparison: _openPassComparison,
+        onOpenCoinLocker: () => Navigator.of(context).push<void>(
+          MaterialPageRoute(
+            builder: (_) => CoinLockerPage(
+              stationNameDisplayMode: widget.stationNameDisplayMode,
+            ),
+          ),
+        ),
+        onOpenContactless: () => Navigator.of(context).push<void>(
+          MaterialPageRoute(
+            builder: (_) => ContactlessPage(
+              stationNameDisplayMode: widget.stationNameDisplayMode,
+            ),
+          ),
+        ),
+      ),
       SettingsPage(
         result: _result,
         themeMode: widget.themeMode,
         onThemeModeChanged: widget.onThemeModeChanged,
         stationNameDisplayMode: widget.stationNameDisplayMode,
         onStationNameDisplayModeChanged: widget.onStationNameDisplayModeChanged,
+        appLanguage: widget.appLanguage,
+        onAppLanguageChanged: widget.onAppLanguageChanged,
         onClearSession: _clearSession,
         appUpdateStatus: _appUpdateStatus,
         isCheckingForUpdate: _isCheckingForUpdate,
+        onOpenCardSupport: () async {
+          if (_scanInFlight) return;
+          final repository = widget.issueReportRepository;
+          await Navigator.of(context).push<void>(
+            MaterialPageRoute(
+              builder: (_) => CardSupportPage(
+                reader: _reader,
+                repository: repository is CardSupportRepository
+                    ? repository as CardSupportRepository
+                    : null,
+              ),
+            ),
+          );
+          if (mounted) await _refreshNfcStatus();
+        },
+        onOpenCardDiagnostics: cardDiagnosticsEnabled
+            ? () async {
+                if (_scanInFlight) return;
+                await Navigator.of(context).push<void>(
+                  MaterialPageRoute(
+                    builder: (_) => CardDiagnosticsPage(reader: _reader),
+                  ),
+                );
+                if (mounted) await _refreshNfcStatus();
+              }
+            : null,
       ),
     ];
 
     return Scaffold(
-      appBar: _selectedTab == 0
-          ? AppBar(
-              toolbarHeight: 68,
-              title: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text('IC 카드 리더'),
-                  const SizedBox(height: 2),
-                  Text(
-                    _result == null
-                        ? '카드를 준비해 주세요'
-                        : '최근 스캔 · ${formatDateTime(_result!.scannedAt)}',
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-            )
-          : null,
       body: SafeArea(
         child: IndexedStack(index: _selectedTab, children: pages),
       ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _selectedTab,
         onDestinationSelected: (index) => setState(() => _selectedTab = index),
-        destinations: const [
+        destinations: [
           NavigationDestination(
             icon: Icon(Icons.home_outlined),
             selectedIcon: Icon(Icons.home_rounded),
-            label: '홈',
+            label: strings(context).home,
           ),
           NavigationDestination(
             icon: Icon(Icons.receipt_long_outlined),
             selectedIcon: Icon(Icons.receipt_long_rounded),
-            label: '이용내역',
+            label: strings(context).history,
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.grid_view_outlined),
+            selectedIcon: Icon(Icons.grid_view_rounded),
+            label: strings(context).tools,
           ),
           NavigationDestination(
             icon: Icon(Icons.settings_outlined),
             selectedIcon: Icon(Icons.settings_rounded),
-            label: '설정',
+            label: strings(context).settings,
           ),
         ],
       ),
@@ -479,7 +539,7 @@ class _HomePage extends StatelessWidget {
     required this.animateCard,
     required this.onScan,
     required this.onOpenHistory,
-    required this.onOpenPassComparison,
+    required this.onOpenCardComparison,
     required this.onStartUpdate,
     required this.isStartingUpdate,
   });
@@ -500,7 +560,7 @@ class _HomePage extends StatelessWidget {
   final bool animateCard;
   final VoidCallback onScan;
   final VoidCallback onOpenHistory;
-  final VoidCallback onOpenPassComparison;
+  final VoidCallback onOpenCardComparison;
   final Future<void> Function() onStartUpdate;
   final bool isStartingUpdate;
 
@@ -515,8 +575,9 @@ class _HomePage extends StatelessWidget {
         ? null
         : transactionLocations[latest.rawBlock.index];
     return AppPage(
-      padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+      padding: MainPageHeader.pagePadding,
       children: [
+        MainPageHeader(title: strings(context).homeTitle),
         if (appUpdateStatus.hasUpdate) ...[
           _HomeUpdateBanner(
             onStartUpdate: onStartUpdate,
@@ -526,7 +587,7 @@ class _HomePage extends StatelessWidget {
         ],
         Center(child: IcCardArt(animated: animateCard, size: 300)),
         Text(
-          'IC 카드를 스캔해 주세요',
+          strings(context).scanPrompt,
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.w700,
@@ -535,7 +596,7 @@ class _HomePage extends StatelessWidget {
         ),
         const SizedBox(height: 7),
         Text(
-          '카드를 기기 뒷면 NFC 위치에 대면\n최근 이용내역을 읽어옵니다.',
+          strings(context).homeNfcHint,
           textAlign: TextAlign.center,
           style: TextStyle(
             color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -554,31 +615,38 @@ class _HomePage extends StatelessWidget {
               ? null
               : onScan,
           icon: const Icon(Icons.nfc_rounded),
-          label: const Text('IC 카드 스캔'),
+          label: Text(strings(context).scanCard),
+        ),
+        const SizedBox(height: 8),
+        OutlinedButton.icon(
+          onPressed: onOpenCardComparison,
+          icon: const Icon(Icons.account_balance_wallet_outlined, size: 18),
+          label: Text(strings(context).compareBalances),
         ),
         TextButton.icon(
           onPressed: () => showScanHelp(context),
           icon: const Icon(Icons.help_outline_rounded, size: 18),
-          label: const Text('카드를 어디에 대야 하나요?'),
+          label: Text(strings(context).whereToTap),
         ),
         if (scanFailure == CardScanFailureKind.noHistory) ...[
           const SizedBox(height: 8),
-          const NoticeBanner(
-            title: '읽을 수 있는 이용내역이 없어요',
-            text:
-                '카드에서 표시할 이용내역을 찾지 못했습니다. 카드 종류나 기록 상태에 따라 읽을 수 있는 정보가 다를 수 있습니다.',
+          NoticeBanner(
+            title: strings(context).noReadableHistory,
+            text: strings(context).noReadableHistoryHint,
           ),
         ],
         if (scanFailure == CardScanFailureKind.nfcUnavailable &&
             nfcAvailability == CardReaderAvailability.enabled) ...[
           const SizedBox(height: 8),
-          const NoticeBanner(
-            text: 'NFC 읽기를 시작하지 못했어요. 카드를 잠시 떼었다가 다시 스캔해 주세요.',
-          ),
+          NoticeBanner(text: strings(context).nfcStartRetry),
         ],
         if (message != null) ...[
           const SizedBox(height: 13),
-          NoticeBanner(title: '안내', text: message!, tone: NoticeTone.danger),
+          NoticeBanner(
+            title: strings(context).notice,
+            text: message!,
+            tone: NoticeTone.danger,
+          ),
         ],
         if (activeCurrentGateTravel != null) ...[
           const SizedBox(height: 18),
@@ -590,32 +658,32 @@ class _HomePage extends StatelessWidget {
         ],
         const SizedBox(height: 26),
         SectionLabel(
-          '최근 이용내역',
+          strings(context).recentHistory,
           trailing: result == null
               ? null
               : TextButton(
                   onPressed: onOpenHistory,
-                  child: const Text('전체 보기'),
+                  child: Text(strings(context).viewAll),
                 ),
         ),
         if (result == null)
-          const AppSurface(
+          AppSurface(
             child: Padding(
               padding: EdgeInsets.symmetric(vertical: 18),
               child: Row(
                 children: [
                   Icon(Icons.history_rounded, color: AppColors.skyDark),
                   SizedBox(width: 12),
-                  Expanded(child: Text('아직 스캔한 카드가 없습니다.')),
+                  Expanded(child: Text(strings(context).noScannedCard)),
                 ],
               ),
             ),
           )
         else if (latest == null)
-          const AppSurface(
+          AppSurface(
             child: Padding(
               padding: EdgeInsets.symmetric(vertical: 18),
-              child: Text('읽은 카드에서 표시할 수 있는 이용내역을 찾지 못했습니다.'),
+              child: Text(strings(context).noHistoryFound),
             ),
           )
         else
@@ -652,6 +720,7 @@ class _HomePage extends StatelessWidget {
                           const SizedBox(height: 3),
                           Text(
                             _homeHistorySummary(
+                              strings(context),
                               latest,
                               latestStations,
                               latestTransactionLocation,
@@ -671,7 +740,10 @@ class _HomePage extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      _homeAmountText(latest.amountCalculation),
+                      _homeAmountText(
+                        latest.amountCalculation,
+                        strings(context),
+                      ),
                       style: TextStyle(
                         fontSize:
                             latest.amountCalculation.status ==
@@ -698,7 +770,7 @@ class _HomePage extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      '이용 후 잔액',
+                      strings(context).balanceAfterLabel,
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
@@ -716,29 +788,30 @@ class _HomePage extends StatelessWidget {
               ],
             ),
           ),
-        const SizedBox(height: 18),
-        _PassComparisonEntryCard(onTap: onOpenPassComparison),
         const SizedBox(height: 16),
-        const AppSurface(
+        AppSurface(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('지원 카드', style: TextStyle(fontWeight: FontWeight.w900)),
+              Text(
+                strings(context).supportedCards,
+                style: TextStyle(fontWeight: FontWeight.w900),
+              ),
               SizedBox(height: 7),
               Text(
-                'Suica · PASMO · ICOCA 등 일본 전국호환 교통계 IC 카드',
+                strings(context).supportedCardsHint,
                 style: TextStyle(fontSize: 13, height: 1.4),
               ),
               SizedBox(height: 7),
               Text(
-                'PiTaPa 포스트페이 및 일부 거래는 지원되지 않을 수 있습니다.',
+                strings(context).pitapaLimit,
                 style: TextStyle(fontSize: 12, height: 1.4),
               ),
             ],
           ),
         ),
         const SizedBox(height: 12),
-        const Row(
+        Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
@@ -749,7 +822,7 @@ class _HomePage extends StatelessWidget {
             SizedBox(width: 5),
             Flexible(
               child: Text(
-                '카드 데이터는 이 기기에서만 처리합니다',
+                strings(context).localCardData,
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 12, color: AppColors.skyDark),
               ),
@@ -776,14 +849,15 @@ class _CurrentGateTravelCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final resolvedStation = station?.station;
     final entryName = resolvedStation == null
-        ? '역 코드 ${_gateStationCode(travel)}'
+        ? strings(context).stationCode(_gateStationCode(travel))
         : displayStationName(
             japanese: resolvedStation.stationName,
             korean: resolvedStation.stationNameKorean,
+            english: resolvedStation.stationNameEnglish,
             mode: stationNameDisplayMode,
           );
     final detail = resolvedStation == null
-        ? '입장역을 확인했지만 역명을 찾지 못했습니다.'
+        ? strings(context).entryStationUnknown
         : '${resolvedStation.operatorName} · ${resolvedStation.lineName}';
 
     return AppSurface(
@@ -806,13 +880,13 @@ class _CurrentGateTravelCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  '현재 이동 중',
+                Text(
+                  strings(context).tripInProgress,
                   style: TextStyle(fontWeight: FontWeight.w900),
                 ),
                 const SizedBox(height: 3),
                 Text(
-                  '$entryName에서 입장하여 이동 중입니다.',
+                  strings(context).enteredAt(entryName),
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.onSurface,
                     fontSize: 13,
@@ -839,92 +913,6 @@ class _CurrentGateTravelCard extends StatelessWidget {
 String _gateStationCode(CurrentGateTravel travel) =>
     '${travel.entryLineCode.toRadixString(16).padLeft(2, '0').toUpperCase()}-'
     '${travel.entryStationCode.toRadixString(16).padLeft(2, '0').toUpperCase()}';
-
-class _PassComparisonEntryCard extends StatelessWidget {
-  const _PassComparisonEntryCard({required this.onTap});
-
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final titleColor = isDark ? Colors.white : AppColors.ink;
-    final descriptionColor = isDark ? const Color(0xFFC7D9E3) : AppColors.muted;
-    final accentColor = isDark ? const Color(0xFF65C9F4) : AppColors.skyDark;
-
-    return Semantics(
-      button: true,
-      label: '교통패스 비교 열기',
-      child: Material(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.circular(22),
-        clipBehavior: Clip.antiAlias,
-        child: Ink(
-          decoration: BoxDecoration(
-            border: Border.all(color: accentColor, width: 1.4),
-            borderRadius: BorderRadius.circular(22),
-            gradient: LinearGradient(
-              colors: isDark
-                  ? const [Color(0xFF162D39), Color(0xFF123E51)]
-                  : const [Color(0xFFF7FCFF), Color(0xFFE8F6FF)],
-            ),
-          ),
-          child: InkWell(
-            onTap: onTap,
-            child: Padding(
-              padding: const EdgeInsets.all(17),
-              child: Row(
-                children: [
-                  Container(
-                    width: 52,
-                    height: 52,
-                    decoration: BoxDecoration(
-                      color: isDark
-                          ? const Color(0xFF1C536D)
-                          : AppColors.skySoft,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Icon(
-                      Icons.local_activity_outlined,
-                      color: isDark ? Colors.white : AppColors.skyDark,
-                    ),
-                  ),
-                  const SizedBox(width: 13),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '교통패스 비교',
-                          style: TextStyle(
-                            color: titleColor,
-                            fontSize: 17,
-                            fontWeight: FontWeight.w800,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          '여정별 운임을 합산해 패스 구매가 이득인지 확인해 보세요.',
-                          style: TextStyle(
-                            color: descriptionColor,
-                            fontSize: 12,
-                            height: 1.35,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Icon(Icons.chevron_right_rounded, color: accentColor),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
 
 class _HomeUpdateBanner extends StatelessWidget {
   const _HomeUpdateBanner({
@@ -954,19 +942,29 @@ class _HomeUpdateBanner extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 12),
-        const Expanded(
+        Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('새 버전이 있어요', style: TextStyle(fontWeight: FontWeight.w800)),
+              Text(
+                strings(context).newVersion,
+                style: TextStyle(fontWeight: FontWeight.w800),
+              ),
               SizedBox(height: 2),
-              Text('최신 기능과 개선 사항을 적용해 보세요.', style: TextStyle(fontSize: 12)),
+              Text(
+                strings(context).newVersionHint,
+                style: TextStyle(fontSize: 12),
+              ),
             ],
           ),
         ),
         TextButton(
           onPressed: isStartingUpdate ? null : onStartUpdate,
-          child: Text(isStartingUpdate ? '여는 중' : '업데이트'),
+          child: Text(
+            isStartingUpdate
+                ? strings(context).opening
+                : strings(context).update,
+          ),
         ),
       ],
     ),
@@ -1010,9 +1008,9 @@ class _ScanScreenState extends State<_ScanScreen>
       leading: IconButton(
         onPressed: widget.onCancel,
         icon: const Icon(Icons.close_rounded),
-        tooltip: '스캔 취소',
+        tooltip: strings(context).cancelScan,
       ),
-      title: const Text('카드 스캔'),
+      title: Text(strings(context).scanTitle),
     ),
     body: SafeArea(
       child: ListView(
@@ -1020,10 +1018,16 @@ class _ScanScreenState extends State<_ScanScreen>
         children: [
           const Center(child: IcCardArt(animated: true, size: 250)),
           const SizedBox(height: 10),
-          const StatusPill(label: '교통카드를 대 주세요', icon: Icons.sync_rounded),
+          Center(
+            child: StatusPill(
+              key: ValueKey('scan-status-pill'),
+              label: strings(context).holdTransitCard,
+              icon: Icons.sync_rounded,
+            ),
+          ),
           const SizedBox(height: 16),
           Text(
-            '카드를 움직이지 말고\n가까이 대 주세요',
+            strings(context).holdCardStill,
             textAlign: TextAlign.center,
             style: Theme.of(
               context,
@@ -1031,7 +1035,7 @@ class _ScanScreenState extends State<_ScanScreen>
           ),
           const SizedBox(height: 9),
           Text(
-            '휴대폰 뒷면 NFC 위치에 카드 한 장을 대고\n스캔이 완료될 때까지 기다려 주세요.',
+            strings(context).scanWaitHint,
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -1051,11 +1055,11 @@ class _ScanScreenState extends State<_ScanScreen>
                   LinearProgressIndicator(
                     value: progress,
                     borderRadius: const BorderRadius.all(Radius.circular(999)),
-                    semanticsLabel: '스캔 제한 시간 경과',
+                    semanticsLabel: strings(context).scanTimeElapsed,
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    '스캔 대기 시간 · 남은 시간 $remainingSeconds초',
+                    strings(context).scanTimeLeft(remainingSeconds),
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.outline,
                       fontSize: 12,
@@ -1069,11 +1073,11 @@ class _ScanScreenState extends State<_ScanScreen>
           OutlinedButton.icon(
             onPressed: widget.onCancel,
             icon: const Icon(Icons.close_rounded),
-            label: const Text('스캔 취소'),
+            label: Text(strings(context).cancelScan),
           ),
           const SizedBox(height: 12),
           Text(
-            '오류가 발생해도 앱을 종료하지 않고 다시 시도할 수 있습니다.',
+            strings(context).retryWithoutClosing,
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Theme.of(context).colorScheme.outline,
@@ -1110,7 +1114,7 @@ class _ScanSuccessScreen extends StatelessWidget {
           onPressed: onClose,
           icon: const Icon(Icons.close_rounded),
         ),
-        title: const Text('스캔 완료'),
+        title: Text(strings(context).scanComplete),
       ),
       body: AppPage(
         children: [
@@ -1132,7 +1136,11 @@ class _ScanSuccessScreen extends StatelessWidget {
           ),
           const SizedBox(height: 18),
           Text(
-            '카드를 읽었습니다',
+            result.brandIdentity?.label == null
+                ? strings(context).cardRead
+                : strings(context).brandCardRead(
+                    cardBrandName(result.brandIdentity!, strings(context)),
+                  ),
             textAlign: TextAlign.center,
             style: Theme.of(
               context,
@@ -1154,7 +1162,7 @@ class _ScanSuccessScreen extends StatelessWidget {
                   child: _SuccessMetric(
                     icon: Icons.view_module_outlined,
                     value: '${result.blocks.length}',
-                    label: '읽은 블록',
+                    label: strings(context).blocksRead,
                   ),
                 ),
                 const SizedBox(height: 62, child: VerticalDivider()),
@@ -1162,7 +1170,7 @@ class _ScanSuccessScreen extends StatelessWidget {
                   child: _SuccessMetric(
                     icon: Icons.receipt_long_outlined,
                     value: '${histories.length}',
-                    label: '해석한 내역',
+                    label: strings(context).decodedRecords,
                   ),
                 ),
                 const SizedBox(height: 62, child: VerticalDivider()),
@@ -1170,7 +1178,7 @@ class _ScanSuccessScreen extends StatelessWidget {
                   child: _SuccessMetric(
                     icon: Icons.help_outline_rounded,
                     value: '$unresolved',
-                    label: '확인 필요',
+                    label: strings(context).needsReview,
                   ),
                 ),
               ],
@@ -1178,30 +1186,29 @@ class _ScanSuccessScreen extends StatelessWidget {
           ),
           if (unresolved > 0) ...[
             const SizedBox(height: 14),
-            const NoticeBanner(
-              title: '일부 정보는 아직 확인 중입니다',
-              text:
-                  '원본 기록은 정상적으로 읽었습니다. 역명과 거래 유형 데이터베이스가 연결되면 더 자세히 표시할 수 있습니다.',
+            NoticeBanner(
+              title: strings(context).someDataUnconfirmed,
+              text: strings(context).someDataUnconfirmedHint,
               tone: NoticeTone.warning,
             ),
           ],
           const SizedBox(height: 14),
-          const NoticeBanner(
-            title: '읽은 이용내역은 이 기기 안에만 표시됩니다',
-            text: '카드 IDm 원문은 저장하거나 화면에 표시하지 않습니다.',
+          NoticeBanner(
+            title: strings(context).historyOnDevice,
+            text: strings(context).idmNotStored,
             tone: NoticeTone.privacy,
           ),
           const SizedBox(height: 26),
           FilledButton.icon(
             onPressed: onOpenHistory,
             icon: const Icon(Icons.receipt_long_rounded),
-            label: const Text('이용내역 보기'),
+            label: Text(strings(context).viewHistory),
           ),
           const SizedBox(height: 10),
           OutlinedButton.icon(
             onPressed: onScanAgain,
             icon: const Icon(Icons.refresh_rounded),
-            label: const Text('다시 스캔'),
+            label: Text(strings(context).scanAgain),
           ),
         ],
       ),
@@ -1259,39 +1266,42 @@ bool _needsReview(ParsedTransitHistory history) {
   };
 }
 
-String _homeAmountText(AmountCalculation calculation) =>
+String _homeAmountText(AmountCalculation calculation, AppLocalizations l10n) =>
     switch (calculation.status) {
       AmountCalculationStatus.calculated => '-${yen(calculation.amount!)}',
       AmountCalculationStatus.balanceIncrease => '+${yen(calculation.amount!)}',
-      AmountCalculationStatus.unavailable => '계산 불가',
-      AmountCalculationStatus.suspicious => '확인 필요',
+      AmountCalculationStatus.unavailable => l10n.unavailableAmount,
+      AmountCalculationStatus.suspicious => l10n.needsReview,
     };
 
 String _homeHistorySummary(
+  AppLocalizations l10n,
   ParsedTransitHistory history,
   ResolvedStationPair? stations,
   StationResolution? transactionLocation,
   StationNameDisplayMode stationNameDisplayMode,
 ) => switch (history.transactionType) {
   TransitTransactionType.rail =>
-    '${_stationLabel(stations?.boarding, _stationCode(history, boarding: true), stationNameDisplayMode)}'
+    '${_stationLabel(stations?.boarding, _stationCode(history, boarding: true), stationNameDisplayMode, l10n)}'
         '  →  '
-        '${_stationLabel(stations?.alighting, _stationCode(history, boarding: false), stationNameDisplayMode)}',
-  TransitTransactionType.bus => history.busOperatorName ?? '버스 회사 미확인',
-  TransitTransactionType.purchase => purchaseSummary(history),
+        '${_stationLabel(stations?.alighting, _stationCode(history, boarding: false), stationNameDisplayMode, l10n)}',
+  TransitTransactionType.bus => history.busOperatorName ?? l10n.unknownBus,
+  TransitTransactionType.purchase => purchaseSummary(history, l10n),
   TransitTransactionType.charge => chargeSummary(
     history,
+    l10n: l10n,
     transactionLocation: transactionLocation,
     stationNameDisplayMode: stationNameDisplayMode,
   ),
   TransitTransactionType.gateWindowProcessing => gateWindowSummary(
     history,
+    l10n: l10n,
     transactionLocation: transactionLocation,
     stationNameDisplayMode: stationNameDisplayMode,
   ),
-  TransitTransactionType.refund => '환불',
-  TransitTransactionType.adjustment => '정산',
-  TransitTransactionType.unknown => '거래 유형 미확인',
+  TransitTransactionType.refund => l10n.refund,
+  TransitTransactionType.adjustment => l10n.adjustment,
+  TransitTransactionType.unknown => l10n.unknownTransaction,
 };
 
 String _stationCode(ParsedTransitHistory history, {required bool boarding}) =>
@@ -1303,13 +1313,15 @@ String _stationLabel(
   StationResolution? resolution,
   String fallbackCode,
   StationNameDisplayMode mode,
+  AppLocalizations l10n,
 ) {
   final station = resolution?.station;
   return station == null
-      ? '역 정보 확인 불가'
+      ? l10n.stationUnavailable
       : displayStationName(
           japanese: station.stationName,
           korean: station.stationNameKorean,
+          english: station.stationNameEnglish,
           mode: mode,
         );
 }

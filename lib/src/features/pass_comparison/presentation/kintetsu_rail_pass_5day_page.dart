@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'pass_strings.dart';
+import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 import '../../../core/design/app_theme.dart';
 import '../../../core/widgets/app_ui.dart';
 import 'widgets/pass_result_scope_note.dart';
@@ -9,7 +13,9 @@ import 'widgets/pass_segment_remove_button.dart';
 import 'widgets/pass_station_picker_field.dart';
 
 class KintetsuRailPass5DayPage extends StatefulWidget {
-  const KintetsuRailPass5DayPage({super.key});
+  const KintetsuRailPass5DayPage({this.initialData, super.key});
+
+  final KintetsuRailPass5DayData? initialData;
 
   @override
   State<KintetsuRailPass5DayPage> createState() =>
@@ -20,17 +26,26 @@ class _KintetsuRailPass5DayPageState extends State<KintetsuRailPass5DayPage> {
   KintetsuRailPass5DayData? _data;
   Object? _error;
   final _segments = <_Draft>[_Draft()];
+  final _busFare = TextEditingController();
+  KintetsuPassVariant _variant = KintetsuPassVariant.fiveDay;
 
   @override
   void initState() {
     super.initState();
-    _load();
+    _data = widget.initialData;
+    if (_data == null) _load();
+  }
+
+  @override
+  void dispose() {
+    _busFare.dispose();
+    super.dispose();
   }
 
   Future<void> _load() async {
     setState(() => _error = null);
     try {
-      final data = await const KintetsuRailPass5DayDataRepository().load();
+      final data = await KintetsuRailPass5DayDataRepository().load();
       if (mounted) setState(() => _data = data);
     } catch (error) {
       if (mounted) setState(() => _error = error);
@@ -41,42 +56,54 @@ class _KintetsuRailPass5DayPageState extends State<KintetsuRailPass5DayPage> {
   Widget build(BuildContext context) {
     final data = _data;
     return Scaffold(
-      appBar: AppBar(title: const Text('교통패스 비교')),
+      appBar: AppBar(title: Text(passText(context, '교통패스 비교'))),
       body: data == null
           ? _error == null
-                ? const Center(child: CircularProgressIndicator())
+                ? Center(child: CircularProgressIndicator())
                 : _LoadFailure(onRetry: _load)
           : ListView(
-              padding: const EdgeInsets.fromLTRB(20, 18, 20, 32),
+              padding: EdgeInsets.fromLTRB(20, 18, 20, 32),
               children: [
-                const _Steps(active: 1),
-                const SizedBox(height: 24),
+                _Steps(active: 1),
+                SizedBox(height: 24),
                 Text(
-                  '이동 계획을 입력해 주세요',
+                  passText(context, '이동 계획을 입력해 주세요'),
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                const SizedBox(height: 6),
+                SizedBox(height: 6),
                 Text(
-                  '긴테쓰에서 실제로 개찰을 통과할 출발역과 하차역을 입력하면 성인 일반 운임을 자동으로 찾습니다.',
+                  passText(
+                    context,
+                    '긴테쓰에서 실제로 개찰을 통과할 출발역과 하차역을 입력하면 성인 일반 운임을 자동으로 찾습니다.',
+                  ),
                   style: TextStyle(
                     color: AppColors.mutedText(context),
                     height: 1.45,
                   ),
                 ),
-                const SizedBox(height: 20),
-                _PassSummary(price: data.passPrice),
-                const SizedBox(height: 24),
+                SizedBox(height: 20),
+                _PassSummary(
+                  variant: _variant,
+                  onSelected: (variant) {
+                    if (_variant == variant) return;
+                    setState(() {
+                      _variant = variant;
+                      _busFare.clear();
+                    });
+                  },
+                ),
+                SizedBox(height: 24),
                 SectionLabel(
-                  '이동 구간',
+                  passText(context, '이동 구간'),
                   trailing: TextButton(
                     onPressed: _clear,
-                    child: const Text('비우기'),
+                    child: Text(passText(context, '비우기')),
                   ),
                 ),
                 AppSurface(
-                  padding: const EdgeInsets.all(14),
+                  padding: EdgeInsets.all(14),
                   child: Column(
                     children: [
                       for (
@@ -87,6 +114,7 @@ class _KintetsuRailPass5DayPageState extends State<KintetsuRailPass5DayPage> {
                         _SegmentEditor(
                           index: index,
                           data: data,
+                          variant: _variant,
                           draft: _segments[index],
                           removable: _segments.length > 1,
                           onChanged: () => setState(() {}),
@@ -94,7 +122,7 @@ class _KintetsuRailPass5DayPageState extends State<KintetsuRailPass5DayPage> {
                               setState(() => _segments.removeAt(index)),
                         ),
                         if (index + 1 < _segments.length)
-                          const Padding(
+                          Padding(
                             padding: EdgeInsets.symmetric(vertical: 12),
                             child: Divider(),
                           ),
@@ -102,31 +130,38 @@ class _KintetsuRailPass5DayPageState extends State<KintetsuRailPass5DayPage> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12),
                 OutlinedButton.icon(
                   onPressed: () => setState(() => _segments.add(_Draft())),
-                  icon: const Icon(Icons.add_rounded),
-                  label: const Text('이동 구간 추가'),
+                  icon: Icon(Icons.add_rounded),
+                  label: Text(passText(context, '이동 구간 추가')),
                 ),
-                const SizedBox(height: 18),
+                if (_variant.busScope != null) ...[
+                  SizedBox(height: 18),
+                  _BusFareInput(variant: _variant, controller: _busFare),
+                ],
+                SizedBox(height: 18),
                 FilledButton(
                   onPressed: () => _showResult(data),
-                  child: const Text('비교 결과 보기'),
+                  child: Text(passText(context, '비교 결과 보기')),
                 ),
-                const SizedBox(height: 12),
-                const _Footnote(),
+                SizedBox(height: 12),
+                _Footnote(),
               ],
             ),
     );
   }
 
   void _clear() => setState(() {
+    _busFare.clear();
     _segments
       ..clear()
       ..add(_Draft());
   });
 
   void _showResult(KintetsuRailPass5DayData data) {
+    final variant = _variant;
+    final busFare = int.tryParse(_busFare.text) ?? 0;
     final planned = _segments
         .where((draft) => draft.from != null && draft.to != null)
         .map(
@@ -140,10 +175,12 @@ class _KintetsuRailPass5DayPageState extends State<KintetsuRailPass5DayPage> {
     Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (_) => _ResultPage(
-          data: data,
+          variant: variant,
           result: KintetsuRailPass5DayEvaluator.evaluate(
             segments: planned,
             data: data,
+            variant: variant,
+            confirmedBusFare: busFare,
           ),
         ),
       ),
@@ -180,9 +217,12 @@ class _Steps extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  const SizedBox(height: 6),
+                  SizedBox(height: 6),
                   Text(
-                    '${index + 1}. ${labels[index]}',
+                    passText(
+                      context,
+                      '${index + 1}. ${passText(context, labels[index])}',
+                    ),
                     style: TextStyle(
                       color: index == active
                           ? AppColors.accent(context)
@@ -203,41 +243,168 @@ class _Steps extends StatelessWidget {
 }
 
 class _PassSummary extends StatelessWidget {
-  const _PassSummary({required this.price});
-  final int price;
+  const _PassSummary({required this.variant, required this.onSelected});
+  final KintetsuPassVariant variant;
+  final ValueChanged<KintetsuPassVariant> onSelected;
 
   @override
   Widget build(BuildContext context) => AppSurface(
-    padding: const EdgeInsets.all(14),
-    child: Row(
+    padding: EdgeInsets.all(14),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          width: 42,
-          height: 42,
-          decoration: BoxDecoration(
-            color: AppColors.softSurface(context),
-            borderRadius: BorderRadius.circular(13),
-          ),
-          child: Icon(Icons.train_outlined, color: AppColors.accent(context)),
+        Text(
+          passText(context, '긴테쓰 레일 패스'),
+          style: TextStyle(fontWeight: FontWeight.w700),
         ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+        SizedBox(height: 10),
+        for (final pair in [
+          [KintetsuPassVariant.oneDay, KintetsuPassVariant.twoDay],
+          [KintetsuPassVariant.fiveDay, KintetsuPassVariant.fiveDayPlus],
+        ]) ...[
+          Row(
             children: [
-              const Text(
-                '긴테쓰 레일 패스 5일권',
-                style: TextStyle(fontWeight: FontWeight.w700),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                '¥$price',
-                style: TextStyle(
-                  color: AppColors.accent(context),
-                  fontSize: 14,
+              for (final option in pair) ...[
+                if (option != pair.first) SizedBox(width: 8),
+                Expanded(
+                  child: _DurationOption(
+                    variant: option,
+                    selected: variant == option,
+                    onTap: () => onSelected(option),
+                  ),
                 ),
-              ),
+              ],
             ],
+          ),
+          SizedBox(height: 8),
+        ],
+        Text(
+          passText(context, variant.railScope),
+          style: TextStyle(color: AppColors.mutedText(context)),
+        ),
+        SizedBox(height: 4),
+        Text(
+          passText(
+            context,
+            variant == KintetsuPassVariant.oneDay
+                ? '이용 당일 이동만 입력해 주세요.'
+                : '이용 시작일부터 연속 ${variant == KintetsuPassVariant.twoDay ? 2 : 5}일간의 이동만 입력해 주세요.',
+          ),
+          style: TextStyle(color: AppColors.mutedText(context), fontSize: 12),
+        ),
+      ],
+    ),
+  );
+}
+
+class _DurationOption extends StatelessWidget {
+  const _DurationOption({
+    required this.variant,
+    required this.selected,
+    required this.onTap,
+  });
+  final KintetsuPassVariant variant;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final foreground = selected ? Colors.white : AppColors.accent(context);
+    return Semantics(
+      button: true,
+      selected: selected,
+      child: Material(
+        color: selected ? AppColors.skyDark : AppColors.softSurface(context),
+        borderRadius: BorderRadius.circular(11),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(11),
+          child: Container(
+            constraints: BoxConstraints(minHeight: 48),
+            padding: EdgeInsets.symmetric(horizontal: 6, vertical: 9),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  passText(context, variant.label),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: foreground,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                SizedBox(height: 2),
+                Text(
+                  passText(context, '¥${variant.price}'),
+                  style: TextStyle(color: foreground, fontSize: 11),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _BusFareInput extends StatelessWidget {
+  const _BusFareInput({required this.variant, required this.controller});
+  final KintetsuPassVariant variant;
+  final TextEditingController controller;
+
+  @override
+  Widget build(BuildContext context) => AppSurface(
+    padding: EdgeInsets.all(14),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          passText(context, '버스 운임 (선택)'),
+          style: TextStyle(fontWeight: FontWeight.w700),
+        ),
+        SizedBox(height: 6),
+        Text(passText(context, variant.busScope!)),
+        SizedBox(height: 6),
+        Text(
+          passText(
+            context,
+            '공식 안내에서 적용이 확인된 버스의 성인 일반 운임 합계만 입력해 주세요. 앱이 버스 적용 여부를 판정하지는 않아요.',
+          ),
+        ),
+        TextButton.icon(
+          onPressed: () async {
+            var opened = false;
+            try {
+              opened = await launchUrl(
+                Uri.parse(variant.officialUrl),
+                mode: LaunchMode.externalApplication,
+              );
+            } on PlatformException {
+              // The device may have no browser configured.
+            } on MissingPluginException {
+              // The external launcher may be unavailable on this platform.
+            }
+            if (!opened && context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(passText(context, '공식 안내를 열 수 없어요.'))),
+              );
+            }
+          },
+          icon: Icon(Icons.open_in_new_rounded, size: 16),
+          label: Text(passText(context, '공식 적용 구간 확인')),
+        ),
+        TextField(
+          controller: controller,
+          keyboardType: TextInputType.number,
+          inputFormatters: [
+            FilteringTextInputFormatter.digitsOnly,
+            LengthLimitingTextInputFormatter(6),
+          ],
+          decoration: InputDecoration(
+            labelText: passText(context, '적용 버스 운임 합계'),
+            prefixText: '¥ ',
+            hintText: passText(context, '예: 800'),
           ),
         ),
       ],
@@ -249,6 +416,7 @@ class _SegmentEditor extends StatelessWidget {
   const _SegmentEditor({
     required this.index,
     required this.data,
+    required this.variant,
     required this.draft,
     required this.removable,
     required this.onChanged,
@@ -256,6 +424,7 @@ class _SegmentEditor extends StatelessWidget {
   });
   final int index;
   final KintetsuRailPass5DayData data;
+  final KintetsuPassVariant variant;
   final _Draft draft;
   final bool removable;
   final VoidCallback onChanged;
@@ -263,6 +432,9 @@ class _SegmentEditor extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final outside =
+        (draft.from != null && !variant.covers(draft.from!)) ||
+        (draft.to != null && !variant.covers(draft.to!));
     final fare = draft.from == null || draft.to == null
         ? null
         : data.fareBetween(draft.from!, draft.to!);
@@ -280,24 +452,24 @@ class _SegmentEditor extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Text(
-                '${index + 1}',
+                passText(context, '${index + 1}'),
                 style: TextStyle(
                   color: AppColors.accent(context),
                   fontWeight: FontWeight.w900,
                 ),
               ),
             ),
-            const SizedBox(width: 8),
-            const Expanded(
+            SizedBox(width: 8),
+            Expanded(
               child: Text(
-                '이동 구간',
+                passText(context, '이동 구간'),
                 style: TextStyle(fontWeight: FontWeight.w800),
               ),
             ),
             if (removable) PassSegmentRemoveButton(onPressed: onRemove),
           ],
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10),
         Row(
           children: [
             Expanded(
@@ -312,7 +484,7 @@ class _SegmentEditor extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 5),
+              padding: EdgeInsets.symmetric(horizontal: 5),
               child: IconButton(
                 onPressed: () {
                   final from = draft.from;
@@ -320,12 +492,12 @@ class _SegmentEditor extends StatelessWidget {
                   draft.to = from;
                   onChanged();
                 },
-                tooltip: '출발·도착 바꾸기',
+                tooltip: passText(context, '출발·도착 바꾸기'),
                 style: IconButton.styleFrom(
                   backgroundColor: AppColors.softSurface(context),
                   foregroundColor: AppColors.accent(context),
                 ),
-                icon: const Icon(Icons.swap_horiz_rounded, size: 20),
+                icon: Icon(Icons.swap_horiz_rounded, size: 20),
               ),
             ),
             Expanded(
@@ -341,8 +513,12 @@ class _SegmentEditor extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 8),
-        _FareHint(fare: fare, hasBoth: draft.from != null && draft.to != null),
+        SizedBox(height: 8),
+        _FareHint(
+          fare: fare,
+          hasBoth: draft.from != null && draft.to != null,
+          outside: outside,
+        ),
       ],
     );
   }
@@ -363,7 +539,7 @@ class _StationButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) => PassStationPickerField(
     label: label,
-    stationName: station?.displayName,
+    stationName: station?.passName(context),
     operatorLabel: station?.operatorLabel,
     onTap: () async {
       final value = await Navigator.of(context).push<KintetsuStation>(
@@ -377,13 +553,20 @@ class _StationButton extends StatelessWidget {
 }
 
 class _FareHint extends StatelessWidget {
-  const _FareHint({required this.fare, required this.hasBoth});
+  const _FareHint({
+    required this.fare,
+    required this.hasBoth,
+    required this.outside,
+  });
   final int? fare;
   final bool hasBoth;
+  final bool outside;
   @override
   Widget build(BuildContext context) {
-    final ok = fare != null;
-    final text = !hasBoth
+    final ok = fare != null && !outside;
+    final text = outside
+        ? '이 권종의 적용 범위 밖이에요. 비교 합계에서 제외합니다.'
+        : !hasBoth
         ? '두 역을 선택하면 운임을 자동으로 확인합니다.'
         : ok
         ? '성인 일반 운임 ¥$fare'
@@ -395,11 +578,12 @@ class _FareHint extends StatelessWidget {
           size: 18,
           color: ok ? AppColors.success : AppColors.mutedText(context),
         ),
-        const SizedBox(width: 7),
+        SizedBox(width: 7),
         Expanded(
           child: Text(
-            text,
+            passText(context, text),
             style: TextStyle(
+              fontSize: hasBoth || outside ? null : 11,
               color: ok ? AppColors.success : AppColors.mutedText(context),
               fontWeight: ok ? FontWeight.w700 : FontWeight.w400,
             ),
@@ -421,10 +605,13 @@ class _Footnote extends StatelessWidget {
         size: 17,
         color: AppColors.mutedText(context),
       ),
-      const SizedBox(width: 7),
+      SizedBox(width: 7),
       Expanded(
         child: Text(
-          '긴테쓰·이가철도·케이블카의 기본 승차운임만 계산합니다. 특급은 별도 특급권이 필요하며, 로프웨이·할인·특전은 포함하지 않습니다.',
+          passText(
+            context,
+            '권종의 적용 범위 안에서 이동하는 구간만 계산해요. 특급권·로프웨이·할인·특전은 포함하지 않아요.',
+          ),
           style: TextStyle(
             color: AppColors.mutedText(context),
             fontSize: 12,
@@ -446,7 +633,7 @@ class _StationSearchPage extends StatefulWidget {
 
 class _StationSearchPageState extends State<_StationSearchPage> {
   final _controller = TextEditingController();
-  List<KintetsuStation> _results = const [];
+  List<KintetsuStation> _results = [];
   @override
   void dispose() {
     _controller.dispose();
@@ -456,19 +643,19 @@ class _StationSearchPageState extends State<_StationSearchPage> {
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(
-      title: Text(widget.title),
+      title: Text(passText(context, widget.title)),
       bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(78),
+        preferredSize: Size.fromHeight(78),
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 4, 20, 14),
+          padding: EdgeInsets.fromLTRB(20, 4, 20, 14),
           child: TextField(
-            key: const ValueKey('kintetsu-station-search-field'),
+            key: ValueKey('kintetsu-station-search-field'),
             controller: _controller,
             autofocus: true,
             onChanged: _search,
             decoration: InputDecoration(
-              hintText: '역 이름을 검색해 주세요',
-              prefixIcon: const Icon(Icons.search_rounded),
+              hintText: passText(context, '역 이름을 검색해 주세요'),
+              prefixIcon: Icon(Icons.search_rounded),
               suffixIcon: _controller.text.isEmpty
                   ? null
                   : IconButton(
@@ -476,12 +663,12 @@ class _StationSearchPageState extends State<_StationSearchPage> {
                         _controller.clear();
                         _search('');
                       },
-                      icon: const Icon(Icons.close_rounded),
+                      icon: Icon(Icons.close_rounded),
                     ),
               filled: true,
               fillColor: Theme.of(context).colorScheme.surface,
               isDense: true,
-              contentPadding: const EdgeInsets.symmetric(vertical: 15),
+              contentPadding: EdgeInsets.symmetric(vertical: 15),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
               ),
@@ -491,25 +678,25 @@ class _StationSearchPageState extends State<_StationSearchPage> {
       ),
     ),
     body: _controller.text.trim().isEmpty
-        ? const _SearchState(
+        ? _SearchState(
             icon: Icons.search_rounded,
             title: '찾고 싶은 역을 입력해 주세요',
-            description: '한국어·초성·일본어로 검색할 수 있습니다.',
+            description: '한국어·초성·일본어·영어로 검색할 수 있습니다.',
           )
         : _results.isEmpty
-        ? const _SearchState(
+        ? _SearchState(
             icon: Icons.location_off_outlined,
             title: '일치하는 역을 찾지 못했어요',
             description: '다른 표기나 초성으로 다시 검색해 주세요.',
           )
         : ListView.separated(
-            padding: const EdgeInsets.symmetric(vertical: 6),
+            padding: EdgeInsets.symmetric(vertical: 6),
             itemCount: _results.length,
-            separatorBuilder: (_, _) => const Divider(height: 1),
+            separatorBuilder: (_, _) => Divider(height: 1),
             itemBuilder: (_, index) {
               final station = _results[index];
               return ListTile(
-                contentPadding: const EdgeInsets.symmetric(
+                contentPadding: EdgeInsets.symmetric(
                   horizontal: 20,
                   vertical: 6,
                 ),
@@ -520,25 +707,23 @@ class _StationSearchPageState extends State<_StationSearchPage> {
                     color: AppColors.skySoft,
                     borderRadius: BorderRadius.circular(13),
                   ),
-                  child: const Icon(
-                    Icons.train_outlined,
-                    color: AppColors.skyDark,
-                  ),
+                  child: Icon(Icons.train_outlined, color: AppColors.skyDark),
                 ),
                 title: Text(
-                  station.displayName,
-                  style: const TextStyle(fontWeight: FontWeight.w800),
+                  passText(context, station.passName(context)),
+                  style: TextStyle(fontWeight: FontWeight.w800),
                 ),
-                subtitle: Text(station.secondaryLabel),
-                trailing: const Icon(Icons.chevron_right_rounded),
+                subtitle: Text(
+                  passText(context, station.passSecondary(context)),
+                ),
+                trailing: Icon(Icons.chevron_right_rounded),
                 onTap: () => Navigator.of(context).pop(station),
               );
             },
           ),
   );
   void _search(String value) => setState(
-    () =>
-        _results = value.trim().isEmpty ? const [] : widget.data.search(value),
+    () => _results = value.trim().isEmpty ? [] : widget.data.search(value),
   );
 }
 
@@ -554,28 +739,28 @@ class _SearchState extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Center(
     child: Padding(
-      padding: const EdgeInsets.all(32),
+      padding: EdgeInsets.all(32),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
             width: 58,
             height: 58,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               color: AppColors.skySoft,
               shape: BoxShape.circle,
             ),
             child: Icon(icon, color: AppColors.skyDark, size: 29),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           Text(
-            title,
+            passText(context, title),
             textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
           ),
-          const SizedBox(height: 6),
+          SizedBox(height: 6),
           Text(
-            description,
+            passText(context, description),
             textAlign: TextAlign.center,
             style: TextStyle(color: AppColors.mutedText(context), height: 1.4),
           ),
@@ -591,18 +776,21 @@ class _LoadFailure extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Center(
     child: Padding(
-      padding: const EdgeInsets.all(28),
+      padding: EdgeInsets.all(28),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.error_outline_rounded, size: 38),
-          const SizedBox(height: 12),
-          const Text(
-            '패스 데이터를 불러오지 못했어요',
+          Icon(Icons.error_outline_rounded, size: 38),
+          SizedBox(height: 12),
+          Text(
+            passText(context, '패스 데이터를 불러오지 못했어요'),
             style: TextStyle(fontWeight: FontWeight.w700),
           ),
-          const SizedBox(height: 10),
-          OutlinedButton(onPressed: onRetry, child: const Text('다시 시도')),
+          SizedBox(height: 10),
+          OutlinedButton(
+            onPressed: onRetry,
+            child: Text(passText(context, '다시 시도')),
+          ),
         ],
       ),
     ),
@@ -610,8 +798,8 @@ class _LoadFailure extends StatelessWidget {
 }
 
 class _ResultPage extends StatelessWidget {
-  const _ResultPage({required this.data, required this.result});
-  final KintetsuRailPass5DayData data;
+  const _ResultPage({required this.variant, required this.result});
+  final KintetsuPassVariant variant;
   final KintetsuPassComparisonResult result;
   @override
   Widget build(BuildContext context) {
@@ -633,29 +821,29 @@ class _ResultPage extends StatelessWidget {
       ),
       KintetsuPassVerdict.insufficientData => (
         '비교할 구간이 부족해요',
-        '긴테쓰 이동 구간을 입력해 주세요.',
+        '패스가 적용되는 이동 구간을 입력해 주세요.',
         AppColors.mutedText(context),
       ),
     };
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          '비교 결과',
+        title: Text(
+          passText(context, '비교 결과'),
           style: TextStyle(fontWeight: FontWeight.w700),
         ),
       ),
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(20, 10, 20, 28),
+        padding: EdgeInsets.fromLTRB(20, 10, 20, 28),
         children: [
-          const _Steps(active: 2),
-          const SizedBox(height: 28),
+          _Steps(active: 2),
+          SizedBox(height: 28),
           Text(
-            '비교 결과',
+            passText(context, '비교 결과'),
             style: Theme.of(
               context,
             ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
           ),
-          const SizedBox(height: 14),
+          SizedBox(height: 14),
           AppSurface(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -665,56 +853,90 @@ class _ResultPage extends StatelessWidget {
                   color: color,
                   size: 34,
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12),
                 Text(
-                  title,
+                  passText(context, title),
                   style: TextStyle(
                     fontWeight: FontWeight.w700,
                     fontSize: 22,
                     color: color,
                   ),
                 ),
-                const SizedBox(height: 5),
+                SizedBox(height: 5),
                 Text(
-                  description,
+                  passText(context, description),
                   style: TextStyle(color: AppColors.mutedText(context)),
                 ),
-                const PassResultScopeNote(),
-                const SizedBox(height: 20),
-                _AmountRow('긴테쓰 일반 운임', result.regularFareTotal),
-                const Divider(height: 26),
-                _AmountRow('패스 가격', data.passPrice),
-                const Divider(height: 26),
-                _AmountRow('예상 손익', result.savings, bold: true, signed: true),
+                PassResultScopeNote(),
+                SizedBox(height: 20),
+                _AmountRow('적용 철도 일반 운임', result.railFareTotal),
+                if (result.busFareTotal > 0)
+                  _AmountRow('적용 버스 운임 (직접 입력)', result.busFareTotal),
+                Divider(height: 26),
+                _AmountRow('${variant.label} 가격', result.passPrice),
+                if (result.verdict != KintetsuPassVerdict.insufficientData) ...[
+                  Divider(height: 26),
+                  _AmountRow('예상 손익', result.savings, bold: true, signed: true),
+                ],
               ],
             ),
           ),
-          const SizedBox(height: 18),
-          const NoticeBanner(
+          SizedBox(height: 18),
+          NoticeBanner(
             tone: NoticeTone.info,
-            title: '계산 기준',
-            text:
-                '긴테쓰 전철·이가철도·케이블카 301개 역의 성인 기본 운임만 합산합니다. 특급권·로프웨이·할인·특전은 포함하지 않습니다.',
+            title: passText(context, '계산 기준'),
+            text: passText(
+              context,
+              '선택한 권종 안의 성인 기본 운임만 합산해요. 범위를 넘는 이동의 정산액, 특급권·로프웨이·할인·특전은 포함하지 않아요.'
+              '${variant.busScope == null ? '' : ' 버스는 직접 입력한 운임만 반영해요.'}',
+            ),
           ),
           if (result.segments.isNotEmpty) ...[
-            const SizedBox(height: 18),
-            const SectionLabel('이동별 상세'),
-            const SizedBox(height: 8),
+            SizedBox(height: 18),
+            SectionLabel(passText(context, '이동별 상세')),
+            SizedBox(height: 8),
             AppSurface(
               padding: EdgeInsets.zero,
               child: Column(
                 children: [
                   for (final segment in result.segments)
                     ListTile(
-                      leading: const Icon(Icons.train_outlined),
+                      leading: Icon(Icons.train_outlined),
                       title: Text(
-                        '${segment.from.displayName} → ${segment.to.displayName}',
+                        passText(
+                          context,
+                          '${segment.from.passName(context)} → ${segment.to.passName(context)}',
+                        ),
                       ),
-                      subtitle: Text(segment.from.operatorLabel),
+                      subtitle: Text(
+                        passText(context, segment.from.operatorLabel),
+                      ),
                       trailing: Text(
-                        '¥${segment.fare}',
-                        style: const TextStyle(fontWeight: FontWeight.w800),
+                        passText(context, '¥${segment.fare}'),
+                        style: TextStyle(fontWeight: FontWeight.w800),
                       ),
+                    ),
+                ],
+              ),
+            ),
+          ],
+          if (result.outsideCoverage.isNotEmpty) ...[
+            SizedBox(height: 18),
+            SectionLabel(passText(context, '적용 범위 밖 · 합계 제외')),
+            SizedBox(height: 8),
+            AppSurface(
+              padding: EdgeInsets.zero,
+              child: Column(
+                children: [
+                  for (final segment in result.outsideCoverage)
+                    ListTile(
+                      title: Text(
+                        passText(
+                          context,
+                          '${segment.from.passName(context)} → ${segment.to.passName(context)}',
+                        ),
+                      ),
+                      subtitle: Text(passText(context, '패스 적용 범위를 벗어나요.')),
                     ),
                 ],
               ),
@@ -739,19 +961,19 @@ class _AmountRow extends StatelessWidget {
   final bool signed;
   @override
   Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.symmetric(vertical: 4),
+    padding: EdgeInsets.symmetric(vertical: 4),
     child: Row(
       children: [
         Expanded(
           child: Text(
-            label,
+            passText(context, label),
             style: TextStyle(
               fontWeight: bold ? FontWeight.w800 : FontWeight.w500,
             ),
           ),
         ),
         Text(
-          '${signed && amount > 0 ? '+' : ''}¥$amount',
+          passText(context, '${signed && amount > 0 ? '+' : ''}¥$amount'),
           style: TextStyle(
             fontWeight: bold ? FontWeight.w900 : FontWeight.w700,
             fontSize: bold ? 19 : 16,

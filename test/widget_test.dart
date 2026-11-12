@@ -2,31 +2,421 @@ import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show MethodChannel;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ic_card_reader/src/app.dart';
+import 'package:ic_card_reader/l10n/app_localizations_en.dart';
+import 'package:ic_card_reader/src/core/localization/app_strings.dart';
+import 'package:ic_card_reader/src/core/localization/app_language.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ic_card_reader/src/features/contactless/presentation/contactless_page.dart';
+import 'package:ic_card_reader/src/features/coin_locker/presentation/coin_locker_page.dart';
+import 'package:ic_card_reader/src/features/pass_comparison/presentation/pass_selection_page.dart';
 import 'package:ic_card_reader/src/core/design/app_theme.dart';
+import 'package:ic_card_reader/src/core/widgets/main_page_header.dart';
 import 'package:ic_card_reader/src/features/app_update/domain/app_update_service.dart';
 import 'package:ic_card_reader/src/features/card_reader/domain/card_reader.dart';
 import 'package:ic_card_reader/src/features/card_reader/domain/card_scan_result.dart';
 import 'package:ic_card_reader/src/features/card_reader/domain/current_gate_travel.dart';
 import 'package:ic_card_reader/src/features/card_reader/domain/raw_history_block.dart';
 import 'package:ic_card_reader/src/features/card_reader/presentation/card_reader_page.dart';
+import 'package:ic_card_reader/src/features/card_reader/presentation/scan_guidance.dart';
 import 'package:ic_card_reader/src/features/station_resolver/data/asset_station_database.dart';
+import 'package:ic_card_reader/src/features/station_resolver/data/station_coordinate_repository.dart';
 import 'package:ic_card_reader/src/features/station_resolver/domain/station_resolution.dart';
 import 'package:ic_card_reader/src/features/station_resolver/domain/station_name_display.dart';
 import 'package:ic_card_reader/src/features/transaction_history/data/transit_history_parser.dart';
 import 'package:ic_card_reader/src/features/transaction_history/presentation/history_pages.dart';
 
 void main() {
+  const mapsChannel = MethodChannel('app.iccardreader/maps');
+  setUp(() {
+    SharedPreferences.setMockInitialValues({});
+    // Native Maps configuration is outside this app-navigation test's scope.
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(mapsChannel, (_) async => false);
+  });
+
+  testWidgets(
+    'app language and station names switch and persist independently',
+    (tester) async {
+      tester.view.physicalSize = const Size(420, 960);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      tester.binding.platformDispatcher.localesTestValue = const [
+        Locale('en', 'US'),
+      ];
+      addTearDown(tester.binding.platformDispatcher.clearLocalesTestValue);
+      const english = Locale('en');
+      expect(AppLocalizationsEn().comparingCount(1), '1 card in comparison');
+      expect(AppLocalizationsEn().comparingCount(3), '3 cards in comparison');
+      await tester.pumpWidget(const IcCardReaderApp());
+      await tester.pump();
+      expect(
+        tester.widget<MaterialApp>(find.byType(MaterialApp)).locale,
+        isNull,
+      );
+      await tester.tap(
+        find.descendant(
+          of: find.byType(NavigationBar),
+          matching: find.text('Settings'),
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+      expect(find.text('App language'), findsOneWidget);
+      final themeY = tester
+          .getTopLeft(find.byKey(const ValueKey('theme-mode-selector')))
+          .dy;
+      final appLanguageY = tester.getTopLeft(find.text('App language')).dy;
+      final stationNamesY = tester.getTopLeft(find.text('Station names')).dy;
+      expect(themeY, lessThan(appLanguageY));
+      expect(appLanguageY, lessThan(stationNamesY));
+      await tester.tap(find.text('Station names'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+      final stationChoice = find.byKey(
+        const ValueKey(StationNameDisplayMode.japanese),
+      );
+      expect(stationChoice.hitTestable(), findsOneWidget);
+      expect(tester.widget<ListTile>(stationChoice).selected, isTrue);
+      final stationEnglish = find.byKey(
+        const ValueKey(StationNameDisplayMode.japaneseEnglish),
+      );
+      expect(stationEnglish.hitTestable(), findsOneWidget);
+      await tester.tap(stationEnglish);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+      await tester.tap(find.text('App language'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+      final appKorean = find.byKey(const ValueKey(AppLanguage.korean));
+      expect(appKorean.hitTestable(), findsOneWidget);
+      await tester.tap(appKorean);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+      expect(
+        tester.widget<MaterialApp>(find.byType(MaterialApp)).locale,
+        const Locale('ko'),
+      );
+      expect(
+        tester
+            .widget<CardReaderPage>(find.byType(CardReaderPage))
+            .stationNameDisplayMode,
+        StationNameDisplayMode.japaneseEnglish,
+      );
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pumpWidget(const IcCardReaderApp());
+      await tester.pump();
+      expect(
+        tester.widget<MaterialApp>(find.byType(MaterialApp)).locale,
+        const Locale('ko'),
+      );
+      expect(
+        tester
+            .widget<CardReaderPage>(find.byType(CardReaderPage))
+            .stationNameDisplayMode,
+        StationNameDisplayMode.japaneseEnglish,
+      );
+      await tester.tap(
+        find.descendant(
+          of: find.byType(NavigationBar),
+          matching: find.text('설정'),
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+      await tester.tap(find.text('앱 언어'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+      final appEnglish = find.byKey(const ValueKey(AppLanguage.english));
+      expect(appEnglish.hitTestable(), findsOneWidget);
+      await tester.tap(appEnglish);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+      expect(
+        tester.widget<MaterialApp>(find.byType(MaterialApp)).locale,
+        english,
+      );
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  test(
+    'English station names require a supplied label and otherwise use Japanese',
+    () {
+      String display(String? english) => displayStationName(
+        japanese: '新宿',
+        korean: '신주쿠',
+        english: english,
+        mode: StationNameDisplayMode.english,
+      );
+      expect(display(null), '新宿');
+      expect(display('  '), '新宿');
+      expect(display('Shinjuku'), 'Shinjuku');
+    },
+  );
+
+  testWidgets('English settings and scan failure fit 320dp with large text', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(320, 740);
+    tester.view.devicePixelRatio = 1;
+    final dispatcher = tester.binding.platformDispatcher;
+    dispatcher.localesTestValue = const [Locale('en')];
+    dispatcher.textScaleFactorTestValue = 2;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    addTearDown(dispatcher.clearLocalesTestValue);
+    addTearDown(dispatcher.clearTextScaleFactorTestValue);
+    await tester.pumpWidget(const IcCardReaderApp());
+    await tester.pump();
+    await tester.tap(find.text('Settings').last);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+    await tester.scrollUntilVisible(
+      find.text('Station names'),
+      130,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.text('Station names'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+
+    await tester.pumpWidget(
+      MaterialApp(
+        locale: const Locale('en'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        theme: AppTheme.light,
+        home: Builder(
+          builder: (context) => Scaffold(
+            body: TextButton(
+              onPressed: () => showScanFailure(
+                context,
+                kind: CardScanFailureKind.tagLost,
+                availability: CardReaderAvailability.enabled,
+              ),
+              child: const Text('Show failure'),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.tap(find.text('Show failure'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(find.text('The card connection was interrupted'), findsOneWidget);
+    expect(find.text('Scan again'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets(
+    'English scan and history show readable labels and the same balance',
+    (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.light,
+          locale: const Locale('en'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: CardReaderPage(
+            reader: _FakeCardReader(),
+            stationDatabase: AssetStationDatabase.fromCsv(
+              '지역,노선,역,사업자,노선명,역명,비고\n',
+            ),
+            themeMode: ThemeMode.system,
+            onThemeModeChanged: (_) {},
+            stationNameDisplayMode: StationNameDisplayMode.japanese,
+            onStationNameDisplayModeChanged: (_) {},
+          ),
+        ),
+      );
+      await tester.scrollUntilVisible(find.text('Scan IC card'), 120);
+      await Scrollable.ensureVisible(
+        tester.element(find.text('Scan IC card')),
+        alignment: 0.5,
+      );
+      await tester.pump();
+      await tester.tap(find.text('Scan IC card'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+      expect(find.text('Card scanned'), findsOneWidget);
+      await tester.scrollUntilVisible(find.text('View transactions'), 150);
+      await Scrollable.ensureVisible(
+        tester.element(find.text('View transactions')),
+        alignment: 0.5,
+      );
+      await tester.pump();
+      await tester.tap(find.text('View transactions'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+      expect(find.text('Current card balance'), findsOneWidget);
+      expect(find.text('¥994'), findsOneWidget);
+      await tester.scrollUntilVisible(
+        find.text('Train ride'),
+        150,
+        scrollable: find.byType(Scrollable).first,
+      );
+      expect(find.text('Train ride'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
+  tearDown(() {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(mapsChannel, null);
+  });
   testWidgets('shows the privacy notice and scan action', (tester) async {
+    tester.binding.platformDispatcher.localesTestValue = const [Locale('ko')];
+    addTearDown(tester.binding.platformDispatcher.clearLocalesTestValue);
     await tester.pumpWidget(const IcCardReaderApp());
 
+    await tester.scrollUntilVisible(find.text('IC 카드 스캔'), 120);
     expect(find.text('IC 카드 스캔'), findsOneWidget);
     expect(find.text('베타 · 실기기 검증 중'), findsNothing);
     expect(find.text('NFC 사용 가능'), findsNothing);
     await tester.scrollUntilVisible(find.text('카드 데이터는 이 기기에서만 처리합니다'), 200);
     expect(find.text('카드 데이터는 이 기기에서만 처리합니다'), findsOneWidget);
   });
+
+  testWidgets(
+    'tools tab opens features and preserves four tabs and station setting',
+    (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.light,
+          home: CardReaderPage(
+            reader: _FakeCardReader(),
+            appUpdateService: _FakeAppUpdateService(
+              const AppUpdateStatus.latest(),
+            ),
+            themeMode: ThemeMode.system,
+            onThemeModeChanged: (_) {},
+            stationNameDisplayMode: StationNameDisplayMode.korean,
+            onStationNameDisplayModeChanged: (_) {},
+          ),
+        ),
+      );
+      await tester.pump();
+      final headerTop = tester.getTopLeft(find.byType(MainPageHeader)).dy;
+      void expectHeader(String title) {
+        final finder = find.byType(MainPageHeader);
+        expect(finder, findsOneWidget);
+        expect(tester.widget<MainPageHeader>(finder).title, title);
+        expect(tester.getTopLeft(finder).dy, headerTop);
+      }
+
+      expectHeader('IC 카드 리더');
+      await tester.tap(
+        find.descendant(
+          of: find.byType(NavigationBar),
+          matching: find.text('이용내역'),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expectHeader('이용내역');
+      expect(find.byTooltip('IC 카드 스캔'), findsOneWidget);
+      await tester.tap(
+        find.descendant(
+          of: find.byType(NavigationBar),
+          matching: find.text('홈'),
+        ),
+      );
+      await tester.pump();
+      expect(find.text('컨택리스 노선'), findsNothing);
+      expect(find.text('교통패스 비교'), findsNothing);
+      await tester.scrollUntilVisible(
+        find.text('여러 카드 잔액 비교'),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      expect(find.text('여러 카드 잔액 비교'), findsOneWidget);
+      final nav = tester.widget<NavigationBar>(find.byType(NavigationBar));
+      expect(nav.destinations.length, 4);
+      expect(nav.selectedIndex, 0);
+      await tester.tap(
+        find.descendant(
+          of: find.byType(NavigationBar),
+          matching: find.text('도구'),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expectHeader('도구');
+      expect(
+        tester.widget<NavigationBar>(find.byType(NavigationBar)).selectedIndex,
+        2,
+      );
+      expect(find.text('교통패스 비교'), findsOneWidget);
+      await tester.tap(find.text('교통패스 비교'));
+      await tester.pumpAndSettle();
+      expect(find.byType(PassSelectionPage), findsOneWidget);
+      await tester.pageBack();
+      await tester.pumpAndSettle();
+      expect(
+        tester.widget<NavigationBar>(find.byType(NavigationBar)).selectedIndex,
+        2,
+      );
+      await tester.tap(find.text('컨택리스 노선'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+      expect(find.byType(ContactlessPage), findsOneWidget);
+      expect(
+        tester
+            .widget<ContactlessPage>(find.byType(ContactlessPage))
+            .stationNameDisplayMode,
+        StationNameDisplayMode.korean,
+      );
+      await tester.pageBack();
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+      await tester.pumpAndSettle();
+      expect(find.byType(CardReaderPage), findsOneWidget);
+      expect(find.byType(NavigationBar), findsOneWidget);
+      await tester.ensureVisible(find.text('코인락커 찾기'));
+      await tester.tap(find.text('코인락커 찾기'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+      expect(find.byType(CoinLockerPage), findsOneWidget);
+      expect(
+        tester
+            .widget<CoinLockerPage>(find.byType(CoinLockerPage))
+            .stationNameDisplayMode,
+        StationNameDisplayMode.korean,
+      );
+      await tester.pageBack();
+      await tester.pumpAndSettle();
+      expect(
+        tester.widget<NavigationBar>(find.byType(NavigationBar)).selectedIndex,
+        2,
+      );
+      await tester.tap(
+        find.descendant(
+          of: find.byType(NavigationBar),
+          matching: find.text('설정'),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(
+        tester.widget<NavigationBar>(find.byType(NavigationBar)).selectedIndex,
+        3,
+      );
+      expectHeader('설정');
+      await tester.scrollUntilVisible(find.text('역명 표기'), 150);
+      expect(find.text('역명 표기'), findsOneWidget);
+      await tester.tap(
+        find.descendant(
+          of: find.byType(NavigationBar),
+          matching: find.text('홈'),
+        ),
+      );
+      // The home card has a continuous illustration animation.
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+      expect(find.text('IC 카드 스캔'), findsOneWidget);
+      expect(find.text('컨택리스 노선'), findsNothing);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
 
   testWidgets('checks for a Play update on home and exposes it in settings', (
     tester,
@@ -91,10 +481,7 @@ void main() {
       ),
     );
 
-    await Scrollable.ensureVisible(
-      tester.element(find.text('IC 카드 스캔')),
-      alignment: 0.5,
-    );
+    await tester.scrollUntilVisible(find.text('IC 카드 스캔'), 120);
     await tester.pump();
     await tester.tap(find.text('IC 카드 스캔'));
     await tester.pumpAndSettle();
@@ -107,12 +494,27 @@ void main() {
     await tester.tap(find.text('이용내역 보기'));
     await tester.pump();
 
-    expect(find.text('최근 스캔 · 1개 기록'), findsOneWidget);
+    expect(find.text('최근 스캔 · 1개 기록'), findsNothing);
+    expect(
+      tester.widget<HistoryListPage>(find.byType(HistoryListPage)).histories,
+      hasLength(1),
+    );
     expect(find.text('현재 카드 잔액'), findsOneWidget);
     expect(find.text('가장 최근 기록 기준'), findsOneWidget);
     expect(find.text('¥994'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('계산 불가'),
+      150,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(find.text('계산 불가'), findsOneWidget);
 
+    await Scrollable.ensureVisible(
+      tester.element(find.text('계산 불가')),
+      alignment: 0.5,
+    );
+    await tester.pump();
+    expect(find.text('계산 불가').hitTestable(), findsOneWidget);
     await tester.tap(find.text('계산 불가'));
     await tester.pumpAndSettle();
 
@@ -183,10 +585,7 @@ void main() {
       ),
     );
 
-    await Scrollable.ensureVisible(
-      tester.element(find.text('IC 카드 스캔')),
-      alignment: 0.5,
-    );
+    await tester.scrollUntilVisible(find.text('IC 카드 스캔'), 120);
     await tester.pump();
     await tester.tap(find.text('IC 카드 스캔'));
     await tester.pump();
@@ -197,7 +596,7 @@ void main() {
     await tester.pump();
 
     expect(find.text('IC 카드 리더'), findsOneWidget);
-    expect(find.textContaining('최근 스캔'), findsOneWidget);
+    expect(find.textContaining('최근 스캔'), findsNothing);
     await tester.scrollUntilVisible(find.text('현재 이동 중'), 200);
     expect(find.text('현재 이동 중'), findsOneWidget);
     expect(find.text('赤坂에서 입장하여 이동 중입니다.'), findsOneWidget);
@@ -225,10 +624,7 @@ void main() {
       ),
     );
 
-    await Scrollable.ensureVisible(
-      tester.element(find.text('IC 카드 스캔')),
-      alignment: 0.5,
-    );
+    await tester.scrollUntilVisible(find.text('IC 카드 스캔'), 120);
     await tester.pump();
     await tester.tap(find.text('IC 카드 스캔'));
     await tester.pump();
@@ -265,7 +661,7 @@ void main() {
     );
 
     expect(find.text('버스 회사 미확인'), findsOneWidget);
-    await tester.tap(find.text('버스 회사 미확인'));
+    await _tapHistoryItem(tester, find.text('버스 회사 미확인'));
     await tester.pumpAndSettle();
 
     expect(find.text('버스 회사'), findsOneWidget);
@@ -369,7 +765,7 @@ void main() {
     expect(find.text('매장에서 충전'), findsOneWidget);
     expect(find.textContaining('편의점'), findsNothing);
 
-    await tester.tap(find.text('+¥2000'));
+    await _tapHistoryItem(tester, find.text('+¥2000'));
     await tester.pumpAndSettle();
 
     final detailAmount = tester.widget<Text>(find.text('+¥2000'));
@@ -407,7 +803,7 @@ void main() {
     );
 
     expect(find.text('자동발권기에서 충전 · 天神南'), findsOneWidget);
-    await tester.tap(find.text('자동발권기에서 충전 · 天神南'));
+    await _tapHistoryItem(tester, find.text('자동발권기에서 충전 · 天神南'));
     await tester.pumpAndSettle();
 
     expect(find.text('충전 방식'), findsOneWidget);
@@ -463,6 +859,8 @@ void main() {
   testWidgets('shows the two verified Iyotetsu Takahama line routes', (
     tester,
   ) async {
+    // compute/asset IO needs real time; pumpAndSettle only advances fake frames.
+    await tester.runAsync(StationCoordinateRepository.load);
     const overrideCsv =
         'region_code,line_code,station_code,operator_name,line_name,station_name,evidence,source_note\n'
         '3,197,23,伊予鉄道,高浜線,松山市,verified_fixture,test\n'
@@ -520,7 +918,10 @@ void main() {
     expect(find.textContaining('聖蹟桜ヶ丘'), findsNothing);
     expect(find.textContaining('東府中'), findsNothing);
 
-    await tester.tap(find.text('古町  →  梅津寺'));
+    await _tapHistoryItem(tester, find.text('古町  →  梅津寺'));
+    // Finish route animation, then let native/asset callbacks use real time.
+    await tester.pump(const Duration(milliseconds: 350));
+    await tester.runAsync(() => Future<void>.delayed(Duration.zero));
     await tester.pumpAndSettle();
     expect(find.text('古町'), findsOneWidget);
     expect(find.text('梅津寺'), findsOneWidget);
@@ -554,7 +955,7 @@ void main() {
     expect(find.textContaining('市内電車'), findsNothing);
     expect(find.textContaining('伊予鉄バス'), findsNothing);
 
-    await tester.tap(find.text('伊予鉄道'));
+    await _tapHistoryItem(tester, find.text('伊予鉄道'));
     await tester.pumpAndSettle();
     expect(find.text('버스·노면전차 이용'), findsWidgets);
     expect(find.text('버스 회사'), findsOneWidget);
@@ -566,6 +967,7 @@ void main() {
   testWidgets('shows the Iyotetsu Gunchu route with adjacent balance amount', (
     tester,
   ) async {
+    await tester.runAsync(StationCoordinateRepository.load);
     const overrideCsv =
         'region_code,line_code,station_code,operator_name,line_name,station_name,evidence,source_note\n'
         '3,197,1,伊予鉄道,郡中線,郡中港,verified_fixture,test\n'
@@ -610,7 +1012,9 @@ void main() {
     expect(find.textContaining('高浜線'), findsNothing);
     expect(find.textContaining('京王線'), findsNothing);
 
-    await tester.tap(find.text('郡中港  →  松山市'));
+    await _tapHistoryItem(tester, find.text('郡中港  →  松山市'));
+    await tester.pump(const Duration(milliseconds: 350));
+    await tester.runAsync(() => Future<void>.delayed(Duration.zero));
     await tester.pumpAndSettle();
     expect(find.text('伊予鉄道 · 郡中線'), findsNWidgets(2));
     expect(find.text('郡中港 · 郡中線'), findsOneWidget);
@@ -618,6 +1022,18 @@ void main() {
     expect(find.text('-¥560'), findsOneWidget);
     expect(find.textContaining('高浜線'), findsNothing);
   });
+}
+
+Future<void> _tapHistoryItem(WidgetTester tester, Finder target) async {
+  await tester.scrollUntilVisible(
+    target,
+    150,
+    scrollable: find.byType(Scrollable).first,
+  );
+  await Scrollable.ensureVisible(tester.element(target), alignment: 0.5);
+  await tester.pump();
+  expect(target.hitTestable(), findsOneWidget);
+  await tester.tap(target);
 }
 
 RawHistoryBlock _rawBlock(int index, String hexadecimal) => RawHistoryBlock(

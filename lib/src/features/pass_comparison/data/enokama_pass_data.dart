@@ -2,9 +2,15 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 
+import 'pass_named_place.dart';
+import 'pass_station_english.g.dart';
+
 import 'pass_transit_data.dart';
 
-class EnokamaStation {
+class EnokamaStation implements PassNamedPlace {
+  @override
+  String get nameEn => passStationEnglish['enokama:$id'] ?? '';
+
   const EnokamaStation({
     required this.id,
     required this.nameJa,
@@ -22,16 +28,22 @@ class EnokamaStation {
   );
 
   final String id;
+  @override
   final String nameJa;
+  @override
   final String nameKo;
   final String operator;
   final String line;
   String get displayName => nameKo.isEmpty ? nameJa : nameKo;
+  @override
   String get secondaryLabel =>
       '$nameJa · ${operator == 'Enoshima Electric Railway' ? '에노덴' : '오다큐 전철'}';
 }
 
-class EnokamaOrigin {
+class EnokamaOrigin implements PassNamedPlace {
+  @override
+  String get nameEn => passStationEnglish['enokama-origin:$id'] ?? '';
+
   const EnokamaOrigin({
     required this.id,
     required this.nameJa,
@@ -53,13 +65,16 @@ class EnokamaOrigin {
   );
 
   final String id;
+  @override
   final String nameJa;
+  @override
   final String nameKo;
   final String line;
   final int passPrice;
   final int roundTripFare;
   final bool roundTripApplicable;
   String get displayName => nameKo.isEmpty ? nameJa : nameKo;
+  @override
   String get secondaryLabel =>
       '$nameJa · 오다큐 ${line == 'Tama Line'
           ? '다마선'
@@ -102,10 +117,16 @@ class EnokamaPassData {
   int? fareBetween(EnokamaStation from, EnokamaStation to) =>
       from.id == to.id ? null : _fares['${from.id}:${to.id}'];
 
-  List<EnokamaStation> searchStations(String query) =>
-      _search(query, stations, (value) => [value.nameJa, value.nameKo]);
-  List<EnokamaOrigin> searchOrigins(String query) =>
-      _search(query, origins, (value) => [value.nameJa, value.nameKo]);
+  List<EnokamaStation> searchStations(String query) => _search(
+    query,
+    stations,
+    (value) => [value.nameJa, value.nameKo, value.nameEn],
+  );
+  List<EnokamaOrigin> searchOrigins(String query) => _search(
+    query,
+    origins,
+    (value) => [value.nameJa, value.nameKo, value.nameEn],
+  );
 
   List<T> _search<T>(
     String query,

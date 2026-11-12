@@ -1,8 +1,9 @@
 import 'dart:collection';
 
 import 'pass_transit_data.dart';
+import 'pass_named_place.dart';
 
-class SapporoSubwayStation {
+class SapporoSubwayStation implements PassNamedPlace {
   const SapporoSubwayStation({
     required this.id,
     required this.nameJa,
@@ -11,11 +12,15 @@ class SapporoSubwayStation {
   });
 
   final String id;
+  @override
   final String nameJa;
+  @override
   final String nameEn;
+  @override
   final String nameKo;
 
   String get displayName => nameKo;
+  @override
   String get secondaryLabel => '$nameJa · 삿포로시 지하철';
 }
 

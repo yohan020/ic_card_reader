@@ -2,9 +2,20 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 
+import 'pass_named_place.dart';
+
 import 'pass_transit_data.dart';
 
-class HakonePlace {
+class HakonePlace implements PassNamedPlace {
+  @override
+  String get nameJa => ja;
+  @override
+  String get nameKo => ko;
+  @override
+  String get nameEn => en;
+  @override
+  String get secondaryLabel => detail;
+
   const HakonePlace({
     required this.id,
     required this.ja,
@@ -41,7 +52,16 @@ class HakonePlace {
       (selectedMode == 'ropeway' && id == 'OH62');
 }
 
-class HakoneDeparture {
+class HakoneDeparture implements PassNamedPlace {
+  @override
+  String get nameJa => ja;
+  @override
+  String get nameKo => ko;
+  @override
+  String get nameEn => en;
+  @override
+  String get secondaryLabel => '$ja · $line';
+
   const HakoneDeparture({
     required this.id,
     required this.line,

@@ -11,8 +11,40 @@ import 'package:ic_card_reader/src/features/transaction_history/domain/amount_ca
 import 'package:ic_card_reader/src/features/transaction_history/domain/parsed_transit_history.dart';
 import 'package:ic_card_reader/src/features/transaction_history/domain/transit_transaction_type.dart';
 import 'package:ic_card_reader/src/features/transaction_history/presentation/history_pages.dart';
+import 'package:ic_card_reader/src/features/transaction_history/presentation/widgets/history_station_map.dart';
 
 void main() {
+  testWidgets('station map follows details and precedes report, rail only', (
+    tester,
+  ) async {
+    for (final sample in [
+      _history(),
+      const TransitHistoryParser().parse([
+        _rawBlock('050F000F342E0A0100003000000412C0'),
+      ]).single,
+    ]) {
+      await tester.pumpWidget(
+        MaterialApp(home: HistoryDetailPage(history: sample)),
+      );
+      final children = tester.widget<AppPage>(find.byType(AppPage)).children;
+      final mapIndex = children.indexWhere(
+        (child) => child is HistoryStationMap,
+      );
+      if (sample.transactionType == TransitTransactionType.rail) {
+        final detailIndex = children.indexWhere(
+          (child) => child is SectionLabel && child.text == '상세 정보',
+        );
+        final reportIndex = children.lastIndexWhere(
+          (child) => child is OutlinedButton,
+        );
+        expect(mapIndex, greaterThan(detailIndex));
+        expect(mapIndex, lessThan(reportIndex));
+      } else {
+        expect(mapIndex, -1);
+      }
+    }
+  });
+
   for (final dark in [false, true]) {
     testWidgets(
       'unavailable amount is lighter in list and detail (${dark ? 'dark' : 'light'})',
@@ -102,7 +134,7 @@ void main() {
           .any(
             (widget) =>
                 widget.padding ==
-                const EdgeInsets.symmetric(horizontal: 17, vertical: 12),
+                const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           ),
       isTrue,
     );

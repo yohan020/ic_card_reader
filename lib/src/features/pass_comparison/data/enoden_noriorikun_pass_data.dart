@@ -2,9 +2,15 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 
+import 'pass_named_place.dart';
+import 'pass_station_english.g.dart';
+
 import 'pass_transit_data.dart';
 
-class EnodenStation {
+class EnodenStation implements PassNamedPlace {
+  @override
+  String get nameEn => passStationEnglish['enoden:$id'] ?? '';
+
   const EnodenStation({
     required this.id,
     required this.nameJa,
@@ -20,11 +26,14 @@ class EnodenStation {
   );
 
   final String id;
+  @override
   final String nameJa;
+  @override
   final String nameKo;
   final double kilometer;
 
   String get displayName => nameKo.isEmpty ? nameJa : nameKo;
+  @override
   String get secondaryLabel => '$nameJa · 에노시마 전철';
 }
 
@@ -121,7 +130,7 @@ class _FareBand {
 
 class _SearchEntry {
   _SearchEntry(this.station)
-    : candidates = {station.nameJa, station.nameKo}
+    : candidates = {station.nameJa, station.nameKo, station.nameEn}
           .map(
             (value) => (
               normalized: normalizeStationSearchText(value),
