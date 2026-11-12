@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <meta name="description" content="Japanese Transit Card Reader Privacy Policy">
+    <title>Japanese Transit Card Reader Privacy Policy</title>
+    <link rel="alternate" hreflang="ko" href="index.html">
+    <link rel="alternate" hreflang="en" href="privacy-en.html">
+    <style>
+      :root {
+        color-scheme: light dark;
+        --background: #f4faff;
+        --surface: #ffffff;
+        --text: #16232d;
+        --muted: #536875;
+        --primary: #087faf;
+        --border: #d8e8f0;
+        --notice: #e7f6fc;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --background: #0f1820;
+          --surface: #18242d;
+          --text: #edf7fc;
+          --muted: #b5c9d4;
+          --primary: #6acdf2;
+          --border: #304450;
+          --notice: #173442;
+        }
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        background: var(--background);
+        color: var(--text);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif;
+        line-height: 1.7;
+      }
+
+      main {
+        width: min(760px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 48px 0 72px;
+      }
+
+      article {
+        padding: clamp(24px, 5vw, 48px);
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 24px;
+        box-shadow: 0 18px 48px rgb(20 80 110 / 8%);
+      }
+
+      h1 {
+        margin: 0 0 8px;
+        font-size: clamp(28px, 6vw, 40px);
+        line-height: 1.25;
+        letter-spacing: -0.04em;
+      }
+
+      h2 {
+        margin: 34px 0 8px;
+        font-size: 20px;
+        line-height: 1.4;
+        letter-spacing: -0.02em;
+      }
+
+      p, li { color: var(--muted); }
+      ul { padding-left: 22px; }
+
+      a {
+        color: var(--primary);
+        font-weight: 650;
+        overflow-wrap: anywhere;
+      }
+
+      .meta {
+        margin: 0 0 28px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .notice {
+        margin: 24px 0 8px;
+        padding: 18px 20px;
+        background: var(--notice);
+        border: 1px solid color-mix(in srgb, var(--primary) 24%, transparent);
+        border-radius: 16px;
+      }
+
+      .notice strong {
+        display: block;
+        margin-bottom: 4px;
+        color: var(--text);
+      }
+
+      footer {
+        margin-top: 36px;
+        padding-top: 20px;
+        border-top: 1px solid var(--border);
+        color: var(--muted);
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <article>
+        <nav aria-label="Policy language"><a href="index.html" lang="ko" hreflang="ko">한국어</a> · <span aria-current="page">English</span></nav>
+        <h1>Privacy Policy</h1>
+        <p class="meta">Japanese Transit Card Reader · Effective date: October 27, 2026</p>
+        <div class="notice">
+          <strong>Card information is normally processed on your device.</strong>
+          Transit card records are read using NFC and displayed on screen, without permanent storage. The raw card IDm is used only temporarily during NFC communication and is not stored, displayed or transmitted.
+        </div>
+        <h2>1. Why we use NFC</h2>
+        <p>The app uses NFC to read recent records and identify the type of Japanese transit IC card when you start a scan. In a separate card recognition inquiry, only minimal metadata is checked with your consent. The app does not write to or modify your card.</p>
+        <h2>2. Information processed on your device</h2>
+        <p>The app interprets and displays the original 16-byte records, dates, transaction types, station codes and names, amounts and balances from recent transactions on your device. Records are not stored permanently. Scanning another card in the normal scan flow replaces the current results. The raw card IDm is used only temporarily during NFC communication and is not stored, logged, displayed or sent to a server.</p>
+        <p>The multiple-card balance comparison feature keeps the names, balances, check times and records of up to 10 cards only in the comparison screen’s memory. To distinguish cards, it creates a session-only comparison value from the card IDm and a random key generated at the start of the comparison. The raw IDm is not retained. Comparison values, random keys and card names you enter are not saved to files or sent to a server. They are cleared when the comparison ends or the app process exits. Deleting an individual card also removes its comparison information. Comparison scans do not replace the normal scan results.</p>
+        <h2>3. Information sent with an issue report</h2>
+        <p>Issue reports are optional. Only after you review the preview and give explicit consent does the app send the following information to Supabase:</p>
+        <ul>
+        <li>The original 16-byte record of the one transaction you select</li>
+        <li>The region, line and station codes, the current interpretation and your suggested interpretation for that record</li>
+        <li>Transaction type, date of use, balance and calculated amount</li>
+        <li>The station name, city, line, bus operator, operating city/region or report description you enter for the selected issue type</li>
+        <li>Additional details you enter</li>
+        <li>App, parser and station database versions</li>
+        <li>Platform and OS version</li>
+        <li>An anonymous report ID generated by the app</li>
+        </ul>
+        <p>This information is used to investigate errors and improve the app.</p>
+        <h3>Separate card recognition inquiries</h3>
+        <p>This is an optional feature separate from normal transaction reports. After you consent to a diagnostic scan, the app checks only system codes, manufacturer information (PMm), the presence of selected permitted services and communication error codes on your device. It does not read a full card dump or service contents.</p>
+        <p>Only after you review the preview, purpose and retention period and give separate, explicit consent does the app send the following information to Supabase:</p>
+        <ul>
+        <li>System codes, PMm, whether selected services are present, absent or unknown, and communication error types</li>
+        <li>The card type and problem description you enter (optional)</li>
+        <li>App/OS versions, platform, a random report ID and the consent document version</li>
+        </ul>
+        <p>The purpose is to improve card identification and resolve card reading errors. These inquiries do not include the card IDm, card number, unique device identifiers, balance, transaction history or a full card dump. Input fields also advise you not to enter personal information such as your name, card number or contact details. If you change an inquiry, the preview and consent must be checked again. Inquiry data is not transmitted before you submit it, and the app does not retain the contents after you leave the inquiry screen.</p>
+        <p>Card recognition inquiries use the same anonymous-authentication-based submission limits. They are deleted by a monthly task one year after being marked resolved (<code>RESOLVED</code>); inquiries under review are retained. You may request deletion by emailing the report ID to the contact address below.</p>
+        <h2>4. Information not included in reports</h2>
+        <p>The raw card IDm, other unselected transaction records, your name, email address, unique device identifiers, current location and full travel route are not included in issue report data.</p>
+        <h2>5. External processing services</h2>
+        <p>Issue reports use Supabase’s anonymous authentication, Edge Functions and PostgreSQL database. An anonymous authentication ID is used only within the server to limit submissions to a maximum of five per 10 minutes and block abusive reports. This is not an email address, card IDm or unique device ID, and it is not displayed in the app. For new reports, the server can associate the anonymous ID with a report to check whether submissions are blocked, but the operator interface does not display the UUID itself. Report contents are processed through Supabase infrastructure as part of providing the service. Technical information associated with network connections, such as IP addresses, may be processed under Supabase’s service operation and security policies.</p>
+        <h2>5-1. Google Maps</h2>
+        <p>When you open rail transaction details, a Google Maps SDK map is displayed automatically if the app confirms an internet connection, station locations and map configuration. Possible locations are shown for station groups and segments. The coordinates of the displayed stations and the surrounding map area are used in map requests. Google may process IP addresses, device, OS and SDK information, map-SDK-specific pseudonymous identifiers, diagnostics and usage information. The app does not request current-location permission or pass your card IDm, card number, balance or raw transaction records to the map SDK.</p>
+        <p>If an internet connection cannot be confirmed, the map is not displayed; you can retry using Refresh map after connecting. Connection status is checked on your device using Android network capability information, without contacting a separate connectivity-check server. Stopping or refreshing a map does not cancel or delete requests already made. Card reading and the transaction list remain available without a map connection. The app does not separately store map usage history. The external map service’s processing, retention and deletion are governed by <a href="https://policies.google.com/privacy">Google’s Privacy Policy</a>. You can also refer to the <a href="https://developers.google.com/maps/documentation/android-sdk/play-data-disclosure">Google Maps SDK data disclosure guide</a>. Station coordinates come from Wikidata CC0 data bundled with the app; the app does not perform online station or route searches.</p>
+        <h2>6. Station code data</h2>
+        <p>Station names are looked up using licensed Yoiko station code data distributed with the app. Lookups take place on your device; card records are not sent to an external server to identify station names. Data sources and terms of use are shown under Data sources and fare rules in Settings and in <code>assets/licenses/yoiko-station-data-TERMS.txt</code>.</p>
+        <h2>7. Retention and deletion</h2>
+        <p>The app does not permanently store records read from your card. Optional issue reports resolved as <code>APPLIED</code> or <code>REJECTED</code>, together with their review histories, are retained for one year from resolution and then deleted by a monthly automatic task. Reports marked <code>RECEIVED</code>, <code>REVIEWING</code> or <code>VERIFIED</code> are not automatically deleted, to avoid losing reports that have not yet been handled. Anonymous authentication IDs used to block abusive reports are retained only for server security. Where retention is required by law, information may be kept for the required period.</p>
+        <h2>8. Your choices</h2>
+        <p>You can use NFC reading and view transaction records without sending an issue report or a card recognition inquiry. You can review the actual data before sending it. If you do not consent to a submission, the report or inquiry data is not sent. Google Maps connects automatically under the conditions explained in section 5-1 above. The map service’s data processing is separate from submitting reports and inquiries.</p>
+        <h2>9. Policy changes and contact</h2>
+        <p>If our data processing practices change, we will update this policy and its effective date. For requests to access or delete your information, app errors, usage questions or other inquiries, contact the address below.</p>
+        <ul>
+        <li>Contact email: <a href="mailto:iccardreader10@gmail.com">iccardreader10@gmail.com</a></li>
+        </ul>
+        <footer>
+          Operator: Operator of Japanese Transit Card Reader<br>
+          This page does not use visitor analytics, advertising or tracking cookies.
+        </footer>
+      </article>
+    </main>
+  </body>
+</html>
