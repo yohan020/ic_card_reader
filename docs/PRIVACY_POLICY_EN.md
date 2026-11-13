@@ -1,6 +1,6 @@
 # Japanese Transit Card Reader Privacy Policy
 
-- Effective date: October 27, 2026
+- Effective date: November 13, 2026
 - Operator: Operator of Japanese Transit Card Reader
 - Public address: <https://yohan020.github.io/ic_card_reader/privacy-en.html>
 
@@ -13,6 +13,10 @@ The app uses NFC to read recent records and identify the type of Japanese transi
 The app interprets and displays the original 16-byte records, dates, transaction types, station codes and names, amounts and balances from recent transactions on your device. Records are not stored permanently. Scanning another card in the normal scan flow replaces the current results. The raw card IDm is used only temporarily during NFC communication and is not stored, logged, displayed or sent to a server.
 
 The multiple-card balance comparison feature keeps the names, balances, check times and records of up to 10 cards only in the comparison screen’s memory. To distinguish cards, it creates a session-only comparison value from the card IDm and a random key generated at the start of the comparison. The raw IDm is not retained. Comparison values, random keys and card names you enter are not saved to files or sent to a server. They are cleared when the comparison ends or the app process exits. Deleting an individual card also removes its comparison information. Comparison scans do not replace the normal scan results.
+
+### Optional CSV export
+
+Only when you choose Export CSV does the app create a file from all transactions or the current filter of the card you are viewing, using your app language and station-name settings. It contains displayed dates, transaction types, boarding/alighting stations, descriptions, amounts, amount status and balances. Raw card records, IDm, station database files and comparison identifiers are not included. On Android, you choose a save location in the system document picker. The app does not retain an internal CSV or automatically send it to the app operator. The exported file remains after the session ends; you manage and delete it yourself. Choosing a cloud document provider may upload it under that provider’s terms. Cancelling before choosing a destination does not save a file; a failed write may leave an empty or partial file at the selected location. The CSV is not an official receipt and cannot recover older records no longer on the card.
 
 ## 3. Information sent with an issue report
 
