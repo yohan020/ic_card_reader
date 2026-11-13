@@ -25,6 +25,7 @@ void main() {
     final rokkujizo = data.search('ㄹㅋㅈ').first;
 
     expect(data.search('ㄱㄹㅅㅁ').any((station) => station.id == 'K08'), true);
+    expect(data.search('교토시영지하철'), isEmpty);
     expect(kyoto.nameJa, '京都');
     expect(rokkujizo.id, 'T01');
     expect(data.fareBetween(kyoto, shijo), 220);

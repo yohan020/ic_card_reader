@@ -2,9 +2,15 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 
+import 'pass_named_place.dart';
+import 'pass_station_english.g.dart';
+
 import 'pass_transit_data.dart';
 
-class OsakaPassStation {
+class OsakaPassStation implements PassNamedPlace {
+  @override
+  String get nameEn => passStationEnglish['osaka:$id'] ?? '';
+
   const OsakaPassStation({
     required this.nameJa,
     required this.nameKo,
@@ -24,12 +30,15 @@ class OsakaPassStation {
 
   final String id;
   final String operator;
+  @override
   final String nameJa;
+  @override
   final String nameKo;
   final List<String> lines;
 
   String get lookupId => id.isEmpty ? '$operator::$nameJa' : id;
   String get displayName => nameKo.isEmpty ? nameJa : nameKo;
+  @override
   String get secondaryLabel => [
     if (nameKo.isNotEmpty) nameJa,
     operatorDisplayName(operator),
@@ -367,6 +376,7 @@ class OsakaPassStationData {
     final normalized = normalizeStationSearchText(query);
     if (normalized.isEmpty) return const [];
     final initials = hangulInitials(normalized);
+    final isInitialQuery = isHangulInitialSearch(normalized);
     final ranked = <({OsakaPassStation station, int score})>[];
     for (final entry in _index) {
       if (operator != null && entry.station.operator != operator) continue;
@@ -376,7 +386,7 @@ class OsakaPassStationData {
           score = 0;
         } else if (candidate.normalized.startsWith(normalized)) {
           score = score > 10 ? 10 : score;
-        } else if (candidate.initials.startsWith(initials)) {
+        } else if (isInitialQuery && candidate.initials.startsWith(initials)) {
           score = score > 20 ? 20 : score;
         } else if (candidate.normalized.contains(normalized)) {
           score = score > 30 ? 30 : score;
@@ -399,7 +409,11 @@ class OsakaPassStationData {
 class OsakaPassStationDataRepository {
   const OsakaPassStationDataRepository();
 
-  Future<OsakaPassStationData> load() async => OsakaPassStationData.fromJson(
+  static Future<OsakaPassStationData>? _cachedLoad;
+
+  Future<OsakaPassStationData> load() => _cachedLoad ??= _load();
+
+  Future<OsakaPassStationData> _load() async => OsakaPassStationData.fromJson(
     await rootBundle.loadString(
       'assets/data/pass_comparison/osaka_amazing_pass_fares_2026.json',
     ),
@@ -408,22 +422,16 @@ class OsakaPassStationDataRepository {
 
 class _OsakaSearchEntry {
   _OsakaSearchEntry(this.station)
-    : candidates =
-          {
-                station.nameJa,
-                station.nameKo,
-                operatorDisplayName(station.operator),
-                ...station.lines,
-              }
-              .where((value) => value.isNotEmpty)
-              .map((value) {
-                final normalized = normalizeStationSearchText(value);
-                return (
-                  normalized: normalized,
-                  initials: hangulInitials(normalized),
-                );
-              })
-              .toList(growable: false);
+    : candidates = {station.nameJa, station.nameKo, station.nameEn}
+          .where((value) => value.isNotEmpty)
+          .map((value) {
+            final normalized = normalizeStationSearchText(value);
+            return (
+              normalized: normalized,
+              initials: hangulInitials(normalized),
+            );
+          })
+          .toList(growable: false);
 
   final OsakaPassStation station;
   final List<({String normalized, String initials})> candidates;

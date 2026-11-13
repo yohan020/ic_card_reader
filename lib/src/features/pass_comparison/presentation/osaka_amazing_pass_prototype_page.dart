@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 
+import 'pass_strings.dart';
+
 import '../../../core/design/app_theme.dart';
 import '../../../core/widgets/app_ui.dart';
+import 'widgets/pass_result_scope_note.dart';
 import '../data/osaka_pass_station_data.dart';
 import '../domain/osaka_amazing_pass.dart';
+import 'widgets/pass_segment_remove_button.dart';
+import 'widgets/pass_station_picker_field.dart';
 
 class OsakaAmazingPassPrototypePage extends StatefulWidget {
   const OsakaAmazingPassPrototypePage({this.initialData, super.key});
@@ -31,7 +36,7 @@ class _OsakaAmazingPassPrototypePageState
 
   Future<void> _load() async {
     try {
-      final data = await const OsakaPassStationDataRepository().load();
+      final data = await OsakaPassStationDataRepository().load();
       if (mounted) setState(() => _data = data);
     } catch (error) {
       if (mounted) setState(() => _loadError = error);
@@ -40,29 +45,29 @@ class _OsakaAmazingPassPrototypePageState
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('교통패스 비교')),
+    appBar: AppBar(title: Text(passText(context, '교통패스 비교'))),
     body: SafeArea(
       top: false,
       child: ListView(
-        padding: const EdgeInsets.fromLTRB(20, 18, 20, 32),
+        padding: EdgeInsets.fromLTRB(20, 18, 20, 32),
         children: [
-          const _PrototypeProgress(activeStep: 2),
-          const SizedBox(height: 24),
+          _PrototypeProgress(activeStep: 2),
+          SizedBox(height: 24),
           Text(
-            '이동 계획을 입력해 주세요',
+            passText(context, '이동 계획을 입력해 주세요'),
             style: Theme.of(
               context,
             ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800),
           ),
-          const SizedBox(height: 6),
+          SizedBox(height: 6),
           Text(
-            '실제로 개찰을 통과할 출발역과 하차역을 입력하면 운임을 자동으로 찾습니다.',
+            passText(context, '실제로 개찰을 통과할 출발역과 하차역을 입력하면 운임을 자동으로 찾습니다.'),
             style: TextStyle(
               color: Theme.of(context).colorScheme.onSurfaceVariant,
               height: 1.45,
             ),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 20),
           _OsakaSelectedPassSummary(
             value: _product,
             onChanged: (value) => setState(() {
@@ -76,21 +81,24 @@ class _OsakaAmazingPassPrototypePageState
             }),
           ),
           if (_loadError != null) ...[
-            const SizedBox(height: 12),
-            const NoticeBanner(
-              title: '운임 데이터를 읽지 못했습니다',
-              text: '프로토타입 asset을 다시 생성한 뒤 실행해 주세요.',
+            SizedBox(height: 12),
+            NoticeBanner(
+              title: passText(context, '운임 데이터를 읽지 못했습니다'),
+              text: passText(context, '프로토타입 asset을 다시 생성한 뒤 실행해 주세요.'),
               tone: NoticeTone.warning,
             ),
           ],
-          const SizedBox(height: 20),
+          SizedBox(height: 20),
           SectionLabel(
-            '이동 구간',
-            trailing: TextButton(onPressed: _clear, child: const Text('비우기')),
+            passText(context, '이동 구간'),
+            trailing: TextButton(
+              onPressed: _clear,
+              child: Text(passText(context, '비우기')),
+            ),
           ),
           AppSurface(
-            key: const ValueKey('osaka-journey-plan-card'),
-            padding: const EdgeInsets.all(14),
+            key: ValueKey('osaka-journey-plan-card'),
+            padding: EdgeInsets.all(14),
             child: Column(
               children: [
                 for (var index = 0; index < _drafts.length; index++) ...[
@@ -98,53 +106,53 @@ class _OsakaAmazingPassPrototypePageState
                     index: index,
                     draft: _drafts[index],
                     data: _data,
-                    dayCount: _product.dayCount,
                     canRemove: _drafts.length > 1,
                     onChanged: () => setState(() {}),
                     onRemove: () => _remove(index),
                   ),
                   if (index != _drafts.length - 1) ...[
-                    const SizedBox(height: 14),
+                    SizedBox(height: 14),
                     Divider(
                       color: Theme.of(context).colorScheme.outlineVariant,
                     ),
-                    const SizedBox(height: 14),
+                    SizedBox(height: 14),
                   ],
                 ],
               ],
             ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           OutlinedButton.icon(
             onPressed: _data == null
                 ? null
                 : () => setState(() => _drafts.add(_OsakaSegmentDraft())),
-            icon: const Icon(Icons.add_rounded),
-            label: const Text('이동 구간 추가'),
+            icon: Icon(Icons.add_rounded),
+            label: Text(passText(context, '이동 구간 추가')),
           ),
-          const SizedBox(height: 18),
+          SizedBox(height: 18),
           _BusRideCounter(
-            dayCount: _product.dayCount,
             ridesByDay: _busRidesByDay,
             fare: _data?.busAdultFare ?? 210,
-            onChanged: (day, value) =>
-                setState(() => _busRidesByDay[day] = value),
+            onChanged: (value) => setState(() => _busRidesByDay[0] = value),
           ),
-          const SizedBox(height: 18),
+          SizedBox(height: 18),
           NoticeBanner(
-            title: '교통비만 비교합니다',
-            text: _data == null
-                ? '검증된 철도·버스 운임 데이터를 불러오는 중입니다.'
-                : '철도 ${_data!.stations.length}역·환승 연결 ${_data!.transfers.length}개와 시티버스 일반 운임을 사용합니다. 관광시설 혜택은 포함하지 않습니다.',
+            title: passText(context, '교통비만 비교합니다'),
+            text: passText(
+              context,
+              _data == null
+                  ? '검증된 철도·버스 운임 데이터를 불러오는 중입니다.'
+                  : '철도 ${_data!.stations.length}역·환승 연결 ${_data!.transfers.length}개와 시티버스 일반 운임을 사용합니다. 관광시설 혜택은 포함하지 않습니다.',
+            ),
             tone: NoticeTone.info,
           ),
-          const SizedBox(height: 18),
+          SizedBox(height: 18),
           FilledButton(
             onPressed: _data == null ? null : _showResult,
-            child: const Text('비교 결과 보기'),
+            child: Text(passText(context, '비교 결과 보기')),
           ),
-          const SizedBox(height: 12),
-          const _OsakaPlannerFootnote(),
+          SizedBox(height: 12),
+          _OsakaPlannerFootnote(),
         ],
       ),
     ),
@@ -181,8 +189,8 @@ class _OsakaAmazingPassPrototypePageState
           (leg) => OsakaPlannedSegment(
             dayIndex: draft.dayIndex,
             operator: leg.operator,
-            fromStation: leg.from.displayName,
-            toStation: leg.to.displayName,
+            fromStation: leg.from.passName(context),
+            toStation: leg.to.passName(context),
             regularFare: leg.fare,
             journeyIndex: draftIndex,
           ),
@@ -205,7 +213,7 @@ class _OsakaAmazingPassPrototypePageState
   void _showInputMessage(String message) {
     ScaffoldMessenger.of(
       context,
-    ).showSnackBar(SnackBar(content: Text(message)));
+    ).showSnackBar(SnackBar(content: Text(passText(context, message))));
   }
 }
 
@@ -220,7 +228,7 @@ class _OsakaSelectedPassSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => AppSurface(
-    padding: const EdgeInsets.all(14),
+    padding: EdgeInsets.all(14),
     child: Column(
       children: [
         Row(
@@ -237,18 +245,18 @@ class _OsakaSelectedPassSummary extends StatelessWidget {
                 color: AppColors.accent(context),
               ),
             ),
-            const SizedBox(width: 11),
+            SizedBox(width: 11),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    value.label,
-                    style: const TextStyle(fontWeight: FontWeight.w800),
+                    passText(context, value.label),
+                    style: TextStyle(fontWeight: FontWeight.w800),
                   ),
-                  const SizedBox(height: 2),
+                  SizedBox(height: 2),
                   Text(
-                    '¥${value.price}',
+                    passText(context, '¥${value.price}'),
                     style: TextStyle(
                       color: AppColors.accent(context),
                       fontSize: 13,
@@ -259,7 +267,7 @@ class _OsakaSelectedPassSummary extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10),
         Row(
           children: [
             for (
@@ -275,7 +283,7 @@ class _OsakaSelectedPassSummary extends StatelessWidget {
                 ),
               ),
               if (index != OsakaAmazingPassProduct.values.length - 1)
-                const SizedBox(width: 7),
+                SizedBox(width: 7),
             ],
           ],
         ),
@@ -299,14 +307,14 @@ class _OsakaDurationOption extends StatelessWidget {
   Widget build(BuildContext context) => Semantics(
     button: true,
     selected: selected,
-    label: '${product.dayCount}일권 ${product.price}엔',
+    label: passText(context, '${product.dayCount}일권 ${product.price}엔'),
     child: InkWell(
       key: ValueKey('osaka-duration-${product.dayCount}'),
       onTap: onTap,
       borderRadius: BorderRadius.circular(11),
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 180),
-        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 9),
+        duration: Duration(milliseconds: 180),
+        padding: EdgeInsets.symmetric(horizontal: 6, vertical: 9),
         decoration: BoxDecoration(
           color: selected ? AppColors.skyDark : AppColors.softSurface(context),
           borderRadius: BorderRadius.circular(11),
@@ -314,16 +322,16 @@ class _OsakaDurationOption extends StatelessWidget {
         child: Column(
           children: [
             Text(
-              '${product.dayCount}일권',
+              passText(context, '${product.dayCount}일권'),
               style: TextStyle(
                 color: selected ? Colors.white : AppColors.accent(context),
                 fontSize: 12,
                 fontWeight: FontWeight.w800,
               ),
             ),
-            const SizedBox(height: 2),
+            SizedBox(height: 2),
             Text(
-              '¥${product.price}',
+              passText(context, '¥${product.price}'),
               style: TextStyle(
                 color: selected
                     ? Colors.white.withValues(alpha: .86)
@@ -344,7 +352,6 @@ class _SegmentCard extends StatelessWidget {
     required this.index,
     required this.draft,
     required this.data,
-    required this.dayCount,
     required this.canRemove,
     required this.onChanged,
     required this.onRemove,
@@ -353,7 +360,6 @@ class _SegmentCard extends StatelessWidget {
   final int index;
   final _OsakaSegmentDraft draft;
   final OsakaPassStationData? data;
-  final int dayCount;
   final bool canRemove;
   final VoidCallback onChanged;
   final VoidCallback onRemove;
@@ -377,29 +383,24 @@ class _SegmentCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Text(
-                '${index + 1}',
+                passText(context, '${index + 1}'),
                 style: TextStyle(
                   color: AppColors.accent(context),
                   fontWeight: FontWeight.w900,
                 ),
               ),
             ),
-            const SizedBox(width: 8),
-            const Expanded(
+            SizedBox(width: 8),
+            Expanded(
               child: Text(
-                '이동 구간',
+                passText(context, '이동 구간'),
                 style: TextStyle(fontWeight: FontWeight.w800),
               ),
             ),
-            if (canRemove)
-              IconButton(
-                tooltip: '구간 삭제',
-                onPressed: onRemove,
-                icon: const Icon(Icons.close_rounded),
-              ),
+            if (canRemove) PassSegmentRemoveButton(onPressed: onRemove),
           ],
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10),
         Row(
           children: [
             Expanded(
@@ -414,9 +415,9 @@ class _SegmentCard extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 5),
+              padding: EdgeInsets.symmetric(horizontal: 5),
               child: IconButton(
-                tooltip: '출발·도착 바꾸기',
+                tooltip: passText(context, '출발·도착 바꾸기'),
                 onPressed: () {
                   final from = draft.from;
                   draft.from = draft.to;
@@ -424,12 +425,12 @@ class _SegmentCard extends StatelessWidget {
                   onChanged();
                 },
                 visualDensity: VisualDensity.compact,
-                constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                constraints: BoxConstraints(minWidth: 36, minHeight: 36),
                 style: IconButton.styleFrom(
                   foregroundColor: AppColors.accent(context),
                   backgroundColor: AppColors.softSurface(context),
                 ),
-                icon: const Icon(Icons.swap_horiz_rounded, size: 20),
+                icon: Icon(Icons.swap_horiz_rounded, size: 20),
               ),
             ),
             Expanded(
@@ -445,36 +446,28 @@ class _SegmentCard extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8),
         _OsakaResolvedFareSummary(
           index: index,
           hasBothStations: draft.from != null && draft.to != null,
           route: route,
         ),
-        if (dayCount > 1) ...[
-          const SizedBox(height: 9),
-          _OsakaDaySelector(
-            value: draft.dayIndex,
-            dayCount: dayCount,
-            onChanged: (value) {
-              draft.dayIndex = value;
-              onChanged();
-            },
-          ),
-        ],
         if (route != null && route.transferCount > 0) ...[
-          const SizedBox(height: 7),
+          SizedBox(height: 7),
           Align(
             alignment: Alignment.centerLeft,
             child: Text(
-              route.legs
-                  .map(
-                    (leg) =>
-                        '${operatorDisplayName(leg.operator)} '
-                        '${leg.from.displayName}→${leg.to.displayName} '
-                        '¥${leg.fare}',
-                  )
-                  .join('  ·  '),
+              passText(
+                context,
+                route.legs
+                    .map(
+                      (leg) =>
+                          '${operatorDisplayName(leg.operator)} '
+                          '${leg.from.passName(context)}→${leg.to.passName(context)} '
+                          '¥${leg.fare}',
+                    )
+                    .join('  ·  '),
+              ),
               key: ValueKey('osaka-segment-route-$index'),
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -502,56 +495,23 @@ class _StationButton extends StatelessWidget {
   final ValueChanged<OsakaPassStation> onSelected;
 
   @override
-  Widget build(BuildContext context) => SizedBox(
-    height: station == null ? 60 : 76,
-    child: OutlinedButton(
-      onPressed: data == null
-          ? null
-          : () async {
-              final selected = await Navigator.of(context)
-                  .push<OsakaPassStation>(
-                    MaterialPageRoute<OsakaPassStation>(
-                      builder: (_) => _OsakaStationSearchPage(
-                        title: '$label역 선택',
-                        data: data!,
-                      ),
-                    ),
-                  );
-              if (selected != null) onSelected(selected);
-            },
-      style: OutlinedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-        backgroundColor: AppColors.fieldSurface(context),
-        side: BorderSide(color: AppColors.outline(context)),
-        foregroundColor: Theme.of(context).colorScheme.onSurface,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(label, style: Theme.of(context).textTheme.bodySmall),
-          const SizedBox(height: 2),
-          Text(
-            station?.displayName ?? '역 선택',
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              color: AppColors.accent(context),
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          if (station != null) ...[
-            const SizedBox(height: 2),
-            Text(
-              operatorDisplayName(station!.operator),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: Theme.of(context).textTheme.labelSmall,
-            ),
-          ],
-        ],
-      ),
-    ),
+  Widget build(BuildContext context) => PassStationPickerField(
+    label: label,
+    stationName: station?.passName(context),
+    operatorLabel: station == null
+        ? null
+        : operatorDisplayName(station!.operator),
+    onTap: data == null
+        ? null
+        : () async {
+            final selected = await Navigator.of(context).push<OsakaPassStation>(
+              MaterialPageRoute<OsakaPassStation>(
+                builder: (_) =>
+                    _OsakaStationSearchPage(title: '$label역 선택', data: data!),
+              ),
+            );
+            if (selected != null) onSelected(selected);
+          },
   );
 }
 
@@ -576,13 +536,13 @@ class _OsakaResolvedFareSummary extends StatelessWidget {
             size: 17,
             color: AppColors.mutedText(context),
           ),
-          const SizedBox(width: 7),
+          SizedBox(width: 7),
           Expanded(
             child: Text(
-              '두 역을 선택하면 운임을 자동으로 확인합니다.',
+              passText(context, '두 역을 선택하면 운임을 자동으로 확인합니다.'),
               style: TextStyle(
                 color: AppColors.mutedText(context),
-                fontSize: 12,
+                fontSize: 11,
               ),
             ),
           ),
@@ -598,10 +558,10 @@ class _OsakaResolvedFareSummary extends StatelessWidget {
             size: 17,
             color: AppColors.mutedText(context),
           ),
-          const SizedBox(width: 7),
+          SizedBox(width: 7),
           Expanded(
             child: Text(
-              '지원 데이터에서 경로를 확인할 수 없습니다.',
+              passText(context, '지원 데이터에서 경로를 확인할 수 없습니다.'),
               key: ValueKey('osaka-segment-fare-$index'),
               style: TextStyle(
                 color: AppColors.mutedText(context),
@@ -612,79 +572,28 @@ class _OsakaResolvedFareSummary extends StatelessWidget {
         ],
       );
     }
-    final fareLabel = resolvedRoute.transferCount == 0
-        ? '성인 일반 운임 · ¥${resolvedRoute.fare}'
-        : '환승 ${resolvedRoute.transferCount}회 · 성인 일반 운임 ¥${resolvedRoute.fare}';
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: AppColors.success.withValues(alpha: .09),
-        borderRadius: BorderRadius.circular(11),
-      ),
-      child: Row(
-        children: [
-          const Icon(
-            Icons.check_circle_outline_rounded,
-            size: 18,
-            color: AppColors.success,
-          ),
-          const SizedBox(width: 7),
-          Expanded(
-            child: Text(
-              fareLabel,
-              key: ValueKey('osaka-segment-fare-$index'),
-              style: const TextStyle(
-                color: AppColors.success,
-                fontSize: 12,
-                fontWeight: FontWeight.w700,
-              ),
+    return Row(
+      children: [
+        Icon(
+          Icons.check_circle_outline_rounded,
+          size: 18,
+          color: AppColors.success,
+        ),
+        SizedBox(width: 7),
+        Expanded(
+          child: Text(
+            passText(context, '성인 일반 운임 ¥${resolvedRoute.fare}'),
+            key: ValueKey('osaka-segment-fare-$index'),
+            style: TextStyle(
+              color: AppColors.success,
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
-}
-
-class _OsakaDaySelector extends StatelessWidget {
-  const _OsakaDaySelector({
-    required this.value,
-    required this.dayCount,
-    required this.onChanged,
-  });
-
-  final int value;
-  final int dayCount;
-  final ValueChanged<int> onChanged;
-
-  @override
-  Widget build(BuildContext context) => Row(
-    children: [
-      Text(
-        '이용일',
-        style: TextStyle(fontSize: 12, color: AppColors.mutedText(context)),
-      ),
-      const SizedBox(width: 10),
-      for (var day = 0; day < dayCount; day++) ...[
-        ChoiceChip(
-          label: Text('${day + 1}일차'),
-          selected: day == value,
-          onSelected: (_) => onChanged(day),
-          labelStyle: TextStyle(
-            color: day == value ? Colors.white : AppColors.accent(context),
-            fontSize: 12,
-            fontWeight: FontWeight.w700,
-          ),
-          selectedColor: AppColors.skyDark,
-          backgroundColor: AppColors.softSurface(context),
-          side: BorderSide.none,
-          visualDensity: VisualDensity.compact,
-          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        ),
-        if (day != dayCount - 1) const SizedBox(width: 6),
-      ],
-    ],
-  );
 }
 
 class _OsakaPlannerFootnote extends StatelessWidget {
@@ -699,10 +608,13 @@ class _OsakaPlannerFootnote extends StatelessWidget {
         size: 16,
         color: AppColors.mutedText(context),
       ),
-      const SizedBox(width: 6),
+      SizedBox(width: 6),
       Expanded(
         child: Text(
-          '실제로 개찰을 통과해 하차한 역을 입력해 주세요. 추천 경로는 시간표 기반 최속 경로가 아닙니다.',
+          passText(
+            context,
+            '실제로 개찰을 통과해 하차한 역을 입력해 주세요. 추천 경로는 시간표 기반 최속 경로가 아닙니다.',
+          ),
           style: TextStyle(
             color: AppColors.mutedText(context),
             fontSize: 12,
@@ -727,7 +639,7 @@ class _OsakaStationSearchPage extends StatefulWidget {
 
 class _OsakaStationSearchPageState extends State<_OsakaStationSearchPage> {
   final TextEditingController _controller = TextEditingController();
-  List<OsakaPassStation> _results = const [];
+  List<OsakaPassStation> _results = [];
 
   @override
   void dispose() {
@@ -738,34 +650,34 @@ class _OsakaStationSearchPageState extends State<_OsakaStationSearchPage> {
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(
-      title: Text(widget.title),
+      title: Text(passText(context, widget.title)),
       bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(78),
+        preferredSize: Size.fromHeight(78),
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 4, 20, 14),
+          padding: EdgeInsets.fromLTRB(20, 4, 20, 14),
           child: TextField(
-            key: const ValueKey('osaka-station-search-field'),
+            key: ValueKey('osaka-station-search-field'),
             controller: _controller,
             autofocus: true,
             textInputAction: TextInputAction.search,
             onChanged: _search,
             decoration: InputDecoration(
-              hintText: '역 이름을 검색해 주세요',
-              prefixIcon: const Icon(Icons.search_rounded),
+              hintText: passText(context, '역 이름을 검색해 주세요'),
+              prefixIcon: Icon(Icons.search_rounded),
               suffixIcon: _controller.text.isEmpty
                   ? null
                   : IconButton(
-                      tooltip: '검색어 지우기',
+                      tooltip: passText(context, '검색어 지우기'),
                       onPressed: () {
                         _controller.clear();
                         _search('');
                       },
-                      icon: const Icon(Icons.close_rounded),
+                      icon: Icon(Icons.close_rounded),
                     ),
               filled: true,
               fillColor: Theme.of(context).colorScheme.surface,
               isDense: true,
-              contentPadding: const EdgeInsets.symmetric(vertical: 15),
+              contentPadding: EdgeInsets.symmetric(vertical: 15),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
                 borderSide: BorderSide.none,
@@ -778,10 +690,7 @@ class _OsakaStationSearchPageState extends State<_OsakaStationSearchPage> {
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
-                borderSide: const BorderSide(
-                  color: AppColors.skyDark,
-                  width: 1.4,
-                ),
+                borderSide: BorderSide(color: AppColors.skyDark, width: 1.4),
               ),
             ),
           ),
@@ -791,26 +700,26 @@ class _OsakaStationSearchPageState extends State<_OsakaStationSearchPage> {
     body: SafeArea(
       top: false,
       child: _controller.text.trim().isEmpty
-          ? const _OsakaStationSearchEmptyState(
+          ? _OsakaStationSearchEmptyState(
               icon: Icons.search_rounded,
               title: '찾고 싶은 역을 입력해 주세요',
-              description: '한국어·초성·일본어로 검색할 수 있습니다.',
+              description: '한국어·초성·일본어·영어로 검색할 수 있습니다.',
             )
           : _results.isEmpty
-          ? const _OsakaStationSearchEmptyState(
+          ? _OsakaStationSearchEmptyState(
               icon: Icons.location_off_outlined,
               title: '일치하는 역을 찾지 못했어요',
               description: '다른 표기나 초성으로 다시 검색해 주세요.',
             )
           : ListView.separated(
               keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-              padding: const EdgeInsets.symmetric(vertical: 6),
+              padding: EdgeInsets.symmetric(vertical: 6),
               itemCount: _results.length,
-              separatorBuilder: (_, _) => const Divider(height: 1),
+              separatorBuilder: (_, _) => Divider(height: 1),
               itemBuilder: (context, index) {
                 final station = _results[index];
                 return ListTile(
-                  contentPadding: const EdgeInsets.symmetric(
+                  contentPadding: EdgeInsets.symmetric(
                     horizontal: 20,
                     vertical: 6,
                   ),
@@ -821,19 +730,19 @@ class _OsakaStationSearchPageState extends State<_OsakaStationSearchPage> {
                       color: AppColors.skySoft,
                       borderRadius: BorderRadius.circular(13),
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.subway_outlined,
                       color: AppColors.skyDark,
                     ),
                   ),
                   title: Text(
-                    station.displayName,
-                    style: const TextStyle(fontWeight: FontWeight.w800),
+                    passText(context, station.passName(context)),
+                    style: TextStyle(fontWeight: FontWeight.w800),
                   ),
-                  subtitle: station.secondaryLabel.isEmpty
+                  subtitle: station.passSecondary(context).isEmpty
                       ? null
-                      : Text(station.secondaryLabel),
-                  trailing: const Icon(Icons.chevron_right_rounded),
+                      : Text(passText(context, station.passSecondary(context))),
+                  trailing: Icon(Icons.chevron_right_rounded),
                   onTap: () => Navigator.of(context).pop(station),
                 );
               },
@@ -843,7 +752,7 @@ class _OsakaStationSearchPageState extends State<_OsakaStationSearchPage> {
 
   void _search(String query) {
     setState(() {
-      _results = query.trim().isEmpty ? const [] : widget.data.search(query);
+      _results = query.trim().isEmpty ? [] : widget.data.search(query);
     });
   }
 }
@@ -862,28 +771,28 @@ class _OsakaStationSearchEmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Center(
     child: Padding(
-      padding: const EdgeInsets.all(32),
+      padding: EdgeInsets.all(32),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
             width: 58,
             height: 58,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               color: AppColors.skySoft,
               shape: BoxShape.circle,
             ),
             child: Icon(icon, color: AppColors.skyDark, size: 29),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           Text(
-            title,
+            passText(context, title),
             textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
           ),
-          const SizedBox(height: 6),
+          SizedBox(height: 6),
           Text(
-            description,
+            passText(context, description),
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -898,59 +807,59 @@ class _OsakaStationSearchEmptyState extends StatelessWidget {
 
 class _BusRideCounter extends StatelessWidget {
   const _BusRideCounter({
-    required this.dayCount,
     required this.ridesByDay,
     required this.fare,
     required this.onChanged,
   });
 
-  final int dayCount;
   final List<int> ridesByDay;
   final int fare;
-  final void Function(int day, int value) onChanged;
+  final ValueChanged<int> onChanged;
 
   @override
   Widget build(BuildContext context) => AppSurface(
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('오사카 시티버스', style: TextStyle(fontWeight: FontWeight.w800)),
-        const SizedBox(height: 4),
         Text(
-          '주유패스 대상 일반 노선 탑승 횟수 · 1회 ¥$fare',
+          passText(context, '오사카 시티버스'),
+          style: TextStyle(fontWeight: FontWeight.w800),
+        ),
+        SizedBox(height: 4),
+        Text(
+          passText(context, '주유패스 대상 일반 노선 탑승 횟수 · 1회 ¥$fare'),
           style: Theme.of(context).textTheme.bodySmall,
         ),
-        const SizedBox(height: 10),
-        for (var day = 0; day < dayCount; day++)
-          Row(
-            children: [
-              Expanded(child: Text(dayCount == 1 ? '탑승 횟수' : '${day + 1}일차')),
-              IconButton(
-                tooltip: '1회 줄이기',
-                onPressed: ridesByDay[day] == 0
-                    ? null
-                    : () => onChanged(day, ridesByDay[day] - 1),
-                icon: const Icon(Icons.remove_circle_outline_rounded),
+        SizedBox(height: 10),
+        Row(
+          children: [
+            Expanded(child: Text(passText(context, '탑승 횟수'))),
+            IconButton(
+              tooltip: passText(context, '1회 줄이기'),
+              onPressed: ridesByDay[0] == 0
+                  ? null
+                  : () => onChanged(ridesByDay[0] - 1),
+              icon: Icon(Icons.remove_circle_outline_rounded),
+            ),
+            SizedBox(
+              width: 34,
+              child: Text(
+                passText(context, '${ridesByDay[0]}회'),
+                textAlign: TextAlign.center,
+                style: TextStyle(fontWeight: FontWeight.w800),
               ),
-              SizedBox(
-                width: 34,
-                child: Text(
-                  '${ridesByDay[day]}회',
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(fontWeight: FontWeight.w800),
-                ),
-              ),
-              IconButton(
-                tooltip: '1회 늘리기',
-                onPressed: ridesByDay[day] >= 20
-                    ? null
-                    : () => onChanged(day, ridesByDay[day] + 1),
-                icon: const Icon(Icons.add_circle_outline_rounded),
-              ),
-            ],
-          ),
+            ),
+            IconButton(
+              tooltip: passText(context, '1회 늘리기'),
+              onPressed: ridesByDay[0] >= 20
+                  ? null
+                  : () => onChanged(ridesByDay[0] + 1),
+              icon: Icon(Icons.add_circle_outline_rounded),
+            ),
+          ],
+        ),
         Text(
-          '일부 특정 노선과 온디맨드 버스는 패스 대상이 아닙니다.',
+          passText(context, '일부 특정 노선과 온디맨드 버스는 패스 대상이 아닙니다.'),
           style: Theme.of(context).textTheme.bodySmall,
         ),
       ],
@@ -990,33 +899,34 @@ class _OsakaResultPage extends StatelessWidget {
     };
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          '비교 결과',
+        title: Text(
+          passText(context, '비교 결과'),
           style: TextStyle(fontWeight: FontWeight.w700),
         ),
       ),
       body: SafeArea(
         top: false,
         child: ListView(
-          padding: const EdgeInsets.fromLTRB(20, 18, 20, 32),
+          padding: EdgeInsets.fromLTRB(20, 18, 20, 32),
           children: [
-            const _PrototypeProgress(activeStep: 3),
-            const SizedBox(height: 22),
+            _PrototypeProgress(activeStep: 3),
+            SizedBox(height: 22),
             AppSurface(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    title,
+                    passText(context, title),
                     style: TextStyle(
                       color: color,
                       fontSize: 22,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  const SizedBox(height: 6),
-                  Text(description),
-                  const Divider(height: 28),
+                  SizedBox(height: 6),
+                  Text(passText(context, description)),
+                  PassResultScopeNote(detail: '관광시설 입장·할인 혜택은 포함하지 않습니다.'),
+                  Divider(height: 28),
                   _ResultMoneyRow(
                     label: '철도 일반 운임',
                     value: result.railFareTotal,
@@ -1029,7 +939,7 @@ class _OsakaResultPage extends StatelessWidget {
                     label: result.product.label,
                     value: result.product.price,
                   ),
-                  const Divider(height: 22),
+                  Divider(height: 22),
                   _ResultMoneyRow(
                     label: '예상 손익',
                     value: result.savings,
@@ -1038,43 +948,56 @@ class _OsakaResultPage extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 14),
+            SizedBox(height: 14),
             for (final segment in result.segments)
               ListTile(
-                contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-                leading: const Icon(Icons.train_outlined),
+                contentPadding: EdgeInsets.symmetric(horizontal: 4),
+                leading: Icon(Icons.train_outlined),
                 title: Text(
-                  '${segment.fromStation} → ${segment.toStation}',
-                  style: const TextStyle(fontWeight: FontWeight.w800),
+                  passText(
+                    context,
+                    '${segment.fromStation} → ${segment.toStation}',
+                  ),
+                  style: TextStyle(fontWeight: FontWeight.w800),
                 ),
                 subtitle: Text(
-                  '${segment.dayIndex + 1}일차 · ${segment.journeyIndex + 1}번 이동 · ${operatorDisplayName(segment.operator)}',
+                  passText(
+                    context,
+                    '${segment.journeyIndex + 1}번 이동 · ${operatorDisplayName(segment.operator)}',
+                  ),
                 ),
                 trailing: Text(
-                  '¥${segment.regularFare}',
-                  style: const TextStyle(fontWeight: FontWeight.w900),
+                  passText(context, '¥${segment.regularFare}'),
+                  style: TextStyle(fontWeight: FontWeight.w900),
                 ),
               ),
-            for (var day = 0; day < result.busRidesByDay.length; day++)
-              if (result.busRidesByDay[day] > 0)
-                ListTile(
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-                  leading: const Icon(Icons.directions_bus_outlined),
-                  title: Text(
-                    '오사카 시티버스 ${result.busRidesByDay[day]}회',
-                    style: const TextStyle(fontWeight: FontWeight.w800),
+            if (result.busRidesByDay.fold(0, (sum, rides) => sum + rides) > 0)
+              ListTile(
+                contentPadding: EdgeInsets.symmetric(horizontal: 4),
+                leading: Icon(Icons.directions_bus_outlined),
+                title: Text(
+                  passText(
+                    context,
+                    '오사카 시티버스 ${result.busRidesByDay.fold(0, (sum, rides) => sum + rides)}회',
                   ),
-                  subtitle: Text('${day + 1}일차 · 주유패스 대상 일반 노선'),
-                  trailing: Text(
-                    '¥${result.busRidesByDay[day] * data.busAdultFare}',
-                    style: const TextStyle(fontWeight: FontWeight.w900),
-                  ),
+                  style: TextStyle(fontWeight: FontWeight.w800),
                 ),
-            const SizedBox(height: 12),
-            const NoticeBanner(
-              title: '참고용 자동 계산 결과',
-              text:
-                  '관광시설 혜택, 패스 제외 버스, 특급권·좌석요금은 포함하지 않습니다. 사업자가 바뀌는 이동은 지원 역 그래프의 거리 기반 추천 경로로 계산하므로, 실제 이용 경로와 구매 전 최신 공식 조건을 확인해 주세요.',
+                subtitle: Text(passText(context, '주유패스 대상 일반 노선')),
+                trailing: Text(
+                  passText(
+                    context,
+                    '¥${result.busRidesByDay.fold(0, (sum, rides) => sum + rides) * data.busAdultFare}',
+                  ),
+                  style: TextStyle(fontWeight: FontWeight.w900),
+                ),
+              ),
+            SizedBox(height: 12),
+            NoticeBanner(
+              title: passText(context, '참고용 자동 계산 결과'),
+              text: passText(
+                context,
+                '관광시설 혜택, 패스 제외 버스, 특급권·좌석요금은 포함하지 않습니다. 사업자가 바뀌는 이동은 지원 역 그래프의 거리 기반 추천 경로로 계산하므로, 실제 이용 경로와 구매 전 최신 공식 조건을 확인해 주세요.',
+              ),
               tone: NoticeTone.warning,
             ),
           ],
@@ -1097,13 +1020,13 @@ class _ResultMoneyRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.symmetric(vertical: 6),
+    padding: EdgeInsets.symmetric(vertical: 6),
     child: Row(
       children: [
-        Expanded(child: Text(label)),
+        Expanded(child: Text(passText(context, label))),
         Text(
-          '${signed && value > 0 ? '+' : ''}¥$value',
-          style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w900),
+          passText(context, '${signed && value > 0 ? '+' : ''}¥$value'),
+          style: TextStyle(fontSize: 17, fontWeight: FontWeight.w900),
         ),
       ],
     ),
@@ -1133,9 +1056,12 @@ class _PrototypeProgress extends StatelessWidget {
                     borderRadius: BorderRadius.circular(99),
                   ),
                 ),
-                const SizedBox(height: 6),
+                SizedBox(height: 6),
                 Text(
-                  '${index + 1}. ${labels[index]}',
+                  passText(
+                    context,
+                    '${index + 1}. ${passText(context, labels[index])}',
+                  ),
                   style: TextStyle(
                     color: index + 1 == activeStep
                         ? AppColors.accent(context)
@@ -1149,7 +1075,7 @@ class _PrototypeProgress extends StatelessWidget {
               ],
             ),
           ),
-          if (index != labels.length - 1) const SizedBox(width: 5),
+          if (index != labels.length - 1) SizedBox(width: 5),
         ],
       ],
     );

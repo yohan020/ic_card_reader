@@ -1,0 +1,29 @@
+{
+  "pass_name_ja": "江ノ電1日乗車券「のりおりくん」",
+  "pass_price_yen": 800,
+  "operator_ko": "에노시마 전철",
+  "line_ko": "에노덴",
+  "stations": [
+    {"id":"enoden_en01","ja":"藤沢","ko":"후지사와","km":0.0},
+    {"id":"enoden_en02","ja":"石上","ko":"이시가미","km":0.6},
+    {"id":"enoden_en03","ja":"柳小路","ko":"야나기코지","km":1.2},
+    {"id":"enoden_en04","ja":"鵠沼","ko":"쿠게누마","km":1.9},
+    {"id":"enoden_en05","ja":"湘南海岸公園","ko":"쇼난카이간코엔","km":2.7},
+    {"id":"enoden_en06","ja":"江ノ島","ko":"에노시마","km":3.3},
+    {"id":"enoden_en07","ja":"腰越","ko":"코시고에","km":3.9},
+    {"id":"enoden_en08","ja":"鎌倉高校前","ko":"가마쿠라고코마에","km":4.7},
+    {"id":"enoden_en09","ja":"七里ヶ浜","ko":"시치리가하마","km":5.6},
+    {"id":"enoden_en10","ja":"稲村ヶ崎","ko":"이나무라가사키","km":6.8},
+    {"id":"enoden_en11","ja":"極楽寺","ko":"고쿠라쿠지","km":7.6},
+    {"id":"enoden_en12","ja":"長谷","ko":"하세","km":8.3},
+    {"id":"enoden_en13","ja":"由比ヶ浜","ko":"유이가하마","km":8.9},
+    {"id":"enoden_en14","ja":"和田塚","ko":"와다즈카","km":9.2},
+    {"id":"enoden_en15","ja":"鎌倉","ko":"가마쿠라","km":10.0}
+  ],
+  "fare_bands": [
+    {"max_km":2.0,"adult_yen":200},
+    {"max_km":4.0,"adult_yen":220},
+    {"max_km":7.0,"adult_yen":260},
+    {"max_km":10.0,"adult_yen":310}
+  ]
+}

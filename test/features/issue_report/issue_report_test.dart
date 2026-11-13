@@ -8,7 +8,10 @@ import 'package:ic_card_reader/src/features/card_reader/domain/raw_history_block
 import 'package:ic_card_reader/src/features/issue_report/domain/issue_report.dart';
 import 'package:ic_card_reader/src/features/issue_report/domain/issue_report_repository.dart';
 import 'package:ic_card_reader/src/features/issue_report/presentation/issue_report_page.dart';
+import 'package:ic_card_reader/src/features/settings/domain/installed_app_version.dart';
 import 'package:ic_card_reader/src/features/transaction_history/data/transit_history_parser.dart';
+import 'package:ic_card_reader/src/features/transaction_history/data/ica_history_parser.dart';
+import '../../support/ica_fixture.dart';
 
 void main() {
   test('serializes one anonymous record without prohibited identifiers', () {
@@ -164,71 +167,117 @@ void main() {
     expect(json['suggestedKoreanAlightingStationName'], isNull);
   });
 
-  testWidgets('submits the selected history through the repository', (
-    tester,
-  ) async {
-    await tester.binding.setSurfaceSize(const Size(800, 1000));
-    addTearDown(() => tester.binding.setSurfaceSize(null));
-    final repository = _RecordingRepository();
-    final history = const TransitHistoryParser().parse([
-      _block(0, '1601000234E4A578AC38E20300012950'),
-      _block(1, '050D000F34E30D2A0000B60700012740'),
-    ]).first;
+  testWidgets(
+    'submits selected transit and ICa history with the correct parser version',
+    (tester) async {
+      // Cached InstalledAppVersion.current must be awaited in one fake-async
+      // zone; two separate widget tests would retain the first test's zone.
+      for (final ica in [false, true]) {
+        tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+          InstalledAppVersion.channel,
+          (call) async => '2.3.4 (57)',
+        );
+        addTearDown(
+          () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+            InstalledAppVersion.channel,
+            null,
+          ),
+        );
+        await tester.binding.setSurfaceSize(const Size(800, 1000));
+        addTearDown(() => tester.binding.setSurfaceSize(null));
+        final repository = _RecordingRepository();
+        final history = ica
+            ? const TransitHistoryParser().parse([icaFixture()]).single
+            : const TransitHistoryParser().parse([
+                _block(0, '1601000234E4A578AC38E20300012950'),
+                _block(1, '050D000F34E30D2A0000B60700012740'),
+              ]).first;
 
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: AppTheme.light,
-        home: IssueReportPage(history: history, repository: repository),
-      ),
-    );
+        await tester.pumpWidget(
+          MaterialApp(
+            key: ValueKey(ica),
+            theme: AppTheme.light,
+            home: IssueReportPage(history: history, repository: repository),
+          ),
+        );
 
-    final reportSafeArea = find.ancestor(
-      of: find.byType(AppPage),
-      matching: find.byType(SafeArea),
-    );
-    final safeArea = tester.widget<SafeArea>(reportSafeArea);
-    expect(safeArea.top, isFalse);
-    expect(safeArea.bottom, isTrue);
-    expect(find.text('버스 회사 정보가 없거나 잘못됨'), findsNothing);
+        final reportSafeArea = find.ancestor(
+          of: find.byType(AppPage),
+          matching: find.byType(SafeArea),
+        );
+        final safeArea = tester.widget<SafeArea>(reportSafeArea);
+        expect(safeArea.top, isFalse);
+        expect(safeArea.bottom, isTrue);
+        expect(find.text('버스 회사 정보가 없거나 잘못됨'), findsNothing);
 
-    await tester.tap(find.text('금액 또는 잔액이 잘못됨'));
-    await tester.pump();
-    await tester.dragUntilVisible(
-      find.text('다음'),
-      find.byType(ListView),
-      const Offset(0, -300),
-    );
-    await tester.tap(find.text('다음'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('검토하기'));
-    await tester.pumpAndSettle();
-    await tester.scrollUntilVisible(
-      find.text('위 정보의 전송에 동의합니다.'),
-      200,
-      scrollable: find.byType(Scrollable).first,
-    );
-    await tester.tap(find.text('위 정보의 전송에 동의합니다.'));
-    await tester.pump();
-    await tester.scrollUntilVisible(
-      find.text('익명으로 제보하기'),
-      200,
-      scrollable: find.byType(Scrollable).first,
-    );
-    await tester.tap(find.text('익명으로 제보하기'));
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 300));
+        await tester.tap(find.text('금액 또는 잔액이 잘못됨'));
+        await tester.pump();
+        await tester.dragUntilVisible(
+          find.text('다음'),
+          find.byType(ListView),
+          const Offset(0, -300),
+        );
+        await tester.tap(find.text('다음'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('검토하기'));
+        await tester.pumpAndSettle();
+        await tester.scrollUntilVisible(
+          find.text('위 정보의 전송에 동의합니다.'),
+          200,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await Scrollable.ensureVisible(
+          tester.element(find.byType(Checkbox)),
+          alignment: 0.5,
+        );
+        await tester.pump();
+        await tester.tap(find.byType(Checkbox));
+        await tester.pump();
+        await tester.scrollUntilVisible(
+          find.text('익명으로 제보하기'),
+          200,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await Scrollable.ensureVisible(
+          tester.element(find.text('익명으로 제보하기')),
+          alignment: 0.5,
+        );
+        await tester.pump();
+        await tester.tap(find.text('익명으로 제보하기'));
+        await tester.pump();
+        await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 20)),
+        );
+        await tester.pump(const Duration(milliseconds: 300));
 
-    expect(repository.submitted, hasLength(1));
-    expect(
-      repository.submitted.single.anonymousRawRecord,
-      history.rawBlock.hexadecimal,
-    );
-    expect(find.text('제보가 접수되었습니다'), findsOneWidget);
-    expect(find.text('접수 번호'), findsOneWidget);
-    expect(find.text('server-report-id'), findsOneWidget);
-    expect(find.text('카드 IDm과 다른 이용내역은 전송되지 않았습니다.'), findsOneWidget);
-    expect(find.text('확인'), findsOneWidget);
-  });
+        expect(repository.submitted, hasLength(1));
+        expect(repository.submitted.single.appVersion, '2.3.4 (57)');
+        expect(
+          repository.submitted.single.parserVersion,
+          ica ? IcaHistoryParser.version : TransitHistoryParser.version,
+        );
+        if (ica) {
+          expect(repository.submitted.single.balance, 1234);
+          expect(repository.submitted.single.calculatedAmount, 230);
+          expect(repository.submitted.single.currentTransactionType, 'UNKNOWN');
+          expect(repository.submitted.single.boardingLineCode, 0);
+        }
+        expect(
+          repository.submitted.single.toJson()['appVersion'],
+          '2.3.4 (57)',
+        );
+        expect(
+          repository.submitted.single.anonymousRawRecord,
+          history.rawBlock.hexadecimal,
+        );
+        expect(find.text('제보가 접수되었습니다'), findsOneWidget);
+        expect(find.text('접수 번호'), findsOneWidget);
+        expect(find.text('server-report-id'), findsOneWidget);
+        expect(find.text('카드 IDm과 다른 이용내역은 전송되지 않았습니다.'), findsOneWidget);
+        expect(find.text('확인'), findsOneWidget);
+      }
+    },
+  );
 
   testWidgets(
     'asks for both station corrections when both stations are wrong',

@@ -51,7 +51,7 @@ flutter run
 ```powershell
 cd admin
 npm install
-npm run start
+npm run dev
 ```
 
 Supabase migration·함수 배포와 관리자 화면 설정은 [Supabase 운영 안내](docs/SUPABASE_SETUP.md), [문의 관리 안내](docs/ISSUE_REPORT_ADMIN.md)를 확인하세요.
@@ -70,6 +70,7 @@ Supabase migration·함수 배포와 관리자 화면 설정은 [Supabase 운영
 - [현재 개발 상태](docs/DEVELOPMENT_STATUS.md)
 - [미완료 작업](docs/planning/TODO.md)
 - [테스트 매트릭스](docs/TEST_MATRIX.md)
+- [Windows Flutter/Dart 검증 환경 복구 안내](docs/agent/FLUTTER_TOOLCHAIN_RECOVERY.md)
 - [이용내역 파서 근거와 이력](docs/TRANSIT_HISTORY_PARSER_FIRST_REVISION.md)
 - [교통패스 비교 분석](docs/planning/PASS_COMPARISON_ANALYSIS.md)
 

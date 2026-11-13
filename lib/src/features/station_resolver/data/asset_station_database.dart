@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/services.dart';
 
 import '../domain/station_resolution.dart';
@@ -16,6 +18,8 @@ class AssetStationDatabase {
       'assets/data/stations/station_names_ko_by_code.csv';
   static const manualKoreanNameAssetPath =
       'assets/data/stations/manual_station_names_ko_by_code.csv';
+  static const englishNameAssetPath =
+      'assets/data/stations/station_names_en_by_code.json';
   static const version = 'yoiko-c38cdaa4-2026-07-15+iyotetsu-v2';
   static const source = 'Yoiko 自動改札機の研究';
   static const overrideSource = 'App station override';
@@ -31,11 +35,13 @@ class AssetStationDatabase {
     final manualKoreanNamesCsv = await assets.loadString(
       manualKoreanNameAssetPath,
     );
+    final englishNamesJson = await assets.loadString(englishNameAssetPath);
     return AssetStationDatabase.fromCsv(
       csv,
       overrideCsv: overrideCsv,
       koreanNamesCsv: koreanNamesCsv,
       manualKoreanNamesCsv: manualKoreanNamesCsv,
+      englishNamesJson: englishNamesJson,
     );
   }
 
@@ -44,6 +50,7 @@ class AssetStationDatabase {
     String? overrideCsv,
     String? koreanNamesCsv,
     String? manualKoreanNamesCsv,
+    String? englishNamesJson,
   }) {
     final byFullCode = <StationCode, List<StationRecord>>{};
     final byLineStation = <LineStationCode, List<StationRecord>>{};
@@ -51,9 +58,18 @@ class AssetStationDatabase {
       _parseKoreanNames(koreanNamesCsv, stripStationSuffix: true),
     );
     koreanNames.addAll(_parseKoreanNames(manualKoreanNamesCsv));
-    _addPrimaryCsv(csv, byFullCode, byLineStation, koreanNames);
+    final englishNames = englishNamesJson == null
+        ? const <String, dynamic>{}
+        : jsonDecode(englishNamesJson) as Map<String, dynamic>;
+    _addPrimaryCsv(csv, byFullCode, byLineStation, koreanNames, englishNames);
     if (overrideCsv != null) {
-      _addOverrideCsv(overrideCsv, byFullCode, byLineStation, koreanNames);
+      _addOverrideCsv(
+        overrideCsv,
+        byFullCode,
+        byLineStation,
+        koreanNames,
+        englishNames,
+      );
     }
 
     return AssetStationDatabase._(
@@ -67,6 +83,7 @@ class AssetStationDatabase {
     Map<StationCode, List<StationRecord>> byFullCode,
     Map<LineStationCode, List<StationRecord>> byLineStation,
     Map<StationCode, String> koreanNames,
+    Map<String, dynamic> englishNames,
   ) {
     final lines = csv.split(RegExp(r'\r?\n'));
 
@@ -94,6 +111,13 @@ class AssetStationDatabase {
         stationName: fields[8].trim(),
         source: source,
         stationNameKorean: koreanNames[code],
+        stationNameEnglish: _englishName(
+          englishNames,
+          code,
+          fields[8],
+          fields[6],
+          fields[7],
+        ),
       );
       byFullCode.putIfAbsent(code, () => []).add(station);
       byLineStation
@@ -110,6 +134,7 @@ class AssetStationDatabase {
     Map<StationCode, List<StationRecord>> byFullCode,
     Map<LineStationCode, List<StationRecord>> byLineStation,
     Map<StationCode, String> koreanNames,
+    Map<String, dynamic> englishNames,
   ) {
     final lines = csv.split(RegExp(r'\r?\n'));
     for (final line in lines.skip(1)) {
@@ -134,6 +159,13 @@ class AssetStationDatabase {
         stationName: fields[5].trim(),
         source: overrideSource,
         stationNameKorean: koreanNames[code],
+        stationNameEnglish: _englishName(
+          englishNames,
+          code,
+          fields[5],
+          fields[3],
+          fields[4],
+        ),
         evidence: fields[6].trim(),
         sourceNote: fields[7].trim(),
       );
@@ -146,6 +178,31 @@ class AssetStationDatabase {
       candidates.removeWhere((candidate) => candidate.code == code);
       candidates.add(station);
     }
+  }
+
+  static String? _englishName(
+    Map<String, dynamic> names,
+    StationCode code,
+    String japanese,
+    String operator,
+    String line,
+  ) {
+    final key = '${code.regionCode}/${code.lineCode}/${code.stationCode}';
+    final entry = names[key];
+    // A stale mapping must not leak to a different station on code reuse.
+    if (entry
+        case [
+          final String ja,
+          final String op,
+          final String route,
+          final String en,
+        ]
+        when ja == japanese.trim() &&
+            op == operator.trim() &&
+            route == line.trim()) {
+      return en;
+    }
+    return null;
   }
 
   StationResolution resolve(StationCode requestedCode) {

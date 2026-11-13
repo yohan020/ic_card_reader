@@ -1,7 +1,7 @@
 name: ic_card_reader
 description: Privacy-first Japanese transit IC card history reader PoC.
 publish_to: none
-version: 1.0.0+18
+version: 1.0.6+30
 
 environment:
   sdk: ">=3.11.0 <4.0.0"
@@ -9,12 +9,19 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.20.2
+  shared_preferences: ^2.5.5
   # Local 4.2.1 patch: ignore Samsung vendor NFC adapter state 5 instead of
   # crashing the Android broadcast receiver.
   nfc_manager:
     path: third_party/nfc_manager
   supabase_flutter: ^2.16.0
   in_app_update: ^5.0.0
+  crypto: ^3.0.7
+  google_maps_flutter: 2.18.1
+  url_launcher: 6.3.2
 
 dev_dependencies:
   flutter_test:
@@ -22,11 +29,16 @@ dev_dependencies:
   flutter_lints: ^6.0.0
 
 flutter:
+  generate: true
   uses-material-design: true
   assets:
+    - assets/data/coin_locker/
+    - assets/data/contactless/
     - assets/data/pass_comparison/
     - assets/data/stations/yoiko_station_codes.csv
     - assets/data/stations/verified_station_overrides.csv
     - assets/data/stations/station_names_ko_by_code.csv
     - assets/data/stations/manual_station_names_ko_by_code.csv
+    - assets/data/stations/station_coordinates_by_code.json
+    - assets/data/stations/station_names_en_by_code.json
     - assets/licenses/

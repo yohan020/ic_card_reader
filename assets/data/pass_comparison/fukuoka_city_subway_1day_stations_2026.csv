@@ -1,0 +1,37 @@
+﻿station_id,name_ja,name_en,operator,station_codes,lat,lon,source_url,source_license,source_quality
+K01,姪浜,Meinohama,福岡市交通局,K01,,,https://www.geospatial.jp/ckan/dataset/40130-009,CC BY,official_open_data + current_cross_check
+K02,室見,Muromi,福岡市交通局,K02,,,https://www.geospatial.jp/ckan/dataset/40130-009,CC BY,official_open_data + current_cross_check
+K03,藤崎,Fujisaki,福岡市交通局,K03,,,https://www.geospatial.jp/ckan/dataset/40130-009,CC BY,official_open_data + current_cross_check
+K04,西新,Nishijin,福岡市交通局,K04,,,https://www.geospatial.jp/ckan/dataset/40130-009,CC BY,official_open_data + current_cross_check
+K05,唐人町,Tojinmachi,福岡市交通局,K05,,,https://www.geospatial.jp/ckan/dataset/40130-009,CC BY,official_open_data + current_cross_check
+K06,大濠公園,Ohorikoen,福岡市交通局,K06,,,https://www.geospatial.jp/ckan/dataset/40130-009,CC BY,official_open_data + current_cross_check
+K07,赤坂,Akasaka,福岡市交通局,K07,,,https://www.geospatial.jp/ckan/dataset/40130-009,CC BY,official_open_data + current_cross_check
+K08,天神,Tenjin,福岡市交通局,K08,,,https://www.geospatial.jp/ckan/dataset/40130-009,CC BY,official_open_data + current_cross_check
+K09,中洲川端,Nakasu-Kawabata,福岡市交通局,K09|H01,,,https://www.geospatial.jp/ckan/dataset/40130-009,CC BY,official_open_data + current_cross_check
+K10,祇園,Gion,福岡市交通局,K10,,,https://www.geospatial.jp/ckan/dataset/40130-009,CC BY,official_open_data + current_cross_check
+K11,博多,Hakata,福岡市交通局,K11|N18,,,https://www.geospatial.jp/ckan/dataset/40130-009,CC BY,official_open_data + current_cross_check
+K12,東比恵,Higashi-Hie,福岡市交通局,K12,,,https://www.geospatial.jp/ckan/dataset/40130-009,CC BY,official_open_data + current_cross_check
+K13,福岡空港,Fukuoka Airport,福岡市交通局,K13,,,https://www.geospatial.jp/ckan/dataset/40130-009,CC BY,official_open_data + current_cross_check
+H02,呉服町,Gofukumachi,福岡市交通局,H02,,,https://www.geospatial.jp/ckan/dataset/40130-009,CC BY,official_open_data + current_cross_check
+H03,千代県庁口,Chiyo-Kenchoguchi,福岡市交通局,H03,,,https://www.geospatial.jp/ckan/dataset/40130-009,CC BY,official_open_data + current_cross_check
+H04,馬出九大病院前,Maidashi-Kyudai-byoin-mae,福岡市交通局,H04,,,https://www.geospatial.jp/ckan/dataset/40130-009,CC BY,official_open_data + current_cross_check
+H05,箱崎宮前,Hakozaki-Miyamae,福岡市交通局,H05,,,https://www.geospatial.jp/ckan/dataset/40130-009,CC BY,official_open_data + current_cross_check
+H06,箱崎九大前,Hakozaki-Kyudai-mae,福岡市交通局,H06,,,https://www.geospatial.jp/ckan/dataset/40130-009,CC BY,official_open_data + current_cross_check
+H07,貝塚,Kaizuka,福岡市交通局,H07,,,https://www.geospatial.jp/ckan/dataset/40130-009,CC BY,official_open_data + current_cross_check
+N01,橋本,Hashimoto,福岡市交通局,N01,,,https://www.geospatial.jp/ckan/dataset/40130-009,CC BY,official_open_data + current_cross_check
+N02,次郎丸,Jiro-maru,福岡市交通局,N02,,,https://www.geospatial.jp/ckan/dataset/40130-009,CC BY,official_open_data + current_cross_check
+N03,賀茂,Kamo,福岡市交通局,N03,,,https://www.geospatial.jp/ckan/dataset/40130-009,CC BY,official_open_data + current_cross_check
+N04,野芥,Noke,福岡市交通局,N04,,,https://www.geospatial.jp/ckan/dataset/40130-009,CC BY,official_open_data + current_cross_check
+N05,梅林,Umebayashi,福岡市交通局,N05,,,https://www.geospatial.jp/ckan/dataset/40130-009,CC BY,official_open_data + current_cross_check
+N06,福大前,Fukudaimae,福岡市交通局,N06,,,https://www.geospatial.jp/ckan/dataset/40130-009,CC BY,official_open_data + current_cross_check
+N07,七隈,Nanakuma,福岡市交通局,N07,,,https://www.geospatial.jp/ckan/dataset/40130-009,CC BY,official_open_data + current_cross_check
+N08,金山,Kanayama,福岡市交通局,N08,,,https://www.geospatial.jp/ckan/dataset/40130-009,CC BY,official_open_data + current_cross_check
+N09,茶山,Chayama,福岡市交通局,N09,,,https://www.geospatial.jp/ckan/dataset/40130-009,CC BY,official_open_data + current_cross_check
+N10,別府,Befu,福岡市交通局,N10,,,https://www.geospatial.jp/ckan/dataset/40130-009,CC BY,official_open_data + current_cross_check
+N11,六本松,Ropponmatsu,福岡市交通局,N11,,,https://www.geospatial.jp/ckan/dataset/40130-009,CC BY,official_open_data + current_cross_check
+N12,桜坂,Sakurazaka,福岡市交通局,N12,,,https://www.geospatial.jp/ckan/dataset/40130-009,CC BY,official_open_data + current_cross_check
+N13,薬院大通,Yakuin-odori,福岡市交通局,N13,,,https://www.geospatial.jp/ckan/dataset/40130-009,CC BY,official_open_data + current_cross_check
+N14,薬院,Yakuin,福岡市交通局,N14,,,https://www.geospatial.jp/ckan/dataset/40130-009,CC BY,official_open_data + current_cross_check
+N15,渡辺通,Watanabe-dori,福岡市交通局,N15,,,https://www.geospatial.jp/ckan/dataset/40130-009,CC BY,official_open_data + current_cross_check
+N16,天神南,Tenjin-minami,福岡市交通局,N16,,,https://www.geospatial.jp/ckan/dataset/40130-009,CC BY,official_open_data + current_cross_check
+N17,櫛田神社前,Kushida Shrine,福岡市交通局,N17,,,https://www.wikidata.org/wiki/Q107395376,CC0 (Wikidata structured data),cc0 + official_current_cross_check
