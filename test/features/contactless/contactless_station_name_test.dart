@@ -116,7 +116,8 @@ void main() {
     );
     await tester.pumpAndSettle();
     expect(find.text('Chubu'), findsOneWidget);
-    expect(find.text('Routes by operator'), findsOneWidget);
+    expect(find.text('Routes by operator'), findsNothing);
+    expect(find.text('Nagoya Railroad (Meitetsu)'), findsOneWidget);
     await tester.tap(find.byTooltip('Tap-to-ride guide'));
     await tester.pumpAndSettle();
     expect(find.text('Got it'), findsOneWidget);

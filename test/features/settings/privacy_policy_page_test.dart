@@ -38,6 +38,7 @@ void main() {
           'Overview',
           'Nfc',
           'OnDevice',
+          'Csv',
           'Reports',
           'NotSent',
           'Services',
@@ -54,21 +55,21 @@ void main() {
           expect(tester.takeException(), isNull);
         }
         await tester.scrollUntilVisible(
-          find.text('Effective date: October 27, 2026'),
+          find.text('Effective date: November 15, 2026'),
           250,
         );
         await tester.pumpWidget(app('ko'));
         await tester.pumpAndSettle();
         expect(find.text('개인정보처리방침'), findsOneWidget);
-        await tester.scrollUntilVisible(find.text('시행일: 2026년 10월 27일'), 250);
+        await tester.scrollUntilVisible(find.text('시행일: 2026년 11월 15일'), 250);
         expect(find.textContaining('개인정보 확인·삭제 요청'), findsOneWidget);
         await tester.pumpWidget(app('en'));
         await tester.pumpAndSettle();
         await tester.scrollUntilVisible(
-          find.text('Effective date: October 27, 2026'),
+          find.text('Effective date: November 15, 2026'),
           250,
         );
-        expect(find.text('Effective date: October 27, 2026'), findsOneWidget);
+        expect(find.text('Effective date: November 15, 2026'), findsOneWidget);
         expect(tester.takeException(), isNull);
       },
     );
@@ -87,7 +88,7 @@ void main() {
       expect(RegExp(r'^## ', multiLine: true).allMatches(markdown).length, 10);
       for (final source in [markdown, html]) {
         for (final disclosure in [
-          'October 27, 2026',
+          'November 15, 2026',
           '16-byte',
           'up to 10 cards',
           'PMm',
@@ -96,6 +97,8 @@ void main() {
           'does not request current-location permission',
           'does not cancel or delete requests already made',
           'one year',
+          'collected station identifiers',
+          'operating-system backups',
           'Supabase',
           'Yoiko',
           'Wikidata CC0',

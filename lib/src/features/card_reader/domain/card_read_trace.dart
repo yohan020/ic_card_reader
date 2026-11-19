@@ -2,7 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
-import 'card_diagnostics.dart';
+import 'card_diagnostics.dart' show CardDiagnosticProtocol;
+
+/// Ordinary scans only emit a trace when explicitly enabled in a debug build.
+const cardReadTraceEnabled =
+    kDebugMode && bool.fromEnvironment('ENABLE_CARD_DIAGNOSTICS');
 
 /// Developer opt-in trace: fixed protocol metadata only, never payload or IDm.
 enum CardReadStage {
@@ -48,7 +52,7 @@ class CardReadTrace {
   final String? platformCode;
 
   String? formatForTerminal() {
-    if (!cardDiagnosticsEnabled) return null;
+    if (!cardReadTraceEnabled) return null;
     final reply = response;
     final readResponse =
         stage == CardReadStage.icaHistoryResponse &&

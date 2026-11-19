@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart';
-import 'package:ic_card_reader/src/features/card_reader/domain/card_diagnostics.dart';
+import 'package:ic_card_reader/src/features/card_reader/domain/card_read_trace.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ic_card_reader/src/features/card_reader/data/nfc_manager_card_reader.dart';
 import 'package:ic_card_reader/src/features/card_reader/domain/card_comparison_session.dart';
@@ -340,7 +340,7 @@ void main() {
           await manager.started.future;
           manager.discovered!(_icaTag(idm));
           await expectation;
-          if (cardDiagnosticsEnabled) {
+          if (cardReadTraceEnabled) {
             expect(logs, anyElement(contains('"stage":"routeSelected"')));
             expect(
               logs,

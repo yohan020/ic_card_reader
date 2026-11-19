@@ -2765,7 +2765,7 @@ abstract class AppLocalizations {
   /// No description provided for @privacyRetentionBody.
   ///
   /// In ko, this message translates to:
-  /// **'기기에서 읽은 이용내역은 앱이 영구 저장하지 않습니다. 선택적으로 전송된 오류 제보 중 반영 완료 또는 제외된 문의와 검토 이력은 해결 후 1년간 보관한 뒤 매월 자동 삭제합니다. 확인 중인 문의는 실수로 삭제되지 않도록 자동 삭제하지 않습니다. 악성 제보 차단 정보는 서버 보안 목적에 한해 유지하며, 법령상 보존 의무가 있는 경우에는 해당 기간 동안 보관할 수 있습니다.'**
+  /// **'기기에서 읽은 이용내역은 앱이 영구 저장하지 않습니다. 선택적으로 전송된 오류 제보 중 반영 완료 또는 제외된 문의와 검토 이력은 해결 후 1년간 보관한 뒤 매월 자동 삭제합니다. 확인 중인 문의는 실수로 삭제되지 않도록 자동 삭제하지 않습니다. 악성 제보 차단 정보는 서버 보안 목적에 한해 유지하며, 법령상 보존 의무가 있는 경우에는 해당 기간 동안 보관할 수 있습니다.\n\n역 스탬프 수집을 선택하면 수집한 역의 식별자만 기기에 저장하며 앱을 다시 시작해도 유지합니다. 원본 이용내역·이용 날짜·금액·잔액·카드 IDm은 스탬프 저장 항목에 포함하지 않고 앱 서버에 전송하지 않습니다. 설정의 역 스탬프 수집 기록 삭제에서 지울 수 있습니다. 운영체제의 백업·기기 이전 설정에 따라 이 저장 정보가 포함될 수 있습니다.'**
   String get privacyRetentionBody;
 
   /// No description provided for @privacyContactTitle.
@@ -2783,7 +2783,7 @@ abstract class AppLocalizations {
   /// No description provided for @privacyEffectiveDate.
   ///
   /// In ko, this message translates to:
-  /// **'시행일: 2026년 10월 27일'**
+  /// **'시행일: 2026년 11월 15일'**
   String get privacyEffectiveDate;
 
   /// No description provided for @passRegionHokkaido.
@@ -6301,6 +6301,108 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'가라스마선·도자이선'**
   String get passMeta064;
+
+  /// No description provided for @exportCsv.
+  ///
+  /// In ko, this message translates to:
+  /// **'CSV 내보내기'**
+  String get exportCsv;
+
+  /// No description provided for @exportAll.
+  ///
+  /// In ko, this message translates to:
+  /// **'전체 이용내역'**
+  String get exportAll;
+
+  /// No description provided for @exportFiltered.
+  ///
+  /// In ko, this message translates to:
+  /// **'현재 필터의 이용내역'**
+  String get exportFiltered;
+
+  /// No description provided for @exportCsvNotice.
+  ///
+  /// In ko, this message translates to:
+  /// **'현재 스캔한 기록만 앱 언어·역명 설정에 맞춰 내보냅니다. 정식 영수증이 아닙니다. 파일은 선택한 위치에 남으며, 클라우드 위치를 고르면 해당 제공자에게 업로드될 수 있습니다.'**
+  String get exportCsvNotice;
+
+  /// No description provided for @exportCsvSaved.
+  ///
+  /// In ko, this message translates to:
+  /// **'CSV 파일을 저장했어요.'**
+  String get exportCsvSaved;
+
+  /// No description provided for @exportCsvFailed.
+  ///
+  /// In ko, this message translates to:
+  /// **'CSV 파일을 저장하지 못했어요. 다시 시도해 주세요.'**
+  String get exportCsvFailed;
+
+  /// No description provided for @csvDate.
+  ///
+  /// In ko, this message translates to:
+  /// **'날짜'**
+  String get csvDate;
+
+  /// No description provided for @csvType.
+  ///
+  /// In ko, this message translates to:
+  /// **'거래 유형'**
+  String get csvType;
+
+  /// No description provided for @csvBoarding.
+  ///
+  /// In ko, this message translates to:
+  /// **'승차역'**
+  String get csvBoarding;
+
+  /// No description provided for @csvAlighting.
+  ///
+  /// In ko, this message translates to:
+  /// **'하차역'**
+  String get csvAlighting;
+
+  /// No description provided for @csvDescription.
+  ///
+  /// In ko, this message translates to:
+  /// **'설명'**
+  String get csvDescription;
+
+  /// No description provided for @csvAmount.
+  ///
+  /// In ko, this message translates to:
+  /// **'이용 금액(JPY)'**
+  String get csvAmount;
+
+  /// No description provided for @csvAmountStatus.
+  ///
+  /// In ko, this message translates to:
+  /// **'금액 상태'**
+  String get csvAmountStatus;
+
+  /// No description provided for @csvBalance.
+  ///
+  /// In ko, this message translates to:
+  /// **'이용 후 잔액(JPY)'**
+  String get csvBalance;
+
+  /// No description provided for @csvCalculated.
+  ///
+  /// In ko, this message translates to:
+  /// **'계산됨'**
+  String get csvCalculated;
+
+  /// No description provided for @privacyCsvTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'2-1. 선택적 CSV 내보내기'**
+  String get privacyCsvTitle;
+
+  /// No description provided for @privacyCsvBody.
+  ///
+  /// In ko, this message translates to:
+  /// **'사용자가 CSV 내보내기를 선택한 경우에만 현재 보고 있는 카드의 전체 또는 현재 필터 이용내역으로 파일을 만듭니다. 표시된 날짜·거래 유형·역명·설명·금액·잔액을 앱 언어와 역명 설정에 맞춰 포함하며, 카드 원본 기록·IDm·역 데이터베이스 파일·비교 식별값은 포함하지 않습니다.\n\nAndroid 시스템 파일 선택 창에서 저장 위치를 직접 선택합니다. 앱 내부에는 CSV를 보관하지 않으며 앱 운영자에게 자동 전송하지 않습니다. 내보낸 파일은 스캔 세션이 끝나도 남으며 사용자가 직접 관리·삭제합니다. 클라우드 문서 제공자를 고르면 해당 제공자의 약관에 따라 업로드될 수 있습니다. 저장 위치 선택 전에 취소하면 내보내기 파일을 저장하지 않습니다. 쓰기 실패 시 선택한 위치에 빈 파일이나 일부만 기록된 파일이 남을 수 있습니다. CSV는 정식 영수증이 아니며 카드에서 사라진 과거 내역을 복구하지 못합니다.'**
+  String get privacyCsvBody;
 }
 
 class _AppLocalizationsDelegate

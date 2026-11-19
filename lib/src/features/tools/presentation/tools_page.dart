@@ -6,18 +6,20 @@ import '../../../core/design/app_theme.dart';
 import '../../../core/widgets/app_ui.dart';
 import '../../../core/widgets/main_page_header.dart';
 
-/// The approved B tools hub. Only entry points move; feature routes own loading.
+/// The compact A refinement of the existing two-column tools hub.
 class ToolsPage extends StatelessWidget {
   const ToolsPage({
     super.key,
     required this.onOpenPassComparison,
     required this.onOpenContactless,
     required this.onOpenCoinLocker,
+    this.onOpenStationMaps,
   });
 
   final VoidCallback onOpenPassComparison;
   final VoidCallback onOpenContactless;
   final VoidCallback onOpenCoinLocker;
+  final VoidCallback? onOpenStationMaps;
 
   @override
   Widget build(BuildContext context) => AppPage(
@@ -48,6 +50,18 @@ class ToolsPage extends StatelessWidget {
               description: strings(context).findLockersHint,
               onTap: onOpenCoinLocker,
             ),
+            if (onOpenStationMaps != null)
+              _ToolTile(
+                key: const ValueKey('tools-station-maps'),
+                icon: Icons.map_outlined,
+                title: localized(context, '역 구내도', 'Station maps'),
+                description: localized(
+                  context,
+                  '운영사별 공식 구내도\n외부 안내 연결',
+                  'Official station maps\nby operator',
+                ),
+                onTap: onOpenStationMaps!,
+              ),
           ];
           final oneColumn =
               constraints.maxWidth < 300 ||
@@ -57,7 +71,7 @@ class ToolsPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 for (var i = 0; i < tiles.length; i++) ...[
-                  if (i > 0) const SizedBox(height: 14),
+                  if (i > 0) const SizedBox(height: 12),
                   tiles[i],
                 ],
               ],
@@ -66,13 +80,13 @@ class ToolsPage extends StatelessWidget {
           return Column(
             children: [
               for (var i = 0; i < tiles.length; i += 2) ...[
-                if (i > 0) const SizedBox(height: 14),
+                if (i > 0) const SizedBox(height: 12),
                 IntrinsicHeight(
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Expanded(child: tiles[i]),
-                      const SizedBox(width: 14),
+                      const SizedBox(width: 12),
                       Expanded(
                         child: i + 1 < tiles.length
                             ? tiles[i + 1]
@@ -116,20 +130,20 @@ class _ToolTile extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         child: ConstrainedBox(
-          constraints: const BoxConstraints(minHeight: 202),
+          constraints: const BoxConstraints(minHeight: 176),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 17, vertical: 22),
+            padding: const EdgeInsets.all(16),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ExcludeSemantics(
                   child: Container(
-                    width: 52,
-                    height: 52,
+                    width: 44,
+                    height: 44,
                     decoration: BoxDecoration(
                       color: AppColors.softSurface(context),
-                      borderRadius: BorderRadius.circular(15),
+                      borderRadius: BorderRadius.circular(13),
                     ),
                     child: Icon(
                       icon,
@@ -138,7 +152,7 @@ class _ToolTile extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 22),
+                const SizedBox(height: 14),
                 Text(
                   title,
                   style: const TextStyle(
@@ -148,7 +162,7 @@ class _ToolTile extends StatelessWidget {
                     letterSpacing: -0.5,
                   ),
                 ),
-                const SizedBox(height: 7),
+                const SizedBox(height: 6),
                 Text(
                   description,
                   style: TextStyle(

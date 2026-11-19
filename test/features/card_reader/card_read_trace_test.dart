@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ic_card_reader/src/features/card_reader/domain/card_diagnostics.dart';
 import 'package:ic_card_reader/src/features/card_reader/domain/card_read_trace.dart';
 
 void main() {
@@ -22,7 +21,7 @@ void main() {
       platformCode: 'SECRET_ID_AND_ERROR_PAYLOAD',
     );
     final text = trace.formatForTerminal();
-    if (!cardDiagnosticsEnabled) {
+    if (!cardReadTraceEnabled) {
       expect(text, isNull);
       return;
     }
@@ -67,7 +66,7 @@ void main() {
             stage: stage,
             response: reply,
           ).formatForTerminal();
-          if (!cardDiagnosticsEnabled) {
+          if (!cardReadTraceEnabled) {
             expect(text, isNull);
             continue;
           }
@@ -86,7 +85,7 @@ void main() {
         issue: CardReadIssue.platformError,
         platformCode: 'IOException',
       ).formatForTerminal();
-      if (!cardDiagnosticsEnabled) {
+      if (!cardReadTraceEnabled) {
         expect(text, isNull);
         return;
       }

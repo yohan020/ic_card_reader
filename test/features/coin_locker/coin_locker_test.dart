@@ -232,7 +232,7 @@ void main() {
       (const Size(390, 844), 3.0),
     ]) {
       testWidgets(
-        'B list and multi-link expanded dark=$dark size=${spec.$1} scale=${spec.$2}',
+        'A list and multi-link expanded dark=$dark size=${spec.$1} scale=${spec.$2}',
         (tester) async {
           tester.view.physicalSize = spec.$1;
           tester.view.devicePixelRatio = 1;
@@ -280,6 +280,16 @@ void main() {
           expect(find.text('란덴 아라시야마'), findsOneWidget);
           expect(find.text('JR 사가아라시야마'), findsOneWidget);
           expect(find.byIcon(Icons.open_in_new), findsNWidgets(5));
+          expect(find.byType(Divider), findsNWidgets(2));
+          for (final link
+              in fixture()
+                  .search('아라시야마')
+                  .single
+                  .sources
+                  .expand((s) => s.links)) {
+            final target = find.byKey(ValueKey('locker-link-${link.uri}'));
+            expect(tester.getSize(target).height, greaterThanOrEqualTo(48));
+          }
           expect(tester.takeException(), isNull);
           if (preview && spec.$1.width == 390 && spec.$2 == 1) {
             final boundary = tester.renderObject<RenderRepaintBoundary>(
@@ -291,7 +301,7 @@ void main() {
                 format: ui.ImageByteFormat.png,
               );
               await File(
-                'docs/design/coin-locker-2026-11-03/implementation-${dark ? 'dark' : 'light'}.png',
+                '.dart_tool/station-map-preview/A-lockers-${dark ? 'dark' : 'light'}.png',
               ).writeAsBytes(bytes!.buffer.asUint8List());
               image.dispose();
             });

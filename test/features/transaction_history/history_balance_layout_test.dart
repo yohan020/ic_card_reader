@@ -194,16 +194,16 @@ void main() {
   );
 
   testWidgets(
-    'empty and unknown balance are not fabricated; scan callback survives',
+    'empty and unknown balance are not fabricated; history action is hidden',
     (tester) async {
       var scans = 0;
       await _pump(tester, const [], balance: null, onScan: () => scans++);
       expect(find.text('—'), findsOneWidget);
       expect(find.text('카드 스캔 후 표시'), findsOneWidget);
       expect(find.byKey(const ValueKey('history-filter-total')), findsNothing);
-      await tester.tap(find.byTooltip('IC 카드 스캔'));
-      await tester.pump();
-      expect(scans, 1);
+      expect(find.byTooltip('IC 카드 스캔'), findsNothing);
+      expect(find.byKey(const ValueKey('history-export')), findsNothing);
+      expect(scans, 0);
       expect(tester.takeException(), isNull);
     },
   );

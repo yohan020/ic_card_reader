@@ -11,9 +11,15 @@ import android.content.pm.PackageManager
 
 class MainActivity : FlutterActivity() {
     private var mapNetworkMonitor: MapNetworkMonitor? = null
+    private var historyCsvExport: HistoryCsvExport? = null
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
+        val csvExport = HistoryCsvExport(this)
+        historyCsvExport?.dispose()
+        historyCsvExport = csvExport
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "app.iccardreader/history_csv")
+            .setMethodCallHandler(csvExport::handle)
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "app.iccardreader/coin_locker_links")
             .setMethodCallHandler { call, result ->
                 if (call.method != "open") {
@@ -76,10 +82,20 @@ class MainActivity : FlutterActivity() {
     }
 
     override fun cleanUpFlutterEngine(flutterEngine: FlutterEngine) {
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "app.iccardreader/history_csv")
+            .setMethodCallHandler(null)
+        historyCsvExport?.dispose()
+        historyCsvExport = null
         EventChannel(flutterEngine.dartExecutor.binaryMessenger, "app.iccardreader/maps_network")
             .setStreamHandler(null)
         mapNetworkMonitor?.stop()
         mapNetworkMonitor = null
         super.cleanUpFlutterEngine(flutterEngine)
+    }
+
+    @Deprecated("Legacy activity result bridge used by the document picker")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        historyCsvExport?.onActivityResult(requestCode, resultCode, data)
     }
 }

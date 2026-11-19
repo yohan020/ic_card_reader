@@ -292,9 +292,16 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
     await _pump(tester, ContactlessPage(load: () => Future.value(all)));
-    final cards = tester.widgetList<Card>(find.byType(Card)).toList();
+    final headings = tester
+        .widgetList<InkWell>(find.byType(InkWell))
+        .where(
+          (w) =>
+              w.key is ValueKey<String> &&
+              (w.key! as ValueKey<String>).value.startsWith('company-'),
+        )
+        .toList();
     expect(
-      cards.first.key,
+      headings.first.key,
       const ValueKey('company-operator-d69d6dd794dbc64b'),
     );
     expect(find.byType(ContactlessBadge), findsNothing);
@@ -305,7 +312,7 @@ void main() {
     expect(tester.takeException(), isNull);
   });
   testWidgets(
-    'B layout has left rail, borderless 14dp cards and compact badges',
+    'stamp-style plain company headings retain route cards and compact badges',
     (tester) async {
       tester.view.physicalSize = const Size(390, 844);
       tester.view.devicePixelRatio = 1;
@@ -317,16 +324,16 @@ void main() {
       expect(tester.getSize(rail).width, 76);
       expect(tester.getRect(rail).right, tester.getRect(companies).left);
       expect(find.text('어느 노선을 이용하나요?'), findsNothing);
-      final closed = tester.widget<Card>(find.byType(Card).first);
-      final shape = closed.shape! as RoundedRectangleBorder;
-      expect(shape.side, BorderSide.none);
-      expect(shape.borderRadius, BorderRadius.circular(14));
-      expect(closed.color, Colors.white);
+      expect(find.byType(Card), findsNothing);
+      final name = tester.widget<Text>(find.text('도쿄메트로'));
+      expect(name.style!.fontSize, 13);
+      expect(name.style!.fontWeight, FontWeight.w700);
+      expect(find.byType(Divider), findsWidgets);
       await tester.tap(find.text('도쿄메트로'));
       await tester.pumpAndSettle();
       expect(
         tester.widget<Card>(find.byType(Card).first).color,
-        const Color(0xFFDDEFFB),
+        AppColors.toolRegionBackground(tester.element(find.byType(Card).first)),
       );
       expect(
         tester

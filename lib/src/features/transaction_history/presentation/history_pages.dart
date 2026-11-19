@@ -17,7 +17,10 @@ import '../domain/amount_calculation.dart';
 import '../domain/history_total.dart';
 import '../domain/parsed_transit_history.dart';
 import '../domain/transit_transaction_type.dart';
+import '../data/history_csv_saver.dart';
+import 'history_csv.dart';
 import 'transaction_history_labels.dart';
+import 'widgets/history_export_sheet.dart';
 import 'widgets/history_station_map.dart';
 
 class HistoryListPage extends StatefulWidget {
@@ -31,6 +34,7 @@ class HistoryListPage extends StatefulWidget {
     this.transactionLocations = const {},
     this.stationNameDisplayMode = StationNameDisplayMode.japanese,
     this.brandIdentity,
+    this.csvSaver = const AndroidHistoryCsvSaver(),
   });
 
   final List<ParsedTransitHistory> histories;
@@ -41,6 +45,7 @@ class HistoryListPage extends StatefulWidget {
   final IssueReportRepository? issueReportRepository;
   final Map<int, StationResolution> transactionLocations;
   final StationNameDisplayMode stationNameDisplayMode;
+  final HistoryCsvSaver csvSaver;
 
   @override
   State<HistoryListPage> createState() => _HistoryListPageState();
@@ -49,6 +54,63 @@ class HistoryListPage extends StatefulWidget {
 class _HistoryListPageState extends State<HistoryListPage> {
   _HistoryFilter _filter = _HistoryFilter.all;
   bool _totalExpanded = false;
+  bool _exporting = false;
+  bool _saving = false;
+
+  Future<void> _exportCsv() async {
+    if (_exporting || widget.histories.isEmpty) return;
+    // Capture this card/session/settings before any dialog or platform await.
+    final histories = List<ParsedTransitHistory>.of(widget.histories);
+    final filtered = histories.where(_filter.matches).toList();
+    final stationPairs = Map<int, ResolvedStationPair>.of(widget.stationPairs);
+    final locations = Map<int, StationResolution>.of(
+      widget.transactionLocations,
+    );
+    final mode = widget.stationNameDisplayMode;
+    final l10n = strings(context);
+    final saver = widget.csvSaver;
+    setState(() => _exporting = true);
+    try {
+      final scope = await showHistoryExportSheet(
+        context,
+        allCount: histories.length,
+        filteredCount: filtered.length,
+        filterLabel: _filter.label(l10n),
+      );
+      if (scope == null || !mounted) return;
+      setState(() => _saving = true);
+      final bytes = createHistoryCsv(
+        histories: scope == HistoryExportScope.all ? histories : filtered,
+        stationPairs: stationPairs,
+        transactionLocations: locations,
+        stationNameDisplayMode: mode,
+        l10n: l10n,
+      );
+      final now = DateTime.now();
+      final filename =
+          'ic-card-history-${now.year}${now.month.toString().padLeft(2, '0')}${now.day.toString().padLeft(2, '0')}-${now.millisecondsSinceEpoch}.csv';
+      final saved = await saver.save(filename: filename, bytes: bytes);
+      if (mounted && saved) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(strings(context).exportCsvSaved)),
+        );
+      }
+    } catch (_) {
+      // Do not log card records, CSV bytes, provider URIs or native exceptions.
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(strings(context).exportCsvFailed)),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _exporting = false;
+          _saving = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +119,36 @@ class _HistoryListPageState extends State<HistoryListPage> {
     return AppPage(
       padding: MainPageHeader.pagePadding,
       children: [
-        MainPageHeader(title: strings(context).history, onScan: widget.onScan),
+        MainPageHeader(
+          title: strings(context).history,
+          action: widget.histories.isEmpty
+              ? null
+              : Semantics(
+                  container: true,
+                  label: strings(context).exportCsv,
+                  button: true,
+                  enabled: !_exporting,
+                  onTap: _exporting ? null : _exportCsv,
+                  excludeSemantics: true,
+                  child: SizedBox.square(
+                    dimension: 48,
+                    child: IconButton(
+                      key: const ValueKey('history-export'),
+                      tooltip: strings(context).exportCsv,
+                      onPressed: _exporting ? null : _exportCsv,
+                      style: IconButton.styleFrom(
+                        foregroundColor: AppColors.accent(context),
+                      ),
+                      icon: _saving
+                          ? const SizedBox.square(
+                              dimension: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : const Icon(Icons.ios_share_rounded, size: 23),
+                    ),
+                  ),
+                ),
+        ),
         _CurrentBalanceCard(
           balance: widget.currentBalance,
           brandIdentity: widget.brandIdentity,

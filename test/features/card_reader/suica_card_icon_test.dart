@@ -152,9 +152,17 @@ void main() {
               : findsNothing,
         );
         expect(find.text('현재 ${identity.label} 잔액'), findsOneWidget);
-        await tester.tap(find.byTooltip('IC 카드 스캔'));
+        expect(find.byTooltip('IC 카드 스캔'), findsNothing);
+        expect(find.byKey(const ValueKey('history-export')), findsOneWidget);
+        await tester.tap(
+          find.descendant(
+            of: find.byType(NavigationBar),
+            matching: find.text('홈'),
+          ),
+        );
         await tester.pump();
         await tester.pump(const Duration(milliseconds: 350));
+        await tapVisible(find.text('IC 카드 스캔'));
         await tapVisible(find.text('이용내역 보기'));
         expect(find.byType(SuicaCardIcon), findsNothing);
         expect(

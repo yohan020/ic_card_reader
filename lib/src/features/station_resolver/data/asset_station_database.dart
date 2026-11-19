@@ -20,7 +20,8 @@ class AssetStationDatabase {
       'assets/data/stations/manual_station_names_ko_by_code.csv';
   static const englishNameAssetPath =
       'assets/data/stations/station_names_en_by_code.json';
-  static const version = 'yoiko-c38cdaa4-2026-07-15+iyotetsu-v2';
+  static const version =
+      'yoiko-2026-07-15+stamp-reviewed-2026-11-15+iyotetsu-v2';
   static const source = 'Yoiko 自動改札機の研究';
   static const overrideSource = 'App station override';
 

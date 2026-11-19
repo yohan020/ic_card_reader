@@ -1,4 +1,9 @@
+import 'dart:io';
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ic_card_reader/src/core/design/app_theme.dart';
 import 'package:ic_card_reader/src/core/localization/app_strings.dart';
@@ -6,6 +11,23 @@ import 'package:ic_card_reader/src/features/settings/presentation/settings_page.
 import 'package:ic_card_reader/src/features/station_resolver/domain/station_name_display.dart';
 
 void main() {
+  const preview = bool.fromEnvironment('SETTINGS_WEIGHT_PREVIEW');
+  if (preview) {
+    setUpAll(() async {
+      for (final font in {
+        'SettingsPreview': 'C:/Windows/Fonts/malgun.ttf',
+        'MaterialIcons':
+            'C:/Users/yohan/Desktop/project/flutter/bin/cache/artifacts/material_fonts/MaterialIcons-Regular.otf',
+      }.entries) {
+        await (FontLoader(font.key)..addFont(
+              Future.value(
+                ByteData.sublistView(await File(font.value).readAsBytes()),
+              ),
+            ))
+            .load();
+      }
+    });
+  }
   for (final language in ['ko', 'en']) {
     for (final dark in [false, true]) {
       for (final width in [320.0, 390.0]) {
@@ -20,7 +42,15 @@ void main() {
               ThemeMode? theme;
               await tester.pumpWidget(
                 MaterialApp(
-                  theme: dark ? AppTheme.dark : AppTheme.light,
+                  theme: preview
+                      ? (dark ? AppTheme.dark : AppTheme.light).copyWith(
+                          textTheme: (dark ? AppTheme.dark : AppTheme.light)
+                              .textTheme
+                              .apply(fontFamily: 'SettingsPreview'),
+                        )
+                      : dark
+                      ? AppTheme.dark
+                      : AppTheme.light,
                   locale: Locale(language),
                   localizationsDelegates:
                       AppLocalizations.localizationsDelegates,
@@ -29,7 +59,10 @@ void main() {
                     data: MediaQuery.of(
                       context,
                     ).copyWith(textScaler: TextScaler.linear(scale)),
-                    child: child!,
+                    child: RepaintBoundary(
+                      key: const ValueKey('settings-weight-preview'),
+                      child: preview ? Scaffold(body: child!) : child!,
+                    ),
                   ),
                   home: SettingsPage(
                     themeMode: ThemeMode.system,
@@ -43,6 +76,28 @@ void main() {
                 ),
               );
               await tester.pumpAndSettle();
+              if (preview && width == 390 && scale == 1) {
+                final boundary = tester.renderObject<RenderRepaintBoundary>(
+                  find.byKey(const ValueKey('settings-weight-preview')),
+                );
+                await tester.runAsync(() async {
+                  final image = await boundary.toImage(pixelRatio: 1.5);
+                  try {
+                    final data = await image.toByteData(
+                      format: ui.ImageByteFormat.png,
+                    );
+                    final directory = Directory(
+                      '.dart_tool/settings-title-weight-preview',
+                    );
+                    await directory.create(recursive: true);
+                    await File(
+                      '${directory.path}/$language-${dark ? 'dark' : 'light'}.png',
+                    ).writeAsBytes(data!.buffer.asUint8List());
+                  } finally {
+                    image.dispose();
+                  }
+                });
+              }
               final group = find.byKey(
                 const ValueKey('settings-language-group'),
               );
@@ -69,6 +124,15 @@ void main() {
               }
               final languageTitle = language == 'en' ? 'App language' : '앱 언어';
               final stationTitle = language == 'en' ? 'Station names' : '역명 표기';
+              for (final label in [
+                language == 'en' ? 'Theme' : '테마',
+                languageTitle,
+                stationTitle,
+              ]) {
+                final text = tester.widget<Text>(find.text(label));
+                expect(text.style?.fontSize, 14);
+                expect(text.style?.fontWeight, FontWeight.w700);
+              }
               expect(
                 find.descendant(of: group, matching: find.text(languageTitle)),
                 findsOneWidget,
@@ -117,7 +181,7 @@ void main() {
               expect(icon.size, 20);
               final title = tester.widget<Text>(info);
               expect(title.style?.fontSize, 14);
-              expect(title.style?.fontWeight, FontWeight.w600);
+              expect(title.style?.fontWeight, FontWeight.w700);
               expect(tester.takeException(), isNull);
             },
           );

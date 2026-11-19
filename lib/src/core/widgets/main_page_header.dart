@@ -6,12 +6,18 @@ import '../design/app_theme.dart';
 
 /// The approved A minimal header shared by the four main tabs.
 class MainPageHeader extends StatelessWidget {
-  const MainPageHeader({required this.title, super.key, this.onScan});
+  const MainPageHeader({
+    required this.title,
+    super.key,
+    this.onScan,
+    this.action,
+  });
 
   static const pagePadding = EdgeInsets.fromLTRB(20, 12, 20, 28);
 
   final String title;
   final VoidCallback? onScan;
+  final Widget? action;
 
   @override
   Widget build(BuildContext context) => Padding(
@@ -35,7 +41,10 @@ class MainPageHeader extends StatelessWidget {
               ),
             ),
           ),
-          if (onScan != null) ...[
+          if (action != null) ...[
+            const SizedBox(width: 8),
+            action!,
+          ] else if (onScan != null) ...[
             const SizedBox(width: 8),
             SizedBox.square(
               dimension: 48,

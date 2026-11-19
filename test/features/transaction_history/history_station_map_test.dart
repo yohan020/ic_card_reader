@@ -214,7 +214,7 @@ void main() {
       ).readAsStringSync(),
     );
     final rows = (jsonDecode(json) as Map<String, dynamic>)['records'] as List;
-    expect(rows.length, 8479);
+    expect(rows.length, 8488);
     for (final raw in rows) {
       final key = raw['code'] as List;
       final resolution = database.resolve(
@@ -339,7 +339,7 @@ void main() {
       for (final dynamic row in exclusions)
         (row['code'] as List).join('/'): row,
     };
-    expect(codes.length, 8558);
+    expect(codes.length, 8567);
     expect(excluded.length, 57);
     var covered = 0;
     for (final code in codes) {
@@ -358,7 +358,7 @@ void main() {
         covered++;
       }
     }
-    expect(covered, 8501);
+    expect(covered, 8510);
     final fukuoka = repo.find(
       database.resolve(
         const StationCode(regionCode: 3, lineCode: 215, stationCode: 101),

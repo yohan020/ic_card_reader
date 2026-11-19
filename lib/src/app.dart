@@ -53,18 +53,21 @@ class _IcCardReaderAppState extends State<IcCardReaderApp> {
   Future<void> _restoreLanguageSettings() async {
     final preferences = await _preferences;
     if (!mounted || preferences == null) return;
+    final savedLanguage = preferences.get(_appLanguageKey);
+    final savedStationMode = preferences.get(_stationNameModeKey);
+    final language = _appLanguageChanged
+        ? _appLanguage
+        : AppLanguage.values.asNameMap()[savedLanguage] ?? AppLanguage.system;
+    final stationMode = _stationNameModeChanged
+        ? _stationNameDisplayMode
+        : StationNameDisplayMode.values.asNameMap()[savedStationMode] ??
+              StationNameDisplayMode.japanese;
+    if (language == _appLanguage && stationMode == _stationNameDisplayMode) {
+      return;
+    }
     setState(() {
-      if (!_appLanguageChanged) {
-        final name = preferences.get(_appLanguageKey);
-        _appLanguage =
-            AppLanguage.values.asNameMap()[name] ?? AppLanguage.system;
-      }
-      if (!_stationNameModeChanged) {
-        final name = preferences.get(_stationNameModeKey);
-        _stationNameDisplayMode =
-            StationNameDisplayMode.values.asNameMap()[name] ??
-            StationNameDisplayMode.japanese;
-      }
+      _appLanguage = language;
+      _stationNameDisplayMode = stationMode;
     });
   }
 
@@ -162,5 +165,17 @@ void _registerStationDataLicense() {
     yield LicenseEntryWithLineBreaks(const [
       'Coin locker external links · independent curation',
     ], lockerNotice);
+    final stationMapNotice = await rootBundle.loadString(
+      'assets/licenses/station-maps-NOTICE.txt',
+    );
+    yield LicenseEntryWithLineBreaks(const [
+      'Official station-map links · independent curation',
+    ], stationMapNotice);
+    final stampOrderNotice = await rootBundle.loadString(
+      'assets/licenses/stamp-station-order-NOTICE.txt',
+    );
+    yield LicenseEntryWithLineBreaks(const [
+      'Station stamp order · MLIT / Wikipedia contributors / independent review',
+    ], stampOrderNotice);
   });
 }

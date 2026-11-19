@@ -4,9 +4,8 @@ import 'package:flutter/foundation.dart';
 
 import 'card_brand_catalog.dart';
 
-/// Release/profile builds cannot enable this, even with the define supplied.
-const cardDiagnosticsEnabled =
-    kDebugMode && bool.fromEnvironment('ENABLE_CARD_DIAGNOSTICS');
+/// The dedicated, consent-gated diagnostics screen is available in debug only.
+const cardDiagnosticsEnabled = kDebugMode;
 
 /// Small diagnostic sample, not a full external rule table.
 /// Public service identifiers and provenance: IC_CARD_BRAND_IDENTIFICATION_RESEARCH.md.

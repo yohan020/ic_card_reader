@@ -6,17 +6,37 @@ import '../data/coin_locker_link_opener.dart';
 import '../data/coin_locker_repository.dart';
 import '../domain/coin_locker_catalog.dart';
 
-/// Approved B: fixed region index, independently scrolling expandable places.
+/// Reuses the approved station browser for another curated external guide.
+/// Locker parsing and URL policy remain unchanged when this is absent.
+class StationGuidePresentation {
+  const StationGuidePresentation({
+    required this.titleKo,
+    required this.titleEn,
+    required this.footerKo,
+    required this.footerEn,
+    required this.expandedContent,
+    this.helpButton,
+    this.showFooter = true,
+  });
+  final String titleKo, titleEn, footerKo, footerEn;
+  final Widget Function(BuildContext, CoinLockerPlace) expandedContent;
+  final Widget? helpButton;
+  final bool showFooter;
+}
+
+/// Approved A refinement: one card per place with compact source groups.
 class CoinLockerPage extends StatefulWidget {
   const CoinLockerPage({
     super.key,
     this.load,
     this.openLink,
     this.stationNameDisplayMode = StationNameDisplayMode.japanese,
+    this.guide,
   });
   final Future<CoinLockerCatalog> Function()? load;
   final Future<bool> Function(Uri)? openLink;
   final StationNameDisplayMode stationNameDisplayMode;
+  final StationGuidePresentation? guide;
 
   @override
   State<CoinLockerPage> createState() => _CoinLockerPageState();
@@ -77,16 +97,24 @@ class _CoinLockerPageState extends State<CoinLockerPage> {
 
   @override
   Widget build(BuildContext context) {
-    final dark = AppColors.isDark(context);
-    final header = dark ? const Color(0xFF162C38) : const Color(0xFFEBF6FC);
+    final header = AppColors.toolListBackground(context);
     return Scaffold(
+      backgroundColor: AppColors.toolListBackground(context),
       appBar: AppBar(
-        backgroundColor: header,
-        toolbarHeight:
-            56 + (MediaQuery.textScalerOf(context).scale(21) - 21).clamp(0, 70),
+        actions: widget.guide?.helpButton == null
+            ? null
+            : [
+                Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: widget.guide!.helpButton!,
+                ),
+              ],
         title: Text(
-          localized(context, '코인락커 찾기', 'Find coin lockers'),
-          style: const TextStyle(fontSize: 21, fontWeight: FontWeight.w700),
+          localized(
+            context,
+            widget.guide?.titleKo ?? '코인락커 찾기',
+            widget.guide?.titleEn ?? 'Find coin lockers',
+          ),
         ),
       ),
       body: SafeArea(
@@ -103,8 +131,12 @@ class _CoinLockerPageState extends State<CoinLockerPage> {
                       Text(
                         localized(
                           context,
-                          '코인락커 안내를 불러오지 못했어요.',
-                          'Couldn’t load the locker guides.',
+                          widget.guide == null
+                              ? '코인락커 안내를 불러오지 못했어요.'
+                              : '역 구내도를 불러오지 못했어요.',
+                          widget.guide == null
+                              ? 'Couldn’t load the locker guides.'
+                              : 'Couldn’t load the station maps.',
                         ),
                       ),
                       const SizedBox(height: 16),
@@ -129,7 +161,7 @@ class _CoinLockerPageState extends State<CoinLockerPage> {
                 ColoredBox(
                   color: header,
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(18, 4, 18, 20),
+                    padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
                     child: Semantics(
                       label: localized(
                         context,
@@ -140,14 +172,26 @@ class _CoinLockerPageState extends State<CoinLockerPage> {
                         controller: _query,
                         onChanged: (_) => _filter(),
                         textInputAction: TextInputAction.search,
-                        style: const TextStyle(fontSize: 14),
+                        style: const TextStyle(fontSize: 15),
                         decoration: InputDecoration(
                           hintText: localized(
                             context,
-                            '한국어·일본어 역 이름 검색',
+                            widget.guide == null
+                                ? '한국어·일본어 역 이름 검색'
+                                : '역 이름 검색',
                             'Search station names',
                           ),
-                          prefixIcon: const Icon(Icons.search, size: 23),
+                          prefixIcon: Icon(
+                            Icons.search,
+                            color: AppColors.mutedText(context),
+                          ),
+                          hintStyle: TextStyle(
+                            color: AppColors.mutedText(context),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 14,
+                          ),
                           suffixIcon: _query.text.isEmpty
                               ? null
                               : IconButton(
@@ -163,14 +207,25 @@ class _CoinLockerPageState extends State<CoinLockerPage> {
                                   icon: const Icon(Icons.close, size: 20),
                                 ),
                           filled: true,
-                          fillColor: AppColors.fieldSurface(context),
+                          fillColor: AppColors.toolRegionBackground(context),
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(14),
-                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.circular(13),
+                            borderSide: BorderSide(
+                              color: AppColors.outline(context),
+                            ),
                           ),
                           enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(14),
-                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.circular(13),
+                            borderSide: BorderSide(
+                              color: AppColors.outline(context),
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(13),
+                            borderSide: BorderSide(
+                              color: AppColors.accent(context),
+                              width: 2,
+                            ),
                           ),
                         ),
                       ),
@@ -182,8 +237,11 @@ class _CoinLockerPageState extends State<CoinLockerPage> {
                     builder: (context, constraints) {
                       final scale =
                           MediaQuery.textScalerOf(context).scale(13) / 13;
-                      final railWidth = (88 * scale).clamp(
-                        88.0,
+                      // English region names need the incumbent width to avoid
+                      // splitting a short name such as Kanagawa mid-word.
+                      final railBaseWidth = usesEnglish(context) ? 88.0 : 76.0;
+                      final railWidth = (railBaseWidth * scale).clamp(
+                        railBaseWidth,
                         constraints.maxWidth * .38,
                       );
                       return Row(
@@ -191,30 +249,38 @@ class _CoinLockerPageState extends State<CoinLockerPage> {
                         children: [
                           SizedBox(
                             width: railWidth,
-                            child: ColoredBox(
-                              color: dark
-                                  ? const Color(0xFF14242E)
-                                  : const Color(0xFFEEF5F9),
-                              child: ListView(
-                                key: const PageStorageKey('locker-regions'),
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 7,
-                                  vertical: 12,
+                            child: ClipRRect(
+                              borderRadius: const BorderRadius.only(
+                                topRight: Radius.circular(17),
+                              ),
+                              child: ColoredBox(
+                                key: const ValueKey(
+                                  'station-guide-region-background',
                                 ),
-                                children: [
-                                  for (final region in <String?>[
-                                    null,
-                                    ...catalog.regions,
-                                  ])
-                                    _RegionButton(
-                                      region: region,
-                                      selected: region == _region,
-                                      onTap: () => _filter(
+                                color: AppColors.toolRegionBackground(context),
+                                child: ListView(
+                                  key: const PageStorageKey('locker-regions'),
+                                  padding: const EdgeInsets.fromLTRB(
+                                    6,
+                                    12,
+                                    6,
+                                    16,
+                                  ),
+                                  children: [
+                                    for (final region in <String?>[
+                                      null,
+                                      ...catalog.regions,
+                                    ])
+                                      _RegionButton(
                                         region: region,
-                                        regionChanged: true,
+                                        selected: region == _region,
+                                        onTap: () => _filter(
+                                          region: region,
+                                          regionChanged: true,
+                                        ),
                                       ),
-                                    ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           ),
@@ -225,9 +291,9 @@ class _CoinLockerPageState extends State<CoinLockerPage> {
                                   ScrollViewKeyboardDismissBehavior.onDrag,
                               padding: const EdgeInsets.fromLTRB(
                                 12,
-                                16,
-                                14,
-                                24,
+                                12,
+                                20,
+                                28,
                               ),
                               itemCount: matches.length + 2,
                               itemBuilder: (context, index) {
@@ -269,6 +335,10 @@ class _CoinLockerPageState extends State<CoinLockerPage> {
                                   );
                                 }
                                 if (index == matches.length + 1) {
+                                  if (matches.isNotEmpty &&
+                                      widget.guide?.showFooter == false) {
+                                    return const SizedBox.shrink();
+                                  }
                                   return Padding(
                                     padding: const EdgeInsets.only(top: 10),
                                     child: Text(
@@ -280,8 +350,10 @@ class _CoinLockerPageState extends State<CoinLockerPage> {
                                             )
                                           : localized(
                                               context,
-                                              '외부 사이트의 위치 안내를 연결해요.\n실시간 빈자리·예약 정보는 아니에요.',
-                                              'Links show locker locations, not live availability or reservations.',
+                                              widget.guide?.footerKo ??
+                                                  '외부 사이트의 위치 안내를 연결해요.\n실시간 빈자리·예약 정보는 아니에요.',
+                                              widget.guide?.footerEn ??
+                                                  'Links show locker locations, not live availability or reservations.',
                                             ),
                                       style: TextStyle(
                                         fontSize: 12,
@@ -295,6 +367,12 @@ class _CoinLockerPageState extends State<CoinLockerPage> {
                                 return _PlaceCard(
                                   key: ValueKey('locker-place-${place.id}'),
                                   place: place,
+                                  customBody: _expanded == place.id
+                                      ? widget.guide?.expandedContent(
+                                          context,
+                                          place,
+                                        )
+                                      : null,
                                   stationNameDisplayMode:
                                       widget.stationNameDisplayMode,
                                   expanded: _expanded == place.id,
@@ -358,13 +436,13 @@ class _RegionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.only(bottom: 4),
+    padding: const EdgeInsets.only(bottom: 8),
     child: Semantics(
       selected: selected,
       button: true,
       child: Material(
         color: selected ? AppColors.softSurface(context) : Colors.transparent,
-        borderRadius: BorderRadius.circular(11),
+        borderRadius: BorderRadius.circular(10),
         clipBehavior: Clip.antiAlias,
         child: InkWell(
           onTap: onTap,
@@ -376,7 +454,7 @@ class _RegionButton extends StatelessWidget {
               localized(context, _shortRegion(region), _englishRegion(region)),
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 13,
+                fontSize: 14,
                 height: 1.45,
                 fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
                 color: selected
@@ -401,6 +479,7 @@ class _PlaceCard extends StatelessWidget {
     required this.failedLink,
     required this.onOpen,
     required this.onToggle,
+    this.customBody,
   });
   final CoinLockerPlace place;
   final StationNameDisplayMode stationNameDisplayMode;
@@ -409,13 +488,14 @@ class _PlaceCard extends StatelessWidget {
   final Uri? failedLink;
   final Future<void> Function(Uri) onOpen;
   final VoidCallback onToggle;
+  final Widget? customBody;
 
   @override
   Widget build(BuildContext context) => Padding(
     padding: const EdgeInsets.only(bottom: 10),
     child: Material(
-      color: AppColors.fieldSurface(context),
-      borderRadius: BorderRadius.circular(17),
+      color: AppColors.toolRegionBackground(context),
+      borderRadius: BorderRadius.circular(14),
       clipBehavior: Clip.antiAlias,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -430,7 +510,7 @@ class _PlaceCard extends StatelessWidget {
                 color: expanded ? AppColors.softSurface(context) : null,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 14,
-                  vertical: 18,
+                  vertical: 14,
                 ),
                 child: Row(
                   children: [
@@ -451,7 +531,7 @@ class _PlaceCard extends StatelessWidget {
                                 ? place.nameJa
                                 : place.nameKo,
                             style: const TextStyle(
-                              fontSize: 16,
+                              fontSize: 14,
                               height: 1.45,
                               fontWeight: FontWeight.w700,
                             ),
@@ -492,9 +572,11 @@ class _PlaceCard extends StatelessWidget {
               ),
             ),
           ),
-          if (expanded)
+          if (expanded && customBody != null)
+            customBody!
+          else if (expanded)
             Padding(
-              padding: const EdgeInsets.fromLTRB(13, 15, 13, 15),
+              padding: const EdgeInsets.fromLTRB(13, 12, 13, 12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -517,9 +599,17 @@ class _PlaceCard extends StatelessWidget {
                         color: AppColors.mutedText(context),
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 12),
                   ],
                   for (final source in place.sources) ...[
+                    if (source != place.sources.first)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        child: Divider(
+                          height: 1,
+                          color: AppColors.outline(context),
+                        ),
+                      ),
                     Text(
                       usesEnglish(context) ? source.englishName : source.name,
                       style: TextStyle(
@@ -584,8 +674,8 @@ class _PlaceCard extends StatelessWidget {
                           ],
                         ),
                     ],
-                    const SizedBox(height: 14),
                   ],
+                  const SizedBox(height: 10),
                   Text(
                     localized(
                       context,
@@ -645,15 +735,20 @@ class _ExternalLink extends StatelessWidget {
         onTap: disabled ? null : onTap,
         borderRadius: BorderRadius.circular(9),
         child: ConstrainedBox(
-          constraints: const BoxConstraints(minHeight: 52),
+          constraints: const BoxConstraints(minHeight: 48),
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12),
+            padding: const EdgeInsets.symmetric(vertical: 8),
             child: Row(
               children: [
                 Expanded(
                   child: Text(
                     label,
-                    style: const TextStyle(fontSize: 13, height: 1.55),
+                    style: TextStyle(
+                      fontSize: 14,
+                      height: 1.55,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.accent(context),
+                    ),
                   ),
                 ),
                 const SizedBox(width: 8),

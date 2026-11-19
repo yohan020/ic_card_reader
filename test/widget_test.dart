@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart' show SchedulerPhase;
 import 'package:flutter/services.dart' show MethodChannel;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ic_card_reader/src/app.dart';
@@ -11,6 +12,7 @@ import 'package:ic_card_reader/src/core/localization/app_language.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ic_card_reader/src/features/contactless/presentation/contactless_page.dart';
 import 'package:ic_card_reader/src/features/coin_locker/presentation/coin_locker_page.dart';
+import 'package:ic_card_reader/src/features/station_maps/presentation/station_map_page.dart';
 import 'package:ic_card_reader/src/features/pass_comparison/presentation/pass_selection_page.dart';
 import 'package:ic_card_reader/src/core/design/app_theme.dart';
 import 'package:ic_card_reader/src/core/widgets/main_page_header.dart';
@@ -21,6 +23,8 @@ import 'package:ic_card_reader/src/features/card_reader/domain/current_gate_trav
 import 'package:ic_card_reader/src/features/card_reader/domain/raw_history_block.dart';
 import 'package:ic_card_reader/src/features/card_reader/presentation/card_reader_page.dart';
 import 'package:ic_card_reader/src/features/card_reader/presentation/scan_guidance.dart';
+import 'package:ic_card_reader/src/features/settings/presentation/settings_page.dart';
+import 'package:ic_card_reader/src/features/tools/presentation/tools_page.dart';
 import 'package:ic_card_reader/src/features/station_resolver/data/asset_station_database.dart';
 import 'package:ic_card_reader/src/features/station_resolver/data/station_coordinate_repository.dart';
 import 'package:ic_card_reader/src/features/station_resolver/domain/station_resolution.dart';
@@ -36,6 +40,156 @@ void main() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(mapsChannel, (_) async => false);
   });
+
+  testWidgets(
+    'startup loads only Home and preserves a tab after its first visit',
+    (tester) async {
+      await tester.pumpWidget(const IcCardReaderApp());
+      await tester.pump();
+      final history = find.byType(HistoryListPage, skipOffstage: false);
+      final tools = find.byType(ToolsPage, skipOffstage: false);
+      final settings = find.byType(SettingsPage, skipOffstage: false);
+      expect(history, findsNothing);
+      expect(tools, findsNothing);
+      expect(settings, findsNothing);
+
+      Future<void> select(int index) async {
+        tester
+            .widget<NavigationBar>(find.byType(NavigationBar))
+            .onDestinationSelected!(index);
+        await tester.pump();
+      }
+
+      await select(1);
+      expect(history, findsOneWidget);
+      final historyState = tester.state(history);
+      expect(tools, findsNothing);
+      expect(settings, findsNothing);
+      await select(2);
+      expect(tools, findsOneWidget);
+      expect(settings, findsNothing);
+      await select(3);
+      expect(settings, findsOneWidget);
+      await select(1);
+      expect(tester.state(history), same(historyState));
+    },
+  );
+
+  testWidgets('default language preferences do not rebuild the app shell', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({
+      'appLanguage': 'system',
+      'stationNameDisplayMode': 'japanese',
+    });
+    await tester.pumpWidget(const IcCardReaderApp());
+    final firstApp = tester.widget<MaterialApp>(find.byType(MaterialApp));
+    await tester.pump();
+    expect(
+      tester.widget<MaterialApp>(find.byType(MaterialApp)),
+      same(firstApp),
+    );
+    expect(AppTheme.light, same(AppTheme.light));
+    expect(AppTheme.dark, same(AppTheme.dark));
+  });
+
+  testWidgets('Play update starts after Home builds and does not block it', (
+    tester,
+  ) async {
+    final update = Completer<AppUpdateStatus>();
+    final phases = <SchedulerPhase>[];
+    final service = _DeferredAppUpdateService(() {
+      phases.add(tester.binding.schedulerPhase);
+      return update.future;
+    });
+    await tester.pumpWidget(
+      MaterialApp(
+        locale: const Locale('ko'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: CardReaderPage(
+          reader: _FakeCardReader(),
+          appUpdateService: service,
+          themeMode: ThemeMode.system,
+          onThemeModeChanged: (_) {},
+          stationNameDisplayMode: StationNameDisplayMode.japanese,
+          onStationNameDisplayModeChanged: (_) {},
+        ),
+      ),
+    );
+    expect(phases, [SchedulerPhase.postFrameCallbacks]);
+    expect(find.byType(NavigationBar), findsOneWidget);
+    expect(find.byKey(const ValueKey('home-update-banner')), findsNothing);
+    update.complete(
+      const AppUpdateStatus.available(AppUpdateInstallMode.immediate),
+    );
+    await tester.pump();
+    await tester.pump();
+    expect(find.byKey(const ValueKey('home-update-banner')), findsOneWidget);
+    expect(phases, hasLength(1));
+  });
+
+  testWidgets(
+    'developer settings offer a one-off stamp tour and consent-gated diagnostics',
+    (tester) async {
+      tester.binding.platformDispatcher.localesTestValue = const [Locale('ko')];
+      addTearDown(tester.binding.platformDispatcher.clearLocalesTestValue);
+      tester.view.physicalSize = const Size(420, 960);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      await tester.pumpWidget(const IcCardReaderApp());
+      await tester.pump();
+      Future<void> finishNavigation() async {
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 400));
+        await tester.pump();
+      }
+
+      await tester.tap(
+        find.descendant(
+          of: find.byType(NavigationBar),
+          matching: find.text('설정'),
+        ),
+      );
+      await finishNavigation();
+      final launch = find.text('수첩 튜토리얼 1회 실행');
+      final settingsScroll = find
+          .descendant(
+            of: find.byType(SettingsPage),
+            matching: find.byType(Scrollable),
+          )
+          .first;
+      await tester.scrollUntilVisible(launch, 260, scrollable: settingsScroll);
+      final coach = find.byKey(const ValueKey('stamp-book-coach'));
+      final preferences = await SharedPreferences.getInstance();
+      const seenKey = 'stamp_book_tutorial_seen_v1';
+      for (final seen in [null, true]) {
+        if (seen != null) await preferences.setBool(seenKey, seen);
+        await tester.ensureVisible(launch);
+        await tester.pump();
+        await tester.tap(launch);
+        await finishNavigation();
+        expect(coach, findsOneWidget);
+        expect(find.text('1 / 3'), findsOneWidget);
+        expect(preferences.getBool(seenKey), seen);
+        await tester.binding.handlePopRoute();
+        await finishNavigation();
+        expect(coach, findsNothing);
+        await tester.binding.handlePopRoute();
+        await finishNavigation();
+        expect(launch, findsOneWidget);
+      }
+      final diagnostics = find.text('카드 브랜드 진단');
+      await tester.ensureVisible(diagnostics);
+      await tester.pump();
+      await tester.tap(diagnostics);
+      await finishNavigation();
+      expect(find.text('카드 브랜드 진단 (개발용)'), findsOneWidget);
+      final scan = find.widgetWithText(FilledButton, '카드 스캔 및 판별 테스트');
+      expect(tester.widget<FilledButton>(scan).onPressed, isNull);
+    },
+  );
 
   testWidgets(
     'app language and station names switch and persist independently',
@@ -315,7 +469,8 @@ void main() {
       );
       await tester.pumpAndSettle();
       expectHeader('이용내역');
-      expect(find.byTooltip('IC 카드 스캔'), findsOneWidget);
+      expect(find.byTooltip('IC 카드 스캔'), findsNothing);
+      expect(find.byKey(const ValueKey('history-export')), findsNothing);
       await tester.tap(
         find.descendant(
           of: find.byType(NavigationBar),
@@ -350,6 +505,21 @@ void main() {
       await tester.tap(find.text('교통패스 비교'));
       await tester.pumpAndSettle();
       expect(find.byType(PassSelectionPage), findsOneWidget);
+      await tester.pageBack();
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(
+        find.byKey(const ValueKey('tools-station-maps')),
+      );
+      await tester.tap(find.byKey(const ValueKey('tools-station-maps')));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+      expect(find.byType(StationMapPage), findsOneWidget);
+      expect(
+        tester
+            .widget<StationMapPage>(find.byType(StationMapPage))
+            .stationNameDisplayMode,
+        StationNameDisplayMode.korean,
+      );
       await tester.pageBack();
       await tester.pumpAndSettle();
       expect(
@@ -412,6 +582,9 @@ void main() {
       // The home card has a continuous illustration animation.
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 400));
+      // The additional stamp card extends the lazy home list. Returning from
+      // Settings may restore a scroll offset; find the scan action by scrolling.
+      await tester.scrollUntilVisible(find.text('IC 카드 스캔'), -150);
       expect(find.text('IC 카드 스캔'), findsOneWidget);
       expect(find.text('컨택리스 노선'), findsNothing);
       await tester.pumpWidget(const SizedBox());
@@ -1156,4 +1329,16 @@ class _FakeAppUpdateService implements AppUpdateService {
       throw StateError('Play update failed');
     }
   }
+}
+
+class _DeferredAppUpdateService implements AppUpdateService {
+  _DeferredAppUpdateService(this.checkForUpdateCallback);
+
+  final Future<AppUpdateStatus> Function() checkForUpdateCallback;
+
+  @override
+  Future<AppUpdateStatus> checkForUpdate() => checkForUpdateCallback();
+
+  @override
+  Future<void> startUpdate(AppUpdateStatus status) async {}
 }

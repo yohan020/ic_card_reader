@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 
 import '../../../core/localization/app_language.dart';
@@ -6,6 +7,12 @@ import 'card_brand_name.dart';
 import '../../contactless/presentation/contactless_page.dart';
 import '../../tools/presentation/tools_page.dart';
 import '../../coin_locker/presentation/coin_locker_page.dart';
+import '../../station_maps/presentation/station_map_page.dart';
+import '../../station_stamps/domain/stamp_book_catalog.dart';
+import '../../station_stamps/domain/station_stamp_session.dart';
+import '../../station_stamps/data/stamp_collection_store.dart';
+import '../../station_stamps/presentation/stamp_collection_delete_sheet.dart';
+import '../../station_stamps/presentation/stamp_book_page.dart';
 import '../../issue_report/domain/card_support_report.dart';
 import '../../issue_report/presentation/card_support_page.dart';
 
@@ -77,6 +84,9 @@ class _CardReaderPageState extends State<CardReaderPage>
   static const _historyParser = TransitHistoryParser();
 
   CardScanResult? _result;
+  final _stationStamps = StationStampSession(
+    store: PreferencesStampCollectionStore(),
+  );
   String? _message;
   CardScanFailureKind? _scanFailure;
   CardReaderAvailability? _nfcAvailability;
@@ -84,6 +94,7 @@ class _CardReaderPageState extends State<CardReaderPage>
   bool _scanInFlight = false;
   bool _failureSheetOpen = false;
   int _selectedTab = 0;
+  final _visitedTabs = {0};
   _ReaderFlow _flow = _ReaderFlow.main;
   bool _cancelRequested = false;
   Map<int, ResolvedStationPair> _stationPairs = const {};
@@ -98,13 +109,18 @@ class _CardReaderPageState extends State<CardReaderPage>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _stationStamps.loadPreviewCount(stampBookStationIds);
+      _checkForUpdate();
+    });
     _refreshNfcStatus();
-    _checkForUpdate();
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    _stationStamps.dispose();
     super.dispose();
   }
 
@@ -312,10 +328,29 @@ class _CardReaderPageState extends State<CardReaderPage>
     );
   }
 
-  void _openHistory() => setState(() {
-    _flow = _ReaderFlow.main;
-    _selectedTab = 1;
-  });
+  void _selectTab(int index, {bool returnToMain = false}) {
+    setState(() {
+      if (returnToMain) _flow = _ReaderFlow.main;
+      _selectedTab = index;
+      _visitedTabs.add(index);
+    });
+  }
+
+  void _openHistory() => _selectTab(1, returnToMain: true);
+
+  void _openStampBook({bool previewTutorial = false}) {
+    Navigator.of(context).push<void>(
+      MaterialPageRoute(
+        builder: (_) => StampBookPage(
+          session: _stationStamps,
+          candidates: StationStampSession.candidates(_stationPairs.values),
+          hasScan: _result != null,
+          enableTutorial: true,
+          previewTutorial: previewTutorial,
+        ),
+      ),
+    );
+  }
 
   void _openPassComparison() {
     Navigator.of(
@@ -398,7 +433,9 @@ class _CardReaderPageState extends State<CardReaderPage>
       );
     }
 
-    final pages = [
+    // Stable slots keep each visited tab's state alive without building the
+    // other screens on startup (including their platform calls).
+    final pages = <Widget>[
       _HomePage(
         result: _result,
         histories: _histories,
@@ -417,74 +454,133 @@ class _CardReaderPageState extends State<CardReaderPage>
         onScan: _startScan,
         onOpenHistory: _openHistory,
         onOpenCardComparison: _openCardComparison,
+        stationStamps: _stationStamps,
+        onOpenStampBook: _openStampBook,
         onStartUpdate: _startUpdate,
         isStartingUpdate: _isStartingUpdate,
       ),
-      HistoryListPage(
-        histories: _histories,
-        brandIdentity: _result?.brandIdentity,
-        currentBalance: _currentBalance,
-        issueReportRepository: widget.issueReportRepository,
-        stationPairs: _stationPairs,
-        transactionLocations: _transactionLocations,
-        stationNameDisplayMode: widget.stationNameDisplayMode,
-        onScan: _startScan,
-      ),
-      ToolsPage(
-        onOpenPassComparison: _openPassComparison,
-        onOpenCoinLocker: () => Navigator.of(context).push<void>(
-          MaterialPageRoute(
-            builder: (_) => CoinLockerPage(
-              stationNameDisplayMode: widget.stationNameDisplayMode,
-            ),
-          ),
-        ),
-        onOpenContactless: () => Navigator.of(context).push<void>(
-          MaterialPageRoute(
-            builder: (_) => ContactlessPage(
-              stationNameDisplayMode: widget.stationNameDisplayMode,
-            ),
-          ),
-        ),
-      ),
-      SettingsPage(
-        result: _result,
-        themeMode: widget.themeMode,
-        onThemeModeChanged: widget.onThemeModeChanged,
-        stationNameDisplayMode: widget.stationNameDisplayMode,
-        onStationNameDisplayModeChanged: widget.onStationNameDisplayModeChanged,
-        appLanguage: widget.appLanguage,
-        onAppLanguageChanged: widget.onAppLanguageChanged,
-        onClearSession: _clearSession,
-        appUpdateStatus: _appUpdateStatus,
-        isCheckingForUpdate: _isCheckingForUpdate,
-        onOpenCardSupport: () async {
-          if (_scanInFlight) return;
-          final repository = widget.issueReportRepository;
-          await Navigator.of(context).push<void>(
+      if (_visitedTabs.contains(1))
+        HistoryListPage(
+          histories: _histories,
+          brandIdentity: _result?.brandIdentity,
+          currentBalance: _currentBalance,
+          issueReportRepository: widget.issueReportRepository,
+          stationPairs: _stationPairs,
+          transactionLocations: _transactionLocations,
+          stationNameDisplayMode: widget.stationNameDisplayMode,
+          onScan: _startScan,
+        )
+      else
+        const SizedBox.shrink(),
+      if (_visitedTabs.contains(2))
+        ToolsPage(
+          onOpenPassComparison: _openPassComparison,
+          onOpenStationMaps: () => Navigator.of(context).push<void>(
             MaterialPageRoute(
-              builder: (_) => CardSupportPage(
-                reader: _reader,
-                repository: repository is CardSupportRepository
-                    ? repository as CardSupportRepository
-                    : null,
+              builder: (_) => StationMapPage(
+                stationNameDisplayMode: widget.stationNameDisplayMode,
               ),
             ),
-          );
-          if (mounted) await _refreshNfcStatus();
-        },
-        onOpenCardDiagnostics: cardDiagnosticsEnabled
-            ? () async {
-                if (_scanInFlight) return;
-                await Navigator.of(context).push<void>(
-                  MaterialPageRoute(
-                    builder: (_) => CardDiagnosticsPage(reader: _reader),
+          ),
+          onOpenCoinLocker: () => Navigator.of(context).push<void>(
+            MaterialPageRoute(
+              builder: (_) => CoinLockerPage(
+                stationNameDisplayMode: widget.stationNameDisplayMode,
+              ),
+            ),
+          ),
+          onOpenContactless: () => Navigator.of(context).push<void>(
+            MaterialPageRoute(
+              builder: (_) => ContactlessPage(
+                stationNameDisplayMode: widget.stationNameDisplayMode,
+              ),
+            ),
+          ),
+        )
+      else
+        const SizedBox.shrink(),
+      if (_visitedTabs.contains(3))
+        SettingsPage(
+          onClearStationStamps: () async {
+            if (await confirmClearStationStamps(context) == true && mounted) {
+              await _stationStamps.restore();
+              if (!mounted) return;
+              if (!_stationStamps.ready) {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        localized(
+                          context,
+                          '수집 기록을 불러오지 못해 삭제하지 않았어요. 역 스탬프에서 다시 시도해 주세요.',
+                          'Could not load the collection. Nothing was deleted. Retry in Station stamps.',
+                        ),
+                      ),
+                    ),
+                  );
+                }
+                return;
+              }
+              _stationStamps.clear();
+              await _stationStamps.pendingSave;
+              if (context.mounted && _stationStamps.saveFailed) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      localized(
+                        context,
+                        '삭제 내용을 저장하지 못했어요. 다시 삭제해 주세요.',
+                        'Could not save the deletion. Please try deleting again.',
+                      ),
+                    ),
                   ),
                 );
-                if (mounted) await _refreshNfcStatus();
               }
-            : null,
-      ),
+            }
+          },
+          result: _result,
+          themeMode: widget.themeMode,
+          onThemeModeChanged: widget.onThemeModeChanged,
+          stationNameDisplayMode: widget.stationNameDisplayMode,
+          onStationNameDisplayModeChanged:
+              widget.onStationNameDisplayModeChanged,
+          appLanguage: widget.appLanguage,
+          onAppLanguageChanged: widget.onAppLanguageChanged,
+          onClearSession: _clearSession,
+          appUpdateStatus: _appUpdateStatus,
+          isCheckingForUpdate: _isCheckingForUpdate,
+          onOpenCardSupport: () async {
+            if (_scanInFlight) return;
+            final repository = widget.issueReportRepository;
+            await Navigator.of(context).push<void>(
+              MaterialPageRoute(
+                builder: (_) => CardSupportPage(
+                  reader: _reader,
+                  repository: repository is CardSupportRepository
+                      ? repository as CardSupportRepository
+                      : null,
+                ),
+              ),
+            );
+            if (mounted) await _refreshNfcStatus();
+          },
+          onPreviewStampBookTutorial: kDebugMode
+              ? () => _openStampBook(previewTutorial: true)
+              : null,
+          onOpenCardDiagnostics: cardDiagnosticsEnabled
+              ? () async {
+                  if (_scanInFlight) return;
+                  await Navigator.of(context).push<void>(
+                    MaterialPageRoute(
+                      builder: (_) => CardDiagnosticsPage(reader: _reader),
+                    ),
+                  );
+                  if (mounted) await _refreshNfcStatus();
+                }
+              : null,
+        )
+      else
+        const SizedBox.shrink(),
     ];
 
     return Scaffold(
@@ -493,7 +589,7 @@ class _CardReaderPageState extends State<CardReaderPage>
       ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _selectedTab,
-        onDestinationSelected: (index) => setState(() => _selectedTab = index),
+        onDestinationSelected: _selectTab,
         destinations: [
           NavigationDestination(
             icon: Icon(Icons.home_outlined),
@@ -540,6 +636,8 @@ class _HomePage extends StatelessWidget {
     required this.onScan,
     required this.onOpenHistory,
     required this.onOpenCardComparison,
+    required this.stationStamps,
+    required this.onOpenStampBook,
     required this.onStartUpdate,
     required this.isStartingUpdate,
   });
@@ -561,6 +659,8 @@ class _HomePage extends StatelessWidget {
   final VoidCallback onScan;
   final VoidCallback onOpenHistory;
   final VoidCallback onOpenCardComparison;
+  final StationStampSession stationStamps;
+  final VoidCallback onOpenStampBook;
   final Future<void> Function() onStartUpdate;
   final bool isStartingUpdate;
 
@@ -788,6 +888,8 @@ class _HomePage extends StatelessWidget {
               ],
             ),
           ),
+        const SizedBox(height: 16),
+        StampBookHomeCard(session: stationStamps, onTap: onOpenStampBook),
         const SizedBox(height: 16),
         AppSurface(
           child: Column(

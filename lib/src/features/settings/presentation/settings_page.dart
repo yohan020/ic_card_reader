@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 
 import '../../../core/localization/app_language.dart';
@@ -29,7 +30,9 @@ class SettingsPage extends StatelessWidget {
     this.appUpdateStatus = const AppUpdateStatus.unknown(),
     this.isCheckingForUpdate = false,
     this.onOpenCardDiagnostics,
+    this.onPreviewStampBookTutorial,
     this.onOpenCardSupport,
+    this.onClearStationStamps,
   });
 
   final AppLanguage appLanguage;
@@ -43,7 +46,9 @@ class SettingsPage extends StatelessWidget {
   final AppUpdateStatus appUpdateStatus;
   final bool isCheckingForUpdate;
   final VoidCallback? onOpenCardDiagnostics;
+  final VoidCallback? onPreviewStampBookTutorial;
   final VoidCallback? onOpenCardSupport;
+  final VoidCallback? onClearStationStamps;
 
   @override
   Widget build(BuildContext context) => FutureBuilder<String?>(
@@ -71,7 +76,7 @@ class SettingsPage extends StatelessWidget {
                     strings(context).theme,
                     style: const TextStyle(
                       fontSize: 14,
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                   const SizedBox(height: 13),
@@ -194,6 +199,24 @@ class SettingsPage extends StatelessWidget {
               iconColor: Theme.of(context).colorScheme.error,
               onTap: result == null ? null : () => _confirmClear(context),
             ),
+            if (onClearStationStamps != null) ...[
+              const _SettingsDivider(),
+              _SettingsTile(
+                icon: Icons.delete_outline_rounded,
+                title: localized(
+                  context,
+                  '역 스탬프 전체 삭제',
+                  'Delete all station stamps',
+                ),
+                subtitle: localized(
+                  context,
+                  '기기에 저장된 수집 기록을 삭제해요.',
+                  'Delete the collection saved on this device.',
+                ),
+                iconColor: Theme.of(context).colorScheme.error,
+                onTap: onClearStationStamps,
+              ),
+            ],
           ],
         ),
       ),
@@ -211,15 +234,41 @@ class SettingsPage extends StatelessWidget {
         ),
         const SizedBox(height: 18),
       ],
-      if (cardDiagnosticsEnabled && onOpenCardDiagnostics != null) ...[
+      if ((cardDiagnosticsEnabled && onOpenCardDiagnostics != null) ||
+          (kDebugMode && onPreviewStampBookTutorial != null)) ...[
         _SettingsSectionLabel(strings(context).developerTools),
         AppSurface(
           padding: EdgeInsets.zero,
-          child: _SettingsTile(
-            icon: Icons.science_outlined,
-            title: strings(context).cardDiagnostics,
-            subtitle: strings(context).cardDiagnosticsHint,
-            onTap: onOpenCardDiagnostics,
+          child: Column(
+            children: [
+              if (cardDiagnosticsEnabled && onOpenCardDiagnostics != null)
+                _SettingsTile(
+                  icon: Icons.science_outlined,
+                  title: strings(context).cardDiagnostics,
+                  subtitle: strings(context).cardDiagnosticsHint,
+                  onTap: onOpenCardDiagnostics,
+                ),
+              if (cardDiagnosticsEnabled &&
+                  onOpenCardDiagnostics != null &&
+                  kDebugMode &&
+                  onPreviewStampBookTutorial != null)
+                const _SettingsDivider(),
+              if (kDebugMode && onPreviewStampBookTutorial != null)
+                _SettingsTile(
+                  icon: Icons.play_circle_outline_rounded,
+                  title: localized(
+                    context,
+                    '수첩 튜토리얼 1회 실행',
+                    'Run the stamp book tutorial once',
+                  ),
+                  subtitle: localized(
+                    context,
+                    '첫 실행 기록을 바꾸지 않고 수첩에서 바로 시작해요.',
+                    'Start in the book without changing first-run history.',
+                  ),
+                  onTap: onPreviewStampBookTutorial,
+                ),
+            ],
           ),
         ),
         const SizedBox(height: 18),
@@ -411,7 +460,7 @@ class _SettingsChoice<T> extends StatelessWidget {
                   title,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     fontSize: 14,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
@@ -587,7 +636,7 @@ class _SettingsTile extends StatelessWidget {
     ),
     title: Text(
       title,
-      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
     ),
     subtitle: subtitle == null
         ? null

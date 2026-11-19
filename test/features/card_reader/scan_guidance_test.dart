@@ -110,26 +110,34 @@ void main() {
     expect(find.text('IC 카드 스캔'), findsOneWidget);
   });
 
-  testWidgets('NFC errors from history offer settings in a sheet', (
-    tester,
-  ) async {
-    final reader = _Reader()
-      ..availability = CardReaderAvailability.disabled
-      ..failure = CardScanFailureKind.nfcUnavailable;
-    await _pumpHome(tester, reader);
-    await tester.tap(find.text('이용내역').last);
-    await tester.pump();
-    await tester.tap(find.byTooltip('IC 카드 스캔'));
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 400));
-    expect(find.byType(BottomSheet), findsOneWidget);
-    expect(find.text('NFC 설정 열기'), findsOneWidget);
-    await _tapVisible(tester, find.text('NFC 설정 열기'));
-    await tester.pump(const Duration(milliseconds: 400));
-    await tester.pump();
-    expect(find.byType(BottomSheet), findsNothing);
-    expect(reader.settingsCalls, 1);
-  });
+  testWidgets(
+    'unscanned history has no NFC action; home still opens NFC settings',
+    (tester) async {
+      final reader = _Reader()
+        ..availability = CardReaderAvailability.disabled
+        ..failure = CardScanFailureKind.nfcUnavailable;
+      await _pumpHome(tester, reader);
+      await tester.tap(find.text('이용내역').last);
+      await tester.pump();
+      expect(find.byTooltip('IC 카드 스캔'), findsNothing);
+      expect(find.byType(BottomSheet), findsNothing);
+      await tester.tap(
+        find.descendant(
+          of: find.byType(NavigationBar),
+          matching: find.text('홈'),
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+      expect(find.byType(BottomSheet), findsNothing);
+      expect(find.text('NFC 설정 열기'), findsOneWidget);
+      await _tapVisible(tester, find.text('NFC 설정 열기'));
+      await tester.pump(const Duration(milliseconds: 400));
+      await tester.pump();
+      expect(find.byType(BottomSheet), findsNothing);
+      expect(reader.settingsCalls, 1);
+    },
+  );
 
   for (final kind in CardScanFailureKind.values) {
     testWidgets('failure $kind has safe guidance and actions', (tester) async {
@@ -189,10 +197,21 @@ void main() {
       expect(find.text('스캔 완료'), findsOneWidget);
       await tester.tap(find.byIcon(Icons.close_rounded).first);
       await tester.pump();
+      final navigation = find.byType(NavigationBar);
+      await _tapVisible(
+        tester,
+        find.descendant(of: navigation, matching: find.text('설정')),
+      );
+      await tester.pump(const Duration(milliseconds: 400));
       final priorResult = tester
-          .widget<SettingsPage>(find.byType(SettingsPage, skipOffstage: false))
+          .widget<SettingsPage>(find.byType(SettingsPage))
           .result;
       expect(priorResult, isNotNull);
+      await _tapVisible(
+        tester,
+        find.descendant(of: navigation, matching: find.text('홈')),
+      );
+      await tester.pump(const Duration(milliseconds: 400));
       reader.failure = CardScanFailureKind.tagLost;
       await _tapVisible(tester, find.text('IC 카드 스캔'));
       await tester.pump(const Duration(milliseconds: 400));

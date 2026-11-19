@@ -1519,7 +1519,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get privacyRetentionBody =>
-      'The app does not permanently store records read from your card. Optional reports that have been applied or rejected, together with their review histories, are retained for one year after resolution and then deleted by a monthly automatic task. Inquiries still under review are not automatically deleted, to avoid accidental loss. Information used to block abusive reports is retained only for server security. Where retention is required by law, information may be kept for the required period.';
+      'The app does not permanently store records read from your card. Optional reports that have been applied or rejected, together with their review histories, are retained for one year after resolution and then deleted by a monthly automatic task. Inquiries still under review are not automatically deleted, to avoid accidental loss. Information used to block abusive reports is retained only for server security. Where retention is required by law, information may be kept for the required period.\n\nWhen you collect station stamps, only the collected station identifiers are saved on your device and restored after restarting the app. Stamp storage does not include raw transaction records, travel dates, amounts, balances or card IDm, and the app does not send this collection to its server. You can delete it using Delete station stamp collection in Settings. This saved information may be included in operating-system backups or device transfers depending on your system settings.';
 
   @override
   String get privacyContactTitle => '8. Policy changes and contact';
@@ -1529,7 +1529,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'If our data processing practices change, we will update this policy and its effective date. For requests to access or delete your information, app errors, usage questions or other inquiries, contact iccardreader10@gmail.com. Public policy: https://yohan020.github.io/ic_card_reader/privacy-en.html';
 
   @override
-  String get privacyEffectiveDate => 'Effective date: October 27, 2026';
+  String get privacyEffectiveDate => 'Effective date: November 15, 2026';
 
   @override
   String get passRegionHokkaido => 'Hokkaido';
@@ -3562,4 +3562,57 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get passMeta064 => 'Karasuma / Tozai lines';
+
+  @override
+  String get exportCsv => 'Export CSV';
+
+  @override
+  String get exportAll => 'All transactions';
+
+  @override
+  String get exportFiltered => 'Current filter';
+
+  @override
+  String get exportCsvNotice =>
+      'Exports only records from this scan, using your app language and station-name settings. This is not an official receipt. The file remains in the location you choose; a cloud location may upload it to its provider.';
+
+  @override
+  String get exportCsvSaved => 'CSV saved.';
+
+  @override
+  String get exportCsvFailed => 'Couldn’t save the CSV. Please try again.';
+
+  @override
+  String get csvDate => 'Date';
+
+  @override
+  String get csvType => 'Transaction type';
+
+  @override
+  String get csvBoarding => 'Boarding station';
+
+  @override
+  String get csvAlighting => 'Alighting station';
+
+  @override
+  String get csvDescription => 'Description';
+
+  @override
+  String get csvAmount => 'Amount (JPY)';
+
+  @override
+  String get csvAmountStatus => 'Amount status';
+
+  @override
+  String get csvBalance => 'Balance after transaction (JPY)';
+
+  @override
+  String get csvCalculated => 'Calculated';
+
+  @override
+  String get privacyCsvTitle => '2-1. Optional CSV export';
+
+  @override
+  String get privacyCsvBody =>
+      'Only when you choose Export CSV does the app create a file from all transactions or the current filter of the card you are viewing. It includes displayed dates, transaction types, station names, descriptions, amounts and balances, using your app language and station-name settings. Raw card records, IDm, station database files and comparison identifiers are not included.\n\nOn Android, you choose a save location in the system document picker. The app does not retain an internal CSV or automatically send it to the app operator. The exported file remains after the scan session ends; you manage and delete it yourself. Choosing a cloud document provider may upload it under that provider’s terms. Cancelling before choosing a destination does not save an export. A failed write may leave an empty or partial file at the selected location. The CSV is not an official receipt and cannot recover older records no longer on the card.';
 }

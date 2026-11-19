@@ -77,7 +77,6 @@ class _ContactlessPageState extends State<ContactlessPage> {
     return Scaffold(
       backgroundColor: colors.canvas,
       appBar: AppBar(
-        backgroundColor: colors.header,
         title: Text(localized(context, '컨택리스 노선', 'Contactless routes')),
         actions: [
           IconButton(
@@ -134,19 +133,7 @@ class _ContactlessPageState extends State<ContactlessPage> {
             }
             final ordered = groups.values.toList()
               ..sort((a, b) => compareContactlessOperators(a.first, b.first));
-            final entries = <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: Text(
-                  localized(context, '회사별 노선', 'Routes by operator'),
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                    color: colors.muted,
-                  ),
-                ),
-              ),
-            ];
+            final entries = <Widget>[];
             for (final group in ordered) {
               group.sort((a, b) => a.name.compareTo(b.name));
               final id = group.first.operatorId;
@@ -156,36 +143,33 @@ class _ContactlessPageState extends State<ContactlessPage> {
               entries.add(
                 Padding(
                   key: ValueKey('group-$id'),
-                  padding: EdgeInsets.only(bottom: hidden ? 10 : 0),
-                  child: Card(
-                    color: hidden ? colors.card : colors.expanded,
-                    elevation: 0,
-                    margin: EdgeInsets.zero,
-                    surfaceTintColor: Colors.transparent,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.vertical(
-                        top: const Radius.circular(14),
-                        bottom: Radius.circular(hidden ? 14 : 0),
-                      ),
-                    ),
-                    key: ValueKey('company-$id'),
-                    clipBehavior: Clip.antiAlias,
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Material(
+                    color: Colors.transparent,
                     child: Semantics(
+                      button: true,
                       expanded: !hidden,
                       child: InkWell(
+                        key: ValueKey('company-$id'),
+                        borderRadius: BorderRadius.circular(8),
                         onTap: () => setState(() {
                           final set = _query.text.trim().isEmpty
                               ? _expanded
                               : _searchCollapsed;
                           if (!set.add(id)) set.remove(id);
                         }),
-                        child: _CompanyHeading(
-                          name: group.first.operatorNameFor(
-                            english: usesEnglish(context),
-                          ),
-                          count: group.length,
-                          expanded: !hidden,
-                          colors: colors,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            _CompanyHeading(
+                              name: group.first.operatorNameFor(
+                                english: usesEnglish(context),
+                              ),
+                              count: group.length,
+                              expanded: !hidden,
+                            ),
+                            if (hidden) const Divider(height: 1, thickness: 1),
+                          ],
                         ),
                       ),
                     ),
@@ -208,6 +192,9 @@ class _ContactlessPageState extends State<ContactlessPage> {
                         surfaceTintColor: Colors.transparent,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(
+                              identical(line, group.first) ? 14 : 0,
+                            ),
                             bottom: Radius.circular(
                               identical(line, group.last) ? 14 : 0,
                             ),
@@ -293,7 +280,7 @@ class _ContactlessPageState extends State<ContactlessPage> {
                 ColoredBox(
                   color: colors.header,
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(18, 4, 18, 18),
+                    padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
                     child: TextField(
                       controller: _query,
                       onChanged: (_) => _changed(),
@@ -311,13 +298,17 @@ class _ContactlessPageState extends State<ContactlessPage> {
                           horizontal: 14,
                           vertical: 14,
                         ),
-                        border: const OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(13)),
-                          borderSide: BorderSide.none,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(13),
+                          borderSide: BorderSide(
+                            color: AppColors.outline(context),
+                          ),
                         ),
-                        enabledBorder: const OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(13)),
-                          borderSide: BorderSide.none,
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(13),
+                          borderSide: BorderSide(
+                            color: AppColors.outline(context),
+                          ),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(13),
@@ -350,7 +341,7 @@ class _ContactlessPageState extends State<ContactlessPage> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       SizedBox(
-                        width: 76,
+                        width: usesEnglish(context) ? 88 : 76,
                         child: Material(
                           key: const ValueKey('contactless-region-rail'),
                           color: colors.card,
@@ -421,7 +412,7 @@ class _ContactlessPageState extends State<ContactlessPage> {
                         child: ListView.builder(
                           key: const ValueKey('contactless-companies'),
                           controller: _scroll,
-                          padding: const EdgeInsets.fromLTRB(12, 16, 12, 28),
+                          padding: const EdgeInsets.fromLTRB(12, 12, 20, 28),
                           itemCount: entries.length,
                           itemBuilder: (_, i) => entries[i],
                         ),
@@ -438,34 +429,23 @@ class _ContactlessPageState extends State<ContactlessPage> {
   }
 }
 
-// Scoped to the approved B list. Other app surfaces keep the shared theme.
+// Shared stamp-browser surfaces; route/status content keeps its own semantics.
 class _ListColors {
   const _ListColors(
     this.canvas,
     this.header,
     this.card,
-    this.expanded,
     this.muted,
     this.separator,
   );
-  factory _ListColors.of(BuildContext context) => AppColors.isDark(context)
-      ? const _ListColors(
-          Color(0xFF10171C),
-          Color(0xFF142630),
-          Color(0xFF182229),
-          Color(0xFF1A3D4E),
-          Color(0xFFB5C6CF),
-          Color(0xFF2D3B43),
-        )
-      : const _ListColors(
-          Color(0xFFF1F6FA),
-          Color(0xFFECF6FC),
-          Colors.white,
-          Color(0xFFDDEFFB),
-          Color(0xFF526570),
-          Color(0xFFEDF2F5),
-        );
-  final Color canvas, header, card, expanded, muted, separator;
+  factory _ListColors.of(BuildContext context) => _ListColors(
+    AppColors.toolListBackground(context),
+    AppColors.toolListBackground(context),
+    AppColors.toolRegionBackground(context),
+    AppColors.mutedText(context),
+    AppColors.outline(context),
+  );
+  final Color canvas, header, card, muted, separator;
 }
 
 class _CompanyHeading extends StatelessWidget {
@@ -473,23 +453,19 @@ class _CompanyHeading extends StatelessWidget {
     required this.name,
     required this.count,
     required this.expanded,
-    required this.colors,
   });
   final String name;
   final int count;
   final bool expanded;
-  final _ListColors colors;
   @override
   Widget build(BuildContext context) {
-    final foreground = expanded
-        ? (AppColors.isDark(context)
-              ? AppColors.accent(context)
-              : const Color(0xFF075F88))
-        : null;
+    final foreground = AppColors.isDark(context)
+        ? AppColors.mutedText(context)
+        : const Color(0xFF60717C);
     final nameWidget = Text(
       name,
       style: TextStyle(
-        fontSize: 15,
+        fontSize: 13,
         fontWeight: FontWeight.w700,
         color: foreground,
       ),
@@ -497,27 +473,19 @@ class _CompanyHeading extends StatelessWidget {
     final countWidget = Semantics(
       label: localized(context, '$count개 노선', '$count routes'),
       excludeSemantics: true,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: expanded ? colors.card.withValues(alpha: .65) : colors.canvas,
-          borderRadius: BorderRadius.circular(5),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-          child: Text(
-            localized(context, '$count개', '$count'),
-            style: TextStyle(
-              fontSize: 12,
-              color: expanded ? foreground : colors.muted,
-            ),
-          ),
+      child: Text(
+        localized(context, '$count개', '$count'),
+        style: TextStyle(
+          fontSize: 11,
+          fontWeight: FontWeight.w600,
+          color: foreground,
         ),
       ),
     );
     return ConstrainedBox(
-      constraints: const BoxConstraints(minHeight: 65),
+      constraints: const BoxConstraints(minHeight: 48),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 15),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         child: LayoutBuilder(
           builder: (context, constraints) {
             final stacked =
@@ -546,9 +514,11 @@ class _CompanyHeading extends StatelessWidget {
                 const SizedBox(width: 6),
                 ExcludeSemantics(
                   child: Icon(
-                    expanded ? Icons.expand_less : Icons.expand_more,
-                    size: 18,
-                    color: colors.muted,
+                    expanded
+                        ? Icons.expand_less_rounded
+                        : Icons.expand_more_rounded,
+                    size: 20,
+                    color: foreground,
                   ),
                 ),
               ],

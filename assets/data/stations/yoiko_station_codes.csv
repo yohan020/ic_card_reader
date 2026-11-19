@@ -8536,3 +8536,12 @@ region_code,line_code,station_code,region_hex,line_hex,station_hex,operator_name
 3,233,29,03,E9,1D,福岡市交通局,3号線(七隈線),渡辺通,,Yoiko 自動改札機の研究,https://ja.ysrl.org/atc/code.php?region=3&line=233,2026-07-15T08:46:36Z
 3,233,31,03,E9,1F,福岡市交通局,3号線(七隈線),天神南,,Yoiko 自動改札機の研究,https://ja.ysrl.org/atc/code.php?region=3&line=233,2026-07-15T08:46:36Z
 3,233,33,03,E9,21,福岡市交通局,3号線(七隈線),櫛田神社前,,Yoiko 自動改札機の研究,https://ja.ysrl.org/atc/code.php?region=3&line=233,2026-07-15T08:46:36Z
+0,46,72,00,2E,48,IRいしかわ鉄道,IRいしかわ鉄道線,大聖寺,,Yoiko 自動改札機の研究,https://ja.ysrl.org/atc/code.php?line=046&region=0,2026-11-15
+0,46,78,00,2E,4E,IRいしかわ鉄道,IRいしかわ鉄道線,動橋,,Yoiko 自動改札機の研究,https://ja.ysrl.org/atc/code.php?line=046&region=0,2026-11-15
+0,46,81,00,2E,51,IRいしかわ鉄道,IRいしかわ鉄道線,粟津,,Yoiko 自動改札機の研究,https://ja.ysrl.org/atc/code.php?line=046&region=0,2026-11-15
+0,46,87,00,2E,57,IRいしかわ鉄道,IRいしかわ鉄道線,明峰,,Yoiko 自動改札機の研究,https://ja.ysrl.org/atc/code.php?line=046&region=0,2026-11-15
+0,46,93,00,2E,5D,IRいしかわ鉄道,IRいしかわ鉄道線,小舞子,,Yoiko 自動改札機の研究,https://ja.ysrl.org/atc/code.php?line=046&region=0,2026-11-15
+0,46,96,00,2E,60,IRいしかわ鉄道,IRいしかわ鉄道線,美川,,Yoiko 自動改札機の研究,https://ja.ysrl.org/atc/code.php?line=046&region=0,2026-11-15
+0,46,99,00,2E,63,IRいしかわ鉄道,IRいしかわ鉄道線,加賀笠間,,Yoiko 自動改札機の研究,https://ja.ysrl.org/atc/code.php?line=046&region=0,2026-11-15
+0,46,102,00,2E,66,IRいしかわ鉄道,IRいしかわ鉄道線,西松任,,Yoiko 自動改札機の研究,https://ja.ysrl.org/atc/code.php?line=046&region=0,2026-11-15
+2,224,9,02,E0,09,近江鉄道,八日市線,太郎坊宮前,,Yoiko 自動改札機の研究,https://ja.ysrl.org/atc/code.php?region=2&line=224,2026-11-15

@@ -6,7 +6,7 @@ import '../../../core/widgets/app_ui.dart';
 class PrivacyPolicyPage extends StatelessWidget {
   const PrivacyPolicyPage({super.key});
 
-  static const effectiveDate = '2026년 10월 27일';
+  static const effectiveDate = '2026년 11월 13일';
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -26,6 +26,10 @@ class PrivacyPolicyPage extends StatelessWidget {
         _PolicySection(
           title: strings(context).privacyOnDeviceTitle,
           body: strings(context).privacyOnDeviceBody,
+        ),
+        _PolicySection(
+          title: strings(context).privacyCsvTitle,
+          body: strings(context).privacyCsvBody,
         ),
         _PolicySection(
           title: strings(context).privacyReportsTitle,
