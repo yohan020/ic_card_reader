@@ -1,0 +1,1585 @@
+{
+  "version": "2026-09-v2",
+  "departures": [
+    {
+      "id": "OH01",
+      "line": "Odawara Line",
+      "order": 1,
+      "ja": "新宿",
+      "en": "Shinjuku",
+      "ko": "신주쿠",
+      "adult2": 7100,
+      "adult3": 7500
+    },
+    {
+      "id": "OH02",
+      "line": "Odawara Line",
+      "order": 2,
+      "ja": "南新宿",
+      "en": "Minami-Shinjuku",
+      "ko": "미나미신주쿠",
+      "adult2": 7100,
+      "adult3": 7500
+    },
+    {
+      "id": "OH03",
+      "line": "Odawara Line",
+      "order": 3,
+      "ja": "参宮橋",
+      "en": "Sangubashi",
+      "ko": "산구바시",
+      "adult2": 7100,
+      "adult3": 7500
+    },
+    {
+      "id": "OH04",
+      "line": "Odawara Line",
+      "order": 4,
+      "ja": "代々木八幡",
+      "en": "Yoyogi-Hachiman",
+      "ko": "요요기하치만",
+      "adult2": 7100,
+      "adult3": 7500
+    },
+    {
+      "id": "OH05",
+      "line": "Odawara Line",
+      "order": 5,
+      "ja": "代々木上原",
+      "en": "Yoyogi-Uehara",
+      "ko": "요요기우에하라",
+      "adult2": 7100,
+      "adult3": 7500
+    },
+    {
+      "id": "OH06",
+      "line": "Odawara Line",
+      "order": 6,
+      "ja": "東北沢",
+      "en": "Higashi-Kitazawa",
+      "ko": "히가시키타자와",
+      "adult2": 7100,
+      "adult3": 7500
+    },
+    {
+      "id": "OH07",
+      "line": "Odawara Line",
+      "order": 7,
+      "ja": "下北沢",
+      "en": "Shimo-Kitazawa",
+      "ko": "시모키타자와",
+      "adult2": 7100,
+      "adult3": 7500
+    },
+    {
+      "id": "OH08",
+      "line": "Odawara Line",
+      "order": 8,
+      "ja": "世田谷代田",
+      "en": "Setagaya-Daita",
+      "ko": "세타가야다이타",
+      "adult2": 7100,
+      "adult3": 7500
+    },
+    {
+      "id": "OH09",
+      "line": "Odawara Line",
+      "order": 9,
+      "ja": "梅ヶ丘",
+      "en": "Umegaoka",
+      "ko": "우메가오카",
+      "adult2": 7100,
+      "adult3": 7500
+    },
+    {
+      "id": "OH10",
+      "line": "Odawara Line",
+      "order": 10,
+      "ja": "豪徳寺",
+      "en": "Gotokuji",
+      "ko": "고토쿠지",
+      "adult2": 7050,
+      "adult3": 7450
+    },
+    {
+      "id": "OH11",
+      "line": "Odawara Line",
+      "order": 11,
+      "ja": "経堂",
+      "en": "Kyodo",
+      "ko": "교도",
+      "adult2": 7050,
+      "adult3": 7450
+    },
+    {
+      "id": "OH12",
+      "line": "Odawara Line",
+      "order": 12,
+      "ja": "千歳船橋",
+      "en": "Chitose-Funabashi",
+      "ko": "지토세후나바시",
+      "adult2": 7050,
+      "adult3": 7450
+    },
+    {
+      "id": "OH13",
+      "line": "Odawara Line",
+      "order": 13,
+      "ja": "祖師ヶ谷大蔵",
+      "en": "Soshigaya-Okura",
+      "ko": "소시가야오쿠라",
+      "adult2": 7050,
+      "adult3": 7450
+    },
+    {
+      "id": "OH14",
+      "line": "Odawara Line",
+      "order": 14,
+      "ja": "成城学園前",
+      "en": "Seijogakuen-mae",
+      "ko": "세이조가쿠엔마에",
+      "adult2": 7000,
+      "adult3": 7400
+    },
+    {
+      "id": "OH15",
+      "line": "Odawara Line",
+      "order": 15,
+      "ja": "喜多見",
+      "en": "Kitami",
+      "ko": "기타미",
+      "adult2": 7000,
+      "adult3": 7400
+    },
+    {
+      "id": "OH16",
+      "line": "Odawara Line",
+      "order": 16,
+      "ja": "狛江",
+      "en": "Komae",
+      "ko": "고마에",
+      "adult2": 7000,
+      "adult3": 7400
+    },
+    {
+      "id": "OH17",
+      "line": "Odawara Line",
+      "order": 17,
+      "ja": "和泉多摩川",
+      "en": "Izumi-Tamagawa",
+      "ko": "이즈미타마가와",
+      "adult2": 7000,
+      "adult3": 7400
+    },
+    {
+      "id": "OH18",
+      "line": "Odawara Line",
+      "order": 18,
+      "ja": "登戸",
+      "en": "Noborito",
+      "ko": "노보리토",
+      "adult2": 7000,
+      "adult3": 7400
+    },
+    {
+      "id": "OH19",
+      "line": "Odawara Line",
+      "order": 19,
+      "ja": "向ヶ丘遊園",
+      "en": "Mukogaoka-yuen",
+      "ko": "무코가오카유엔",
+      "adult2": 7000,
+      "adult3": 7400
+    },
+    {
+      "id": "OH20",
+      "line": "Odawara Line",
+      "order": 20,
+      "ja": "生田",
+      "en": "Ikuta",
+      "ko": "쇼덴",
+      "adult2": 6940,
+      "adult3": 7340
+    },
+    {
+      "id": "OH21",
+      "line": "Odawara Line",
+      "order": 21,
+      "ja": "読売ランド前",
+      "en": "Yomiuri-Land-mae",
+      "ko": "요미우리 랜드 마에",
+      "adult2": 6940,
+      "adult3": 7340
+    },
+    {
+      "id": "OH22",
+      "line": "Odawara Line",
+      "order": 22,
+      "ja": "百合ヶ丘",
+      "en": "Yurigaoka",
+      "ko": "유리가오카",
+      "adult2": 6940,
+      "adult3": 7340
+    },
+    {
+      "id": "OH23",
+      "line": "Odawara Line",
+      "order": 23,
+      "ja": "新百合ヶ丘",
+      "en": "Shin-Yurigaoka",
+      "ko": "신유리가오카",
+      "adult2": 6890,
+      "adult3": 7290
+    },
+    {
+      "id": "OH24",
+      "line": "Odawara Line",
+      "order": 24,
+      "ja": "柿生",
+      "en": "Kakio",
+      "ko": "가키오",
+      "adult2": 6890,
+      "adult3": 7290
+    },
+    {
+      "id": "OH25",
+      "line": "Odawara Line",
+      "order": 25,
+      "ja": "鶴川",
+      "en": "Tsurukawa",
+      "ko": "쓰루카와",
+      "adult2": 6890,
+      "adult3": 7290
+    },
+    {
+      "id": "OH26",
+      "line": "Odawara Line",
+      "order": 26,
+      "ja": "玉川学園前",
+      "en": "Tamagawagakuen-mae",
+      "ko": "다마가와가쿠엔마에",
+      "adult2": 6820,
+      "adult3": 7220
+    },
+    {
+      "id": "OH27",
+      "line": "Odawara Line",
+      "order": 27,
+      "ja": "町田",
+      "en": "Machida",
+      "ko": "마치다",
+      "adult2": 6820,
+      "adult3": 7220
+    },
+    {
+      "id": "OH28",
+      "line": "Odawara Line",
+      "order": 28,
+      "ja": "相模大野",
+      "en": "Sagami-Ono",
+      "ko": "사가미오노",
+      "adult2": 6750,
+      "adult3": 7150
+    },
+    {
+      "id": "OH29",
+      "line": "Odawara Line",
+      "order": 29,
+      "ja": "小田急相模原",
+      "en": "Odakyu Sagamihara",
+      "ko": "오다큐사가미하라",
+      "adult2": 6750,
+      "adult3": 7150
+    },
+    {
+      "id": "OH30",
+      "line": "Odawara Line",
+      "order": 30,
+      "ja": "相武台前",
+      "en": "Sobudai-mae",
+      "ko": "소부다이마에",
+      "adult2": 6700,
+      "adult3": 7100
+    },
+    {
+      "id": "OH31",
+      "line": "Odawara Line",
+      "order": 31,
+      "ja": "座間",
+      "en": "Zama",
+      "ko": "자마",
+      "adult2": 6700,
+      "adult3": 7100
+    },
+    {
+      "id": "OH32",
+      "line": "Odawara Line",
+      "order": 32,
+      "ja": "海老名",
+      "en": "Ebina",
+      "ko": "에비나",
+      "adult2": 6640,
+      "adult3": 7040
+    },
+    {
+      "id": "OH33",
+      "line": "Odawara Line",
+      "order": 33,
+      "ja": "厚木",
+      "en": "Atsugi",
+      "ko": "아쓰기",
+      "adult2": 6640,
+      "adult3": 7040
+    },
+    {
+      "id": "OH34",
+      "line": "Odawara Line",
+      "order": 34,
+      "ja": "本厚木",
+      "en": "Hon-Atsugi",
+      "ko": "혼아쓰기",
+      "adult2": 6640,
+      "adult3": 7040
+    },
+    {
+      "id": "OH35",
+      "line": "Odawara Line",
+      "order": 35,
+      "ja": "愛甲石田",
+      "en": "Aiko-Ishida",
+      "ko": "아이코이시다",
+      "adult2": 6580,
+      "adult3": 6980
+    },
+    {
+      "id": "OH36",
+      "line": "Odawara Line",
+      "order": 36,
+      "ja": "伊勢原",
+      "en": "Isehara",
+      "ko": "이세하라",
+      "adult2": 6530,
+      "adult3": 6930
+    },
+    {
+      "id": "OH37",
+      "line": "Odawara Line",
+      "order": 37,
+      "ja": "鶴巻温泉",
+      "en": "Tsurumaki-onsen",
+      "ko": "쓰루마키온센",
+      "adult2": 6480,
+      "adult3": 6880
+    },
+    {
+      "id": "OH38",
+      "line": "Odawara Line",
+      "order": 38,
+      "ja": "東海大学前",
+      "en": "Tokaidaigaku-mae",
+      "ko": "도카이다이가쿠마에",
+      "adult2": 6480,
+      "adult3": 6880
+    },
+    {
+      "id": "OH39",
+      "line": "Odawara Line",
+      "order": 39,
+      "ja": "秦野",
+      "en": "Hadano",
+      "ko": "하다노",
+      "adult2": 6390,
+      "adult3": 6790
+    },
+    {
+      "id": "OH40",
+      "line": "Odawara Line",
+      "order": 40,
+      "ja": "渋沢",
+      "en": "Shibusawa",
+      "ko": "시부사와",
+      "adult2": 6350,
+      "adult3": 6750
+    },
+    {
+      "id": "OH41",
+      "line": "Odawara Line",
+      "order": 41,
+      "ja": "新松田",
+      "en": "Shin-Matsuda",
+      "ko": "신마쓰다",
+      "adult2": 6310,
+      "adult3": 6710
+    },
+    {
+      "id": "OH42",
+      "line": "Odawara Line",
+      "order": 42,
+      "ja": "開成",
+      "en": "Kaisei",
+      "ko": "가이세이",
+      "adult2": 6270,
+      "adult3": 6670
+    },
+    {
+      "id": "OH43",
+      "line": "Odawara Line",
+      "order": 43,
+      "ja": "栢山",
+      "en": "Kayama",
+      "ko": "가야마",
+      "adult2": 6270,
+      "adult3": 6670
+    },
+    {
+      "id": "OH44",
+      "line": "Odawara Line",
+      "order": 44,
+      "ja": "富水",
+      "en": "Tomizu",
+      "ko": "도미즈",
+      "adult2": 6220,
+      "adult3": 6620
+    },
+    {
+      "id": "OH45",
+      "line": "Odawara Line",
+      "order": 45,
+      "ja": "螢田",
+      "en": "Hotaruda",
+      "ko": "호타루다",
+      "adult2": 6220,
+      "adult3": 6620
+    },
+    {
+      "id": "OH46",
+      "line": "Odawara Line",
+      "order": 46,
+      "ja": "足柄",
+      "en": "Ashigara",
+      "ko": "아시가라",
+      "adult2": 6180,
+      "adult3": 6580
+    },
+    {
+      "id": "OH47",
+      "line": "Odawara Line",
+      "order": 47,
+      "ja": "小田原",
+      "en": "Odawara",
+      "ko": "오다와라",
+      "adult2": 6000,
+      "adult3": 6400
+    },
+    {
+      "id": "OE01",
+      "line": "Enoshima Line",
+      "order": 1,
+      "ja": "東林間",
+      "en": "Higashi-Rinkan",
+      "ko": "히가시린칸",
+      "adult2": 6820,
+      "adult3": 7220
+    },
+    {
+      "id": "OE02",
+      "line": "Enoshima Line",
+      "order": 2,
+      "ja": "中央林間",
+      "en": "Chuo-Rinkan",
+      "ko": "주오린칸",
+      "adult2": 6820,
+      "adult3": 7220
+    },
+    {
+      "id": "OE03",
+      "line": "Enoshima Line",
+      "order": 3,
+      "ja": "南林間",
+      "en": "Minami-Rinkan",
+      "ko": "미나미린칸",
+      "adult2": 6820,
+      "adult3": 7220
+    },
+    {
+      "id": "OE04",
+      "line": "Enoshima Line",
+      "order": 4,
+      "ja": "鶴間",
+      "en": "Tsuruma",
+      "ko": "쓰루마",
+      "adult2": 6820,
+      "adult3": 7220
+    },
+    {
+      "id": "OE05",
+      "line": "Enoshima Line",
+      "order": 5,
+      "ja": "大和",
+      "en": "Yamato",
+      "ko": "야마토",
+      "adult2": 6890,
+      "adult3": 7290
+    },
+    {
+      "id": "OE06",
+      "line": "Enoshima Line",
+      "order": 6,
+      "ja": "桜ヶ丘",
+      "en": "Sakuragaoka",
+      "ko": "사쿠라가오카",
+      "adult2": 6890,
+      "adult3": 7290
+    },
+    {
+      "id": "OE07",
+      "line": "Enoshima Line",
+      "order": 7,
+      "ja": "高座渋谷",
+      "en": "Koza-Shibuya",
+      "ko": "고자시부야",
+      "adult2": 6940,
+      "adult3": 7340
+    },
+    {
+      "id": "OE08",
+      "line": "Enoshima Line",
+      "order": 8,
+      "ja": "長後",
+      "en": "Chogo",
+      "ko": "조고",
+      "adult2": 6940,
+      "adult3": 7340
+    },
+    {
+      "id": "OE09",
+      "line": "Enoshima Line",
+      "order": 9,
+      "ja": "湘南台",
+      "en": "Shonandai",
+      "ko": "쇼난다이",
+      "adult2": 6940,
+      "adult3": 7340
+    },
+    {
+      "id": "OE10",
+      "line": "Enoshima Line",
+      "order": 10,
+      "ja": "六会日大前",
+      "en": "Mutsuai-Nichidai-mae",
+      "ko": "무쓰아이 니치다이 앞",
+      "adult2": 7000,
+      "adult3": 7400
+    },
+    {
+      "id": "OE11",
+      "line": "Enoshima Line",
+      "order": 11,
+      "ja": "善行",
+      "en": "Zengyo",
+      "ko": "젠교",
+      "adult2": 7000,
+      "adult3": 7400
+    },
+    {
+      "id": "OE12",
+      "line": "Enoshima Line",
+      "order": 12,
+      "ja": "藤沢本町",
+      "en": "Fujisawa-hommachi",
+      "ko": "후지사와혼마치",
+      "adult2": 7050,
+      "adult3": 7450
+    },
+    {
+      "id": "OE13",
+      "line": "Enoshima Line",
+      "order": 13,
+      "ja": "藤沢",
+      "en": "Fujisawa",
+      "ko": "후지사와",
+      "adult2": 7050,
+      "adult3": 7450
+    },
+    {
+      "id": "OE14",
+      "line": "Enoshima Line",
+      "order": 14,
+      "ja": "本鵠沼",
+      "en": "Hon-Kugenuma",
+      "ko": "혼쿠게누마",
+      "adult2": 7050,
+      "adult3": 7450
+    },
+    {
+      "id": "OE15",
+      "line": "Enoshima Line",
+      "order": 15,
+      "ja": "鵠沼海岸",
+      "en": "Kugenuma-kaigan",
+      "ko": "구게누마카이간",
+      "adult2": 7050,
+      "adult3": 7450
+    },
+    {
+      "id": "OE16",
+      "line": "Enoshima Line",
+      "order": 16,
+      "ja": "片瀬江ノ島",
+      "en": "Katase-Enoshima",
+      "ko": "가타세에노시마",
+      "adult2": 7100,
+      "adult3": 7500
+    },
+    {
+      "id": "OT01",
+      "line": "Tama Line",
+      "order": 1,
+      "ja": "五月台",
+      "en": "Satsukidai",
+      "ko": "사쓰키다이",
+      "adult2": 6940,
+      "adult3": 7340
+    },
+    {
+      "id": "OT02",
+      "line": "Tama Line",
+      "order": 2,
+      "ja": "栗平",
+      "en": "Kurihira",
+      "ko": "구리히라",
+      "adult2": 6940,
+      "adult3": 7340
+    },
+    {
+      "id": "OT03",
+      "line": "Tama Line",
+      "order": 3,
+      "ja": "黒川",
+      "en": "Kurokawa",
+      "ko": "구로카와",
+      "adult2": 6940,
+      "adult3": 7340
+    },
+    {
+      "id": "OT04",
+      "line": "Tama Line",
+      "order": 4,
+      "ja": "はるひ野",
+      "en": "Haruhino",
+      "ko": "하루히노",
+      "adult2": 6940,
+      "adult3": 7340
+    },
+    {
+      "id": "OT05",
+      "line": "Tama Line",
+      "order": 5,
+      "ja": "小田急永山",
+      "en": "Odakyu Nagayama",
+      "ko": "",
+      "adult2": 7000,
+      "adult3": 7400
+    },
+    {
+      "id": "OT06",
+      "line": "Tama Line",
+      "order": 6,
+      "ja": "小田急多摩センター",
+      "en": "Odakyu Tama Center",
+      "ko": "",
+      "adult2": 7000,
+      "adult3": 7400
+    },
+    {
+      "id": "OT07",
+      "line": "Tama Line",
+      "order": 7,
+      "ja": "唐木田",
+      "en": "Karakida",
+      "ko": "가라키다",
+      "adult2": 7050,
+      "adult3": 7450
+    }
+  ],
+  "points": [
+    {
+      "id": "OH47",
+      "ja": "小田原",
+      "en": "Odawara",
+      "ko": "오다와라",
+      "mode": "rail",
+      "operator": "Odakyu Hakone",
+      "line": "Hakone Tozan Line"
+    },
+    {
+      "id": "OH48",
+      "ja": "箱根板橋",
+      "en": "Hakone-Itabashi",
+      "ko": "하코네이타바시",
+      "mode": "rail",
+      "operator": "Odakyu Hakone",
+      "line": "Hakone Tozan Line"
+    },
+    {
+      "id": "OH49",
+      "ja": "風祭",
+      "en": "Kazamatsuri",
+      "ko": "가자마쓰리",
+      "mode": "rail",
+      "operator": "Odakyu Hakone",
+      "line": "Hakone Tozan Line"
+    },
+    {
+      "id": "OH50",
+      "ja": "入生田",
+      "en": "Iriuda",
+      "ko": "이리우다",
+      "mode": "rail",
+      "operator": "Odakyu Hakone",
+      "line": "Hakone Tozan Line"
+    },
+    {
+      "id": "OH51",
+      "ja": "箱根湯本",
+      "en": "Hakone-Yumoto",
+      "ko": "하코네유모토",
+      "mode": "rail",
+      "operator": "Odakyu Hakone",
+      "line": "Hakone Tozan Line"
+    },
+    {
+      "id": "OH52",
+      "ja": "塔ノ沢",
+      "en": "Tonosawa",
+      "ko": "도노사와",
+      "mode": "rail",
+      "operator": "Odakyu Hakone",
+      "line": "Hakone Tozan Line"
+    },
+    {
+      "id": "OH53",
+      "ja": "大平台",
+      "en": "Ohiradai",
+      "ko": "오히라다이",
+      "mode": "rail",
+      "operator": "Odakyu Hakone",
+      "line": "Hakone Tozan Line"
+    },
+    {
+      "id": "OH54",
+      "ja": "宮ノ下",
+      "en": "Miyanoshita",
+      "ko": "미야노시타",
+      "mode": "rail",
+      "operator": "Odakyu Hakone",
+      "line": "Hakone Tozan Line"
+    },
+    {
+      "id": "OH55",
+      "ja": "小涌谷",
+      "en": "Kowakidani",
+      "ko": "고와키다니",
+      "mode": "rail",
+      "operator": "Odakyu Hakone",
+      "line": "Hakone Tozan Line"
+    },
+    {
+      "id": "OH56",
+      "ja": "彫刻の森",
+      "en": "Chokoku-no-Mori",
+      "ko": "조코쿠노모리",
+      "mode": "rail",
+      "operator": "Odakyu Hakone",
+      "line": "Hakone Tozan Line"
+    },
+    {
+      "id": "OH57",
+      "ja": "強羅",
+      "en": "Gora",
+      "ko": "고라",
+      "mode": "rail",
+      "operator": "Odakyu Hakone",
+      "line": "Hakone Tozan Line"
+    },
+    {
+      "id": "OH58",
+      "ja": "公園下",
+      "en": "Koen-Shimo",
+      "ko": "코엔시모",
+      "mode": "cable",
+      "operator": "Odakyu Hakone",
+      "line": "Hakone Tozan Cable Car"
+    },
+    {
+      "id": "OH59",
+      "ja": "公園上",
+      "en": "Koen-Kami",
+      "ko": "코엔카미",
+      "mode": "cable",
+      "operator": "Odakyu Hakone",
+      "line": "Hakone Tozan Cable Car"
+    },
+    {
+      "id": "OH60",
+      "ja": "中強羅",
+      "en": "Naka-Gora",
+      "ko": "나카고라",
+      "mode": "cable",
+      "operator": "Odakyu Hakone",
+      "line": "Hakone Tozan Cable Car"
+    },
+    {
+      "id": "OH61",
+      "ja": "上強羅",
+      "en": "Kami-Gora",
+      "ko": "카미고라",
+      "mode": "cable",
+      "operator": "Odakyu Hakone",
+      "line": "Hakone Tozan Cable Car"
+    },
+    {
+      "id": "OH62",
+      "ja": "早雲山",
+      "en": "Sounzan",
+      "ko": "소운잔",
+      "mode": "cable",
+      "operator": "Odakyu Hakone",
+      "line": "Hakone Tozan Cable Car"
+    },
+    {
+      "id": "OH63",
+      "ja": "大涌谷",
+      "en": "Owakudani",
+      "ko": "오와쿠다니",
+      "mode": "ropeway",
+      "operator": "Odakyu Hakone",
+      "line": "Hakone Ropeway"
+    },
+    {
+      "id": "OH64",
+      "ja": "姥子",
+      "en": "Ubako",
+      "ko": "우바코",
+      "mode": "ropeway",
+      "operator": "Odakyu Hakone",
+      "line": "Hakone Ropeway"
+    },
+    {
+      "id": "OH65",
+      "ja": "桃源台",
+      "en": "Togendai",
+      "ko": "토겐다이",
+      "mode": "ropeway",
+      "operator": "Odakyu Hakone",
+      "line": "Hakone Ropeway"
+    },
+    {
+      "id": "OH65P",
+      "ja": "桃源台港",
+      "en": "Togendai Port",
+      "ko": "토겐다이",
+      "mode": "cruise",
+      "operator": "Odakyu Hakone",
+      "line": "Hakone Sightseeing Cruise"
+    },
+    {
+      "id": "OH66",
+      "ja": "箱根町港",
+      "en": "Hakonemachi Port",
+      "ko": "하코네마치",
+      "mode": "cruise",
+      "operator": "Odakyu Hakone",
+      "line": "Hakone Sightseeing Cruise"
+    },
+    {
+      "id": "OH67",
+      "ja": "元箱根港",
+      "en": "Motohakone Port",
+      "ko": "모토하코네",
+      "mode": "cruise",
+      "operator": "Odakyu Hakone",
+      "line": "Hakone Sightseeing Cruise"
+    }
+  ],
+  "railCableFares": [
+    {
+      "from": "OH47",
+      "to": "OH48",
+      "fare": 160
+    },
+    {
+      "from": "OH47",
+      "to": "OH49",
+      "fare": 220
+    },
+    {
+      "from": "OH47",
+      "to": "OH50",
+      "fare": 260
+    },
+    {
+      "from": "OH47",
+      "to": "OH51",
+      "fare": 360
+    },
+    {
+      "from": "OH47",
+      "to": "OH52",
+      "fare": 420
+    },
+    {
+      "from": "OH47",
+      "to": "OH53",
+      "fare": 510
+    },
+    {
+      "from": "OH47",
+      "to": "OH54",
+      "fare": 670
+    },
+    {
+      "from": "OH47",
+      "to": "OH55",
+      "fare": 710
+    },
+    {
+      "from": "OH47",
+      "to": "OH56",
+      "fare": 770
+    },
+    {
+      "from": "OH47",
+      "to": "OH57",
+      "fare": 770
+    },
+    {
+      "from": "OH47",
+      "to": "OH58",
+      "fare": 860
+    },
+    {
+      "from": "OH47",
+      "to": "OH59",
+      "fare": 940
+    },
+    {
+      "from": "OH47",
+      "to": "OH60",
+      "fare": 1020
+    },
+    {
+      "from": "OH47",
+      "to": "OH61",
+      "fare": 1110
+    },
+    {
+      "from": "OH47",
+      "to": "OH62",
+      "fare": 1200
+    },
+    {
+      "from": "OH48",
+      "to": "OH49",
+      "fare": 160
+    },
+    {
+      "from": "OH48",
+      "to": "OH50",
+      "fare": 160
+    },
+    {
+      "from": "OH48",
+      "to": "OH51",
+      "fare": 260
+    },
+    {
+      "from": "OH48",
+      "to": "OH52",
+      "fare": 310
+    },
+    {
+      "from": "OH48",
+      "to": "OH53",
+      "fare": 460
+    },
+    {
+      "from": "OH48",
+      "to": "OH54",
+      "fare": 560
+    },
+    {
+      "from": "OH48",
+      "to": "OH55",
+      "fare": 620
+    },
+    {
+      "from": "OH48",
+      "to": "OH56",
+      "fare": 670
+    },
+    {
+      "from": "OH48",
+      "to": "OH57",
+      "fare": 710
+    },
+    {
+      "from": "OH48",
+      "to": "OH58",
+      "fare": 800
+    },
+    {
+      "from": "OH48",
+      "to": "OH59",
+      "fare": 880
+    },
+    {
+      "from": "OH48",
+      "to": "OH60",
+      "fare": 960
+    },
+    {
+      "from": "OH48",
+      "to": "OH61",
+      "fare": 1050
+    },
+    {
+      "from": "OH48",
+      "to": "OH62",
+      "fare": 1140
+    },
+    {
+      "from": "OH49",
+      "to": "OH50",
+      "fare": 160
+    },
+    {
+      "from": "OH49",
+      "to": "OH51",
+      "fare": 160
+    },
+    {
+      "from": "OH49",
+      "to": "OH52",
+      "fare": 220
+    },
+    {
+      "from": "OH49",
+      "to": "OH53",
+      "fare": 360
+    },
+    {
+      "from": "OH49",
+      "to": "OH54",
+      "fare": 460
+    },
+    {
+      "from": "OH49",
+      "to": "OH55",
+      "fare": 560
+    },
+    {
+      "from": "OH49",
+      "to": "OH56",
+      "fare": 620
+    },
+    {
+      "from": "OH49",
+      "to": "OH57",
+      "fare": 620
+    },
+    {
+      "from": "OH49",
+      "to": "OH58",
+      "fare": 710
+    },
+    {
+      "from": "OH49",
+      "to": "OH59",
+      "fare": 790
+    },
+    {
+      "from": "OH49",
+      "to": "OH60",
+      "fare": 870
+    },
+    {
+      "from": "OH49",
+      "to": "OH61",
+      "fare": 960
+    },
+    {
+      "from": "OH49",
+      "to": "OH62",
+      "fare": 1050
+    },
+    {
+      "from": "OH50",
+      "to": "OH51",
+      "fare": 160
+    },
+    {
+      "from": "OH50",
+      "to": "OH52",
+      "fare": 160
+    },
+    {
+      "from": "OH50",
+      "to": "OH53",
+      "fare": 310
+    },
+    {
+      "from": "OH50",
+      "to": "OH54",
+      "fare": 420
+    },
+    {
+      "from": "OH50",
+      "to": "OH55",
+      "fare": 510
+    },
+    {
+      "from": "OH50",
+      "to": "OH56",
+      "fare": 560
+    },
+    {
+      "from": "OH50",
+      "to": "OH57",
+      "fare": 560
+    },
+    {
+      "from": "OH50",
+      "to": "OH58",
+      "fare": 650
+    },
+    {
+      "from": "OH50",
+      "to": "OH59",
+      "fare": 730
+    },
+    {
+      "from": "OH50",
+      "to": "OH60",
+      "fare": 810
+    },
+    {
+      "from": "OH50",
+      "to": "OH61",
+      "fare": 900
+    },
+    {
+      "from": "OH50",
+      "to": "OH62",
+      "fare": 990
+    },
+    {
+      "from": "OH51",
+      "to": "OH52",
+      "fare": 160
+    },
+    {
+      "from": "OH51",
+      "to": "OH53",
+      "fare": 220
+    },
+    {
+      "from": "OH51",
+      "to": "OH54",
+      "fare": 310
+    },
+    {
+      "from": "OH51",
+      "to": "OH55",
+      "fare": 420
+    },
+    {
+      "from": "OH51",
+      "to": "OH56",
+      "fare": 460
+    },
+    {
+      "from": "OH51",
+      "to": "OH57",
+      "fare": 460
+    },
+    {
+      "from": "OH51",
+      "to": "OH58",
+      "fare": 550
+    },
+    {
+      "from": "OH51",
+      "to": "OH59",
+      "fare": 630
+    },
+    {
+      "from": "OH51",
+      "to": "OH60",
+      "fare": 710
+    },
+    {
+      "from": "OH51",
+      "to": "OH61",
+      "fare": 800
+    },
+    {
+      "from": "OH51",
+      "to": "OH62",
+      "fare": 890
+    },
+    {
+      "from": "OH52",
+      "to": "OH53",
+      "fare": 160
+    },
+    {
+      "from": "OH52",
+      "to": "OH54",
+      "fare": 260
+    },
+    {
+      "from": "OH52",
+      "to": "OH55",
+      "fare": 360
+    },
+    {
+      "from": "OH52",
+      "to": "OH56",
+      "fare": 420
+    },
+    {
+      "from": "OH52",
+      "to": "OH57",
+      "fare": 420
+    },
+    {
+      "from": "OH52",
+      "to": "OH58",
+      "fare": 510
+    },
+    {
+      "from": "OH52",
+      "to": "OH59",
+      "fare": 590
+    },
+    {
+      "from": "OH52",
+      "to": "OH60",
+      "fare": 670
+    },
+    {
+      "from": "OH52",
+      "to": "OH61",
+      "fare": 760
+    },
+    {
+      "from": "OH52",
+      "to": "OH62",
+      "fare": 850
+    },
+    {
+      "from": "OH53",
+      "to": "OH54",
+      "fare": 160
+    },
+    {
+      "from": "OH53",
+      "to": "OH55",
+      "fare": 220
+    },
+    {
+      "from": "OH53",
+      "to": "OH56",
+      "fare": 260
+    },
+    {
+      "from": "OH53",
+      "to": "OH57",
+      "fare": 310
+    },
+    {
+      "from": "OH53",
+      "to": "OH58",
+      "fare": 400
+    },
+    {
+      "from": "OH53",
+      "to": "OH59",
+      "fare": 480
+    },
+    {
+      "from": "OH53",
+      "to": "OH60",
+      "fare": 560
+    },
+    {
+      "from": "OH53",
+      "to": "OH61",
+      "fare": 650
+    },
+    {
+      "from": "OH53",
+      "to": "OH62",
+      "fare": 740
+    },
+    {
+      "from": "OH54",
+      "to": "OH55",
+      "fare": 160
+    },
+    {
+      "from": "OH54",
+      "to": "OH56",
+      "fare": 160
+    },
+    {
+      "from": "OH54",
+      "to": "OH57",
+      "fare": 160
+    },
+    {
+      "from": "OH54",
+      "to": "OH58",
+      "fare": 250
+    },
+    {
+      "from": "OH54",
+      "to": "OH59",
+      "fare": 330
+    },
+    {
+      "from": "OH54",
+      "to": "OH60",
+      "fare": 410
+    },
+    {
+      "from": "OH54",
+      "to": "OH61",
+      "fare": 500
+    },
+    {
+      "from": "OH54",
+      "to": "OH62",
+      "fare": 590
+    },
+    {
+      "from": "OH55",
+      "to": "OH56",
+      "fare": 160
+    },
+    {
+      "from": "OH55",
+      "to": "OH57",
+      "fare": 160
+    },
+    {
+      "from": "OH55",
+      "to": "OH58",
+      "fare": 250
+    },
+    {
+      "from": "OH55",
+      "to": "OH59",
+      "fare": 330
+    },
+    {
+      "from": "OH55",
+      "to": "OH60",
+      "fare": 410
+    },
+    {
+      "from": "OH55",
+      "to": "OH61",
+      "fare": 500
+    },
+    {
+      "from": "OH55",
+      "to": "OH62",
+      "fare": 590
+    },
+    {
+      "from": "OH56",
+      "to": "OH57",
+      "fare": 160
+    },
+    {
+      "from": "OH56",
+      "to": "OH58",
+      "fare": 250
+    },
+    {
+      "from": "OH56",
+      "to": "OH59",
+      "fare": 330
+    },
+    {
+      "from": "OH56",
+      "to": "OH60",
+      "fare": 410
+    },
+    {
+      "from": "OH56",
+      "to": "OH61",
+      "fare": 500
+    },
+    {
+      "from": "OH56",
+      "to": "OH62",
+      "fare": 590
+    },
+    {
+      "from": "OH57",
+      "to": "OH58",
+      "fare": 90
+    },
+    {
+      "from": "OH57",
+      "to": "OH59",
+      "fare": 170
+    },
+    {
+      "from": "OH57",
+      "to": "OH60",
+      "fare": 250
+    },
+    {
+      "from": "OH57",
+      "to": "OH61",
+      "fare": 340
+    },
+    {
+      "from": "OH57",
+      "to": "OH62",
+      "fare": 430
+    },
+    {
+      "from": "OH58",
+      "to": "OH59",
+      "fare": 90
+    },
+    {
+      "from": "OH58",
+      "to": "OH60",
+      "fare": 170
+    },
+    {
+      "from": "OH58",
+      "to": "OH61",
+      "fare": 250
+    },
+    {
+      "from": "OH58",
+      "to": "OH62",
+      "fare": 340
+    },
+    {
+      "from": "OH59",
+      "to": "OH60",
+      "fare": 90
+    },
+    {
+      "from": "OH59",
+      "to": "OH61",
+      "fare": 170
+    },
+    {
+      "from": "OH59",
+      "to": "OH62",
+      "fare": 250
+    },
+    {
+      "from": "OH60",
+      "to": "OH61",
+      "fare": 90
+    },
+    {
+      "from": "OH60",
+      "to": "OH62",
+      "fare": 170
+    },
+    {
+      "from": "OH61",
+      "to": "OH62",
+      "fare": 90
+    }
+  ],
+  "ropewayFares": [
+    {
+      "from": "OH62",
+      "to": "OH63",
+      "oneWay": 2000,
+      "roundTrip": 3000
+    },
+    {
+      "from": "OH62",
+      "to": "OH64",
+      "oneWay": 2000,
+      "roundTrip": 3000
+    },
+    {
+      "from": "OH62",
+      "to": "OH65",
+      "oneWay": 2000,
+      "roundTrip": 3000
+    },
+    {
+      "from": "OH63",
+      "to": "OH64",
+      "oneWay": 2000,
+      "roundTrip": 3000
+    },
+    {
+      "from": "OH63",
+      "to": "OH65",
+      "oneWay": 2000,
+      "roundTrip": 3000
+    },
+    {
+      "from": "OH64",
+      "to": "OH65",
+      "oneWay": 2000,
+      "roundTrip": 3000
+    }
+  ],
+  "cruiseFares": [
+    {
+      "from": "OH65P",
+      "to": "OH66",
+      "oneWay": 1700,
+      "roundTrip": 3000
+    },
+    {
+      "from": "OH65P",
+      "to": "OH67",
+      "oneWay": 1700,
+      "roundTrip": 3000
+    },
+    {
+      "from": "OH66",
+      "to": "OH67",
+      "oneWay": 600,
+      "roundTrip": 1200
+    }
+  ],
+  "bus": [
+    {
+      "id": "hakone_tozan_bus",
+      "ja": "箱根登山バス",
+      "en": "Hakone Tozan Bus",
+      "fare": 1000
+    },
+    {
+      "id": "odakyu_highway_bus",
+      "ja": "小田急ハイウェイバス",
+      "en": "Odakyu Highway Bus",
+      "fare": 990
+    },
+    {
+      "id": "tokai_bus",
+      "ja": "東海バス",
+      "en": "Tokai Bus",
+      "fare": 1070
+    }
+  ]
+}

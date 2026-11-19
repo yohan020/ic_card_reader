@@ -2,11 +2,46 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../domain/issue_report.dart';
 import '../domain/issue_report_repository.dart';
+import '../domain/card_support_report.dart';
 
-class SupabaseIssueReportRepository implements IssueReportRepository {
+class SupabaseIssueReportRepository
+    implements IssueReportRepository, CardSupportRepository {
   SupabaseIssueReportRepository(this._client);
 
   final SupabaseClient _client;
+
+  @override
+  Future<String> submitCardSupport(CardSupportReport report) async {
+    try {
+      if (_client.auth.currentSession == null) {
+        await _client.auth.signInAnonymously();
+      }
+      final response = await _client.functions.invoke(
+        'card-support-report',
+        body: report.toJson(),
+      );
+      if (response.status != 202 ||
+          response.data is! Map ||
+          (response.data as Map)['reportId'] is! String) {
+        throw const IssueReportSubmissionException(
+          '문의 접수를 확인하지 못했어요. 다시 시도해 주세요.',
+        );
+      }
+      return (response.data as Map)['reportId'] as String;
+    } on IssueReportSubmissionException {
+      rethrow;
+    } on FunctionException catch (error) {
+      if (error.status == 409) return report.reportId;
+      throw IssueReportSubmissionException(switch (error.status) {
+        429 => '접수가 많아요. 10분 뒤 다시 시도해 주세요.',
+        403 => '문의 전송이 제한되었어요. 설정의 문의 이메일로 연락해 주세요.',
+        400 || 413 => '전송 항목을 확인하지 못했어요. 다시 진단해 주세요.',
+        _ => '문의 서버에 연결하지 못했어요. 잠시 후 다시 시도해 주세요.',
+      });
+    } catch (_) {
+      throw const IssueReportSubmissionException('인터넷 연결을 확인한 뒤 다시 시도해 주세요.');
+    }
+  }
 
   @override
   Future<IssueReportReceipt> submit(IssueReport report) async {

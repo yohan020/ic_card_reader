@@ -52,14 +52,10 @@ void main() {
     expect(find.byKey(const ValueKey('osaka-duration-2')), findsOneWidget);
     await tester.tap(find.byKey(const ValueKey('osaka-duration-2')));
     await tester.pumpAndSettle();
-    expect(find.text('1일차'), findsWidgets);
-    expect(find.text('2일차'), findsWidgets);
+    expect(find.text('이용일'), findsNothing);
+    expect(find.text('1일차'), findsNothing);
+    expect(find.text('2일차'), findsNothing);
     expect(find.text('두 역을 선택하면 운임을 자동으로 확인합니다.'), findsOneWidget);
-    expect(
-      tester.getTopLeft(find.text('두 역을 선택하면 운임을 자동으로 확인합니다.')).dy <
-          tester.getTopLeft(find.text('1일차').first).dy,
-      isTrue,
-    );
     expect(find.text('편도 성인 일반 운임'), findsNothing);
     expect(tester.takeException(), isNull);
   });
@@ -108,7 +104,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('오사카 메트로'), findsNWidgets(2));
-    expect(find.text('성인 일반 운임 · ¥240'), findsOneWidget);
+    expect(find.text('성인 일반 운임 ¥240'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
@@ -151,7 +147,20 @@ void main() {
     await tester.tap(find.widgetWithText(ListTile, '사카이').first);
     await tester.pumpAndSettle();
 
-    expect(find.textContaining('환승 1회'), findsOneWidget);
+    final from = data.stations.singleWhere(
+      (station) => station.operator == 'Osaka Metro' && station.nameJa == '梅田',
+    );
+    final to = data.stations.singleWhere(
+      (station) => station.operator == '南海電鉄' && station.nameJa == '堺',
+    );
+    final route = data.routeBetween(from, to)!;
+    expect(route.transferCount, 1);
+    expect(find.text('성인 일반 운임 ¥${route.fare}'), findsOneWidget);
+    final routeDetails = tester.widget<Text>(
+      find.byKey(const ValueKey('osaka-segment-route-0')),
+    );
+    expect(routeDetails.data, contains('오사카 메트로'));
+    expect(routeDetails.data, contains('난카이 전철'));
     await tester.scrollUntilVisible(
       find.text('비교 결과 보기'),
       400,

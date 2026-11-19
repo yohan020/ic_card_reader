@@ -1,0 +1,78 @@
+station_id,name_ja,name_en,name_ko
+M01,広島駅,Hiroshima Station,히로시마
+M02,稲荷町,Inari-machi,이나리마치
+M03,銀山町,Kanayama-cho,가나야마초
+M04,胡町,Ebisucho,에비스초
+M05,八丁堀,Hatchobori,핫초보리
+M06,立町,Tate-machi,다테마치
+M07,紙屋町東,Kamiya-cho-higashi,가미야초히가시
+M08,紙屋町西,Kamiya-cho-nishi,가미야초니시
+M09,原爆ドーム前,Atomic Bomb Dome-mae,원폭 돔 앞
+M10,本川町,Honkawa-cho,혼카와초
+M11,十日市町,Tokaichi-machi,도카이치마치
+M12,土橋,Dobashi,도바시
+M13,小網町,Koami-cho,고아미초
+M14,天満町,Tenma-cho,덴마초
+M15,観音町,Kan-on-machi,간온마치
+M16,西観音町,Nishi-kan-on-machi,니시칸온마치
+M17,福島町,Fukushima-cho,후쿠시마초
+M18,広電西広島,Hiroden-nishi-hiroshima,히로덴니시히로시마
+M19,東高須,Higashi-takasu,히가시타카스
+M20,高須,Takasu,타카스
+M21,古江,Furue,후루에
+M22,草津,Kusatsu,구사쓰
+M23,草津南,Kusatsu-minami,구사쓰미나미
+M24,商工センター入口,Shoko Center-iriguchi,상공센터 입구
+M25,井口,Inokuchi,이노쿠치
+M26,修大協創中高前,Shudai Kyoso Chuko-mae,슈다이쿄소추코마에
+M27,広電五日市,Hiroden-itsukaichi,히로덴이쓰카이치
+M28,佐伯区役所前,Saeki-kuyakusho-mae,사에키구청 앞
+M29,楽々園,Rakurakuen,라쿠라쿠엔
+M30,山陽女学園前,Sanyo-jogakuen-mae,산요조가쿠엔마에
+M31,広電廿日市,Hiroden-hatsukaichi,히로덴하쓰카이치
+M32,廿日市市役所前（平良）,Hatsukaichi-shiyakusho-mae (Hera),하쓰카이치시청 앞(헤라)
+M33,宮内,Miyauchi,미야우치
+M34,JA広島病院前,JA Hiroshima Byoin-mae,JA히로시마병원 앞
+M35,地御前,Jigozen,지고젠
+M36,阿品東,Ajina-higashi,아지나히가시
+M37,広電阿品,Hiroden-ajina,히로덴아지나
+M38,広電宮島口,Hiroden-miyajima-guchi,히로덴미야지마구치
+U01,本通,Hondori,혼도리
+U02,袋町,Fukuro-machi,후쿠로마치
+U03,中電前,Chuden-mae,주덴마에
+U04,市役所前,Shiyakusho-mae,시청 앞
+U05,鷹野橋,Takanobashi,다카노바시
+U06,日赤病院前,Nisseki-byoin-mae,닛세키병원 앞
+U07,広電本社前,Hiroden-honsha-mae,히로덴 본사 앞
+U08,御幸橋,Miyukibashi,미유키바시
+U09,皆実町六丁目,Minami-machi 6-chome,미나미마치 6초메
+U10,広大附属学校前,Hirodai Fuzoku Gakko-mae,히로다이후조쿠각코마에
+U11,県病院前,Kenbyoin-mae,현립병원 앞
+U12,宇品二丁目,Ujina 2-chome,우지나 2초메
+U13,宇品三丁目,Ujina 3-chome,우지나 3초메
+U14,宇品四丁目,Ujina 4-chome,우지나 4초메
+U15,宇品五丁目,Ujina 5-chome,우지나 5초메
+U16,海岸通,Kaigan-dori,가이간도리
+U17,元宇品口,Moto-ujina-guchi,모토우지나구치
+U18,広島港（宇品）,Hiroshima Port (Ujina),히로시마항(우지나)
+E01,舟入町,Funairi-machi,후나이리마치
+E02,舟入本町,Funairi-hon-machi,후나이리혼마치
+E03,舟入幸町,Funairi-saiwai-cho,후나이리사이와이초
+E04,舟入川口町,Funairi-kawaguchi-cho,후나이리카와구치초
+E05,舟入南,Funairi-minami,후나이리미나미
+E06,江波,Eba,에바
+Y01,寺町,Tera-machi,데라마치
+Y02,別院前,Betsuin-mae,베쓰인마에
+Y03,横川一丁目,Yokogawa 1-chome,요코가와 1초메
+Y04,横川駅,Yokogawa Station,요코가와
+H01,松川町,Matsukawa-cho,마쓰카와초
+H02,比治山下,Hijiyama-shita,히지야마시타
+H03,比治山橋,Hijiyama-bashi,히지야마바시
+H04,南区役所前,Minami-kuyakusho-mae,미나미구청 앞
+H05,皆実町二丁目,Minami-machi 2-chome,미나미마치 2초메
+W01,女学院前,Jogakuin-mae,조가쿠인마에
+W02,縮景園前,Shukkeien-mae,슛케이엔마에
+W03,家庭裁判所前,Katei-saibansho-mae,가정재판소 앞
+W04,白島,Hakushima,하쿠시마
+L01,的場町,Matoba-cho,마토바초
+L02,段原一丁目,Danbara 1-chome,단바라 1초메

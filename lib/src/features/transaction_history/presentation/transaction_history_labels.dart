@@ -1,7 +1,11 @@
 import '../../station_resolver/domain/station_resolution.dart';
+
+import '../../../core/localization/app_strings.dart';
 import '../domain/parsed_transit_history.dart';
 import '../domain/transit_transaction_type.dart';
 import '../../station_resolver/domain/station_name_display.dart';
+
+final _korean = AppLocalizationsKo();
 
 bool isTicketMachineCharge(ParsedTransitHistory history) =>
     history.terminalCode == 0x08 && history.processCode == 0x02;
@@ -34,93 +38,116 @@ bool isBusOrTramModeUnknown(ParsedTransitHistory history) =>
     history.boardingLineCode == 0x0F &&
     history.boardingStationCode == 0x3D;
 
-String transactionTypeLabel(ParsedTransitHistory history) {
-  if (isBusOrTramModeUnknown(history)) return '버스·노면전차 이용';
+String transactionTypeLabel(
+  ParsedTransitHistory history, [
+  AppLocalizations? l10n,
+]) {
+  l10n ??= _korean;
+  if (isBusOrTramModeUnknown(history)) return l10n.busOrTram;
   return switch (history.transactionType) {
-    TransitTransactionType.rail => '철도 이용',
-    TransitTransactionType.bus => '버스 이용',
-    TransitTransactionType.purchase => '물품 구매',
-    TransitTransactionType.charge => '충전',
-    TransitTransactionType.gateWindowProcessing => '개찰 창구 처리',
-    TransitTransactionType.refund => '환불',
-    TransitTransactionType.adjustment => '정산',
-    TransitTransactionType.unknown => '유형 미확인',
+    TransitTransactionType.rail => l10n.railRide,
+    TransitTransactionType.bus => l10n.busRide,
+    TransitTransactionType.purchase => l10n.purchase,
+    TransitTransactionType.charge => l10n.topUp,
+    TransitTransactionType.gateWindowProcessing => l10n.gateWindow,
+    TransitTransactionType.refund => l10n.refund,
+    TransitTransactionType.adjustment => l10n.adjustment,
+    TransitTransactionType.unknown => l10n.unknownType,
   };
 }
 
-String chargeMethodLabel(ParsedTransitHistory history) {
-  if (isTicketMachineCharge(history)) return '자동발권기';
-  if (isStationGateCharge(history)) return '역 개찰 단말';
-  if (isStationTerminalCharge(history)) return '역 단말';
-  if (isMobileCharge(history)) return '모바일';
-  if (isMobileBenefitCharge(history)) return '모바일 특전';
-  if (isStoreTerminalCharge(history)) return '매장 단말';
-  return '확인할 수 없음';
+String chargeMethodLabel(
+  ParsedTransitHistory history, [
+  AppLocalizations? l10n,
+]) {
+  l10n ??= _korean;
+  if (isTicketMachineCharge(history)) return l10n.ticketMachine;
+  if (isStationGateCharge(history)) return l10n.stationGateTerminal;
+  if (isStationTerminalCharge(history)) return l10n.stationTerminal;
+  if (isMobileCharge(history)) return l10n.mobile;
+  if (isMobileBenefitCharge(history)) return l10n.mobileBenefit;
+  if (isStoreTerminalCharge(history)) return l10n.storeTerminal;
+  return l10n.unknown;
 }
 
 String chargeSummary(
   ParsedTransitHistory history, {
+  AppLocalizations? l10n,
   StationResolution? transactionLocation,
   StationNameDisplayMode stationNameDisplayMode =
       StationNameDisplayMode.japanese,
 }) {
+  l10n ??= _korean;
   if (isTicketMachineCharge(history)) {
     final stationName = _displayLocationStation(
       transactionLocation,
       stationNameDisplayMode,
     );
-    return stationName == null ? '자동발권기에서 충전' : '자동발권기에서 충전 · $stationName';
+    return stationName == null
+        ? l10n.ticketMachineTopUp
+        : l10n.ticketMachineTopUpAt(stationName);
   }
   if (isStationGateCharge(history)) {
     final stationName = _displayLocationStation(
       transactionLocation,
       stationNameDisplayMode,
     );
-    return stationName == null ? '역 개찰 단말에서 충전' : '충전 · $stationName';
+    return stationName == null
+        ? l10n.gateTerminalTopUp
+        : l10n.topUpAt(stationName);
   }
-  if (isStationTerminalCharge(history)) return '역 단말에서 충전';
-  if (isMobileBenefitCharge(history)) return '모바일 특전 충전';
-  if (isMobileCharge(history)) return '모바일에서 충전';
-  if (isStoreTerminalCharge(history)) return '매장에서 충전';
-  return '카드 충전';
+  if (isStationTerminalCharge(history)) return l10n.stationTerminalTopUp;
+  if (isMobileBenefitCharge(history)) return l10n.mobileBenefitTopUp;
+  if (isMobileCharge(history)) return l10n.mobileTopUp;
+  if (isStoreTerminalCharge(history)) return l10n.storeTopUp;
+  return l10n.cardTopUp;
 }
 
 String chargeLocationDetail(
   ParsedTransitHistory history, {
+  AppLocalizations? l10n,
   StationResolution? transactionLocation,
   StationNameDisplayMode stationNameDisplayMode =
       StationNameDisplayMode.japanese,
 }) {
+  l10n ??= _korean;
   if (!isTicketMachineCharge(history) &&
       !isStationGateCharge(history) &&
       !isGateWindowProcessing(history)) {
-    return '확인할 수 없음';
+    return l10n.unknown;
   }
   final station = transactionLocation?.station;
   if (station != null) {
-    return '${displayStationName(japanese: station.stationName, korean: station.stationNameKorean, mode: stationNameDisplayMode)} · ${station.lineName}';
+    return '${displayStationName(japanese: station.stationName, korean: station.stationNameKorean, english: station.stationNameEnglish, mode: stationNameDisplayMode)} · ${station.lineName}';
   }
-  final code = transactionLocationCode(history);
-  return code == null ? '확인할 수 없음' : '미등록 · $code';
+  return l10n.stationUnavailable;
 }
 
-String busOperatorLabel(ParsedTransitHistory history) =>
-    history.busOperatorName ?? '미확인 · 회사 고유 코드 미해석';
+String busOperatorLabel(
+  ParsedTransitHistory history, [
+  AppLocalizations? l10n,
+]) => history.busOperatorName ?? (l10n ?? _korean).unknownBusOperator;
 
-String purchaseSummary(ParsedTransitHistory history) =>
-    isCashCombinedPurchase(history) ? '물품 구매 · 현금 병용' : '물품 구매';
+String purchaseSummary(
+  ParsedTransitHistory history, [
+  AppLocalizations? l10n,
+]) => isCashCombinedPurchase(history)
+    ? (l10n ?? _korean).purchaseWithCash
+    : (l10n ?? _korean).purchase;
 
 String gateWindowSummary(
   ParsedTransitHistory history, {
+  AppLocalizations? l10n,
   StationResolution? transactionLocation,
   StationNameDisplayMode stationNameDisplayMode =
       StationNameDisplayMode.japanese,
 }) {
+  l10n ??= _korean;
   final stationName = _displayLocationStation(
     transactionLocation,
     stationNameDisplayMode,
   );
-  return stationName == null ? '개찰 창구 처리' : '개찰 창구 처리 · $stationName';
+  return stationName == null ? l10n.gateWindow : l10n.gateWindowAt(stationName);
 }
 
 String? _displayLocationStation(
@@ -132,6 +159,7 @@ String? _displayLocationStation(
   return displayStationName(
     japanese: station.stationName,
     korean: station.stationNameKorean,
+    english: station.stationNameEnglish,
     mode: mode,
   );
 }

@@ -83,6 +83,7 @@ void main() {
     expect(japanese.first.lines.length, greaterThanOrEqualTo(3));
     final koreanInitials = data.search('ㄴㅂ');
     expect(koreanInitials.any((station) => station.nameJa == 'なんば'), isTrue);
+    expect(data.search('오사카메트로'), isEmpty);
 
     OsakaPassStation station(String operator, String nameJa) =>
         data.stations.singleWhere(

@@ -7,8 +7,13 @@ class PlayAppUpdateService implements AppUpdateService {
   Future<AppUpdateStatus> checkForUpdate() async {
     try {
       final info = await InAppUpdate.checkForUpdate();
-      if (info.updateAvailability != UpdateAvailability.updateAvailable) {
+      if (info.updateAvailability == UpdateAvailability.updateNotAvailable) {
         return const AppUpdateStatus.latest();
+      }
+      if (info.updateAvailability != UpdateAvailability.updateAvailable &&
+          info.updateAvailability !=
+              UpdateAvailability.developerTriggeredUpdateInProgress) {
+        return const AppUpdateStatus.unavailable();
       }
       if (info.immediateUpdateAllowed) {
         return const AppUpdateStatus.available(AppUpdateInstallMode.immediate);
@@ -26,12 +31,27 @@ class PlayAppUpdateService implements AppUpdateService {
 
   @override
   Future<void> startUpdate(AppUpdateStatus status) async {
-    switch (status.installMode) {
+    // Play's AppUpdateInfo is single-use. Refresh even after user cancellation.
+    final freshStatus = await checkForUpdate().timeout(
+      const Duration(seconds: 15),
+    );
+    if (freshStatus.availability == AppUpdateAvailability.latest) return;
+    switch (freshStatus.installMode) {
       case AppUpdateInstallMode.immediate:
-        await InAppUpdate.performImmediateUpdate();
+        final result = await InAppUpdate.performImmediateUpdate();
+        if (result == AppUpdateResult.inAppUpdateFailed) {
+          throw StateError('Google Play could not start the update.');
+        }
       case AppUpdateInstallMode.flexible:
-        await InAppUpdate.startFlexibleUpdate();
-        await InAppUpdate.completeFlexibleUpdate();
+        final result = await InAppUpdate.startFlexibleUpdate();
+        if (result == AppUpdateResult.userDeniedUpdate) return;
+        if (result == AppUpdateResult.inAppUpdateFailed) {
+          throw StateError('Google Play could not start the update.');
+        }
+        // The download has finished; only bound the install handoff, not download.
+        await InAppUpdate.completeFlexibleUpdate().timeout(
+          const Duration(seconds: 15),
+        );
       case null:
         throw StateError('No Google Play update flow is available.');
     }

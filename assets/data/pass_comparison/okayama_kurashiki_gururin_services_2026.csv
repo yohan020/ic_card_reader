@@ -1,0 +1,7 @@
+﻿operator,service,mode,calculation_type,adult_fare_yen,child_fare_yen,representative_or_exact,range_yen,basis,source_url,notes
+Okayama Electric Tramway,東山線・清輝橋線,tram,flat_exact,160,80,exact,160,2025-10-01 onward all-line flat fare,https://okayama-kido.co.jp/tram/route-map/,柳川で東山線↔清輝橋線を乗り継ぐ場合も通し160円。
+Shimoden Bus,児島駅～倉敷駅,bus,per_ride_representative,770,,representative_full_segment,,full endpoint-to-endpoint fare after 2025-03-16 revision,https://shimoden.net/rosen/rosen_news/entry-277.html,代表値として児島駅～倉敷駅の全区間運賃を採用。途中区間では過大評価になり得る。
+Shimoden Bus,下津井循環バス とこはい号,bus,per_ride_representative,250,,representative_midpoint_rounded,200-290,rounded representative from published 200-290 yen fare range,https://shimoden.net/rosen/rosen_news/entry-277.html,実運賃ではなくアプリ損益計算用の代表値。
+Shimoden Bus,ジーンズバス,bus,per_ride_exact_flat,200,,exact_flat_adult,200,published flat adult fare after 2025-03-16 revision,https://shimoden.net/rosen/rosen_news/entry-277.html,パスでは金・土・日・祝のみ運行対象。
+Shimoden Bus,鷲羽山夕景鑑賞バス,bus,per_ride_exact_service,540,540,exact,540,current service fare,https://shimoden.net/rosen/kikaku/yuukei.html,おとな・こどもとも540円。パスでは金・土・祝前日のみ運行対象。
+Shimoden Bus,下電バス（サービス未指定フォールバック）,bus,per_ride_representative,440,,fallback_mean_of_service_values,,"simple mean of 770, 250, 200, 540 = 440",generated,サービスを選べないUI向けの任意フォールバック。可能なら個別サービス値を使用する。

@@ -1,0 +1,37 @@
+Coin locker external links / 2026-11-03
+
+The app includes independently curated place names, area descriptions and public
+article URLs, not a reproduction of locker articles, photographs or maps.
+No vacancy, reservation, price or complete facility inventory is included.
+The services are independent third parties, not affiliated official partners.
+
+Services, in fixed display order (not recommendation ranking):
+コインロッカーみいつけた！ https://coin-locker.net/
+コインロッカーのしおり https://coinlocker-shiori.com/
+コインロッカーガイド https://coinlocker.click/
+
+Policy references:
+https://coin-locker.net/privacy-policy/
+https://coinlocker-shiori.com/privacy-policy/
+https://coinlocker.click/about.php
+https://coinlocker.click/asakusa-toei-subway-station.php (copyright footer)
+
+Links open in an external browser only after the user's selection. Destination
+services apply their own privacy policies. No card IDm, balance, transaction
+history, location, user search term or other user data is appended by this app.
+An old, partial or related-area article must not be treated as current complete
+station coverage. Research and URL provenance remain in docs/research/
+coin-locker-links-2026-11-03/; current generator:
+tool/expand_coin_locker_catalog.mjs (historical seed builder is not the updater).
+
+Expansion 2026-11-04: 1,000 searchable entries, 1,934 unique article URLs.
+Different stations may share one reviewed regional/line article. Lack of a
+verified link does not mean lack of lockers. Unverified assignments are excluded.
+Search-boundary metadata derives from MLIT National Land Numerical Information
+N02 2025, CC BY 4.0, normalized and conservatively grouped by this project:
+https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N02-2025.html
+https://creativecommons.org/licenses/by/4.0/
+Korean names reuse the app's existing Wikidata CC0 and manually checked mappings.
+Yoiko station codes are used internally for operator/line/name identity matching
+under existing app-use permission; the source code table is not redistributed
+as a standalone locker dataset. See the station-data notices for original terms.

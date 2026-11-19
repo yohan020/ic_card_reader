@@ -9,6 +9,17 @@ import 'package:ic_card_reader/src/features/transaction_history/presentation/tra
 void main() {
   const parser = TransitHistoryParser();
 
+  test('unresolved locations and operators use plain-language labels', () {
+    final gateCharge = parser.parse([
+      _block('1A020000342CE91F00009F04000404C0'),
+    ]).single;
+    final bus = parser.parse([
+      _block('050D000F34FCFFFF00002F0700004FC0'),
+    ]).single;
+    expect(chargeLocationDetail(gateCharge), '역 정보 확인 불가');
+    expect(busOperatorLabel(bus), '버스 회사 확인 불가');
+  });
+
   test('labels mobile charges without guessing a card brand or station', () {
     final regular = parser.parse([
       _block('1B023F00350302FD00003F0200005700'),

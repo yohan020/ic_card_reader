@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "records": [
+    {
+      "code": [1, 182, 22],
+      "operator": "名古屋鉄道",
+      "line": "広見線",
+      "name": "学校前",
+      "reason": "verified_identity_without_coordinate",
+      "replacesQid": "Q11448249",
+      "verifiedQid": "Q11448252",
+      "note": "旧座標は福岡県の西鉄学校前駅。名鉄広見線の旧学校前駅は別項目で、確認時点のP625がないため位置を推測せず保留する。",
+      "sources": ["https://www.wikidata.org/wiki/Q11448252", "https://www.wikidata.org/wiki/Q11448249"],
+      "reviewedAt": "2026-10-27"
+    }
+  ]
+}

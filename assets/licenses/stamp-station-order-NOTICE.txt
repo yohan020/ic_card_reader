@@ -1,0 +1,32 @@
+Station stamp ordering / 역 스탬프 역 순서
+
+MLIT National Land Numerical Information, Railway Data N02 (2025),
+snapshot 2025-12-31, CC BY 4.0.
+https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N02-2025.html
+https://creativecommons.org/licenses/by/4.0/
+Railway-section geometry and station segments were contracted into connection
+graphs. Non-station dead ends were pruned. This is not a numerical station-code
+sort: N02 codes are geographic identifiers, not travel-order numbers.
+
+Supplementary station-list facts: Japanese Wikipedia contributors, retrieved
+2026-11-16. Text/database-derived ordering adaptations are attributed under
+CC BY-SA 4.0; no images, logos, maps or article prose are included.
+https://ja.wikipedia.org/wiki/Wikipedia:著作権
+https://creativecommons.org/licenses/by-sa/4.0/
+Consulted article titles, permanent page identifiers, URLs and response hashes
+are recorded in docs/research/station-stamps-2026-11-16-order/order.json.
+Each article URL provides its contributors and revision history. That manifest,
+the derived station-order dataset and its generated order map are offered under
+CC BY-SA 4.0 to the extent copyright applies. This does not relicense the
+separately permissioned IC-code database or the application as a whole.
+
+Changes: membership-scoped extraction, independently reviewed branches and
+switchbacks, removal of incidental/historical station tables, joins at shared
+terminals, and mapping to the app's existing station identities. Existing
+official passenger boundary research is also reused. Order is independent of
+the user's station-name language. No raw card history was used.
+
+The collection catalog remains a snapshot, not a real-time railway timetable.
+Separate sections and station order do not guarantee a particular train stops
+at every station, a direct train, current IC availability, or current operation.
+Neither MLIT nor Wikipedia contributors endorse this app.

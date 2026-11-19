@@ -1,17 +1,72 @@
 import 'package:flutter/material.dart';
 
+import 'pass_strings.dart';
+
 import '../../../core/design/app_theme.dart';
 import '../../../core/widgets/app_ui.dart';
+import 'enoden_noriorikun_pass_page.dart';
+import 'fukuoka_city_subway_pass_page.dart';
+import 'nagasaki_electric_tramway_pass_page.dart';
+import 'sapporo_subway_pass_page.dart';
+import 'yui_rail_pass_page.dart';
+import 'hokkaido_rail_pass_page.dart';
+import 'hakone_freepass_page.dart';
+import 'hiroden_pass_page.dart';
+import 'enokama_pass_page.dart';
+import '../data/pass_comparison_data_preloader.dart';
 import '../data/pass_transit_data.dart';
 import '../domain/pass_comparison.dart';
+import 'hankyu_1day_pass_page.dart';
 import 'kyoto_subway_bus_pass_page.dart';
+import 'kyoto_subway_1day_pass_page.dart';
+import 'kintetsu_rail_pass_5day_page.dart';
 import 'osaka_amazing_pass_prototype_page.dart';
+import 'okayama_kurashiki_gururin_pass_page.dart';
 import 'pass_comparison_prototype_page.dart';
 
+enum PassRegion {
+  hokkaido,
+  tohoku,
+  kanto,
+  chubu,
+  kansai,
+  chugoku,
+  shikoku,
+  kyushu,
+  okinawa,
+}
+
+extension on PassRegion {
+  String get label => switch (this) {
+    PassRegion.hokkaido => '홋카이도',
+    PassRegion.tohoku => '도호쿠',
+    PassRegion.kanto => '도쿄·간토',
+    PassRegion.chubu => '주부',
+    PassRegion.kansai => '간사이',
+    PassRegion.chugoku => '주고쿠',
+    PassRegion.shikoku => '시코쿠',
+    PassRegion.kyushu => '규슈',
+    PassRegion.okinawa => '오키나와',
+  };
+
+  String get description => switch (this) {
+    PassRegion.hokkaido => '삿포로·하코다테 등',
+    PassRegion.tohoku => '센다이·아오모리 등',
+    PassRegion.kanto => '도쿄·가나가와 지역 패스',
+    PassRegion.chubu => '나고야·호쿠리쿠 등',
+    PassRegion.kansai => '오사카·교토·나라 지역 패스',
+    PassRegion.chugoku => '히로시마·오카야마 등',
+    PassRegion.shikoku => '마쓰야마·다카마쓰 등',
+    PassRegion.kyushu => '후쿠오카 지역 패스',
+    PassRegion.okinawa => '나하·오키나와 지역',
+  };
+}
+
 class PassSelectionPage extends StatefulWidget {
-  const PassSelectionPage({this.initialTransitData, super.key});
+  const PassSelectionPage({this.initialTransitData, this.region, super.key});
 
   final PassTransitData? initialTransitData;
+  final PassRegion? region;
 
   @override
   State<PassSelectionPage> createState() => _PassSelectionPageState();
@@ -19,96 +74,88 @@ class PassSelectionPage extends StatefulWidget {
 
 class _PassSelectionPageState extends State<PassSelectionPage> {
   final PassTransitDataRepository _transitRepository =
-      const PassTransitDataRepository();
+      PassTransitDataRepository();
 
   @override
   void initState() {
     super.initState();
-    if (widget.initialTransitData == null) _transitRepository.warmUp();
+    final dataGroup = _dataGroupFor(widget.region);
+    if (dataGroup != null && widget.initialTransitData == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        PassComparisonDataPreloader.warmUpRegion(dataGroup);
+        PassComparisonDataPreloader.warmUpRemainingAfter(dataGroup);
+      });
+    }
   }
+
+  PassComparisonDataGroup? _dataGroupFor(PassRegion? region) =>
+      switch (region) {
+        PassRegion.hokkaido => PassComparisonDataGroup.hokkaido,
+        PassRegion.kanto => PassComparisonDataGroup.kanto,
+        PassRegion.kansai => PassComparisonDataGroup.kansai,
+        PassRegion.chugoku => PassComparisonDataGroup.chugoku,
+        PassRegion.kyushu => PassComparisonDataGroup.kyushu,
+        PassRegion.okinawa => PassComparisonDataGroup.okinawa,
+        _ => null,
+      };
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('교통패스 비교')),
-    body: SafeArea(
-      top: false,
-      child: ListView(
-        padding: const EdgeInsets.fromLTRB(20, 18, 20, 32),
-        children: [
-          const _ProgressSteps(activeStep: 1),
-          const SizedBox(height: 26),
-          Text(
-            '비교할 교통패스를\n선택해 주세요',
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.w800,
-              letterSpacing: -1,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            '입력한 이동 계획을 기준으로 일반 운임과 패스 가격을 비교합니다.',
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-              height: 1.45,
-            ),
-          ),
-          const SizedBox(height: 20),
-          _PassChoiceCard(
-            icon: Icons.subway_outlined,
-            title: 'Tokyo Subway Ticket',
-            subtitle: 'Tokyo Metro · 도에이 지하철',
-            description: '24·48·72시간권의 손익을 비교합니다.',
-            periods: const ['24시간', '48시간', '72시간'],
-            onTap: () => _open(context, PassProduct.tokyoSubway24),
-          ),
-          const SizedBox(height: 14),
-          _PassChoiceCard(
-            icon: Icons.train_outlined,
-            title: '도쿠나이 패스',
-            subtitle: '도쿄 23구 내 지정 JR 구간',
-            description: '1일권과 적용 JR 구간의 일반 운임을 비교합니다.',
-            periods: const ['1일권 · ¥870'],
-            teal: true,
-            onTap: () => _open(context, PassProduct.tokunai1Day),
-          ),
-          const SizedBox(height: 14),
-          _PassChoiceCard(
-            icon: Icons.confirmation_number_outlined,
-            title: '오사카 주유패스',
-            subtitle: '오사카 메트로 · 사철 · 시티버스',
-            description: '1·2일권과 환승 경로의 일반 운임을 비교합니다.',
-            periods: const ['1일권 · ¥3,500', '2일권 · ¥5,000'],
-            teal: true,
-            onTap: () => Navigator.of(context).push(
+    appBar: AppBar(title: Text(passText(context, '교통패스 비교'))),
+    body: widget.region == null
+        ? _RegionSelection(
+            passEntries: _passEntries(),
+            onSelected: (region) => Navigator.of(context).push(
               MaterialPageRoute<void>(
-                builder: (_) => const OsakaAmazingPassPrototypePage(),
+                builder: (_) => PassSelectionPage(
+                  initialTransitData: widget.initialTransitData,
+                  region: region,
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: 14),
-          _PassChoiceCard(
-            icon: Icons.directions_bus_filled_outlined,
-            title: '교토 지하철·버스 1일권',
-            subtitle: '교토시영 지하철 · 버스 예상 운임',
-            description: '지하철 자동 운임과 버스 이용 추정을 비교합니다.',
-            periods: const ['1일권 · ¥1,100'],
-            teal: true,
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (_) => const KyotoSubwayBusPassPage(),
-              ),
+          )
+        : SafeArea(
+            top: false,
+            child: ListView(
+              padding: EdgeInsets.fromLTRB(20, 18, 20, 32),
+              children: [
+                _ProgressSteps(activeStep: 1),
+                SizedBox(height: 26),
+                Text(
+                  passText(
+                    context,
+                    strings(context).passChooseInRegion(
+                      passText(context, widget.region!.label),
+                    ),
+                  ),
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: -1,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  passText(context, '입력한 이동 계획을 기준으로 일반 운임과 패스 가격을 비교합니다.'),
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    height: 1.45,
+                  ),
+                ),
+                SizedBox(height: 20),
+                ..._passCardsForRegion(context),
+                SizedBox(height: 6),
+                NoticeBanner(
+                  title: passText(context, '계산 기준'),
+                  text: passText(
+                    context,
+                    '지원 데이터로 확인되는 이동만 계산합니다. 확인할 수 없는 운임은 합산하지 않으며, 구매 전 공식 상품 조건과 운임을 확인해 주세요.',
+                  ),
+                  tone: NoticeTone.info,
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 20),
-          const NoticeBanner(
-            title: '계산 기준',
-            text:
-                '지원 데이터로 확인되는 이동만 계산합니다. 확인할 수 없는 운임은 합산하지 않으며, 구매 전 공식 상품 조건과 운임을 확인해 주세요.',
-            tone: NoticeTone.info,
-          ),
-        ],
-      ),
-    ),
   );
 
   Future<void> _open(BuildContext context, PassProduct product) async {
@@ -126,6 +173,445 @@ class _PassSelectionPageState extends State<PassSelectionPage> {
         builder: (_) => PassComparisonPrototypePage(
           initialProduct: product,
           initialData: data,
+        ),
+      ),
+    );
+  }
+
+  List<Widget> _passCardsForRegion(BuildContext context) {
+    final entries = _passEntries()
+        .where((entry) => entry.region == widget.region)
+        .toList(growable: false);
+    return [
+      for (final entry in entries) ...[
+        entry.cardBuilder(context),
+        SizedBox(height: 14),
+      ],
+    ];
+  }
+
+  List<_PassListEntry> _passEntries() => [
+    _PassListEntry(
+      region: PassRegion.hokkaido,
+      cardBuilder: (context) => _PassChoiceCard(
+        icon: Icons.subway_outlined,
+        title: '삿포로 지하철 1일권',
+        subtitle: '삿포로시 지하철 · 전 구간',
+        description: '지하철 전 구간의 일반 운임과 비교합니다.',
+        periods: ['1일권 · ¥830'],
+        teal: true,
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute<void>(builder: (_) => SapporoSubwayPassPage()),
+        ),
+      ),
+    ),
+    _PassListEntry(
+      region: PassRegion.hokkaido,
+      cardBuilder: (context) => _PassChoiceCard(
+        icon: Icons.train_outlined,
+        title: '홋카이도 레일패스',
+        subtitle: 'JR 홋카이도선 · 보통차 지정석',
+        description: '5·7·10일권과 철도·버스 이동 예상 운임을 비교합니다.',
+        periods: ['5일권 · ¥23,000', '7일권 · ¥29,000', '10일권 · ¥38,000'],
+        teal: true,
+        onTap: () => Navigator.of(
+          context,
+        ).push(MaterialPageRoute<void>(builder: (_) => HokkaidoRailPassPage())),
+      ),
+    ),
+    _PassListEntry(
+      region: PassRegion.kanto,
+      cardBuilder: (context) => _PassChoiceCard(
+        icon: Icons.subway_outlined,
+        title: 'Tokyo Subway Ticket',
+        subtitle: 'Tokyo Metro · 도에이 지하철',
+        description: '24·48·72시간권의 손익을 비교합니다.',
+        periods: ['24시간', '48시간', '72시간'],
+        onTap: () => _open(context, PassProduct.tokyoSubway24),
+      ),
+    ),
+    _PassListEntry(
+      region: PassRegion.kanto,
+      cardBuilder: (context) => _PassChoiceCard(
+        icon: Icons.confirmation_number_outlined,
+        title: '에노시마·가마쿠라 프리패스',
+        subtitle: '에노덴 · 오다큐 전철',
+        description: '출발역별 가격과 프리구간 운임을 비교합니다.',
+        periods: ['1일권 · 발역별 가격'],
+        teal: true,
+        onTap: () => Navigator.of(
+          context,
+        ).push(MaterialPageRoute<void>(builder: (_) => EnokamaPassPage())),
+      ),
+    ),
+    _PassListEntry(
+      region: PassRegion.kanto,
+      cardBuilder: (context) => _PassChoiceCard(
+        icon: Icons.train_outlined,
+        title: '에노덴 1일 승차권',
+        subtitle: '에노시마 전철 · 에노덴 전선',
+        description: '에노덴 내부 이동의 일반 운임과 비교합니다.',
+        periods: ['1일권 · ¥800'],
+        teal: true,
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute<void>(builder: (_) => EnodenNoriorikunPassPage()),
+        ),
+      ),
+    ),
+    _PassListEntry(
+      region: PassRegion.kanto,
+      cardBuilder: (context) => _PassChoiceCard(
+        icon: Icons.landscape_outlined,
+        title: '하코네 프리패스',
+        subtitle: '오다큐 70개 출발역 · 하코네 교통수단',
+        description: '출발역별 성인 가격과 하코네 현지 운임을 비교합니다.',
+        periods: ['2일권', '3일권'],
+        teal: true,
+        onTap: () => Navigator.of(
+          context,
+        ).push(MaterialPageRoute<void>(builder: (_) => HakoneFreepassPage())),
+      ),
+    ),
+    _PassListEntry(
+      region: PassRegion.kanto,
+      cardBuilder: (context) => _PassChoiceCard(
+        icon: Icons.train_outlined,
+        title: '도쿠나이 패스',
+        subtitle: '도쿄 23구 내 지정 JR 구간',
+        description: '1일권과 적용 JR 구간의 일반 운임을 비교합니다.',
+        periods: ['1일권 · ¥870'],
+        teal: true,
+        onTap: () => _open(context, PassProduct.tokunai1Day),
+      ),
+    ),
+    _PassListEntry(
+      region: PassRegion.kansai,
+      cardBuilder: (context) => _PassChoiceCard(
+        icon: Icons.subway_outlined,
+        title: '교토 지하철 1일권',
+        subtitle: '교토시영 지하철 · 전 구간',
+        description: '지하철 전 구간의 일반 운임과 비교합니다.',
+        periods: ['1일권 · ¥800'],
+        teal: true,
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute<void>(builder: (_) => KyotoSubway1DayPassPage()),
+        ),
+      ),
+    ),
+    _PassListEntry(
+      region: PassRegion.kansai,
+      cardBuilder: (context) => _PassChoiceCard(
+        icon: Icons.confirmation_number_outlined,
+        title: '오사카 주유패스',
+        subtitle: '오사카 메트로 · 사철 · 시티버스',
+        description: '1·2일권과 환승 경로의 일반 운임을 비교합니다.',
+        periods: ['1일권 · ¥3,500', '2일권 · ¥5,000'],
+        teal: true,
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => OsakaAmazingPassPrototypePage(),
+          ),
+        ),
+      ),
+    ),
+    _PassListEntry(
+      region: PassRegion.kansai,
+      cardBuilder: (context) => _PassChoiceCard(
+        icon: Icons.directions_bus_filled_outlined,
+        title: '교토 지하철·버스 1일권',
+        subtitle: '교토시영 지하철 · 버스 예상 운임',
+        description: '지하철 자동 운임과 버스 이용 추정을 비교합니다.',
+        periods: ['1일권 · ¥1,100'],
+        teal: true,
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute<void>(builder: (_) => KyotoSubwayBusPassPage()),
+        ),
+      ),
+    ),
+    _PassListEntry(
+      region: PassRegion.kansai,
+      cardBuilder: (context) => _PassChoiceCard(
+        icon: Icons.train_outlined,
+        title: '한큐패스 1일권',
+        subtitle: '한큐 전철 전 노선',
+        description: '한큐 전철 내부 이동의 일반 운임과 비교합니다.',
+        periods: ['1일권 · ¥1,300'],
+        teal: true,
+        onTap: () => Navigator.of(
+          context,
+        ).push(MaterialPageRoute<void>(builder: (_) => Hankyu1DayPassPage())),
+      ),
+    ),
+    _PassListEntry(
+      region: PassRegion.kansai,
+      cardBuilder: (context) => _PassChoiceCard(
+        icon: Icons.confirmation_number_outlined,
+        title: '긴테쓰 레일 패스',
+        subtitle: '긴테쓰 전철 · 이가철도 · 케이블카',
+        description: '권종별 적용 구간과 일반 운임을 비교합니다.',
+        periods: ['1일권', '2일권', '5일권', '5일권 Plus'],
+        teal: true,
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute<void>(builder: (_) => KintetsuRailPass5DayPage()),
+        ),
+      ),
+    ),
+    _PassListEntry(
+      region: PassRegion.chugoku,
+      cardBuilder: (context) => _PassChoiceCard(
+        icon: Icons.confirmation_number_outlined,
+        title: '오카야마·구라시키 tabiwa 구루링 패스',
+        subtitle: 'JR 서일본 · 오카야마 전기궤도 · 시모덴 버스',
+        description: '3일권과 철도·노면전차·버스 이동 운임을 비교합니다.',
+        periods: ['3일권 · ¥3,800'],
+        teal: true,
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => OkayamaKurashikiGururinPassPage(),
+          ),
+        ),
+      ),
+    ),
+    _PassListEntry(
+      region: PassRegion.chugoku,
+      cardBuilder: (context) => _PassChoiceCard(
+        icon: Icons.tram_outlined,
+        title: '히로덴 전차 패스',
+        subtitle: '히로시마 전철 · 전차 전 노선',
+        description: '일반 운임과 1일·8시간·24시간권을 비교합니다.',
+        periods: ['1일권 · ¥700', '8시간권 · ¥600', '24시간권 · ¥700'],
+        teal: true,
+        onTap: () => Navigator.of(
+          context,
+        ).push(MaterialPageRoute<void>(builder: (_) => HirodenPassPage())),
+      ),
+    ),
+    _PassListEntry(
+      region: PassRegion.kyushu,
+      cardBuilder: (context) => _PassChoiceCard(
+        icon: Icons.tram_outlined,
+        title: '나가사키 전기궤도 패스',
+        subtitle: '나가사키 전기궤도 · 노면전차 전 노선',
+        description: 'IC·터치 기준 일반 운임과 1일·24시간권을 비교합니다.',
+        periods: ['1일권 · ¥600', '24시간권 · ¥700'],
+        teal: true,
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => NagasakiElectricTramwayPassPage(),
+          ),
+        ),
+      ),
+    ),
+    _PassListEntry(
+      region: PassRegion.kyushu,
+      cardBuilder: (context) => _PassChoiceCard(
+        icon: Icons.subway_outlined,
+        title: '후쿠오카 지하철 1일권',
+        subtitle: '후쿠오카시 지하철 · 3개 노선',
+        description: '지하철 전 구간의 일반 운임과 비교합니다.',
+        periods: ['1일권 · ¥640'],
+        teal: true,
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute<void>(builder: (_) => FukuokaCitySubwayPassPage()),
+        ),
+      ),
+    ),
+    _PassListEntry(
+      region: PassRegion.okinawa,
+      cardBuilder: (context) => _PassChoiceCard(
+        icon: Icons.train_outlined,
+        title: '유이레일 패스',
+        subtitle: '오키나와 도시 모노레일 · 전 노선',
+        description: '24·48시간권과 유이레일 일반 운임을 비교합니다.',
+        periods: ['24시간 · ¥1,000', '48시간 · ¥1,800'],
+        teal: true,
+        onTap: () => Navigator.of(
+          context,
+        ).push(MaterialPageRoute<void>(builder: (_) => YuiRailPassPage())),
+      ),
+    ),
+  ];
+}
+
+class _PassListEntry {
+  const _PassListEntry({required this.region, required this.cardBuilder});
+
+  final PassRegion region;
+  final WidgetBuilder cardBuilder;
+}
+
+class _RegionSelection extends StatelessWidget {
+  const _RegionSelection({required this.passEntries, required this.onSelected});
+
+  final List<_PassListEntry> passEntries;
+  final ValueChanged<PassRegion> onSelected;
+
+  @override
+  Widget build(BuildContext context) => SafeArea(
+    top: false,
+    child: ListView(
+      padding: EdgeInsets.fromLTRB(20, 18, 20, 32),
+      children: [
+        _ProgressSteps(activeStep: 1),
+        SizedBox(height: 26),
+        Text(
+          passText(context, '비교할 지역을\n선택해 주세요'),
+          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+            fontWeight: FontWeight.w700,
+            letterSpacing: -1,
+          ),
+        ),
+        SizedBox(height: 8),
+        Text(
+          passText(context, '여행할 지역을 먼저 선택하면 해당 지역의 교통패스를 볼 수 있습니다.'),
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+            height: 1.45,
+          ),
+        ),
+        SizedBox(height: 20),
+        for (final region in _orderedRegions()) ...[
+          _RegionChoiceCard(
+            region: region,
+            passCount: _passCountFor(region),
+            onSelected: onSelected,
+          ),
+          SizedBox(height: 12),
+        ],
+      ],
+    ),
+  );
+
+  int _passCountFor(PassRegion region) =>
+      passEntries.where((entry) => entry.region == region).length;
+
+  List<PassRegion> _orderedRegions() {
+    final regions = [...PassRegion.values];
+    regions.sort((left, right) {
+      final leftSupported = _passCountFor(left) > 0;
+      final rightSupported = _passCountFor(right) > 0;
+      if (leftSupported != rightSupported) return leftSupported ? -1 : 1;
+      return left.index.compareTo(right.index);
+    });
+    return regions;
+  }
+}
+
+class _RegionChoiceCard extends StatelessWidget {
+  const _RegionChoiceCard({
+    required this.region,
+    required this.passCount,
+    required this.onSelected,
+  });
+
+  final PassRegion region;
+  final int passCount;
+  final ValueChanged<PassRegion> onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isAvailable = passCount > 0;
+    final accent = AppColors.accent(context);
+    final muted = Theme.of(context).colorScheme.onSurfaceVariant;
+    final surface = isDark
+        ? Color(0xFF17242A)
+        : Theme.of(context).colorScheme.surface;
+    final border = isAvailable
+        ? (isDark ? accent.withValues(alpha: .38) : AppColors.skySoft)
+        : (isDark ? Colors.white.withValues(alpha: .12) : AppColors.border);
+
+    return Semantics(
+      button: isAvailable,
+      enabled: isAvailable,
+      label: isAvailable
+          ? strings(
+              context,
+            ).passViewRegion(passText(context, region.label), passCount)
+          : strings(
+              context,
+            ).passRegionComingSoon(passText(context, region.label)),
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(18),
+        clipBehavior: Clip.antiAlias,
+        child: Ink(
+          decoration: BoxDecoration(
+            color: surface,
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: border),
+          ),
+          child: InkWell(
+            splashFactory: NoSplash.splashFactory,
+            highlightColor: Colors.transparent,
+            hoverColor: accent.withValues(alpha: .05),
+            onTap: isAvailable ? () => onSelected(region) : null,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 17, vertical: 16),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          passText(context, region.label),
+                          style: TextStyle(
+                            color: isAvailable ? null : muted,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        SizedBox(height: 4),
+                        Text(
+                          passText(context, region.description),
+                          style: TextStyle(color: muted, fontSize: 12),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Flexible(
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: isAvailable
+                              ? (isDark
+                                    ? accent.withValues(alpha: .18)
+                                    : AppColors.skySoft)
+                              : (isDark
+                                    ? Colors.white.withValues(alpha: .08)
+                                    : AppColors.softSurface(context)),
+                          borderRadius: BorderRadius.circular(99),
+                        ),
+                        child: Text(
+                          passText(
+                            context,
+                            isAvailable
+                                ? strings(context).passCount(passCount)
+                                : strings(context).passComingSoon,
+                          ),
+                          style: TextStyle(
+                            color: isAvailable ? accent : muted,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  if (isAvailable) ...[
+                    SizedBox(width: 8),
+                    Icon(Icons.chevron_right_rounded, color: accent),
+                  ],
+                ],
+              ),
+            ),
+          ),
         ),
       ),
     );
@@ -155,9 +641,12 @@ class _ProgressSteps extends StatelessWidget {
                     borderRadius: BorderRadius.circular(99),
                   ),
                 ),
-                const SizedBox(height: 7),
+                SizedBox(height: 7),
                 Text(
-                  '${index + 1}. ${labels[index]}',
+                  passText(
+                    context,
+                    '${index + 1}. ${passText(context, labels[index])}',
+                  ),
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     color: index + 1 == activeStep
@@ -172,7 +661,7 @@ class _ProgressSteps extends StatelessWidget {
               ],
             ),
           ),
-          if (index != labels.length - 1) const SizedBox(width: 5),
+          if (index != labels.length - 1) SizedBox(width: 5),
         ],
       ],
     );
@@ -203,12 +692,12 @@ class _PassChoiceCard extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final color = teal
         ? isDark
-              ? const Color(0xFF35C4C7)
-              : const Color(0xFF008E9B)
+              ? Color(0xFF35C4C7)
+              : Color(0xFF008E9B)
         : AppColors.accent(context);
     return Semantics(
       button: true,
-      label: '$title 비교 시작',
+      label: strings(context).passStartComparison(passText(context, title)),
       child: Material(
         color: Colors.transparent,
         borderRadius: BorderRadius.circular(22),
@@ -216,7 +705,7 @@ class _PassChoiceCard extends StatelessWidget {
         child: Ink(
           decoration: BoxDecoration(
             color: isDark
-                ? const Color(0xFF17242A)
+                ? Color(0xFF17242A)
                 : Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(22),
             border: Border.all(
@@ -231,7 +720,7 @@ class _PassChoiceCard extends StatelessWidget {
             hoverColor: color.withValues(alpha: .05),
             onTap: onTap,
             child: Padding(
-              padding: const EdgeInsets.all(17),
+              padding: EdgeInsets.all(17),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -249,40 +738,40 @@ class _PassChoiceCard extends StatelessWidget {
                     ),
                     child: Icon(icon, color: Colors.white, size: 34),
                   ),
-                  const SizedBox(width: 14),
+                  SizedBox(width: 14),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          title,
-                          style: const TextStyle(
+                          passText(context, title),
+                          style: TextStyle(
                             fontSize: 17,
                             fontWeight: FontWeight.w800,
                           ),
                         ),
-                        const SizedBox(height: 4),
+                        SizedBox(height: 4),
                         Text(
-                          subtitle,
+                          passText(context, subtitle),
                           style: TextStyle(
                             color: color,
                             fontSize: 12,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
-                        const SizedBox(height: 8),
+                        SizedBox(height: 8),
                         Text(
-                          description,
-                          style: const TextStyle(fontSize: 12, height: 1.35),
+                          passText(context, description),
+                          style: TextStyle(fontSize: 12, height: 1.35),
                         ),
-                        const SizedBox(height: 11),
+                        SizedBox(height: 11),
                         Wrap(
                           spacing: 6,
                           runSpacing: 6,
                           children: periods
                               .map(
                                 (period) => Container(
-                                  padding: const EdgeInsets.symmetric(
+                                  padding: EdgeInsets.symmetric(
                                     horizontal: 9,
                                     vertical: 5,
                                   ),
@@ -293,7 +782,7 @@ class _PassChoiceCard extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(9),
                                   ),
                                   child: Text(
-                                    period,
+                                    passText(context, period),
                                     style: TextStyle(
                                       color: color,
                                       fontSize: 11,
@@ -307,7 +796,7 @@ class _PassChoiceCard extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const SizedBox(width: 4),
+                  SizedBox(width: 4),
                   Icon(Icons.chevron_right_rounded, color: color),
                 ],
               ),

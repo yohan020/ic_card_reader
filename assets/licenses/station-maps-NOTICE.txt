@@ -1,0 +1,18 @@
+Official station-map links — reviewed 2026-11-13
+
+This app includes independently curated official outbound links and station/operator
+names, not copies of maps, PDFs, photos, logos or website text. Maps open only after
+the user selects a link. No NFC data, GPS location or search terms are appended.
+The original site controls map language and availability. Each map may cover only
+the named operator's station area, not the entire interchange. No affiliation or
+endorsement by operators is implied. A public URL is not a content-reuse licence.
+
+Place identities reuse the existing coin-locker catalog's MLIT N02 2025-derived
+names and scope (CC BY 4.0; https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N02-2025.html).
+Verified station-name translations reuse app data based on Wikidata CC0 and
+reviewed Wikipedia names; existing station data notices remain applicable.
+The permitted Yoiko code dataset is used internally for existing app name data;
+the original code table is not reproduced in the station-map catalog.
+
+Validation and exceptions: docs/research/station-maps-2026-11-13/phase3/RESULT.md.
+App generation: tool/build_station_map_catalog.mjs.

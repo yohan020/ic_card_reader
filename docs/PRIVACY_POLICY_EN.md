@@ -1,6 +1,6 @@
 # Japanese Transit Card Reader Privacy Policy
 
-- Effective date: November 13, 2026
+- Effective date: November 15, 2026
 - Operator: Operator of Japanese Transit Card Reader
 - Public address: <https://yohan020.github.io/ic_card_reader/privacy-en.html>
 
@@ -66,6 +66,8 @@ If an internet connection cannot be confirmed, the map is not displayed; you can
 Station names are looked up using licensed Yoiko station code data distributed with the app. Lookups take place on your device; card records are not sent to an external server to identify station names. Data sources and terms of use are shown under Data sources and fare rules in Settings and in `assets/licenses/yoiko-station-data-TERMS.txt`.
 
 ## 7. Retention and deletion
+
+When you collect station stamps, only the collected station identifiers are saved on your device and restored after restarting the app. Stamp storage does not include raw transaction records, travel dates, amounts, balances or card IDm, and the app does not send this collection to its server. You can delete it using Delete station stamp collection in Settings. This saved information may be included in operating-system backups or device transfers depending on your system settings.
 
 The app does not permanently store records read from your card. Optional issue reports resolved as `APPLIED` or `REJECTED`, together with their review histories, are retained for one year from resolution and then deleted by a monthly automatic task. Reports marked `RECEIVED`, `REVIEWING` or `VERIFIED` are not automatically deleted, to avoid losing reports that have not yet been handled. Anonymous authentication IDs used to block abusive reports are retained only for server security. Where retention is required by law, information may be kept for the required period.
 

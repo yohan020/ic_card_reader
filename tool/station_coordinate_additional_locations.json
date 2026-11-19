@@ -1,0 +1,1556 @@
+{
+  "schema": 1,
+  "source": "Wikidata P625 (CC0)",
+  "records": [
+    {
+      "code": [
+        0,
+        96,
+        255
+      ],
+      "operator": "西日本旅客鉄道",
+      "line": "-",
+      "name": "* 京都鉄道博物館",
+      "qid": "Q24014029",
+      "lat": 34.987222222,
+      "lon": 135.7425,
+      "kind": "facility",
+      "evidence": {
+        "method": "named_facility_review",
+        "wikidataLabel": "京都鉄道博物館",
+        "country": "Q17",
+        "reviewedAt": "2026-10-27",
+        "sources": [
+          "https://www.wikidata.org/wiki/Q24014029",
+          "https://www.kyotorailwaymuseum.jp/"
+        ]
+      }
+    },
+    {
+      "code": [
+        0,
+        170,
+        99
+      ],
+      "operator": "東武鉄道",
+      "line": "-",
+      "name": "* 東武博物館",
+      "qid": "Q3915461",
+      "lat": 35.72436111,
+      "lon": 139.8191667,
+      "kind": "facility",
+      "evidence": {
+        "method": "named_facility_review",
+        "wikidataLabel": "東武博物館",
+        "country": "Q17",
+        "reviewedAt": "2026-10-27",
+        "sources": [
+          "https://www.wikidata.org/wiki/Q3915461",
+          "https://www.tobu.co.jp/museum/guide/access/"
+        ]
+      }
+    },
+    {
+      "code": [
+        0,
+        209,
+        255
+      ],
+      "operator": "東急電鉄",
+      "line": "-",
+      "name": "* 電車とバスの博物館",
+      "qid": "Q11660619",
+      "lat": 35.587858,
+      "lon": 139.592386,
+      "kind": "facility",
+      "evidence": {
+        "method": "named_facility_review",
+        "wikidataLabel": "電車とバスの博物館",
+        "country": "Q17",
+        "reviewedAt": "2026-10-27",
+        "sources": [
+          "https://www.wikidata.org/wiki/Q11660619",
+          "https://www.denbus.jp/info.html"
+        ]
+      }
+    },
+    {
+      "code": [
+        1,
+        165,
+        126
+      ],
+      "operator": "名古屋鉄道",
+      "line": "名古屋本線",
+      "name": "* 枇杷島分岐点",
+      "qid": "Q11105298",
+      "lat": 35.19555556,
+      "lon": 136.8675,
+      "kind": "facility",
+      "evidence": {
+        "method": "named_facility_review",
+        "wikidataLabel": "枇杷島分岐点",
+        "country": "Q17",
+        "reviewedAt": "2026-10-27",
+        "sources": [
+          "https://www.wikidata.org/wiki/Q11105298",
+          "https://www.meitetsu.co.jp/profile/news/2023/__icsFiles/afieldfile/2023/11/01/231101_biwajimahp.pdf"
+        ]
+      }
+    }
+  ],
+  "groups": [
+    {
+      "code": [
+        0,
+        127,
+        72
+      ],
+      "operator": "連絡駅",
+      "line": "JR東、東急",
+      "name": "武蔵溝ノ口、溝の口",
+      "kind": "station_complex",
+      "members": [
+        {
+          "code": [
+            0,
+            24,
+            12
+          ],
+          "name": "武蔵溝ノ口",
+          "operator": "東日本旅客鉄道",
+          "line": "南武線",
+          "qid": "Q5367854",
+          "lat": 35.599055555,
+          "lon": 139.611222222
+        },
+        {
+          "code": [
+            0,
+            208,
+            39
+          ],
+          "name": "溝の口",
+          "operator": "東急電鉄",
+          "line": "田園都市線",
+          "qid": "Q5366296",
+          "lat": 35.600029,
+          "lon": 139.610632
+        }
+      ],
+      "evidence": {
+        "method": "explicit_code_membership",
+        "reviewedAt": "2026-10-27",
+        "sources": [
+          "assets/data/stations/yoiko_station_codes.csv",
+          "https://www.wikidata.org/wiki/Q5367854",
+          "https://www.wikidata.org/wiki/Q5366296"
+        ]
+      }
+    },
+    {
+      "code": [
+        0,
+        127,
+        116
+      ],
+      "operator": "連絡駅",
+      "line": "JR東、東武",
+      "name": "北朝霞、朝霞台",
+      "kind": "station_complex",
+      "members": [
+        {
+          "code": [
+            0,
+            41,
+            22
+          ],
+          "name": "北朝霞",
+          "operator": "東日本旅客鉄道",
+          "line": "武蔵野線",
+          "qid": "Q6417515",
+          "lat": 35.81545,
+          "lon": 139.587186111
+        },
+        {
+          "code": [
+            0,
+            169,
+            14
+          ],
+          "name": "朝霞台",
+          "operator": "東武鉄道",
+          "line": "東上本線",
+          "qid": "Q852274",
+          "lat": 35.814561111,
+          "lon": 139.587086111
+        }
+      ],
+      "evidence": {
+        "method": "explicit_code_membership",
+        "reviewedAt": "2026-10-27",
+        "sources": [
+          "assets/data/stations/yoiko_station_codes.csv",
+          "https://www.wikidata.org/wiki/Q6417515",
+          "https://www.wikidata.org/wiki/Q852274"
+        ]
+      }
+    },
+    {
+      "code": [
+        0,
+        127,
+        117
+      ],
+      "operator": "連絡駅",
+      "line": "JR東、東武",
+      "name": "南越谷、新越谷",
+      "kind": "station_complex",
+      "members": [
+        {
+          "code": [
+            0,
+            41,
+            31
+          ],
+          "name": "南越谷",
+          "operator": "東日本旅客鉄道",
+          "line": "武蔵野線",
+          "qid": "Q842469",
+          "lat": 35.876098,
+          "lon": 139.79048889
+        },
+        {
+          "code": [
+            0,
+            157,
+            21
+          ],
+          "name": "新越谷",
+          "operator": "東武鉄道",
+          "line": "伊勢崎線",
+          "qid": "Q280550",
+          "lat": 35.875,
+          "lon": 139.7897
+        }
+      ],
+      "evidence": {
+        "method": "explicit_code_membership",
+        "reviewedAt": "2026-10-27",
+        "sources": [
+          "assets/data/stations/yoiko_station_codes.csv",
+          "https://www.wikidata.org/wiki/Q842469",
+          "https://www.wikidata.org/wiki/Q280550"
+        ]
+      }
+    },
+    {
+      "code": [
+        0,
+        127,
+        185
+      ],
+      "operator": "連絡駅",
+      "line": "JR東、京成",
+      "name": "新八柱、八柱",
+      "kind": "station_complex",
+      "members": [
+        {
+          "code": [
+            0,
+            41,
+            39
+          ],
+          "name": "新八柱",
+          "operator": "東日本旅客鉄道",
+          "line": "武蔵野線",
+          "qid": "Q3525564",
+          "lat": 35.79194444,
+          "lon": 139.93833333
+        },
+        {
+          "code": [
+            0,
+            182,
+            5
+          ],
+          "name": "八柱",
+          "operator": "京成電鉄",
+          "line": "松戸線",
+          "qid": "Q5367230",
+          "lat": 35.791694444,
+          "lon": 139.937777777
+        }
+      ],
+      "evidence": {
+        "method": "explicit_code_membership",
+        "reviewedAt": "2026-10-27",
+        "sources": [
+          "assets/data/stations/yoiko_station_codes.csv",
+          "https://www.wikidata.org/wiki/Q3525564",
+          "https://www.wikidata.org/wiki/Q5367230"
+        ]
+      }
+    },
+    {
+      "code": [
+        0,
+        127,
+        226
+      ],
+      "operator": "連絡駅",
+      "line": "JR東、多摩モ",
+      "name": "立川、立川南",
+      "kind": "station_complex",
+      "members": [
+        {
+          "code": [
+            0,
+            3,
+            34
+          ],
+          "name": "立川",
+          "operator": "東日本旅客鉄道",
+          "line": "中央線",
+          "qid": "Q801501",
+          "lat": 35.698333333,
+          "lon": 139.413888888
+        },
+        {
+          "code": [
+            0,
+            246,
+            51
+          ],
+          "name": "立川南",
+          "operator": "多摩都市モノレール",
+          "line": "多摩都市モノレール線",
+          "qid": "Q844178",
+          "lat": 35.6962,
+          "lon": 139.413
+        }
+      ],
+      "evidence": {
+        "method": "explicit_code_membership",
+        "reviewedAt": "2026-10-27",
+        "sources": [
+          "assets/data/stations/yoiko_station_codes.csv",
+          "https://www.wikidata.org/wiki/Q801501",
+          "https://www.wikidata.org/wiki/Q844178"
+        ]
+      }
+    },
+    {
+      "code": [
+        0,
+        127,
+        227
+      ],
+      "operator": "連絡駅",
+      "line": "JR東、多摩モ",
+      "name": "立川、立川北",
+      "kind": "station_complex",
+      "members": [
+        {
+          "code": [
+            0,
+            3,
+            34
+          ],
+          "name": "立川",
+          "operator": "東日本旅客鉄道",
+          "line": "中央線",
+          "qid": "Q801501",
+          "lat": 35.698333333,
+          "lon": 139.413888888
+        },
+        {
+          "code": [
+            0,
+            246,
+            53
+          ],
+          "name": "立川北",
+          "operator": "多摩都市モノレール",
+          "line": "多摩都市モノレール線",
+          "qid": "Q844136",
+          "lat": 35.6995,
+          "lon": 139.412
+        }
+      ],
+      "evidence": {
+        "method": "explicit_code_membership",
+        "reviewedAt": "2026-10-27",
+        "sources": [
+          "assets/data/stations/yoiko_station_codes.csv",
+          "https://www.wikidata.org/wiki/Q801501",
+          "https://www.wikidata.org/wiki/Q844136"
+        ]
+      }
+    },
+    {
+      "code": [
+        0,
+        128,
+        15
+      ],
+      "operator": "連絡駅",
+      "line": "JR西、大阪メ、阪神",
+      "name": "北新地、梅田、東梅田、西梅田、大阪梅田",
+      "kind": "station_complex",
+      "members": [
+        {
+          "code": [
+            0,
+            35,
+            9
+          ],
+          "name": "北新地",
+          "operator": "西日本旅客鉄道",
+          "line": "JR東西線",
+          "qid": "Q1073390",
+          "lat": 34.698322222,
+          "lon": 135.497036111
+        },
+        {
+          "code": [
+            2,
+            129,
+            28
+          ],
+          "name": "梅田",
+          "operator": "大阪市高速電気軌道",
+          "line": "1号線(御堂筋線)",
+          "qid": "Q20023054",
+          "lat": 34.70283333,
+          "lon": 135.49772222
+        },
+        {
+          "code": [
+            2,
+            130,
+            28
+          ],
+          "name": "東梅田",
+          "operator": "大阪市高速電気軌道",
+          "line": "2号線(谷町線)",
+          "qid": "Q83600",
+          "lat": 34.700977777,
+          "lon": 135.499555555
+        },
+        {
+          "code": [
+            2,
+            131,
+            28
+          ],
+          "name": "西梅田",
+          "operator": "大阪市高速電気軌道",
+          "line": "3号線(四つ橋線)",
+          "qid": "Q126023",
+          "lat": 34.699605555,
+          "lon": 135.495666666
+        },
+        {
+          "code": [
+            2,
+            147,
+            1
+          ],
+          "name": "大阪梅田",
+          "operator": "阪神電気鉄道",
+          "line": "本線",
+          "qid": "Q20023052",
+          "lat": 34.700969444,
+          "lon": 135.496444444
+        },
+        {
+          "code": [
+            2,
+            157,
+            1
+          ],
+          "name": "大阪梅田",
+          "operator": "阪急電鉄",
+          "line": "神戸線",
+          "qid": "Q20023053",
+          "lat": 34.705513888,
+          "lon": 135.498311111
+        }
+      ],
+      "evidence": {
+        "method": "explicit_code_membership",
+        "reviewedAt": "2026-10-27",
+        "sources": [
+          "assets/data/stations/yoiko_station_codes.csv",
+          "https://www.wikidata.org/wiki/Q1073390",
+          "https://www.wikidata.org/wiki/Q20023054",
+          "https://www.wikidata.org/wiki/Q83600",
+          "https://www.wikidata.org/wiki/Q126023",
+          "https://www.wikidata.org/wiki/Q20023052",
+          "https://www.wikidata.org/wiki/Q20023053"
+        ]
+      }
+    },
+    {
+      "code": [
+        0,
+        128,
+        27
+      ],
+      "operator": "連絡駅",
+      "line": "大阪メ、阪神",
+      "name": "野田阪神、野田",
+      "kind": "station_complex",
+      "members": [
+        {
+          "code": [
+            2,
+            133,
+            27
+          ],
+          "name": "野田阪神",
+          "operator": "大阪市高速電気軌道",
+          "line": "5号線(千日前線)",
+          "qid": "Q126087",
+          "lat": 34.694608,
+          "lon": 135.474847
+        },
+        {
+          "code": [
+            2,
+            147,
+            5
+          ],
+          "name": "野田",
+          "operator": "阪神電気鉄道",
+          "line": "本線",
+          "qid": "Q5359642",
+          "lat": 34.69436667,
+          "lon": 135.47608611
+        }
+      ],
+      "evidence": {
+        "method": "explicit_code_membership",
+        "reviewedAt": "2026-10-27",
+        "sources": [
+          "assets/data/stations/yoiko_station_codes.csv",
+          "https://www.wikidata.org/wiki/Q126087",
+          "https://www.wikidata.org/wiki/Q5359642"
+        ]
+      }
+    },
+    {
+      "code": [
+        0,
+        128,
+        28
+      ],
+      "operator": "連絡駅",
+      "line": "JR西、大阪メ、阪神、阪急",
+      "name": "大阪、梅田、東梅田、西梅田、大阪梅田",
+      "kind": "station_complex",
+      "members": [
+        {
+          "code": [
+            0,
+            1,
+            232
+          ],
+          "name": "大阪",
+          "operator": "西日本旅客鉄道",
+          "line": "東海道線",
+          "qid": "Q801694",
+          "lat": 34.7025,
+          "lon": 135.496111111
+        },
+        {
+          "code": [
+            2,
+            129,
+            28
+          ],
+          "name": "梅田",
+          "operator": "大阪市高速電気軌道",
+          "line": "1号線(御堂筋線)",
+          "qid": "Q20023054",
+          "lat": 34.70283333,
+          "lon": 135.49772222
+        },
+        {
+          "code": [
+            2,
+            130,
+            28
+          ],
+          "name": "東梅田",
+          "operator": "大阪市高速電気軌道",
+          "line": "2号線(谷町線)",
+          "qid": "Q83600",
+          "lat": 34.700977777,
+          "lon": 135.499555555
+        },
+        {
+          "code": [
+            2,
+            131,
+            28
+          ],
+          "name": "西梅田",
+          "operator": "大阪市高速電気軌道",
+          "line": "3号線(四つ橋線)",
+          "qid": "Q126023",
+          "lat": 34.699605555,
+          "lon": 135.495666666
+        },
+        {
+          "code": [
+            2,
+            147,
+            1
+          ],
+          "name": "大阪梅田",
+          "operator": "阪神電気鉄道",
+          "line": "本線",
+          "qid": "Q20023052",
+          "lat": 34.700969444,
+          "lon": 135.496444444
+        },
+        {
+          "code": [
+            2,
+            157,
+            1
+          ],
+          "name": "大阪梅田",
+          "operator": "阪急電鉄",
+          "line": "神戸線",
+          "qid": "Q20023053",
+          "lat": 34.705513888,
+          "lon": 135.498311111
+        }
+      ],
+      "evidence": {
+        "method": "explicit_code_membership",
+        "reviewedAt": "2026-10-27",
+        "sources": [
+          "assets/data/stations/yoiko_station_codes.csv",
+          "https://www.wikidata.org/wiki/Q801694",
+          "https://www.wikidata.org/wiki/Q20023054",
+          "https://www.wikidata.org/wiki/Q83600",
+          "https://www.wikidata.org/wiki/Q126023",
+          "https://www.wikidata.org/wiki/Q20023052",
+          "https://www.wikidata.org/wiki/Q20023053"
+        ]
+      }
+    },
+    {
+      "code": [
+        0,
+        128,
+        36
+      ],
+      "operator": "連絡駅",
+      "line": "JR西、大阪メ、近鉄、阪神、南海",
+      "name": "JR難波、難波、大阪難波",
+      "kind": "station_complex",
+      "members": [
+        {
+          "code": [
+            0,
+            95,
+            1
+          ],
+          "name": "JR難波",
+          "operator": "西日本旅客鉄道",
+          "line": "関西線",
+          "qid": "Q945659",
+          "lat": 34.666416666,
+          "lon": 135.495333333
+        },
+        {
+          "code": [
+            2,
+            129,
+            36
+          ],
+          "name": "難波",
+          "operator": "大阪市高速電気軌道",
+          "line": "1号線(御堂筋線)",
+          "qid": "Q20080133",
+          "lat": 34.666317,
+          "lon": 135.500314
+        },
+        {
+          "code": [
+            2,
+            177,
+            1
+          ],
+          "name": "難波",
+          "operator": "南海電気鉄道",
+          "line": "南海本線",
+          "qid": "Q20079977",
+          "lat": 34.663411111,
+          "lon": 135.501911111
+        },
+        {
+          "code": [
+            2,
+            231,
+            1
+          ],
+          "name": "大阪難波",
+          "operator": "近畿日本鉄道",
+          "line": "難波線",
+          "qid": "Q2310134",
+          "lat": 34.667113888,
+          "lon": 135.499141666
+        }
+      ],
+      "evidence": {
+        "method": "explicit_code_membership",
+        "reviewedAt": "2026-10-27",
+        "sources": [
+          "assets/data/stations/yoiko_station_codes.csv",
+          "https://www.wikidata.org/wiki/Q945659",
+          "https://www.wikidata.org/wiki/Q20080133",
+          "https://www.wikidata.org/wiki/Q20079977",
+          "https://www.wikidata.org/wiki/Q2310134"
+        ]
+      }
+    },
+    {
+      "code": [
+        0,
+        128,
+        42
+      ],
+      "operator": "連絡駅",
+      "line": "JR西、大阪メ、近鉄",
+      "name": "天王寺、大阪阿部野橋",
+      "kind": "station_complex",
+      "members": [
+        {
+          "code": [
+            0,
+            12,
+            12
+          ],
+          "name": "天王寺",
+          "operator": "西日本旅客鉄道",
+          "line": "大阪環状線",
+          "qid": "Q124329093",
+          "lat": 34.64675,
+          "lon": 135.51562
+        },
+        {
+          "code": [
+            2,
+            129,
+            42
+          ],
+          "name": "天王寺",
+          "operator": "大阪市高速電気軌道",
+          "line": "1号線(御堂筋線)",
+          "qid": "Q1132328",
+          "lat": 34.647361,
+          "lon": 135.513889
+        },
+        {
+          "code": [
+            2,
+            227,
+            1
+          ],
+          "name": "大阪阿部野橋",
+          "operator": "近畿日本鉄道",
+          "line": "南大阪線",
+          "qid": "Q6801405",
+          "lat": 34.645636111,
+          "lon": 135.513905555
+        }
+      ],
+      "evidence": {
+        "method": "explicit_code_membership",
+        "reviewedAt": "2026-10-27",
+        "sources": [
+          "assets/data/stations/yoiko_station_codes.csv",
+          "https://www.wikidata.org/wiki/Q124329093",
+          "https://www.wikidata.org/wiki/Q1132328",
+          "https://www.wikidata.org/wiki/Q6801405"
+        ]
+      }
+    },
+    {
+      "code": [
+        0,
+        128,
+        60
+      ],
+      "operator": "連絡駅",
+      "line": "JR西、神高、阪神、阪急、神戸市、神新",
+      "name": "三ノ宮、神戸三宮、三宮、三宮・花時計前",
+      "kind": "station_complex",
+      "members": [
+        {
+          "code": [
+            0,
+            1,
+            251
+          ],
+          "name": "三ノ宮",
+          "operator": "西日本旅客鉄道",
+          "line": "東海道線",
+          "qid": "Q14616729",
+          "lat": 34.694722222,
+          "lon": 135.195
+        },
+        {
+          "code": [
+            2,
+            147,
+            60
+          ],
+          "name": "神戸三宮",
+          "operator": "阪神電気鉄道",
+          "line": "本線",
+          "qid": "Q124428990",
+          "lat": 34.69382,
+          "lon": 135.195233333
+        },
+        {
+          "code": [
+            2,
+            157,
+            34
+          ],
+          "name": "神戸三宮",
+          "operator": "阪急電鉄",
+          "line": "神戸線",
+          "qid": "Q124428939",
+          "lat": 34.693145,
+          "lon": 135.192855
+        },
+        {
+          "code": [
+            2,
+            250,
+            190
+          ],
+          "name": "三宮",
+          "operator": "神戸市交通局",
+          "line": "山手線",
+          "qid": "Q111794954",
+          "lat": 34.6938754,
+          "lon": 135.1924594
+        },
+        {
+          "code": [
+            2,
+            255,
+            181
+          ],
+          "name": "三宮",
+          "operator": "神戸新交通",
+          "line": "ポートアイランド線",
+          "qid": "Q111796671",
+          "lat": 34.69456,
+          "lon": 135.19522
+        },
+        {
+          "code": [
+            2,
+            251,
+            217
+          ],
+          "name": "三宮・花時計前",
+          "operator": "神戸市交通局",
+          "line": "海岸線",
+          "qid": "Q6542103",
+          "lat": 34.6917,
+          "lon": 135.1957
+        }
+      ],
+      "evidence": {
+        "method": "explicit_code_membership",
+        "reviewedAt": "2026-10-27",
+        "sources": [
+          "assets/data/stations/yoiko_station_codes.csv",
+          "https://www.wikidata.org/wiki/Q14616729",
+          "https://www.wikidata.org/wiki/Q124428990",
+          "https://www.wikidata.org/wiki/Q124428939",
+          "https://www.wikidata.org/wiki/Q111794954",
+          "https://www.wikidata.org/wiki/Q111796671",
+          "https://www.wikidata.org/wiki/Q6542103"
+        ]
+      }
+    },
+    {
+      "code": [
+        0,
+        128,
+        62
+      ],
+      "operator": "連絡駅",
+      "line": "神高、阪神",
+      "name": "神戸高速線(元町-新開地)",
+      "kind": "route_group",
+      "members": [
+        {
+          "code": [
+            2,
+            143,
+            68
+          ],
+          "name": "元町",
+          "operator": "神戸高速鉄道",
+          "line": "東西線",
+          "qid": "Q59520",
+          "lat": 34.6895628,
+          "lon": 135.1873899
+        },
+        {
+          "code": [
+            2,
+            143,
+            70
+          ],
+          "name": "西元町",
+          "operator": "神戸高速鉄道",
+          "line": "東西線",
+          "qid": "Q7040379",
+          "lat": 34.6839,
+          "lon": 135.17958889
+        },
+        {
+          "code": [
+            2,
+            143,
+            72
+          ],
+          "name": "高速神戸",
+          "operator": "神戸高速鉄道",
+          "line": "東西線",
+          "qid": "Q6455300",
+          "lat": 34.67936111,
+          "lon": 135.17443889
+        },
+        {
+          "code": [
+            2,
+            143,
+            73
+          ],
+          "name": "新開地",
+          "operator": "神戸高速鉄道",
+          "line": "東西線",
+          "qid": "Q7497640",
+          "lat": 34.675980555,
+          "lon": 135.169288888
+        }
+      ],
+      "evidence": {
+        "method": "explicit_code_membership",
+        "reviewedAt": "2026-10-27",
+        "sources": [
+          "assets/data/stations/yoiko_station_codes.csv",
+          "https://www.hanshin.co.jp/global/korea/pdf/map.pdf",
+          "https://www.wikidata.org/wiki/Q59520",
+          "https://www.wikidata.org/wiki/Q7040379",
+          "https://www.wikidata.org/wiki/Q6455300",
+          "https://www.wikidata.org/wiki/Q7497640"
+        ]
+      }
+    },
+    {
+      "code": [
+        0,
+        128,
+        80
+      ],
+      "operator": "連絡駅",
+      "line": "神高、山陽",
+      "name": "神戸高速線(新開地-西代)",
+      "kind": "route_group",
+      "members": [
+        {
+          "code": [
+            2,
+            143,
+            73
+          ],
+          "name": "新開地",
+          "operator": "神戸高速鉄道",
+          "line": "東西線",
+          "qid": "Q7497640",
+          "lat": 34.675980555,
+          "lon": 135.169288888
+        },
+        {
+          "code": [
+            2,
+            143,
+            75
+          ],
+          "name": "大開",
+          "operator": "神戸高速鉄道",
+          "line": "東西線",
+          "qid": "Q5209161",
+          "lat": 34.6713,
+          "lon": 135.1615
+        },
+        {
+          "code": [
+            2,
+            143,
+            77
+          ],
+          "name": "高速長田",
+          "operator": "神戸高速鉄道",
+          "line": "東西線",
+          "qid": "Q6455302",
+          "lat": 34.6672584,
+          "lon": 135.151577
+        },
+        {
+          "code": [
+            2,
+            143,
+            79
+          ],
+          "name": "西代",
+          "operator": "神戸高速鉄道",
+          "line": "東西線",
+          "qid": "Q7040529",
+          "lat": 34.6623785,
+          "lon": 135.144099
+        }
+      ],
+      "evidence": {
+        "method": "explicit_code_membership",
+        "reviewedAt": "2026-10-27",
+        "sources": [
+          "assets/data/stations/yoiko_station_codes.csv",
+          "https://www.hanshin.co.jp/global/korea/pdf/map.pdf",
+          "https://www.wikidata.org/wiki/Q7497640",
+          "https://www.wikidata.org/wiki/Q5209161",
+          "https://www.wikidata.org/wiki/Q6455302",
+          "https://www.wikidata.org/wiki/Q7040529"
+        ]
+      }
+    },
+    {
+      "code": [
+        0,
+        128,
+        84
+      ],
+      "operator": "連絡駅",
+      "line": "JR西、阪急",
+      "name": "JR淡路、淡路",
+      "kind": "station_complex",
+      "members": [
+        {
+          "code": [
+            0,
+            108,
+            199
+          ],
+          "name": "JR淡路",
+          "operator": "西日本旅客鉄道",
+          "line": "おおさか東線",
+          "qid": "Q56346892",
+          "lat": 34.740694444,
+          "lon": 135.519861111
+        },
+        {
+          "code": [
+            2,
+            159,
+            11
+          ],
+          "name": "淡路",
+          "operator": "阪急電鉄",
+          "line": "京都線",
+          "qid": "Q2070830",
+          "lat": 34.738844,
+          "lon": 135.516508
+        }
+      ],
+      "evidence": {
+        "method": "explicit_code_membership",
+        "reviewedAt": "2026-10-27",
+        "sources": [
+          "assets/data/stations/yoiko_station_codes.csv",
+          "https://www.wikidata.org/wiki/Q56346892",
+          "https://www.wikidata.org/wiki/Q2070830"
+        ]
+      }
+    },
+    {
+      "code": [
+        0,
+        128,
+        85
+      ],
+      "operator": "連絡駅",
+      "line": "京阪、阪急",
+      "name": "祇園四条、京都河原町",
+      "kind": "station_complex",
+      "members": [
+        {
+          "code": [
+            2,
+            197,
+            86
+          ],
+          "name": "祇園四条",
+          "operator": "京阪電気鉄道",
+          "line": "京阪本線",
+          "qid": "Q2153263",
+          "lat": 35.003805555,
+          "lon": 135.772027777
+        },
+        {
+          "code": [
+            2,
+            159,
+            55
+          ],
+          "name": "京都河原町",
+          "operator": "阪急電鉄",
+          "line": "京都線",
+          "qid": "Q2085248",
+          "lat": 35.00375,
+          "lon": 135.769305555
+        }
+      ],
+      "evidence": {
+        "method": "explicit_code_membership",
+        "reviewedAt": "2026-10-27",
+        "sources": [
+          "assets/data/stations/yoiko_station_codes.csv",
+          "https://www.wikidata.org/wiki/Q2153263",
+          "https://www.wikidata.org/wiki/Q2085248"
+        ]
+      }
+    },
+    {
+      "code": [
+        0,
+        128,
+        90
+      ],
+      "operator": "連絡駅",
+      "line": "京阪、近鉄",
+      "name": "丹波橋、近鉄丹波橋",
+      "kind": "station_complex",
+      "members": [
+        {
+          "code": [
+            2,
+            197,
+            66
+          ],
+          "name": "丹波橋",
+          "operator": "京阪電気鉄道",
+          "line": "京阪本線",
+          "qid": "Q2093391",
+          "lat": 34.9387,
+          "lon": 135.765
+        },
+        {
+          "code": [
+            2,
+            233,
+            7
+          ],
+          "name": "近鉄丹波橋",
+          "operator": "近畿日本鉄道",
+          "line": "京都線",
+          "qid": "Q268864",
+          "lat": 34.938425,
+          "lon": 135.76635556
+        }
+      ],
+      "evidence": {
+        "method": "explicit_code_membership",
+        "reviewedAt": "2026-10-27",
+        "sources": [
+          "assets/data/stations/yoiko_station_codes.csv",
+          "https://www.wikidata.org/wiki/Q2093391",
+          "https://www.wikidata.org/wiki/Q268864"
+        ]
+      }
+    },
+    {
+      "code": [
+        0,
+        128,
+        94
+      ],
+      "operator": "連絡駅",
+      "line": "京都市",
+      "name": "東西線(蹴上-三条京阪)",
+      "kind": "route_group",
+      "members": [
+        {
+          "code": [
+            2,
+            139,
+            163
+          ],
+          "name": "蹴上",
+          "operator": "京都市交通局",
+          "line": "東西線",
+          "qid": "Q1004370",
+          "lat": 35.0078,
+          "lon": 135.7902
+        },
+        {
+          "code": [
+            2,
+            139,
+            165
+          ],
+          "name": "東山",
+          "operator": "京都市交通局",
+          "line": "東西線",
+          "qid": "Q2025937",
+          "lat": 35.00941944,
+          "lon": 135.77970833
+        },
+        {
+          "code": [
+            2,
+            139,
+            166
+          ],
+          "name": "三条京阪",
+          "operator": "京都市交通局",
+          "line": "東西線",
+          "qid": "Q2645261",
+          "lat": 35.009166666,
+          "lon": 135.773611111
+        }
+      ],
+      "evidence": {
+        "method": "explicit_code_membership",
+        "reviewedAt": "2026-10-27",
+        "sources": [
+          "assets/data/stations/yoiko_station_codes.csv",
+          "https://www.city.kyoto.lg.jp/kotsu/page/0000009295.html",
+          "https://www.wikidata.org/wiki/Q1004370",
+          "https://www.wikidata.org/wiki/Q2025937",
+          "https://www.wikidata.org/wiki/Q2645261"
+        ]
+      }
+    },
+    {
+      "code": [
+        0,
+        128,
+        95
+      ],
+      "operator": "連絡駅",
+      "line": "京阪",
+      "name": "京津線",
+      "kind": "route_group",
+      "members": [
+        {
+          "code": [
+            2,
+            200,
+            138
+          ],
+          "name": "御陵",
+          "operator": "京阪電気鉄道",
+          "line": "京津線",
+          "qid": "Q2470158",
+          "lat": 34.99612222,
+          "lon": 135.80162222
+        },
+        {
+          "code": [
+            2,
+            200,
+            140
+          ],
+          "name": "京阪山科",
+          "operator": "京阪電気鉄道",
+          "line": "京津線",
+          "qid": "Q11375846",
+          "lat": 34.99194167,
+          "lon": 135.8168472
+        },
+        {
+          "code": [
+            2,
+            200,
+            142
+          ],
+          "name": "四宮",
+          "operator": "京阪電気鉄道",
+          "line": "京津線",
+          "qid": "Q7497731",
+          "lat": 34.9918,
+          "lon": 135.824
+        },
+        {
+          "code": [
+            2,
+            200,
+            144
+          ],
+          "name": "追分",
+          "operator": "京阪電気鉄道",
+          "line": "京津線",
+          "qid": "Q7081571",
+          "lat": 34.99166667,
+          "lon": 135.83722222
+        },
+        {
+          "code": [
+            2,
+            200,
+            146
+          ],
+          "name": "大谷",
+          "operator": "京阪電気鉄道",
+          "line": "京津線",
+          "qid": "Q8081757",
+          "lat": 34.9941,
+          "lon": 135.854
+        },
+        {
+          "code": [
+            2,
+            200,
+            150
+          ],
+          "name": "上栄町",
+          "operator": "京阪電気鉄道",
+          "line": "京津線",
+          "qid": "Q11359423",
+          "lat": 35.0052,
+          "lon": 135.8601
+        },
+        {
+          "code": [
+            2,
+            201,
+            152
+          ],
+          "name": "びわ湖浜大津",
+          "operator": "京阪電気鉄道",
+          "line": "石山坂本線",
+          "qid": "Q5644181",
+          "lat": 35.01135556,
+          "lon": 135.86383889
+        }
+      ],
+      "evidence": {
+        "method": "explicit_code_membership",
+        "reviewedAt": "2026-10-27",
+        "sources": [
+          "assets/data/stations/yoiko_station_codes.csv",
+          "https://www.keihan.co.jp/traffic/time-fare/time.html",
+          "https://www.wikidata.org/wiki/Q2470158",
+          "https://www.wikidata.org/wiki/Q11375846",
+          "https://www.wikidata.org/wiki/Q7497731",
+          "https://www.wikidata.org/wiki/Q7081571",
+          "https://www.wikidata.org/wiki/Q8081757",
+          "https://www.wikidata.org/wiki/Q11359423",
+          "https://www.wikidata.org/wiki/Q5644181"
+        ]
+      }
+    },
+    {
+      "code": [
+        0,
+        128,
+        182
+      ],
+      "operator": "連絡駅",
+      "line": "JR海、名古屋市、あおなみ、名鉄、近鉄",
+      "name": "名古屋、名鉄名古屋、近鉄名古屋",
+      "kind": "station_complex",
+      "members": [
+        {
+          "code": [
+            0,
+            1,
+            144
+          ],
+          "name": "名古屋",
+          "operator": "東海旅客鉄道",
+          "line": "東海道線",
+          "qid": "Q110799384",
+          "lat": 35.17075,
+          "lon": 136.8809575
+        },
+        {
+          "code": [
+            1,
+            129,
+            58
+          ],
+          "name": "名古屋",
+          "operator": "名古屋市交通局",
+          "line": "1号線 東山線",
+          "qid": "Q56611989",
+          "lat": 35.171111,
+          "lon": 136.883889
+        },
+        {
+          "code": [
+            1,
+            140,
+            1
+          ],
+          "name": "名古屋",
+          "operator": "名古屋臨海高速鉄道",
+          "line": "西名古屋港線",
+          "qid": "Q124417968",
+          "lat": 35.1686615,
+          "lon": 136.8825385
+        },
+        {
+          "code": [
+            1,
+            165,
+            120
+          ],
+          "name": "名鉄名古屋",
+          "operator": "名古屋鉄道",
+          "line": "名古屋本線",
+          "qid": "Q911757",
+          "lat": 35.1695461,
+          "lon": 136.8838763
+        },
+        {
+          "code": [
+            2,
+            239,
+            1
+          ],
+          "name": "近鉄名古屋",
+          "operator": "近畿日本鉄道",
+          "line": "名古屋線",
+          "qid": "Q1109915",
+          "lat": 35.16913889,
+          "lon": 136.88430556
+        }
+      ],
+      "evidence": {
+        "method": "explicit_code_membership",
+        "reviewedAt": "2026-10-27",
+        "sources": [
+          "assets/data/stations/yoiko_station_codes.csv",
+          "https://www.wikidata.org/wiki/Q110799384",
+          "https://www.wikidata.org/wiki/Q56611989",
+          "https://www.wikidata.org/wiki/Q124417968",
+          "https://www.wikidata.org/wiki/Q911757",
+          "https://www.wikidata.org/wiki/Q1109915"
+        ]
+      }
+    },
+    {
+      "code": [
+        0,
+        128,
+        241
+      ],
+      "operator": "連絡駅",
+      "line": "JR西、あい鉄、地鉄",
+      "name": "富山、電鉄富山",
+      "kind": "station_complex",
+      "members": [
+        {
+          "code": [
+            0,
+            48,
+            91
+          ],
+          "name": "富山",
+          "operator": "あいの風とやま鉄道",
+          "line": "あいの風とやま鉄道線",
+          "qid": "Q1053070",
+          "lat": 36.7012,
+          "lon": 137.213
+        },
+        {
+          "code": [
+            1,
+            152,
+            1
+          ],
+          "name": "電鉄富山",
+          "operator": "富山地方鉄道",
+          "line": "本線",
+          "qid": "Q21021642",
+          "lat": 36.70052,
+          "lon": 137.21474
+        }
+      ],
+      "evidence": {
+        "method": "explicit_code_membership",
+        "reviewedAt": "2026-10-27",
+        "sources": [
+          "assets/data/stations/yoiko_station_codes.csv",
+          "https://www.wikidata.org/wiki/Q1053070",
+          "https://www.wikidata.org/wiki/Q21021642"
+        ]
+      }
+    },
+    {
+      "code": [
+        0,
+        128,
+        244
+      ],
+      "operator": "連絡駅",
+      "line": "JR西、地鉄",
+      "name": "黒部宇奈月温泉、宇奈月温泉",
+      "kind": "station_complex",
+      "members": [
+        {
+          "code": [
+            0,
+            73,
+            27
+          ],
+          "name": "黒部宇奈月温泉",
+          "operator": "西日本旅客鉄道",
+          "line": "北陸新幹線",
+          "qid": "Q7497114",
+          "lat": 36.874027777,
+          "lon": 137.481138888
+        },
+        {
+          "code": [
+            1,
+            152,
+            75
+          ],
+          "name": "宇奈月温泉",
+          "operator": "富山地方鉄道",
+          "line": "本線",
+          "qid": "Q7882349",
+          "lat": 36.8158,
+          "lon": 137.583
+        }
+      ],
+      "evidence": {
+        "method": "explicit_code_membership",
+        "reviewedAt": "2026-10-27",
+        "sources": [
+          "assets/data/stations/yoiko_station_codes.csv",
+          "https://www.wikidata.org/wiki/Q7497114",
+          "https://www.wikidata.org/wiki/Q7882349"
+        ]
+      }
+    }
+  ]
+}

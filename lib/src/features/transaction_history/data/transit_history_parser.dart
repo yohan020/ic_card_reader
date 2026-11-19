@@ -2,6 +2,7 @@ import '../../card_reader/domain/raw_history_block.dart';
 import '../domain/amount_calculation.dart';
 import '../domain/parsed_transit_history.dart';
 import '../domain/transit_transaction_type.dart';
+import 'ica_history_parser.dart';
 
 class TransitHistoryParser {
   const TransitHistoryParser();
@@ -16,6 +17,9 @@ class TransitHistoryParser {
   };
 
   int? currentBalance(List<RawHistoryBlock> blocks) {
+    if (blocks.isNotEmpty && blocks.first.format == HistoryRecordFormat.ica) {
+      return const IcaHistoryParser().currentBalance(blocks);
+    }
     for (final block in blocks) {
       if (_isEmptyBlock(block)) return null;
       return block.bytes[10] | (block.bytes[11] << 8);
@@ -24,6 +28,9 @@ class TransitHistoryParser {
   }
 
   List<ParsedTransitHistory> parse(List<RawHistoryBlock> blocks) {
+    if (blocks.isNotEmpty && blocks.first.format == HistoryRecordFormat.ica) {
+      return const IcaHistoryParser().parse(blocks);
+    }
     final parsed = blocks
         .takeWhile((block) => !_isEmptyBlock(block))
         .map(_parseBlock)
@@ -38,7 +45,8 @@ class TransitHistoryParser {
   }
 
   bool _isEmptyBlock(RawHistoryBlock block) =>
-      block.bytes[0] == 0 && block.bytes[1] == 0;
+      block.format != HistoryRecordFormat.transit ||
+      (block.bytes[0] == 0 && block.bytes[1] == 0);
 
   bool _isInitializationRecord(RawHistoryBlock block) {
     final terminal = block.bytes[0];

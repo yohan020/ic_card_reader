@@ -11,6 +11,13 @@ val keystoreProperties = Properties()
 val keystorePropertiesFile = rootProject.file("key.properties")
 val hasReleaseSigning = keystorePropertiesFile.exists()
 
+// Local-only Maps key. Never print it or put it in a tracked source file.
+val mapProperties = Properties()
+val mapPropertiesFile = rootProject.file("local.properties")
+if (mapPropertiesFile.exists()) {
+    FileInputStream(mapPropertiesFile).use(mapProperties::load)
+}
+
 if (hasReleaseSigning) {
     FileInputStream(keystorePropertiesFile).use(keystoreProperties::load)
 }
@@ -33,6 +40,7 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        manifestPlaceholders["MAPS_API_KEY"] = mapProperties.getProperty("MAPS_API_KEY", "").trim()
     }
 
     signingConfigs {

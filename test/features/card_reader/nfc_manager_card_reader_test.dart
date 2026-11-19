@@ -1,13 +1,71 @@
 import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter/services.dart';
 import 'package:ic_card_reader/src/features/card_reader/data/nfc_manager_card_reader.dart';
+import 'package:ic_card_reader/src/features/card_reader/domain/card_reader.dart';
 import 'package:ic_card_reader/src/features/card_reader/domain/card_scan_result.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 import 'package:nfc_manager/nfc_manager_android.dart';
 import 'package:nfc_manager/nfc_manager_ios.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
+  for (final availability in NfcAvailability.values) {
+    test(
+      'reports adapter availability $availability without starting a scan',
+      () async {
+        final manager = _FakeNfcManager(availability: availability);
+        final reader = NfcManagerCardReader(
+          manager: manager,
+          androidAdapterStates: const Stream.empty(),
+        );
+        final expected = switch (availability) {
+          NfcAvailability.enabled => CardReaderAvailability.enabled,
+          NfcAvailability.disabled => CardReaderAvailability.disabled,
+          NfcAvailability.unsupported => CardReaderAvailability.unsupported,
+        };
+        expect(await reader.checkAvailability(), expected);
+        expect(manager.startSessionCalls, 0);
+      },
+    );
+  }
+
+  test(
+    'availability errors are unknown, not unsupported or disabled',
+    () async {
+      final manager = _FakeNfcManager()..throwAvailabilityError = true;
+      final reader = NfcManagerCardReader(
+        manager: manager,
+        androidAdapterStates: const Stream.empty(),
+      );
+      expect(await reader.checkAvailability(), CardReaderAvailability.unknown);
+    },
+  );
+
+  test('opens Android settings and safely handles channel failures', () async {
+    const channel = MethodChannel('app.iccardreader/nfc_settings');
+    final messenger =
+        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+    addTearDown(() => messenger.setMockMethodCallHandler(channel, null));
+    final reader = NfcManagerCardReader(
+      manager: _FakeNfcManager(),
+      androidAdapterStates: const Stream.empty(),
+    );
+    messenger.setMockMethodCallHandler(channel, (call) async {
+      expect(call.method, 'open');
+      return true;
+    });
+    expect(await reader.openNfcSettings(), isTrue);
+    messenger.setMockMethodCallHandler(
+      channel,
+      (_) async => throw PlatformException(code: 'UNAVAILABLE'),
+    );
+    expect(await reader.openNfcSettings(), isFalse);
+    messenger.setMockMethodCallHandler(channel, null);
+    expect(await reader.openNfcSettings(), isFalse);
+  });
   test(
     'asks for basic mode before starting when NFC reading is disabled',
     () async {
@@ -130,6 +188,7 @@ class _FakeNfcManager extends NfcManager {
 
   NfcAvailability availability;
   bool throwAvailabilityErrorAfterStart = false;
+  bool throwAvailabilityError = false;
   final sessionStarted = Completer<void>();
   int checkAvailabilityCalls = 0;
   int startSessionCalls = 0;
@@ -138,7 +197,8 @@ class _FakeNfcManager extends NfcManager {
   @override
   Future<NfcAvailability> checkAvailability() async {
     checkAvailabilityCalls++;
-    if (sessionStarted.isCompleted && throwAvailabilityErrorAfterStart) {
+    if (throwAvailabilityError ||
+        (sessionStarted.isCompleted && throwAvailabilityErrorAfterStart)) {
       throw StateError('adapter unavailable');
     }
     return availability;

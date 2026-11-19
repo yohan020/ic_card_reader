@@ -28,11 +28,20 @@ abstract final class AppColors {
 
   static Color outline(BuildContext context) =>
       isDark(context) ? const Color(0xFF46606C) : border;
+
+  // Shared two-pane tool surfaces, matching the approved contactless browser.
+  static Color toolRegionBackground(BuildContext context) =>
+      isDark(context) ? const Color(0xFF182229) : Colors.white;
+  static Color toolHeaderBackground(BuildContext context) =>
+      isDark(context) ? const Color(0xFF142630) : const Color(0xFFECF6FC);
+
+  static Color toolListBackground(BuildContext context) =>
+      isDark(context) ? const Color(0xFF10171C) : const Color(0xFFF1F6FA);
 }
 
 abstract final class AppTheme {
-  static ThemeData get light => _build(Brightness.light);
-  static ThemeData get dark => _build(Brightness.dark);
+  static final ThemeData light = _build(Brightness.light);
+  static final ThemeData dark = _build(Brightness.dark);
 
   static ThemeData _build(Brightness brightness) {
     final scheme = ColorScheme.fromSeed(

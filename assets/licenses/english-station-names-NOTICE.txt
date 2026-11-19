@@ -1,0 +1,42 @@
+English railway station names — app-specific adapted data
+
+Uses data provided by the Public Transportation Open Data Center (ODPT)
+under the Public Transportation Open Data Basic License.
+本データセットは公共交通オープンデータセンターにおいて提供されるデータを利用して作成しています。
+https://www.odpt.org/ · https://developer.odpt.org/
+
+Source dataset: gachi-tokusuru (2026), Japan Station Master & Ridership —
+Canonical Open Datasets (Japan), v2.1.2, snapshot updated 2026-07-31.
+https://doi.org/10.5281/zenodo.21718758
+https://github.com/eng213035/gachi-open-datasets/tree/ad5f8ab54a0db239dca5be556482eacbf56464d0/station-master
+Source dataset license: Creative Commons Attribution 4.0 International.
+https://creativecommons.org/licenses/by/4.0/
+License and attribution requirements:
+https://github.com/eng213035/gachi-open-datasets/blob/ad5f8ab54a0db239dca5be556482eacbf56464d0/LICENSE-DATA.txt
+
+Processed from MLIT National Land Numerical Information — Railway data.
+「国土数値情報（鉄道データ）」（国土交通省）を加工して作成
+https://nlftp.mlit.go.jp/ksj/
+N02-24 is included through Japan Station Master; N02-25 was used to verify
+the identity of selected app stations. This is not an official MLIT product.
+Wikidata structured English labels in the source dataset are CC0.
+https://www.wikidata.org/wiki/Wikidata:Licensing
+Existing Fukuoka City Subway station-name data (CC BY, adapted and matched):
+https://www.geospatial.jp/ckan/dataset/40130-009
+For some historical and otherwise missing names, Wikipedia contributors'
+article titles were matched by the same Wikidata item, then trimmed to the
+station name. Individual historical names were also checked against the
+line history. Article links are recorded in the coverage report; no article
+body is included. Wikipedia articles: CC BY-SA 4.0.
+https://creativecommons.org/licenses/by-sa/4.0/
+
+Changes: the app selected and matched names to its own station identities,
+omitted machine romanizations, normalized some display punctuation and
+added individually reviewed public station names. No operator web page,
+map, image or route document is reproduced. Existing third-party data terms,
+including the Yoiko station-code permission, are unchanged.
+
+ODPT, its data-providing operators and gachi-tokusuru do not guarantee the
+accuracy or completeness of these data. For upstream dataset inquiries,
+contact gachi-tokusuru at https://api.gachi-tokusuru.com rather than the
+railway operators.
