@@ -1,5 +1,7 @@
 import 'dart:io';
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ic_card_reader/src/features/station_stamps/domain/station_stamp_session.dart';
@@ -8,9 +10,32 @@ import 'package:ic_card_reader/src/features/station_stamps/presentation/stamp_bo
 import 'package:ic_card_reader/src/features/station_stamps/presentation/yamanote_stamp_map.dart';
 import 'package:ic_card_reader/src/features/station_resolver/domain/station_name_display.dart';
 import 'stamp_test_support.dart' show app;
-import 'chuo_sobu_book_test.dart' show capture;
 
 const preview = bool.fromEnvironment('STAMP_PREVIEW');
+
+Future<void> capture(WidgetTester tester, String name) async {
+  final images = tester.widgetList<Image>(find.byType(Image)).toList();
+  final context = tester.element(find.byType(Scaffold).last);
+  await tester.runAsync(
+    () =>
+        Future.wait(images.map((image) => precacheImage(image.image, context))),
+  );
+  await tester.pumpAndSettle();
+  final boundary = tester.renderObject<RenderRepaintBoundary>(
+    find.byKey(const ValueKey('stamp-preview')),
+  );
+  await tester.runAsync(() async {
+    final image = await boundary.toImage(pixelRatio: 3);
+    final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+    image.dispose();
+    final output = Directory('docs/design/stamp-book-chuo-sobu-2026-11-17');
+    await output.create(recursive: true);
+    await File(
+      '${output.path}/$name.png',
+    ).writeAsBytes(bytes!.buffer.asUint8List());
+  });
+}
+
 void main() {
   setUpAll(() async {
     if (!preview) return;
