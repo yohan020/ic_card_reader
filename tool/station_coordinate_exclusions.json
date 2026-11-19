@@ -1,0 +1,907 @@
+{
+  "schema": 1,
+  "records": [
+    {
+      "code": [
+        0,
+        0,
+        240
+      ],
+      "operator": "北海道旅客鉄道",
+      "line": "-",
+      "name": "札幌市内",
+      "reason": "area_code"
+    },
+    {
+      "code": [
+        0,
+        0,
+        241
+      ],
+      "operator": "東日本旅客鉄道",
+      "line": "-",
+      "name": "仙台市内",
+      "reason": "area_code"
+    },
+    {
+      "code": [
+        0,
+        0,
+        242
+      ],
+      "operator": "東日本旅客鉄道",
+      "line": "-",
+      "name": "東京都区内",
+      "reason": "area_code"
+    },
+    {
+      "code": [
+        0,
+        0,
+        243
+      ],
+      "operator": "東日本旅客鉄道",
+      "line": "-",
+      "name": "東京山手線内",
+      "reason": "area_code"
+    },
+    {
+      "code": [
+        0,
+        0,
+        244
+      ],
+      "operator": "東日本旅客鉄道",
+      "line": "-",
+      "name": "横浜市内",
+      "reason": "area_code"
+    },
+    {
+      "code": [
+        0,
+        0,
+        246
+      ],
+      "operator": "東海旅客鉄道",
+      "line": "-",
+      "name": "名古屋市内",
+      "reason": "area_code"
+    },
+    {
+      "code": [
+        0,
+        0,
+        247
+      ],
+      "operator": "西日本旅客鉄道",
+      "line": "-",
+      "name": "京都市内",
+      "reason": "area_code"
+    },
+    {
+      "code": [
+        0,
+        0,
+        248
+      ],
+      "operator": "西日本旅客鉄道",
+      "line": "-",
+      "name": "大阪市内",
+      "reason": "area_code"
+    },
+    {
+      "code": [
+        0,
+        0,
+        249
+      ],
+      "operator": "西日本旅客鉄道",
+      "line": "-",
+      "name": "神戸市内",
+      "reason": "area_code"
+    },
+    {
+      "code": [
+        0,
+        0,
+        250
+      ],
+      "operator": "西日本旅客鉄道",
+      "line": "-",
+      "name": "大阪・新大阪",
+      "reason": "area_code"
+    },
+    {
+      "code": [
+        0,
+        0,
+        251
+      ],
+      "operator": "西日本旅客鉄道",
+      "line": "-",
+      "name": "広島市内",
+      "reason": "area_code"
+    },
+    {
+      "code": [
+        0,
+        0,
+        253
+      ],
+      "operator": "九州旅客鉄道",
+      "line": "-",
+      "name": "福岡市内",
+      "reason": "area_code"
+    },
+    {
+      "code": [
+        0,
+        0,
+        254
+      ],
+      "operator": "九州旅客鉄道",
+      "line": "-",
+      "name": "北九州市内",
+      "reason": "area_code"
+    },
+    {
+      "code": [
+        0,
+        96,
+        255
+      ],
+      "operator": "西日本旅客鉄道",
+      "line": "-",
+      "name": "* 京都鉄道博物館",
+      "reason": "non_station_special_code"
+    },
+    {
+      "code": [
+        0,
+        127,
+        72
+      ],
+      "operator": "連絡駅",
+      "line": "JR東、東急",
+      "name": "武蔵溝ノ口、溝の口",
+      "reason": "composite_or_route_code"
+    },
+    {
+      "code": [
+        0,
+        127,
+        116
+      ],
+      "operator": "連絡駅",
+      "line": "JR東、東武",
+      "name": "北朝霞、朝霞台",
+      "reason": "composite_or_route_code"
+    },
+    {
+      "code": [
+        0,
+        127,
+        117
+      ],
+      "operator": "連絡駅",
+      "line": "JR東、東武",
+      "name": "南越谷、新越谷",
+      "reason": "composite_or_route_code"
+    },
+    {
+      "code": [
+        0,
+        127,
+        185
+      ],
+      "operator": "連絡駅",
+      "line": "JR東、京成",
+      "name": "新八柱、八柱",
+      "reason": "composite_or_route_code"
+    },
+    {
+      "code": [
+        0,
+        127,
+        226
+      ],
+      "operator": "連絡駅",
+      "line": "JR東、多摩モ",
+      "name": "立川、立川南",
+      "reason": "composite_or_route_code"
+    },
+    {
+      "code": [
+        0,
+        127,
+        227
+      ],
+      "operator": "連絡駅",
+      "line": "JR東、多摩モ",
+      "name": "立川、立川北",
+      "reason": "composite_or_route_code"
+    },
+    {
+      "code": [
+        0,
+        128,
+        15
+      ],
+      "operator": "連絡駅",
+      "line": "JR西、大阪メ、阪神",
+      "name": "北新地、梅田、東梅田、西梅田、大阪梅田",
+      "reason": "composite_or_route_code"
+    },
+    {
+      "code": [
+        0,
+        128,
+        27
+      ],
+      "operator": "連絡駅",
+      "line": "大阪メ、阪神",
+      "name": "野田阪神、野田",
+      "reason": "composite_or_route_code"
+    },
+    {
+      "code": [
+        0,
+        128,
+        28
+      ],
+      "operator": "連絡駅",
+      "line": "JR西、大阪メ、阪神、阪急",
+      "name": "大阪、梅田、東梅田、西梅田、大阪梅田",
+      "reason": "composite_or_route_code"
+    },
+    {
+      "code": [
+        0,
+        128,
+        36
+      ],
+      "operator": "連絡駅",
+      "line": "JR西、大阪メ、近鉄、阪神、南海",
+      "name": "JR難波、難波、大阪難波",
+      "reason": "composite_or_route_code"
+    },
+    {
+      "code": [
+        0,
+        128,
+        42
+      ],
+      "operator": "連絡駅",
+      "line": "JR西、大阪メ、近鉄",
+      "name": "天王寺、大阪阿部野橋",
+      "reason": "composite_or_route_code"
+    },
+    {
+      "code": [
+        0,
+        128,
+        60
+      ],
+      "operator": "連絡駅",
+      "line": "JR西、神高、阪神、阪急、神戸市、神新",
+      "name": "三ノ宮、神戸三宮、三宮、三宮・花時計前",
+      "reason": "composite_or_route_code"
+    },
+    {
+      "code": [
+        0,
+        128,
+        62
+      ],
+      "operator": "連絡駅",
+      "line": "神高、阪神",
+      "name": "神戸高速線(元町-新開地)",
+      "reason": "composite_or_route_code"
+    },
+    {
+      "code": [
+        0,
+        128,
+        80
+      ],
+      "operator": "連絡駅",
+      "line": "神高、山陽",
+      "name": "神戸高速線(新開地-西代)",
+      "reason": "composite_or_route_code"
+    },
+    {
+      "code": [
+        0,
+        128,
+        84
+      ],
+      "operator": "連絡駅",
+      "line": "JR西、阪急",
+      "name": "JR淡路、淡路",
+      "reason": "composite_or_route_code"
+    },
+    {
+      "code": [
+        0,
+        128,
+        85
+      ],
+      "operator": "連絡駅",
+      "line": "京阪、阪急",
+      "name": "祇園四条、京都河原町",
+      "reason": "composite_or_route_code"
+    },
+    {
+      "code": [
+        0,
+        128,
+        90
+      ],
+      "operator": "連絡駅",
+      "line": "京阪、近鉄",
+      "name": "丹波橋、近鉄丹波橋",
+      "reason": "composite_or_route_code"
+    },
+    {
+      "code": [
+        0,
+        128,
+        94
+      ],
+      "operator": "連絡駅",
+      "line": "京都市",
+      "name": "東西線(蹴上-三条京阪)",
+      "reason": "composite_or_route_code"
+    },
+    {
+      "code": [
+        0,
+        128,
+        95
+      ],
+      "operator": "連絡駅",
+      "line": "京阪",
+      "name": "京津線",
+      "reason": "composite_or_route_code"
+    },
+    {
+      "code": [
+        0,
+        128,
+        182
+      ],
+      "operator": "連絡駅",
+      "line": "JR海、名古屋市、あおなみ、名鉄、近鉄",
+      "name": "名古屋、名鉄名古屋、近鉄名古屋",
+      "reason": "composite_or_route_code"
+    },
+    {
+      "code": [
+        0,
+        128,
+        241
+      ],
+      "operator": "連絡駅",
+      "line": "JR西、あい鉄、地鉄",
+      "name": "富山、電鉄富山",
+      "reason": "composite_or_route_code"
+    },
+    {
+      "code": [
+        0,
+        128,
+        244
+      ],
+      "operator": "連絡駅",
+      "line": "JR西、地鉄",
+      "name": "黒部宇奈月温泉、宇奈月温泉",
+      "reason": "composite_or_route_code"
+    },
+    {
+      "code": [
+        0,
+        146,
+        255
+      ],
+      "operator": "相模鉄道",
+      "line": "-",
+      "name": "* 相模鉄道 全線 - 1日乗車券",
+      "reason": "non_station_special_code"
+    },
+    {
+      "code": [
+        0,
+        148,
+        118
+      ],
+      "operator": "横浜シーサイドライン",
+      "line": "-",
+      "name": "* 横浜シーサイドライン 全線 - 1日乗車券(小児)",
+      "reason": "non_station_special_code"
+    },
+    {
+      "code": [
+        0,
+        148,
+        119
+      ],
+      "operator": "横浜シーサイドライン",
+      "line": "-",
+      "name": "* 横浜シーサイドライン 全線 - 1日乗車券",
+      "reason": "non_station_special_code"
+    },
+    {
+      "code": [
+        0,
+        151,
+        64
+      ],
+      "operator": "横浜市交通局",
+      "line": "-",
+      "name": "* 横浜市交通局 全線 - 一日乗車券",
+      "reason": "non_station_special_code"
+    },
+    {
+      "code": [
+        0,
+        170,
+        99
+      ],
+      "operator": "東武鉄道",
+      "line": "-",
+      "name": "* 東武博物館",
+      "reason": "non_station_special_code"
+    },
+    {
+      "code": [
+        0,
+        182,
+        252
+      ],
+      "operator": "京成電鉄",
+      "line": "-",
+      "name": "* 松戸線全線",
+      "reason": "non_station_special_code"
+    },
+    {
+      "code": [
+        0,
+        194,
+        246
+      ],
+      "operator": "西武鉄道",
+      "line": "-",
+      "name": "* 西武鉄道 全線",
+      "reason": "non_station_special_code"
+    },
+    {
+      "code": [
+        0,
+        201,
+        246
+      ],
+      "operator": "京王電鉄",
+      "line": "-",
+      "name": "* 京王線・井の頭線一日乗車券",
+      "reason": "non_station_special_code"
+    },
+    {
+      "code": [
+        0,
+        201,
+        251
+      ],
+      "operator": "京王電鉄",
+      "line": "-",
+      "name": "* いのかしら おでかけきっぷ",
+      "reason": "non_station_special_code"
+    },
+    {
+      "code": [
+        0,
+        201,
+        254
+      ],
+      "operator": "京王電鉄",
+      "line": "-",
+      "name": "* 京王電鉄 全線",
+      "reason": "non_station_special_code"
+    },
+    {
+      "code": [
+        0,
+        206,
+        254
+      ],
+      "operator": "東急電鉄",
+      "line": "-",
+      "name": "* 東急電鉄 全線",
+      "reason": "non_station_special_code"
+    },
+    {
+      "code": [
+        0,
+        209,
+        255
+      ],
+      "operator": "東急電鉄",
+      "line": "-",
+      "name": "* 電車とバスの博物館",
+      "reason": "non_station_special_code"
+    },
+    {
+      "code": [
+        0,
+        227,
+        255
+      ],
+      "operator": "東京地下鉄",
+      "line": "-",
+      "name": "* 東京地下鉄 全線",
+      "reason": "non_station_special_code"
+    },
+    {
+      "code": [
+        0,
+        246,
+        254
+      ],
+      "operator": "多摩都市モノレール",
+      "line": "-",
+      "name": "* 多摩都市モノレール 全線",
+      "reason": "non_station_special_code"
+    },
+    {
+      "code": [
+        0,
+        249,
+        120
+      ],
+      "operator": "千葉都市モノレール",
+      "line": "-",
+      "name": "* 千葉都市モノレール 全線 - お昼のお出かけフリーきっぷ",
+      "reason": "non_station_special_code"
+    },
+    {
+      "code": [
+        0,
+        252,
+        128
+      ],
+      "operator": "山万",
+      "line": "-",
+      "name": "* 山万 全線",
+      "reason": "non_station_special_code"
+    },
+    {
+      "code": [
+        1,
+        134,
+        201
+      ],
+      "operator": "名古屋市交通局",
+      "line": "-",
+      "name": "* 名古屋市交通局 全線 - 地下鉄全線24時間券",
+      "reason": "non_station_special_code"
+    },
+    {
+      "code": [
+        1,
+        143,
+        255
+      ],
+      "operator": "愛知高速交通",
+      "line": "-",
+      "name": "* 愛知高速交通 全線 - 1DAYフリーきっぷ",
+      "reason": "non_station_special_code"
+    },
+    {
+      "code": [
+        1,
+        165,
+        126
+      ],
+      "operator": "名古屋鉄道",
+      "line": "名古屋本線",
+      "name": "* 枇杷島分岐点",
+      "reason": "non_station_special_code"
+    },
+    {
+      "code": [
+        1,
+        213,
+        248
+      ],
+      "operator": "静岡鉄道",
+      "line": "-",
+      "name": "1日フリー乗車券",
+      "reason": "non_station_special_code"
+    },
+    {
+      "code": [
+        2,
+        129,
+        120
+      ],
+      "operator": "大阪市高速電気軌道",
+      "line": "-",
+      "name": "* 大阪市高速電気軌道 全線",
+      "reason": "non_station_special_code"
+    },
+    {
+      "code": [
+        2,
+        129,
+        135
+      ],
+      "operator": "大阪市高速電気軌道",
+      "line": "-",
+      "name": "* 大阪市高速電気軌道 全線",
+      "reason": "non_station_special_code"
+    },
+    {
+      "code": [
+        2,
+        138,
+        255
+      ],
+      "operator": "京都市交通局",
+      "line": "-",
+      "name": "* 回数券",
+      "reason": "non_station_special_code"
+    },
+    {
+      "code": [
+        2,
+        143,
+        21
+      ],
+      "operator": "神戸高速鉄道",
+      "line": "-",
+      "name": "* 回数券",
+      "reason": "non_station_special_code"
+    },
+    {
+      "code": [
+        2,
+        147,
+        100
+      ],
+      "operator": "阪神電気鉄道",
+      "line": "-",
+      "name": "* 阪神電気鉄道 全線 - 株主優待電車乗車券、社員家族乗車券",
+      "reason": "non_station_special_code"
+    },
+    {
+      "code": [
+        2,
+        147,
+        101
+      ],
+      "operator": "阪神電気鉄道",
+      "line": "-",
+      "name": "* 阪神電気鉄道 全線",
+      "reason": "non_station_special_code"
+    },
+    {
+      "code": [
+        2,
+        147,
+        120
+      ],
+      "operator": "阪神電気鉄道",
+      "line": "-",
+      "name": "* 回数券",
+      "reason": "non_station_special_code"
+    },
+    {
+      "code": [
+        2,
+        148,
+        100
+      ],
+      "operator": "阪神電気鉄道",
+      "line": "-",
+      "name": "* 往復券",
+      "reason": "non_station_special_code"
+    },
+    {
+      "code": [
+        2,
+        162,
+        45
+      ],
+      "operator": "阪急電鉄",
+      "line": "-",
+      "name": "* 普通手回り品きっぷ",
+      "reason": "non_station_special_code"
+    },
+    {
+      "code": [
+        2,
+        162,
+        192
+      ],
+      "operator": "阪急電鉄",
+      "line": "-",
+      "name": "* 往復乗車券(復)、回数券",
+      "reason": "non_station_special_code"
+    },
+    {
+      "code": [
+        2,
+        162,
+        193
+      ],
+      "operator": "阪急電鉄",
+      "line": "-",
+      "name": "* 阪急電鉄 全線 - 業務用乗車証、社員家族乗車券、団体数取券",
+      "reason": "non_station_special_code"
+    },
+    {
+      "code": [
+        2,
+        162,
+        194
+      ],
+      "operator": "阪急電鉄",
+      "line": "-",
+      "name": "* 往復乗車券(往)",
+      "reason": "non_station_special_code"
+    },
+    {
+      "code": [
+        2,
+        162,
+        255
+      ],
+      "operator": "阪急電鉄",
+      "line": "-",
+      "name": "* 阪急電鉄 全線",
+      "reason": "non_station_special_code"
+    },
+    {
+      "code": [
+        2,
+        171,
+        237
+      ],
+      "operator": "大阪モノレール",
+      "line": "-",
+      "name": "* 土休日回数券",
+      "reason": "non_station_special_code"
+    },
+    {
+      "code": [
+        2,
+        171,
+        238
+      ],
+      "operator": "大阪モノレール",
+      "line": "-",
+      "name": "* 時差回数券、普通回数券",
+      "reason": "non_station_special_code"
+    },
+    {
+      "code": [
+        2,
+        171,
+        239
+      ],
+      "operator": "大阪モノレール",
+      "line": "-",
+      "name": "* 定期券購入用乗車証",
+      "reason": "non_station_special_code"
+    },
+    {
+      "code": [
+        2,
+        171,
+        255
+      ],
+      "operator": "大阪モノレール",
+      "line": "-",
+      "name": "* 大阪モノレール 全線 - 1dayチケット",
+      "reason": "non_station_special_code"
+    },
+    {
+      "code": [
+        2,
+        173,
+        192
+      ],
+      "operator": "能勢電鉄",
+      "line": "-",
+      "name": "* 株主優待乗車券",
+      "reason": "non_station_special_code"
+    },
+    {
+      "code": [
+        2,
+        212,
+        121
+      ],
+      "operator": "神戸電鉄",
+      "line": "-",
+      "name": "* 神戸電鉄 全線",
+      "reason": "non_station_special_code"
+    },
+    {
+      "code": [
+        2,
+        217,
+        255
+      ],
+      "operator": "山陽電気鉄道",
+      "line": "-",
+      "name": "* 山陽電気鉄道 全線",
+      "reason": "non_station_special_code"
+    },
+    {
+      "code": [
+        2,
+        250,
+        131
+      ],
+      "operator": "神戸市交通局",
+      "line": "-",
+      "name": "* 回数券",
+      "reason": "non_station_special_code"
+    },
+    {
+      "code": [
+        2,
+        254,
+        251
+      ],
+      "operator": "神戸新交通",
+      "line": "六甲アイランド線",
+      "name": "* 神戸新交通 全線",
+      "reason": "non_station_special_code"
+    },
+    {
+      "code": [
+        2,
+        254,
+        252
+      ],
+      "operator": "神戸新交通",
+      "line": "-",
+      "name": "* 普通券",
+      "reason": "non_station_special_code"
+    },
+    {
+      "code": [
+        3,
+        220,
+        252
+      ],
+      "operator": "沖縄都市モノレール",
+      "line": "-",
+      "name": "* 沖縄都市モノレール 全線 - 1日フリー乗車券",
+      "reason": "non_station_special_code"
+    },
+    {
+      "code": [
+        3,
+        220,
+        253
+      ],
+      "operator": "沖縄都市モノレール",
+      "line": "-",
+      "name": "* 沖縄都市モノレール 全線 - 2日フリー乗車券",
+      "reason": "non_station_special_code"
+    },
+    {
+      "code": [
+        3,
+        231,
+        247
+      ],
+      "operator": "福岡市交通局",
+      "line": "-",
+      "name": "* 福岡市交通局 全線 - 1日乗車券",
+      "reason": "non_station_special_code"
+    }
+  ]
+}

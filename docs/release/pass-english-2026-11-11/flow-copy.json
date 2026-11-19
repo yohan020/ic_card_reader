@@ -1,0 +1,2703 @@
+[
+  {
+    "key": "passFlow001",
+    "source": "이동 구간",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enoden_noriorikun_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/enokama_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/fukuoka_city_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hakone_freepass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hankyu_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hiroden_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hokkaido_rail_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kintetsu_rail_pass_5day_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_bus_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/nagasaki_electric_tramway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/okayama_kurashiki_gururin_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart",
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart",
+      "lib/src/features/pass_comparison/presentation/sapporo_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/yui_rail_pass_page.dart"
+    ],
+    "english": "Journeys"
+  },
+  {
+    "key": "passFlow002",
+    "source": "비교 결과 보기",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enoden_noriorikun_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/enokama_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/fukuoka_city_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hakone_freepass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hankyu_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hiroden_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hokkaido_rail_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kintetsu_rail_pass_5day_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_bus_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/nagasaki_electric_tramway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/okayama_kurashiki_gururin_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart",
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart",
+      "lib/src/features/pass_comparison/presentation/sapporo_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/yui_rail_pass_page.dart"
+    ],
+    "english": "View comparison"
+  },
+  {
+    "key": "passFlow003",
+    "source": "비우기",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enoden_noriorikun_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/enokama_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/fukuoka_city_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hakone_freepass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hankyu_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hiroden_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hokkaido_rail_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kintetsu_rail_pass_5day_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_bus_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/nagasaki_electric_tramway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/okayama_kurashiki_gururin_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart",
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart",
+      "lib/src/features/pass_comparison/presentation/sapporo_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/yui_rail_pass_page.dart"
+    ],
+    "english": "Clear"
+  },
+  {
+    "key": "passFlow004",
+    "source": "성인 일반 운임 ¥{arg0}",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enoden_noriorikun_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/enokama_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/fukuoka_city_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hakone_freepass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hankyu_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hiroden_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hokkaido_rail_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kintetsu_rail_pass_5day_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_bus_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/nagasaki_electric_tramway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/okayama_kurashiki_gururin_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart",
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart",
+      "lib/src/features/pass_comparison/presentation/sapporo_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/yui_rail_pass_page.dart"
+    ],
+    "english": "Adult regular fare ¥{arg0}"
+  },
+  {
+    "key": "passFlow005",
+    "source": "역 이름을 검색해 주세요",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enoden_noriorikun_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/enokama_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/fukuoka_city_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hakone_freepass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hankyu_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hiroden_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hokkaido_rail_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kintetsu_rail_pass_5day_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_bus_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/nagasaki_electric_tramway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/okayama_kurashiki_gururin_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart",
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart",
+      "lib/src/features/pass_comparison/presentation/sapporo_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/yui_rail_pass_page.dart"
+    ],
+    "english": "Search for a station"
+  },
+  {
+    "key": "passFlow006",
+    "source": "이동 계획을 입력해 주세요",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enoden_noriorikun_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/enokama_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/fukuoka_city_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hakone_freepass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hankyu_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hiroden_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hokkaido_rail_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kintetsu_rail_pass_5day_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_bus_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/nagasaki_electric_tramway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/okayama_kurashiki_gururin_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart",
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart",
+      "lib/src/features/pass_comparison/presentation/sapporo_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/yui_rail_pass_page.dart"
+    ],
+    "english": "Enter your travel plan"
+  },
+  {
+    "key": "passFlow007",
+    "source": "이동 구간 추가",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enoden_noriorikun_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/enokama_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/fukuoka_city_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hakone_freepass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hankyu_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hiroden_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hokkaido_rail_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kintetsu_rail_pass_5day_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_bus_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/nagasaki_electric_tramway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/okayama_kurashiki_gururin_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart",
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart",
+      "lib/src/features/pass_comparison/presentation/sapporo_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/yui_rail_pass_page.dart"
+    ],
+    "english": "Add journey"
+  },
+  {
+    "key": "passFlow008",
+    "source": "패스가 더 이득이에요",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enoden_noriorikun_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/enokama_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/fukuoka_city_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hakone_freepass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hankyu_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hiroden_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hokkaido_rail_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kintetsu_rail_pass_5day_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_bus_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/nagasaki_electric_tramway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/okayama_kurashiki_gururin_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart",
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart",
+      "lib/src/features/pass_comparison/presentation/sapporo_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/yui_rail_pass_page.dart"
+    ],
+    "english": "The pass saves you money"
+  },
+  {
+    "key": "passFlow009",
+    "source": "{arg0}역 선택",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enoden_noriorikun_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/enokama_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/fukuoka_city_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hakone_freepass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hankyu_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hiroden_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hokkaido_rail_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kintetsu_rail_pass_5day_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_bus_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/nagasaki_electric_tramway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/okayama_kurashiki_gururin_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart",
+      "lib/src/features/pass_comparison/presentation/sapporo_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/yui_rail_pass_page.dart"
+    ],
+    "english": "Choose {arg0} station"
+  },
+  {
+    "key": "passFlow010",
+    "source": "두 역을 선택하면 운임을 자동으로 확인합니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enoden_noriorikun_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/enokama_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/fukuoka_city_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hankyu_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hiroden_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hokkaido_rail_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kintetsu_rail_pass_5day_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_bus_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/nagasaki_electric_tramway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/okayama_kurashiki_gururin_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart",
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart",
+      "lib/src/features/pass_comparison/presentation/sapporo_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/yui_rail_pass_page.dart"
+    ],
+    "english": "Choose two stations to see the fare automatically."
+  },
+  {
+    "key": "passFlow011",
+    "source": "예상 손익",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enoden_noriorikun_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/enokama_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/fukuoka_city_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hankyu_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hiroden_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hokkaido_rail_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kintetsu_rail_pass_5day_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_bus_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/nagasaki_electric_tramway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/okayama_kurashiki_gururin_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart",
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart",
+      "lib/src/features/pass_comparison/presentation/sapporo_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/yui_rail_pass_page.dart"
+    ],
+    "english": "Estimated savings"
+  },
+  {
+    "key": "passFlow012",
+    "source": "일반 운임과 같아요",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enoden_noriorikun_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/enokama_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/fukuoka_city_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hankyu_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hiroden_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hokkaido_rail_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kintetsu_rail_pass_5day_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_bus_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/nagasaki_electric_tramway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/okayama_kurashiki_gururin_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart",
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart",
+      "lib/src/features/pass_comparison/presentation/sapporo_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/yui_rail_pass_page.dart"
+    ],
+    "english": "The cost is the same"
+  },
+  {
+    "key": "passFlow013",
+    "source": "일치하는 역을 찾지 못했어요",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enoden_noriorikun_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/enokama_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/fukuoka_city_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hankyu_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hiroden_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hokkaido_rail_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kintetsu_rail_pass_5day_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_bus_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/nagasaki_electric_tramway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/okayama_kurashiki_gururin_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart",
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart",
+      "lib/src/features/pass_comparison/presentation/sapporo_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/yui_rail_pass_page.dart"
+    ],
+    "english": "No matching stations found"
+  },
+  {
+    "key": "passFlow014",
+    "source": "출발·도착 바꾸기",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enoden_noriorikun_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/enokama_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/fukuoka_city_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hakone_freepass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hankyu_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hiroden_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hokkaido_rail_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kintetsu_rail_pass_5day_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_bus_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/nagasaki_electric_tramway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/okayama_kurashiki_gururin_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart",
+      "lib/src/features/pass_comparison/presentation/sapporo_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/yui_rail_pass_page.dart"
+    ],
+    "english": "Swap departure and arrival"
+  },
+  {
+    "key": "passFlow015",
+    "source": "개별 결제가 더 저렴해요",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enoden_noriorikun_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/enokama_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/fukuoka_city_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hakone_freepass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hankyu_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hiroden_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hokkaido_rail_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kintetsu_rail_pass_5day_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_bus_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/nagasaki_electric_tramway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/okayama_kurashiki_gururin_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/sapporo_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/yui_rail_pass_page.dart"
+    ],
+    "english": "Paying separately costs less"
+  },
+  {
+    "key": "passFlow016",
+    "source": "다른 표기나 초성으로 다시 검색해 주세요.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enoden_noriorikun_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/fukuoka_city_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hankyu_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hiroden_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hokkaido_rail_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kintetsu_rail_pass_5day_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_bus_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/nagasaki_electric_tramway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/okayama_kurashiki_gururin_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart",
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart",
+      "lib/src/features/pass_comparison/presentation/sapporo_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/yui_rail_pass_page.dart"
+    ],
+    "english": "Try another spelling or Korean initials."
+  },
+  {
+    "key": "passFlow017",
+    "source": "비교할 구간이 부족해요",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enoden_noriorikun_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/enokama_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/fukuoka_city_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hankyu_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hiroden_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hokkaido_rail_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kintetsu_rail_pass_5day_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_bus_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/nagasaki_electric_tramway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/okayama_kurashiki_gururin_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart",
+      "lib/src/features/pass_comparison/presentation/sapporo_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/yui_rail_pass_page.dart"
+    ],
+    "english": "Not enough journeys to compare"
+  },
+  {
+    "key": "passFlow018",
+    "source": "이 구간의 운임을 확인할 수 없습니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enoden_noriorikun_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/enokama_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/fukuoka_city_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hakone_freepass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hankyu_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hiroden_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hokkaido_rail_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kintetsu_rail_pass_5day_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_bus_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/nagasaki_electric_tramway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/okayama_kurashiki_gururin_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/sapporo_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/yui_rail_pass_page.dart"
+    ],
+    "english": "The fare for this journey is unavailable."
+  },
+  {
+    "key": "passFlow019",
+    "source": "찾고 싶은 역을 입력해 주세요",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enoden_noriorikun_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/fukuoka_city_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hankyu_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hiroden_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hokkaido_rail_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kintetsu_rail_pass_5day_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_bus_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/nagasaki_electric_tramway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/okayama_kurashiki_gururin_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart",
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart",
+      "lib/src/features/pass_comparison/presentation/sapporo_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/yui_rail_pass_page.dart"
+    ],
+    "english": "Enter the station you’re looking for"
+  },
+  {
+    "key": "passFlow020",
+    "source": "패스 가격",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enoden_noriorikun_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/enokama_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/fukuoka_city_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hankyu_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hiroden_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hokkaido_rail_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_bus_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/nagasaki_electric_tramway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/okayama_kurashiki_gururin_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart",
+      "lib/src/features/pass_comparison/presentation/sapporo_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/yui_rail_pass_page.dart"
+    ],
+    "english": "Pass price"
+  },
+  {
+    "key": "passFlow021",
+    "source": "교통비 기준 ¥{arg0} 절약",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enoden_noriorikun_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/fukuoka_city_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hankyu_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hiroden_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hokkaido_rail_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kintetsu_rail_pass_5day_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_bus_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/nagasaki_electric_tramway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/okayama_kurashiki_gururin_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/sapporo_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/yui_rail_pass_page.dart"
+    ],
+    "english": "Save ¥{arg0} on transport"
+  },
+  {
+    "key": "passFlow022",
+    "source": "이동별 상세",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enoden_noriorikun_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/fukuoka_city_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hankyu_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hiroden_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hokkaido_rail_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kintetsu_rail_pass_5day_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_bus_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/nagasaki_electric_tramway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/okayama_kurashiki_gururin_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/sapporo_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/yui_rail_pass_page.dart"
+    ],
+    "english": "Journey details"
+  },
+  {
+    "key": "passFlow023",
+    "source": "패스 가격과 일반 결제 예상 합계가 같아요",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enoden_noriorikun_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/fukuoka_city_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hankyu_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hiroden_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hokkaido_rail_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kintetsu_rail_pass_5day_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_bus_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/nagasaki_electric_tramway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/okayama_kurashiki_gururin_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/sapporo_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/yui_rail_pass_page.dart"
+    ],
+    "english": "The pass price equals the estimated pay-as-you-go total"
+  },
+  {
+    "key": "passFlow024",
+    "source": "현재 계획에서는 ¥{arg0} 차이",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enoden_noriorikun_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/fukuoka_city_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hankyu_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hiroden_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hokkaido_rail_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kintetsu_rail_pass_5day_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_bus_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/nagasaki_electric_tramway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/okayama_kurashiki_gururin_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/sapporo_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/yui_rail_pass_page.dart"
+    ],
+    "english": "A difference of ¥{arg0} for this plan"
+  },
+  {
+    "key": "passFlow025",
+    "source": "다시 시도",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enoden_noriorikun_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/enokama_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/fukuoka_city_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hiroden_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hokkaido_rail_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kintetsu_rail_pass_5day_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/nagasaki_electric_tramway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/okayama_kurashiki_gururin_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/sapporo_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/yui_rail_pass_page.dart"
+    ],
+    "english": "Try again"
+  },
+  {
+    "key": "passFlow026",
+    "source": "패스 데이터를 불러오지 못했어요",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enoden_noriorikun_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/enokama_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/fukuoka_city_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hiroden_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hokkaido_rail_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kintetsu_rail_pass_5day_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/nagasaki_electric_tramway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/okayama_kurashiki_gururin_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/sapporo_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/yui_rail_pass_page.dart"
+    ],
+    "english": "Couldn’t load pass data"
+  },
+  {
+    "key": "passFlow027",
+    "source": "한국어·초성·일본어·영어로 검색할 수 있습니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/fukuoka_city_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hiroden_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/nagasaki_electric_tramway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/okayama_kurashiki_gururin_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart",
+      "lib/src/features/pass_comparison/presentation/sapporo_subway_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/yui_rail_pass_page.dart"
+    ],
+    "english": "Search in Korean, Japanese or English, or use Korean initials."
+  },
+  {
+    "key": "passFlow028",
+    "source": "한국어·초성·일본어로 검색할 수 있습니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enoden_noriorikun_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hankyu_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hokkaido_rail_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kintetsu_rail_pass_5day_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_bus_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart"
+    ],
+    "english": "Search in Korean or Japanese, or use Korean initials."
+  },
+  {
+    "key": "passFlow029",
+    "source": "{arg0}회",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hakone_freepass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hokkaido_rail_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_bus_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/okayama_kurashiki_gururin_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart"
+    ],
+    "english": "{arg0} rides"
+  },
+  {
+    "key": "passFlow030",
+    "source": "교토시영 지하철",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_1day_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_bus_pass_page.dart"
+    ],
+    "english": "Kyoto Municipal Subway"
+  },
+  {
+    "key": "passFlow031",
+    "source": "패스 출발역 선택",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enokama_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hakone_freepass_page.dart"
+    ],
+    "english": "Choose the pass starting station"
+  },
+  {
+    "key": "passFlow032",
+    "source": "{arg0}일권",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hakone_freepass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hokkaido_rail_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart"
+    ],
+    "english": "{arg0}-day pass"
+  },
+  {
+    "key": "passFlow033",
+    "source": "1회 늘리기",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_bus_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/okayama_kurashiki_gururin_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart"
+    ],
+    "english": "Add one ride"
+  },
+  {
+    "key": "passFlow034",
+    "source": "1회 줄이기",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_bus_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/okayama_kurashiki_gururin_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart"
+    ],
+    "english": "Remove one ride"
+  },
+  {
+    "key": "passFlow035",
+    "source": "{arg0} 출발역",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enokama_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hakone_freepass_page.dart"
+    ],
+    "english": "{arg0} starting station"
+  },
+  {
+    "key": "passFlow036",
+    "source": "{arg0}개 출발역",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enokama_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hakone_freepass_page.dart"
+    ],
+    "english": "{arg0} starting stations"
+  },
+  {
+    "key": "passFlow037",
+    "source": "{arg0}시간",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart",
+      "lib/src/features/pass_comparison/presentation/yui_rail_pass_page.dart"
+    ],
+    "english": "{arg0} hours"
+  },
+  {
+    "key": "passFlow038",
+    "source": "{arg0}일권 {arg1}엔",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hakone_freepass_page.dart",
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart"
+    ],
+    "english": "{arg0}-day pass, ¥{arg1}"
+  },
+  {
+    "key": "passFlow039",
+    "source": "1회 ¥{arg0}",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_bus_pass_page.dart"
+    ],
+    "english": "¥{arg0} per ride"
+  },
+  {
+    "key": "passFlow040",
+    "source": "24시간권",
+    "files": [
+      "lib/src/features/pass_comparison/domain/hiroden_pass.dart",
+      "lib/src/features/pass_comparison/domain/nagasaki_electric_tramway_pass.dart"
+    ],
+    "english": "24-hour pass"
+  },
+  {
+    "key": "passFlow041",
+    "source": "검색 결과 {arg0}개",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enokama_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hakone_freepass_page.dart"
+    ],
+    "english": "{arg0} search results"
+  },
+  {
+    "key": "passFlow042",
+    "source": "검색어 지우기",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart",
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart"
+    ],
+    "english": "Clear search"
+  },
+  {
+    "key": "passFlow043",
+    "source": "긴테쓰 전 노선과 이가철도",
+    "files": [
+      "lib/src/features/pass_comparison/domain/kintetsu_rail_pass_5day.dart"
+    ],
+    "english": "All Kintetsu lines and Iga Railway"
+  },
+  {
+    "key": "passFlow044",
+    "source": "나가사키 전기궤도",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/nagasaki_electric_tramway_pass_page.dart"
+    ],
+    "english": "Nagasaki Electric Tramway"
+  },
+  {
+    "key": "passFlow045",
+    "source": "노선 선택",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enokama_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hakone_freepass_page.dart"
+    ],
+    "english": "Choose a line"
+  },
+  {
+    "key": "passFlow046",
+    "source": "다마선",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enokama_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hakone_freepass_page.dart"
+    ],
+    "english": "Tama Line"
+  },
+  {
+    "key": "passFlow047",
+    "source": "도니치카 킵",
+    "files": [
+      "lib/src/features/pass_comparison/domain/sapporo_subway_pass.dart"
+    ],
+    "english": "Donichika Ticket"
+  },
+  {
+    "key": "passFlow048",
+    "source": "도에이 지하철",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart",
+      "lib/src/features/pass_comparison/domain/pass_comparison.dart"
+    ],
+    "english": "Toei Subway"
+  },
+  {
+    "key": "passFlow049",
+    "source": "버스 예상 운임",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hokkaido_rail_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_bus_pass_page.dart"
+    ],
+    "english": "Estimated bus fare"
+  },
+  {
+    "key": "passFlow050",
+    "source": "삿포로시 지하철",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/sapporo_subway_pass_page.dart"
+    ],
+    "english": "Sapporo City Subway"
+  },
+  {
+    "key": "passFlow051",
+    "source": "실제로 개찰을 통과할 출발역과 하차역을 입력하면 운임을 자동으로 찾습니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart",
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart"
+    ],
+    "english": "Enter the stations where you will actually enter and exit the gates to look up the fare automatically."
+  },
+  {
+    "key": "passFlow052",
+    "source": "에노시마선",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enokama_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hakone_freepass_page.dart"
+    ],
+    "english": "Enoshima Line"
+  },
+  {
+    "key": "passFlow053",
+    "source": "오다와라선",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enokama_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hakone_freepass_page.dart"
+    ],
+    "english": "Odawara Line"
+  },
+  {
+    "key": "passFlow054",
+    "source": "오다큐 출발역을 선택해 주세요",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enokama_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hakone_freepass_page.dart"
+    ],
+    "english": "Choose an Odakyu starting station"
+  },
+  {
+    "key": "passFlow055",
+    "source": "운임 데이터를 읽지 못했습니다",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart",
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart"
+    ],
+    "english": "Couldn’t read fare data"
+  },
+  {
+    "key": "passFlow056",
+    "source": "유이레일",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/yui_rail_pass_page.dart"
+    ],
+    "english": "Yui Rail"
+  },
+  {
+    "key": "passFlow057",
+    "source": "일반 결제 예상 합계",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_bus_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/okayama_kurashiki_gururin_pass_page.dart"
+    ],
+    "english": "Estimated pay-as-you-go total"
+  },
+  {
+    "key": "passFlow058",
+    "source": "일치하는 출발역을 찾지 못했어요. 한글·초성·일본어로 다시 검색해 주세요.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enokama_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hakone_freepass_page.dart"
+    ],
+    "english": "No matching starting stations found. Try Korean, Japanese or Korean initials."
+  },
+  {
+    "key": "passFlow059",
+    "source": "철도 일반 운임",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hokkaido_rail_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart"
+    ],
+    "english": "Regular rail fares"
+  },
+  {
+    "key": "passFlow060",
+    "source": "출발역 검색",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enokama_pass_page.dart",
+      "lib/src/features/pass_comparison/presentation/hakone_freepass_page.dart"
+    ],
+    "english": "Search starting stations"
+  },
+  {
+    "key": "passFlow061",
+    "source": "한큐 전철",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hankyu_1day_pass_page.dart"
+    ],
+    "english": "Hankyu Railway"
+  },
+  {
+    "key": "passFlow062",
+    "source": "후쿠오카시 지하철",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/fukuoka_city_subway_pass_page.dart"
+    ],
+    "english": "Fukuoka City Subway"
+  },
+  {
+    "key": "passFlow063",
+    "source": "히로시마 전철",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hiroden_pass_page.dart"
+    ],
+    "english": "Hiroshima Electric Railway"
+  },
+  {
+    "key": "passFlow064",
+    "source": "JR 서일본",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/okayama_kurashiki_gururin_pass_page.dart"
+    ],
+    "english": "JR West"
+  },
+  {
+    "key": "passFlow065",
+    "source": " 버스는 직접 입력한 운임만 반영해요.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/kintetsu_rail_pass_5day_page.dart"
+    ],
+    "english": " Only bus fares you enter manually are included."
+  },
+  {
+    "key": "passFlow066",
+    "source": "{arg0} · {arg1}개 구간 적용",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart"
+    ],
+    "english": "{arg0} · {arg1} journeys covered"
+  },
+  {
+    "key": "passFlow067",
+    "source": "{arg0} · 오다와라 왕복 1회 포함",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hakone_freepass_page.dart"
+    ],
+    "english": "{arg0} · One round trip to Odawara included"
+  },
+  {
+    "key": "passFlow068",
+    "source": "{arg0} 가격",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/kintetsu_rail_pass_5day_page.dart"
+    ],
+    "english": "{arg0} price"
+  },
+  {
+    "key": "passFlow069",
+    "source": "{arg0} 검색",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart"
+    ],
+    "english": "Search {arg0}"
+  },
+  {
+    "key": "passFlow070",
+    "source": "{arg0} 기준으로 삿포로시 지하철의 성인 일반 운임만 합산합니다. 다른 회사 환승·할인과 소아요금은 포함하지 않습니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/sapporo_subway_pass_page.dart"
+    ],
+    "english": "Adds adult regular fares on Sapporo City Subway based on {arg0}. Transfers to other operators, discounts and child fares are excluded."
+  },
+  {
+    "key": "passFlow071",
+    "source": "{arg0} 기준으로 성인 일반 운임을 1회 ¥240씩 합산합니다. 입력한 구간 하나를 별도로 운임이 청구되는 1회 이용으로 보며, MOBIRY DAYS 할인과 자동 환승·재승차 판정은 포함하지 않습니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hiroden_pass_page.dart"
+    ],
+    "english": "Adds adult regular fares of ¥240 per ride based on {arg0}. Each journey entered is treated as a separately charged ride. MOBIRY DAYS discounts and automatic transfer or reboarding detection are excluded."
+  },
+  {
+    "key": "passFlow072",
+    "source": "{arg0} 기준으로 성인 IC·터치 결제 운임을 합산합니다. 지정 정류장에서 동일 카드로 30분 안에 환승한 경우의 할인값을 포함하며, 현금·버스·소아요금은 포함하지 않습니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/nagasaki_electric_tramway_pass_page.dart"
+    ],
+    "english": "Adds adult IC/contactless fares based on {arg0}. Includes the transfer discount for using the same card within 30 minutes at designated stops. Cash fares, buses and child fares are excluded."
+  },
+  {
+    "key": "passFlow073",
+    "source": "{arg0} 선택",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart"
+    ],
+    "english": "Choose {arg0}"
+  },
+  {
+    "key": "passFlow074",
+    "source": "{arg0}번 이동 · {arg1}",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart"
+    ],
+    "english": "Journey {arg0} · {arg1}"
+  },
+  {
+    "key": "passFlow075",
+    "source": "{arg0}시간 ¥{arg1}",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/yui_rail_pass_page.dart"
+    ],
+    "english": "{arg0} hours, ¥{arg1}"
+  },
+  {
+    "key": "passFlow076",
+    "source": "{arg0}시간권",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart"
+    ],
+    "english": "{arg0}-hour pass"
+  },
+  {
+    "key": "passFlow077",
+    "source": "{arg0}시간권 {arg1}엔",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart"
+    ],
+    "english": "{arg0}-hour pass, ¥{arg1}"
+  },
+  {
+    "key": "passFlow078",
+    "source": "{arg0}일권 ¥{arg1}",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hokkaido_rail_pass_page.dart"
+    ],
+    "english": "{arg0}-day pass, ¥{arg1}"
+  },
+  {
+    "key": "passFlow079",
+    "source": "1일권 · JR 파생 운임",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/prototype_pass_selection_page.dart"
+    ],
+    "english": "1 day · Derived JR fares"
+  },
+  {
+    "key": "passFlow080",
+    "source": "1일권 ¥3,500 · 2일권 ¥5,000 · 환승 자동 계산",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/prototype_pass_selection_page.dart"
+    ],
+    "english": "1 day ¥3,500 · 2 days ¥5,000 · Automatic transfer calculation"
+  },
+  {
+    "key": "passFlow081",
+    "source": "1회 예상 ¥300",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hokkaido_rail_pass_page.dart"
+    ],
+    "english": "Estimated ¥300 per ride"
+  },
+  {
+    "key": "passFlow082",
+    "source": "24·48·72시간권 · 자동 운임",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/prototype_pass_selection_page.dart"
+    ],
+    "english": "24 / 48 / 72 hours · Automatic fares"
+  },
+  {
+    "key": "passFlow083",
+    "source": "2일",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hakone_freepass_page.dart"
+    ],
+    "english": "2 days"
+  },
+  {
+    "key": "passFlow084",
+    "source": "2일권과 같은 나라교통 구간 및 미에교통·도바 카모메 버스 지정 구간",
+    "files": [
+      "lib/src/features/pass_comparison/domain/kintetsu_rail_pass_5day.dart"
+    ],
+    "english": "The same Nara Kotsu sections as the 2-day pass, plus designated Mie Kotsu and Toba City Kamome Bus sections"
+  },
+  {
+    "key": "passFlow085",
+    "source": "3일",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hakone_freepass_page.dart"
+    ],
+    "english": "3 days"
+  },
+  {
+    "key": "passFlow086",
+    "source": "8시간권",
+    "files": [
+      "lib/src/features/pass_comparison/domain/hiroden_pass.dart"
+    ],
+    "english": "8-hour pass"
+  },
+  {
+    "key": "passFlow087",
+    "source": "검증된 철도·버스 운임 데이터를 불러오는 중입니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart"
+    ],
+    "english": "Loading verified rail and bus fare data."
+  },
+  {
+    "key": "passFlow088",
+    "source": "검증할 패스를 선택해 주세요",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/prototype_pass_selection_page.dart"
+    ],
+    "english": "Choose a pass to test"
+  },
+  {
+    "key": "passFlow089",
+    "source": "결과 사용 시 주의",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart"
+    ],
+    "english": "Before using these results"
+  },
+  {
+    "key": "passFlow090",
+    "source": "공개된 거리·운임 규칙으로 검증한 철도 운임과 오사카 시티버스 일반 운임을 자동 합산합니다. 관광시설 무료입장 가치는 포함하지 않습니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/prototype_pass_selection_page.dart"
+    ],
+    "english": "Automatically adds rail fares verified against published distance and fare rules, and regular Osaka City Bus fares. The value of free admission to attractions is excluded."
+  },
+  {
+    "key": "passFlow091",
+    "source": "공식 안내를 열 수 없어요.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/kintetsu_rail_pass_5day_page.dart"
+    ],
+    "english": "Couldn’t open the official information."
+  },
+  {
+    "key": "passFlow092",
+    "source": "공식 안내에서 적용이 확인된 버스의 성인 일반 운임 합계만 입력해 주세요. 앱이 버스 적용 여부를 판정하지는 않아요.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/kintetsu_rail_pass_5day_page.dart"
+    ],
+    "english": "Enter only the total adult regular fares for buses confirmed as covered in the official information. The app does not determine bus coverage."
+  },
+  {
+    "key": "passFlow093",
+    "source": "공식 적용 구간 확인",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/kintetsu_rail_pass_5day_page.dart"
+    ],
+    "english": "Check official coverage"
+  },
+  {
+    "key": "passFlow094",
+    "source": "관광시설 입장·할인 혜택은 포함하지 않습니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart"
+    ],
+    "english": "Admission and discount benefits at attractions are excluded."
+  },
+  {
+    "key": "passFlow095",
+    "source": "관광시설 혜택, 패스 제외 버스, 특급권·좌석요금은 포함하지 않습니다. 사업자가 바뀌는 이동은 지원 역 그래프의 거리 기반 추천 경로로 계산하므로, 실제 이용 경로와 구매 전 최신 공식 조건을 확인해 주세요.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart"
+    ],
+    "english": "Attraction benefits, buses outside the pass coverage, limited express tickets and seat charges are excluded. Journeys involving different operators use a recommended route based on distances in the supported station graph. Check your actual route and the latest official conditions before buying."
+  },
+  {
+    "key": "passFlow096",
+    "source": "관광시설 혜택은 제외하며, 버스 대표 요금은 실제 요금과 다를 수 있습니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/okayama_kurashiki_gururin_pass_page.dart"
+    ],
+    "english": "Attraction benefits are excluded. Representative bus fares may differ from actual fares."
+  },
+  {
+    "key": "passFlow097",
+    "source": "관광시설을 이용하면 추가 이득이 생길 수 있습니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart"
+    ],
+    "english": "Visiting attractions may provide additional value."
+  },
+  {
+    "key": "passFlow098",
+    "source": "관광특급버스",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_bus_pass_page.dart"
+    ],
+    "english": "Sightseeing limited express bus"
+  },
+  {
+    "key": "passFlow099",
+    "source": "교토 버스 예상 이용",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_bus_pass_page.dart"
+    ],
+    "english": "Estimated Kyoto bus use"
+  },
+  {
+    "key": "passFlow100",
+    "source": "교토 지하철·버스 1일권 기준 탑승 횟수를 직접 입력해 주세요.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_bus_pass_page.dart"
+    ],
+    "english": "Enter the number of rides for the Kyoto Subway & Bus One-Day Pass."
+  },
+  {
+    "key": "passFlow101",
+    "source": "교토시영 지하철 역을 선택하면 성인 일반 운임을 자동으로 찾습니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_1day_pass_page.dart"
+    ],
+    "english": "Choose Kyoto Municipal Subway stations to look up adult regular fares automatically."
+  },
+  {
+    "key": "passFlow102",
+    "source": "교토시영 지하철 이동 구간을 입력해 주세요.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_1day_pass_page.dart"
+    ],
+    "english": "Enter your Kyoto Municipal Subway journeys."
+  },
+  {
+    "key": "passFlow103",
+    "source": "교토시영 지하철 일반 운임",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_1day_pass_page.dart"
+    ],
+    "english": "Kyoto Municipal Subway regular fares"
+  },
+  {
+    "key": "passFlow104",
+    "source": "교토시영 지하철 전 구간의 성인 일반 운임만 계산합니다. 다른 회사 환승과 할인은 포함하지 않습니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_1day_pass_page.dart"
+    ],
+    "english": "Calculates adult regular fares across Kyoto Municipal Subway only. Transfers to other operators and discounts are excluded."
+  },
+  {
+    "key": "passFlow105",
+    "source": "교토시영 지하철 전 구간의 성인 일반 운임만 합산합니다. 1일권은 이용일 당일 영업 종료까지 유효하며, 다른 회사 환승·할인은 포함하지 않습니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_1day_pass_page.dart"
+    ],
+    "english": "Adds adult regular fares across Kyoto Municipal Subway only. The one-day pass is valid until the end of service on the day of use. Transfers to other operators and discounts are excluded."
+  },
+  {
+    "key": "passFlow106",
+    "source": "교토시영 지하철은 역 선택 기반 성인 일반 운임, 버스는 입력한 횟수 기반 예상 운임입니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_bus_pass_page.dart"
+    ],
+    "english": "Subway fares are adult regular fares based on selected stations. Bus fares are estimates based on the number of rides entered."
+  },
+  {
+    "key": "passFlow107",
+    "source": "교토시영 지하철은 역을 선택하면 성인 운임을 자동으로 찾습니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_bus_pass_page.dart"
+    ],
+    "english": "Choose Kyoto Municipal Subway stations to look up adult fares automatically."
+  },
+  {
+    "key": "passFlow108",
+    "source": "교통비만 보면 일반 결제가 저렴해요",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart"
+    ],
+    "english": "Paying separately costs less for transport alone"
+  },
+  {
+    "key": "passFlow109",
+    "source": "교통비만 비교합니다",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart"
+    ],
+    "english": "Transport costs only"
+  },
+  {
+    "key": "passFlow110",
+    "source": "교통비만으로 ¥{arg0} 절약",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart"
+    ],
+    "english": "Save ¥{arg0} on transport alone"
+  },
+  {
+    "key": "passFlow111",
+    "source": "교통수단 선택",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hakone_freepass_page.dart"
+    ],
+    "english": "Choose a transport mode"
+  },
+  {
+    "key": "passFlow112",
+    "source": "교통패스 비교 프로토타입",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/prototype_pass_selection_page.dart"
+    ],
+    "english": "Transit pass comparison prototype"
+  },
+  {
+    "key": "passFlow113",
+    "source": "구간별 판정",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart"
+    ],
+    "english": "Coverage by journey"
+  },
+  {
+    "key": "passFlow114",
+    "source": "권종의 적용 범위 안에서 이동하는 구간만 계산해요. 특급권·로프웨이·할인·특전은 포함하지 않아요.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/kintetsu_rail_pass_5day_page.dart"
+    ],
+    "english": "Only journeys within this pass’s coverage are calculated. Limited express tickets, ropeways, discounts and other benefits are excluded."
+  },
+  {
+    "key": "passFlow115",
+    "source": "긴테쓰에서 실제로 개찰을 통과할 출발역과 하차역을 입력하면 성인 일반 운임을 자동으로 찾습니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/kintetsu_rail_pass_5day_page.dart"
+    ],
+    "english": "Enter the Kintetsu stations where you will actually enter and exit the gates to look up adult regular fares automatically."
+  },
+  {
+    "key": "passFlow116",
+    "source": "나가사키 전기궤도 1일권",
+    "files": [
+      "lib/src/features/pass_comparison/domain/nagasaki_electric_tramway_pass.dart"
+    ],
+    "english": "Nagasaki Electric Tramway One-Day Pass"
+  },
+  {
+    "key": "passFlow117",
+    "source": "나가사키 전기궤도 24시간권",
+    "files": [
+      "lib/src/features/pass_comparison/domain/nagasaki_electric_tramway_pass.dart"
+    ],
+    "english": "Nagasaki Electric Tramway 24-Hour Pass"
+  },
+  {
+    "key": "passFlow118",
+    "source": "나가사키 전기궤도 이동 구간을 입력해 주세요.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/nagasaki_electric_tramway_pass_page.dart"
+    ],
+    "english": "Enter your Nagasaki Electric Tramway journeys."
+  },
+  {
+    "key": "passFlow119",
+    "source": "나가사키 전기궤도 일반 운임",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/nagasaki_electric_tramway_pass_page.dart"
+    ],
+    "english": "Nagasaki Electric Tramway regular fares"
+  },
+  {
+    "key": "passFlow120",
+    "source": "나가사키 전기궤도 정류장을 선택하면 IC·터치 기준 성인 일반 운임을 자동으로 찾습니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/nagasaki_electric_tramway_pass_page.dart"
+    ],
+    "english": "Choose Nagasaki Electric Tramway stops to look up adult IC/contactless regular fares automatically."
+  },
+  {
+    "key": "passFlow121",
+    "source": "나라교통: 나라공원·니시노쿄·호류지 지정 구간",
+    "files": [
+      "lib/src/features/pass_comparison/domain/kintetsu_rail_pass_5day.dart"
+    ],
+    "english": "Nara Kotsu: designated Nara Park, Nishinokyo and Horyuji sections"
+  },
+  {
+    "key": "passFlow122",
+    "source": "나라교통: 나라공원·니시노쿄·호류지·아스카·무로·야마노베노미치 지정 구간",
+    "files": [
+      "lib/src/features/pass_comparison/domain/kintetsu_rail_pass_5day.dart"
+    ],
+    "english": "Nara Kotsu: designated Nara Park, Nishinokyo, Horyuji, Asuka, Muro and Yamanobe-no-Michi sections"
+  },
+  {
+    "key": "passFlow123",
+    "source": "노면전차·버스 이용",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/okayama_kurashiki_gururin_pass_page.dart"
+    ],
+    "english": "Tram and bus rides"
+  },
+  {
+    "key": "passFlow124",
+    "source": "노면전차·버스 일반 운임",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/okayama_kurashiki_gururin_pass_page.dart"
+    ],
+    "english": "Regular tram and bus fares"
+  },
+  {
+    "key": "passFlow125",
+    "source": "데이터 준비 중",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart"
+    ],
+    "english": "Preparing data"
+  },
+  {
+    "key": "passFlow126",
+    "source": "도착역",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart"
+    ],
+    "english": "Arrival station"
+  },
+  {
+    "key": "passFlow127",
+    "source": "도쿄메트로",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart"
+    ],
+    "english": "Tokyo Metro"
+  },
+  {
+    "key": "passFlow128",
+    "source": "도쿠나이 패스 1일권",
+    "files": [
+      "lib/src/features/pass_comparison/domain/pass_comparison.dart"
+    ],
+    "english": "Tokunai One-Day Pass"
+  },
+  {
+    "key": "passFlow129",
+    "source": "도쿠나이 패스 적용 JR",
+    "files": [
+      "lib/src/features/pass_comparison/domain/pass_comparison.dart"
+    ],
+    "english": "JR sections covered by the Tokunai Pass"
+  },
+  {
+    "key": "passFlow130",
+    "source": "두 지점을 선택하면 성인 일반 운임을 확인합니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hakone_freepass_page.dart"
+    ],
+    "english": "Choose two locations to see the adult regular fare."
+  },
+  {
+    "key": "passFlow131",
+    "source": "등산전차",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hakone_freepass_page.dart"
+    ],
+    "english": "Hakone Tozan Railway"
+  },
+  {
+    "key": "passFlow132",
+    "source": "등산전차·케이블카·로프웨이·해적선은 정확 운임으로, 버스는 평균 운임과 횟수로 계산합니다. 로망스카 특급권은 포함하지 않습니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hakone_freepass_page.dart"
+    ],
+    "english": "Railway, cable car, ropeway and sightseeing cruise use exact fares. Bus costs use average fares and ride counts. Romancecar limited express tickets are excluded."
+  },
+  {
+    "key": "passFlow133",
+    "source": "로프웨이",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hakone_freepass_page.dart"
+    ],
+    "english": "Ropeway"
+  },
+  {
+    "key": "passFlow134",
+    "source": "버스 대표 요금은 실제 이용 구간의 요금과 다를 수 있습니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_bus_pass_page.dart"
+    ],
+    "english": "Representative bus fares may differ from the fares for your actual journeys."
+  },
+  {
+    "key": "passFlow135",
+    "source": "버스 운임 (선택)",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/kintetsu_rail_pass_5day_page.dart"
+    ],
+    "english": "Bus fare (optional)"
+  },
+  {
+    "key": "passFlow136",
+    "source": "버스 운임은 예상값입니다",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hakone_freepass_page.dart"
+    ],
+    "english": "Bus fares are estimates"
+  },
+  {
+    "key": "passFlow137",
+    "source": "버스 이용 추정",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hakone_freepass_page.dart"
+    ],
+    "english": "Estimated bus use"
+  },
+  {
+    "key": "passFlow138",
+    "source": "버스 이용 횟수 늘리기",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hokkaido_rail_pass_page.dart"
+    ],
+    "english": "Add a bus ride"
+  },
+  {
+    "key": "passFlow139",
+    "source": "버스 이용 횟수 줄이기",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hokkaido_rail_pass_page.dart"
+    ],
+    "english": "Remove a bus ride"
+  },
+  {
+    "key": "passFlow140",
+    "source": "버스는 추정 요금이며, 실제 경로·환승 운임에 따라 차이가 날 수 있습니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hokkaido_rail_pass_page.dart"
+    ],
+    "english": "Bus fares are estimates and may differ depending on your actual route and transfer fares."
+  },
+  {
+    "key": "passFlow141",
+    "source": "버스는 횟수 기반 예상 운임입니다",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_bus_pass_page.dart"
+    ],
+    "english": "Bus fares are estimated from ride counts"
+  },
+  {
+    "key": "passFlow142",
+    "source": "보통·쾌속",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hokkaido_rail_pass_page.dart"
+    ],
+    "english": "Local / Rapid"
+  },
+  {
+    "key": "passFlow143",
+    "source": "비교 제외",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart"
+    ],
+    "english": "Excluded from comparison"
+  },
+  {
+    "key": "passFlow144",
+    "source": "비교 제외 외부 운임",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart"
+    ],
+    "english": "Fares outside coverage, excluded from comparison"
+  },
+  {
+    "key": "passFlow145",
+    "source": "비교할 이동이 부족해요",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart"
+    ],
+    "english": "Not enough travel to compare"
+  },
+  {
+    "key": "passFlow146",
+    "source": "삿포로시 지하철 역을 선택하면 성인 일반 운임을 자동으로 찾습니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/sapporo_subway_pass_page.dart"
+    ],
+    "english": "Choose Sapporo City Subway stations to look up adult regular fares automatically."
+  },
+  {
+    "key": "passFlow147",
+    "source": "삿포로시 지하철 이동 구간을 입력해 주세요.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/sapporo_subway_pass_page.dart"
+    ],
+    "english": "Enter your Sapporo City Subway journeys."
+  },
+  {
+    "key": "passFlow148",
+    "source": "삿포로시 지하철 일반 운임",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/sapporo_subway_pass_page.dart"
+    ],
+    "english": "Sapporo City Subway regular fares"
+  },
+  {
+    "key": "passFlow149",
+    "source": "삿포로시 지하철의 성인 일반 운임만 계산합니다. 다른 회사 환승과 할인은 포함하지 않습니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/sapporo_subway_pass_page.dart"
+    ],
+    "english": "Calculates adult regular fares on Sapporo City Subway only. Transfers to other operators and discounts are excluded."
+  },
+  {
+    "key": "passFlow150",
+    "source": "선택한 권종 안의 성인 기본 운임만 합산해요. 범위를 넘는 이동의 정산액, 특급권·로프웨이·할인·특전은 포함하지 않아요.{arg0}",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/kintetsu_rail_pass_5day_page.dart"
+    ],
+    "english": "Adds adult basic fares within the selected pass coverage only. Fare adjustments for travel beyond that area, limited express tickets, ropeways, discounts and other benefits are excluded.{arg0}"
+  },
+  {
+    "key": "passFlow151",
+    "source": "선택한 오다큐 출발역의 패스 가격과 후지사와 왕복 성인 IC 운임, 프리구간의 실제 입력 이동만 비교합니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enokama_pass_page.dart"
+    ],
+    "english": "Compares the pass price from your chosen Odakyu station with the adult IC round-trip fare to Fujisawa and the journeys you enter within the free-travel area."
+  },
+  {
+    "key": "passFlow152",
+    "source": "성인 일반 운임만 기준으로 하코네 프리패스의 손익을 비교합니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hakone_freepass_page.dart"
+    ],
+    "english": "Compares the value of the Hakone Freepass using adult regular fares only."
+  },
+  {
+    "key": "passFlow153",
+    "source": "성인 일반 운임을 1회 ¥240으로 계산합니다. 입력한 구간 하나를 별도로 운임이 청구되는 1회 이용으로 보며, MOBIRY DAYS 할인과 자동 환승·재승차 판정은 포함하지 않습니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hiroden_pass_page.dart"
+    ],
+    "english": "Calculates adult regular fares at ¥240 per ride. Each journey entered is treated as a separately charged ride. MOBIRY DAYS discounts and automatic transfer or reboarding detection are excluded."
+  },
+  {
+    "key": "passFlow154",
+    "source": "성인 IC·터치 결제 기준 운임을 계산합니다. 지정 정류장에서 동일 카드로 30분 안에 환승한 경우의 할인값을 포함하며, 현금·버스·소아요금은 포함하지 않습니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/nagasaki_electric_tramway_pass_page.dart"
+    ],
+    "english": "Calculates adult IC/contactless fares. Includes the transfer discount for using the same card within 30 minutes at designated stops. Cash fares, buses and child fares are excluded."
+  },
+  {
+    "key": "passFlow155",
+    "source": "시모덴 버스 대표 운임",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/okayama_kurashiki_gururin_pass_page.dart"
+    ],
+    "english": "Representative Shimoden Bus fares"
+  },
+  {
+    "key": "passFlow156",
+    "source": "시티버스 일반 운임",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart"
+    ],
+    "english": "Regular city bus fares"
+  },
+  {
+    "key": "passFlow157",
+    "source": "실제로 개찰을 통과해 하차한 역을 입력해 주세요. 추천 경로는 시간표 기반 최속 경로가 아닙니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart"
+    ],
+    "english": "Enter the station where you will actually exit the gates. The recommended route is not the fastest route based on a timetable."
+  },
+  {
+    "key": "passFlow158",
+    "source": "실제로 개찰을 통과해 하차한 역을 입력해 주세요. 확인되지 않은 운임은 계산하지 않습니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart"
+    ],
+    "english": "Enter the station where you will actually exit the gates. Unverified fares are not calculated."
+  },
+  {
+    "key": "passFlow159",
+    "source": "아직 비교할 이동이 없어요",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart"
+    ],
+    "english": "No journeys to compare yet"
+  },
+  {
+    "key": "passFlow160",
+    "source": "앱을 다시 실행하거나 다시 시도해 주세요.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enokama_pass_page.dart"
+    ],
+    "english": "Restart the app or try again."
+  },
+  {
+    "key": "passFlow161",
+    "source": "약 ¥{arg0}/회",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hakone_freepass_page.dart"
+    ],
+    "english": "Approx. ¥{arg0} per ride"
+  },
+  {
+    "key": "passFlow162",
+    "source": "에노덴 이동 구간을 입력해 주세요.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enoden_noriorikun_pass_page.dart"
+    ],
+    "english": "Enter your Enoden journeys."
+  },
+  {
+    "key": "passFlow163",
+    "source": "에노덴 일반 운임",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enoden_noriorikun_pass_page.dart"
+    ],
+    "english": "Enoden regular fares"
+  },
+  {
+    "key": "passFlow164",
+    "source": "에노덴 전선 15개 역의 성인 일반 운임만 합산합니다. 특전·할인과 다른 회사 환승은 포함하지 않습니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enoden_noriorikun_pass_page.dart"
+    ],
+    "english": "Adds adult regular fares across all 15 Enoden stations only. Other benefits, discounts and transfers to other operators are excluded."
+  },
+  {
+    "key": "passFlow165",
+    "source": "에노덴 전선 내부 이동의 성인 일반 운임만 계산합니다. 특전·할인과 다른 회사 환승은 포함하지 않습니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enoden_noriorikun_pass_page.dart"
+    ],
+    "english": "Calculates adult regular fares for journeys within Enoden only. Other benefits, discounts and transfers to other operators are excluded."
+  },
+  {
+    "key": "passFlow166",
+    "source": "에노덴·오다큐 프리구간 역을 검색할 수 있습니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enokama_pass_page.dart"
+    ],
+    "english": "Search for stations in the Enoden and Odakyu free-travel area."
+  },
+  {
+    "key": "passFlow167",
+    "source": "에노덴에서 실제로 개찰을 통과할 출발역과 하차역을 입력하면 성인 일반 운임을 자동으로 찾습니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enoden_noriorikun_pass_page.dart"
+    ],
+    "english": "Enter the Enoden stations where you will actually enter and exit the gates to look up adult regular fares automatically."
+  },
+  {
+    "key": "passFlow168",
+    "source": "에노시마 전철",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enoden_noriorikun_pass_page.dart"
+    ],
+    "english": "Enoshima Electric Railway"
+  },
+  {
+    "key": "passFlow169",
+    "source": "에노시마 전철 · 에노덴",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enoden_noriorikun_pass_page.dart"
+    ],
+    "english": "Enoshima Electric Railway · Enoden"
+  },
+  {
+    "key": "passFlow170",
+    "source": "에노시마·가마쿠라 프리패스 1일권",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enokama_pass_page.dart"
+    ],
+    "english": "Enoshima-Kamakura One-Day Freepass"
+  },
+  {
+    "key": "passFlow171",
+    "source": "역",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart"
+    ],
+    "english": "Station"
+  },
+  {
+    "key": "passFlow172",
+    "source": "역 구매 가격 · 사전 구매 시 ¥1,000 저렴",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hokkaido_rail_pass_page.dart"
+    ],
+    "english": "Station purchase price · ¥1,000 less when bought in advance"
+  },
+  {
+    "key": "passFlow173",
+    "source": "역과 운임 데이터를 준비한 뒤 다시 시도해 주세요.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart"
+    ],
+    "english": "Prepare the station and fare data, then try again."
+  },
+  {
+    "key": "passFlow174",
+    "source": "예: 800",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/kintetsu_rail_pass_5day_page.dart"
+    ],
+    "english": "e.g. 800"
+  },
+  {
+    "key": "passFlow175",
+    "source": "예상 비용 차이가 없습니다",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart"
+    ],
+    "english": "No difference in estimated cost"
+  },
+  {
+    "key": "passFlow176",
+    "source": "예상 절약액 ¥{arg0}",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart"
+    ],
+    "english": "Estimated savings ¥{arg0}"
+  },
+  {
+    "key": "passFlow177",
+    "source": "오사카 시티버스",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart"
+    ],
+    "english": "Osaka City Bus"
+  },
+  {
+    "key": "passFlow178",
+    "source": "오사카 시티버스 {arg0}회",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart"
+    ],
+    "english": "Osaka City Bus · {arg0} rides"
+  },
+  {
+    "key": "passFlow179",
+    "source": "오사카 주유패스 1일권",
+    "files": [
+      "lib/src/features/pass_comparison/domain/osaka_amazing_pass.dart"
+    ],
+    "english": "Osaka Amazing Pass · 1 day"
+  },
+  {
+    "key": "passFlow180",
+    "source": "오사카 주유패스 2일권",
+    "files": [
+      "lib/src/features/pass_comparison/domain/osaka_amazing_pass.dart"
+    ],
+    "english": "Osaka Amazing Pass · 2 days"
+  },
+  {
+    "key": "passFlow181",
+    "source": "오사카·나라·교토의 긴테쓰 노선 (오사카선은 산본마쓰까지)",
+    "files": [
+      "lib/src/features/pass_comparison/domain/kintetsu_rail_pass_5day.dart"
+    ],
+    "english": "Kintetsu lines in Osaka, Nara and Kyoto (Osaka Line as far as Sanbonmatsu)"
+  },
+  {
+    "key": "passFlow182",
+    "source": "오사카난바–긴테쓰나라, 교토–쓰쓰이, 나가타–이코마, 도리이마에–이코마산조",
+    "files": [
+      "lib/src/features/pass_comparison/domain/kintetsu_rail_pass_5day.dart"
+    ],
+    "english": "Osaka-Namba–Kintetsu-Nara, Kyoto–Tsutsui, Nagata–Ikoma, Toriimae–Ikoma-sanjō"
+  },
+  {
+    "key": "passFlow183",
+    "source": "오사카는 교통비만 비교합니다",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/prototype_pass_selection_page.dart"
+    ],
+    "english": "For Osaka, only transport costs are compared"
+  },
+  {
+    "key": "passFlow184",
+    "source": "오카야마·구라시키 tabiwa 구루링 패스 3일권",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/okayama_kurashiki_gururin_pass_page.dart"
+    ],
+    "english": "Okayama & Kurashiki tabiwa Gururin Pass · 3 days"
+  },
+  {
+    "key": "passFlow185",
+    "source": "운영사 정보 없음",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart"
+    ],
+    "english": "Operator information unavailable"
+  },
+  {
+    "key": "passFlow186",
+    "source": "유이레일 {arg0}",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/yui_rail_pass_page.dart"
+    ],
+    "english": "Yui Rail · {arg0}"
+  },
+  {
+    "key": "passFlow187",
+    "source": "유이레일 역을 선택하면 성인 일반 운임을 자동으로 찾습니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/yui_rail_pass_page.dart"
+    ],
+    "english": "Choose Yui Rail stations to look up adult regular fares automatically."
+  },
+  {
+    "key": "passFlow188",
+    "source": "유이레일 이동 구간을 입력해 주세요.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/yui_rail_pass_page.dart"
+    ],
+    "english": "Enter your Yui Rail journeys."
+  },
+  {
+    "key": "passFlow189",
+    "source": "유이레일 일반 운임",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/yui_rail_pass_page.dart"
+    ],
+    "english": "Yui Rail regular fares"
+  },
+  {
+    "key": "passFlow190",
+    "source": "유이레일의 성인 일반 운임만 계산합니다. 다른 회사 환승과 할인은 포함하지 않습니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/yui_rail_pass_page.dart"
+    ],
+    "english": "Calculates adult regular fares on Yui Rail only. Transfers to other operators and discounts are excluded."
+  },
+  {
+    "key": "passFlow191",
+    "source": "유이레일의 성인 일반 운임만 합산합니다. {arg0}시간권은 발권 시점부터 유효하며, 다른 회사 환승·할인은 포함하지 않습니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/yui_rail_pass_page.dart"
+    ],
+    "english": "Adds adult regular fares on Yui Rail only. The {arg0}-hour pass is valid from the time of issue. Transfers to other operators and discounts are excluded."
+  },
+  {
+    "key": "passFlow192",
+    "source": "유효시간 밖",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart"
+    ],
+    "english": "Outside the validity period"
+  },
+  {
+    "key": "passFlow193",
+    "source": "유효한 이동 구간을 입력하면 판정 근거가 표시됩니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart"
+    ],
+    "english": "Enter valid journeys to see the basis for the comparison."
+  },
+  {
+    "key": "passFlow194",
+    "source": "이 권종의 적용 범위 밖이에요. 비교 합계에서 제외합니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/kintetsu_rail_pass_5day_page.dart"
+    ],
+    "english": "Outside this pass’s coverage. Excluded from the comparison total."
+  },
+  {
+    "key": "passFlow195",
+    "source": "이동 계획 수정",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart"
+    ],
+    "english": "Edit travel plan"
+  },
+  {
+    "key": "passFlow196",
+    "source": "이용 당일 이동만 입력해 주세요.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/kintetsu_rail_pass_5day_page.dart"
+    ],
+    "english": "Enter only journeys made on the day of use."
+  },
+  {
+    "key": "passFlow197",
+    "source": "이용 시작일부터 연속 {arg0}일간의 이동만 입력해 주세요.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/kintetsu_rail_pass_5day_page.dart"
+    ],
+    "english": "Enter only journeys within {arg0} consecutive days from the first day of use."
+  },
+  {
+    "key": "passFlow198",
+    "source": "이용 열차",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hokkaido_rail_pass_page.dart"
+    ],
+    "english": "Train type"
+  },
+  {
+    "key": "passFlow199",
+    "source": "이용 횟수",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hokkaido_rail_pass_page.dart"
+    ],
+    "english": "Ride count"
+  },
+  {
+    "key": "passFlow200",
+    "source": "이용할 교통수단의 횟수를 입력해 주세요.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/okayama_kurashiki_gururin_pass_page.dart"
+    ],
+    "english": "Enter the number of rides for each transport mode."
+  },
+  {
+    "key": "passFlow201",
+    "source": "일반 1일권",
+    "files": [
+      "lib/src/features/pass_comparison/domain/sapporo_subway_pass.dart"
+    ],
+    "english": "Standard one-day pass"
+  },
+  {
+    "key": "passFlow202",
+    "source": "일반 결제가 더 저렴해요",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart"
+    ],
+    "english": "Paying separately costs less"
+  },
+  {
+    "key": "passFlow203",
+    "source": "일반 시내버스",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_bus_pass_page.dart"
+    ],
+    "english": "Regular city bus"
+  },
+  {
+    "key": "passFlow204",
+    "source": "일반 시내버스와 관광특급버스 횟수만 합산합니다. 실제 노선·사업자·조정 운임 구간·심야 할증과 패스 제외 노선은 자동 판정하지 않습니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_bus_pass_page.dart"
+    ],
+    "english": "Adds only regular city bus and sightseeing limited express bus ride counts. Actual routes, operators, adjusted-fare sections, late-night surcharges and routes excluded from the pass are not determined automatically."
+  },
+  {
+    "key": "passFlow205",
+    "source": "일반 운임 합계",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enokama_pass_page.dart"
+    ],
+    "english": "Regular fare total"
+  },
+  {
+    "key": "passFlow206",
+    "source": "일부 특정 노선과 온디맨드 버스는 패스 대상이 아닙니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart"
+    ],
+    "english": "Some specific routes and on-demand buses are not covered by the pass."
+  },
+  {
+    "key": "passFlow207",
+    "source": "입력한 교통 이용 기준의 예상 비교입니다.\n버스는 추정 요금이며 실제 요금과 다를 수 있습니다.\n\n패스 가격 ¥{arg0}\n입력 구간 운임 ¥{arg1}\n버스 예상 운임 ¥{arg2}\n예상 손익 ¥{arg3}",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hakone_freepass_page.dart"
+    ],
+    "english": "An estimated comparison based on the journeys you entered.\nBus fares are estimates and may differ from actual fares.\n\nPass price ¥{arg0}\nJourney fares ¥{arg1}\nEstimated bus fares ¥{arg2}\nEstimated savings ¥{arg3}"
+  },
+  {
+    "key": "passFlow208",
+    "source": "적용 버스 운임 (직접 입력)",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/kintetsu_rail_pass_5day_page.dart"
+    ],
+    "english": "Covered bus fares (enter manually)"
+  },
+  {
+    "key": "passFlow209",
+    "source": "적용 버스 운임 합계",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/kintetsu_rail_pass_5day_page.dart"
+    ],
+    "english": "Covered bus fare total"
+  },
+  {
+    "key": "passFlow210",
+    "source": "적용 범위 밖 · 합계 제외",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/kintetsu_rail_pass_5day_page.dart"
+    ],
+    "english": "Outside coverage · Excluded from total"
+  },
+  {
+    "key": "passFlow211",
+    "source": "적용 철도 일반 운임",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/kintetsu_rail_pass_5day_page.dart"
+    ],
+    "english": "Covered regular rail fares"
+  },
+  {
+    "key": "passFlow212",
+    "source": "정류장별 운임이 아닌 사업자별 평균 성인 운임입니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hakone_freepass_page.dart"
+    ],
+    "english": "These are average adult fares by operator, not stop-specific fares."
+  },
+  {
+    "key": "passFlow213",
+    "source": "주유패스 대상 일반 노선",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart"
+    ],
+    "english": "Regular routes covered by the Amazing Pass"
+  },
+  {
+    "key": "passFlow214",
+    "source": "주유패스 대상 일반 노선 탑승 횟수 · 1회 ¥{arg0}",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart"
+    ],
+    "english": "Rides on regular routes covered by the Amazing Pass · ¥{arg0} per ride"
+  },
+  {
+    "key": "passFlow215",
+    "source": "지원 데이터에서 경로를 확인할 수 없습니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart"
+    ],
+    "english": "No route found in the supported data."
+  },
+  {
+    "key": "passFlow216",
+    "source": "지원 데이터에서 해당 역 사이의 경로와 운임을 찾지 못했습니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart"
+    ],
+    "english": "No route or fare found between these stations in the supported data."
+  },
+  {
+    "key": "passFlow217",
+    "source": "지하철 구간 또는 버스 이용 횟수를 입력해 주세요.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_bus_pass_page.dart"
+    ],
+    "english": "Enter subway journeys or the number of bus rides."
+  },
+  {
+    "key": "passFlow218",
+    "source": "지하철 일반 운임",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_bus_pass_page.dart"
+    ],
+    "english": "Regular subway fares"
+  },
+  {
+    "key": "passFlow219",
+    "source": "지하철은 실제 개찰을 통과해 하차한 역을 입력해 주세요. 버스 운임 기준은 설정의 데이터 출처 및 운임 기준에서 확인할 수 있습니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/kyoto_subway_bus_pass_page.dart"
+    ],
+    "english": "Enter the subway station where you will actually exit the gates. Bus fare assumptions are explained under Data sources and fare rules in Settings."
+  },
+  {
+    "key": "passFlow220",
+    "source": "참고용 자동 계산 결과",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart"
+    ],
+    "english": "Automatically calculated reference result"
+  },
+  {
+    "key": "passFlow221",
+    "source": "철도 {arg0}역·환승 연결 {arg1}개와 시티버스 일반 운임을 사용합니다. 관광시설 혜택은 포함하지 않습니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart"
+    ],
+    "english": "Uses {arg0} rail stations, {arg1} transfer connections and regular city bus fares. Attraction benefits are excluded."
+  },
+  {
+    "key": "passFlow222",
+    "source": "철도 구간을 선택하거나 버스 탑승 횟수를 입력해 주세요.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart"
+    ],
+    "english": "Choose rail journeys or enter the number of bus rides."
+  },
+  {
+    "key": "passFlow223",
+    "source": "출발역",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart"
+    ],
+    "english": "Departure station"
+  },
+  {
+    "key": "passFlow224",
+    "source": "출발역 ↔ 후지사와 왕복 포함",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enokama_pass_page.dart"
+    ],
+    "english": "One round trip between your starting station and Fujisawa included"
+  },
+  {
+    "key": "passFlow225",
+    "source": "출발역과 도착역 바꾸기",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart"
+    ],
+    "english": "Swap departure and arrival stations"
+  },
+  {
+    "key": "passFlow226",
+    "source": "출발역과 도착역을 모두 선택해 주세요.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart"
+    ],
+    "english": "Choose both departure and arrival stations."
+  },
+  {
+    "key": "passFlow227",
+    "source": "출발역과 도착역을 선택한 이동 구간을 추가하면 손익을 계산합니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart"
+    ],
+    "english": "Add journeys with departure and arrival stations to calculate savings."
+  },
+  {
+    "key": "passFlow228",
+    "source": "출발역과 도착역을 선택해 주세요",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hokkaido_rail_pass_page.dart"
+    ],
+    "english": "Choose departure and arrival stations"
+  },
+  {
+    "key": "passFlow229",
+    "source": "출발역에 따라 {arg0}일권 가격이 달라집니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hakone_freepass_page.dart"
+    ],
+    "english": "The {arg0}-day pass price varies by starting station."
+  },
+  {
+    "key": "passFlow230",
+    "source": "출발역에 따라 패스 가격이 달라집니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enokama_pass_page.dart"
+    ],
+    "english": "The pass price varies by starting station."
+  },
+  {
+    "key": "passFlow231",
+    "source": "출발역을 선택하면 {arg0}일권 가격을 적용합니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hakone_freepass_page.dart"
+    ],
+    "english": "Choose a starting station to apply the {arg0}-day pass price."
+  },
+  {
+    "key": "passFlow232",
+    "source": "출발역을 선택하면 해당 패스 가격을 적용합니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enokama_pass_page.dart"
+    ],
+    "english": "Choose a starting station to apply its pass price."
+  },
+  {
+    "key": "passFlow233",
+    "source": "케이블카",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hakone_freepass_page.dart"
+    ],
+    "english": "Cable car"
+  },
+  {
+    "key": "passFlow234",
+    "source": "탑승 횟수",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart"
+    ],
+    "english": "Number of rides"
+  },
+  {
+    "key": "passFlow235",
+    "source": "토·일·공휴일 및 12/29~1/3에만 이용할 수 있어요.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/sapporo_subway_pass_page.dart"
+    ],
+    "english": "Available only on Saturdays, Sundays, public holidays and December 29–January 3."
+  },
+  {
+    "key": "passFlow236",
+    "source": "특급",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hokkaido_rail_pass_page.dart"
+    ],
+    "english": "Limited express"
+  },
+  {
+    "key": "passFlow237",
+    "source": "특급은 보통차 지정석 기준으로 계산합니다. 버스는 1회 ¥300의 예상값입니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hokkaido_rail_pass_page.dart"
+    ],
+    "english": "Limited express fares use ordinary reserved seats. Bus fares are estimated at ¥300 per ride."
+  },
+  {
+    "key": "passFlow238",
+    "source": "패스 가격보다 ¥{arg0} 적습니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart"
+    ],
+    "english": "¥{arg0} less than the pass price."
+  },
+  {
+    "key": "passFlow239",
+    "source": "패스 적용",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart"
+    ],
+    "english": "Covered by pass"
+  },
+  {
+    "key": "passFlow240",
+    "source": "패스 적용 구간 일반 운임",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart"
+    ],
+    "english": "Regular fares for covered journeys"
+  },
+  {
+    "key": "passFlow241",
+    "source": "패스 적용 구간과 운임을 입력해 주세요",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart"
+    ],
+    "english": "Enter covered journeys and fares"
+  },
+  {
+    "key": "passFlow242",
+    "source": "패스 적용 범위를 벗어나요.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/kintetsu_rail_pass_5day_page.dart"
+    ],
+    "english": "Outside the pass coverage."
+  },
+  {
+    "key": "passFlow243",
+    "source": "패스 적용 외",
+    "files": [
+      "lib/src/features/pass_comparison/domain/pass_comparison.dart"
+    ],
+    "english": "Not covered by pass"
+  },
+  {
+    "key": "passFlow244",
+    "source": "패스 출발역과 에노덴·오다큐 프리구간 이동을 입력하면 성인 IC 기준 운임을 비교합니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enokama_pass_page.dart"
+    ],
+    "english": "Choose the pass starting station and journeys in the Enoden/Odakyu free-travel area to compare adult IC fares."
+  },
+  {
+    "key": "passFlow245",
+    "source": "패스 출발역과 후지사와 사이의 왕복 1회, 에노덴 전선과 오다큐 후지사와–가타세에노시마 구간만 계산합니다. 프리구간 밖 추가 이동, 특급·좌석요금과 할인은 포함하지 않습니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enokama_pass_page.dart"
+    ],
+    "english": "Calculates one round trip between the pass starting station and Fujisawa, all Enoden sections and the Odakyu Fujisawa–Katase-Enoshima section only. Additional journeys outside the free-travel area, limited express tickets, seat charges and discounts are excluded."
+  },
+  {
+    "key": "passFlow246",
+    "source": "패스가 적용되는 이동 구간을 입력해 주세요.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/kintetsu_rail_pass_5day_page.dart"
+    ],
+    "english": "Enter journeys covered by the pass."
+  },
+  {
+    "key": "passFlow247",
+    "source": "패스를 사면 ¥{arg0} 더 들어요",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart"
+    ],
+    "english": "The pass costs ¥{arg0} more"
+  },
+  {
+    "key": "passFlow248",
+    "source": "프로토타입",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/prototype_pass_selection_page.dart"
+    ],
+    "english": "Prototype"
+  },
+  {
+    "key": "passFlow249",
+    "source": "프로토타입 asset을 다시 생성한 뒤 실행해 주세요.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/osaka_amazing_pass_prototype_page.dart"
+    ],
+    "english": "Regenerate the prototype assets before running the app."
+  },
+  {
+    "key": "passFlow250",
+    "source": "프리구간 내부 출발역",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enokama_pass_page.dart"
+    ],
+    "english": "Starting station within the free-travel area"
+  },
+  {
+    "key": "passFlow251",
+    "source": "하코네 프리패스 {arg0}일권",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hakone_freepass_page.dart"
+    ],
+    "english": "Hakone Freepass · {arg0} days"
+  },
+  {
+    "key": "passFlow252",
+    "source": "한큐 전철 87개 역의 성인 일반 운임만 합산합니다. 고베고속선과 다른 회사 환승은 포함하지 않습니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hankyu_1day_pass_page.dart"
+    ],
+    "english": "Adds adult regular fares for 87 Hankyu Railway stations only. The Kobe Rapid Transit Line and transfers to other operators are excluded."
+  },
+  {
+    "key": "passFlow253",
+    "source": "한큐 전철 내부 이동만 계산합니다. 고베고속선, 특급·좌석요금, 할인과 다른 회사 환승은 포함하지 않습니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hankyu_1day_pass_page.dart"
+    ],
+    "english": "Calculates journeys within Hankyu Railway only. The Kobe Rapid Transit Line, limited express tickets, seat charges, discounts and transfers to other operators are excluded."
+  },
+  {
+    "key": "passFlow254",
+    "source": "한큐 전철 역을 선택하면 성인 일반 운임을 자동으로 찾습니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hankyu_1day_pass_page.dart"
+    ],
+    "english": "Choose Hankyu Railway stations to look up adult regular fares automatically."
+  },
+  {
+    "key": "passFlow255",
+    "source": "한큐 전철 이동 구간을 입력해 주세요.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hankyu_1day_pass_page.dart"
+    ],
+    "english": "Enter your Hankyu Railway journeys."
+  },
+  {
+    "key": "passFlow256",
+    "source": "한큐 전철 일반 운임",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hankyu_1day_pass_page.dart"
+    ],
+    "english": "Hankyu Railway regular fares"
+  },
+  {
+    "key": "passFlow257",
+    "source": "해적선",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hakone_freepass_page.dart"
+    ],
+    "english": "Hakone Sightseeing Cruise"
+  },
+  {
+    "key": "passFlow258",
+    "source": "홋카이도 레일패스 {arg0}일권",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hokkaido_rail_pass_page.dart"
+    ],
+    "english": "Hokkaido Rail Pass · {arg0} days"
+  },
+  {
+    "key": "passFlow259",
+    "source": "확인",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hakone_freepass_page.dart"
+    ],
+    "english": "OK"
+  },
+  {
+    "key": "passFlow260",
+    "source": "횟수 입력 상세",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/okayama_kurashiki_gururin_pass_page.dart"
+    ],
+    "english": "Ride count details"
+  },
+  {
+    "key": "passFlow261",
+    "source": "후지사와 왕복 포함",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/enokama_pass_page.dart"
+    ],
+    "english": "Fujisawa round trip included"
+  },
+  {
+    "key": "passFlow262",
+    "source": "후쿠오카시 지하철 역을 선택하면 성인 일반 운임을 자동으로 찾습니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/fukuoka_city_subway_pass_page.dart"
+    ],
+    "english": "Choose Fukuoka City Subway stations to look up adult regular fares automatically."
+  },
+  {
+    "key": "passFlow263",
+    "source": "후쿠오카시 지하철 이동 구간을 입력해 주세요.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/fukuoka_city_subway_pass_page.dart"
+    ],
+    "english": "Enter your Fukuoka City Subway journeys."
+  },
+  {
+    "key": "passFlow264",
+    "source": "후쿠오카시 지하철 일반 운임",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/fukuoka_city_subway_pass_page.dart"
+    ],
+    "english": "Fukuoka City Subway regular fares"
+  },
+  {
+    "key": "passFlow265",
+    "source": "후쿠오카시 지하철의 성인 일반 운임만 계산합니다. 다른 회사 환승과 할인은 포함하지 않습니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/fukuoka_city_subway_pass_page.dart"
+    ],
+    "english": "Calculates adult regular fares on Fukuoka City Subway only. Transfers to other operators and discounts are excluded."
+  },
+  {
+    "key": "passFlow266",
+    "source": "후쿠오카시 지하철의 성인 일반 운임만 합산합니다. 1일권은 개찰 당일 첫차부터 막차까지 유효하며, 다른 회사 환승·할인은 포함하지 않습니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/fukuoka_city_subway_pass_page.dart"
+    ],
+    "english": "Adds adult regular fares on Fukuoka City Subway only. The one-day pass is valid from the first to the last train on the day you use the gates. Transfers to other operators and discounts are excluded."
+  },
+  {
+    "key": "passFlow267",
+    "source": "히로덴 전차 1일권",
+    "files": [
+      "lib/src/features/pass_comparison/domain/hiroden_pass.dart"
+    ],
+    "english": "Hiroden Tram One-Day Pass"
+  },
+  {
+    "key": "passFlow268",
+    "source": "히로덴 전차 24시간권",
+    "files": [
+      "lib/src/features/pass_comparison/domain/hiroden_pass.dart"
+    ],
+    "english": "Hiroden Tram 24-Hour Pass"
+  },
+  {
+    "key": "passFlow269",
+    "source": "히로덴 전차 8시간권",
+    "files": [
+      "lib/src/features/pass_comparison/domain/hiroden_pass.dart"
+    ],
+    "english": "Hiroden Tram 8-Hour Pass"
+  },
+  {
+    "key": "passFlow270",
+    "source": "히로시마 전철 이동 구간을 입력해 주세요.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hiroden_pass_page.dart"
+    ],
+    "english": "Enter your Hiroshima Electric Railway journeys."
+  },
+  {
+    "key": "passFlow271",
+    "source": "히로시마 전철 일반 운임",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hiroden_pass_page.dart"
+    ],
+    "english": "Hiroshima Electric Railway regular fares"
+  },
+  {
+    "key": "passFlow272",
+    "source": "히로시마 전철 정류장을 선택하면 성인 일반 운임을 자동으로 찾습니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hiroden_pass_page.dart"
+    ],
+    "english": "Choose Hiroshima Electric Railway stops to look up adult regular fares automatically."
+  },
+  {
+    "key": "passFlow273",
+    "source": "JR 동일본",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart"
+    ],
+    "english": "JR East"
+  },
+  {
+    "key": "passFlow274",
+    "source": "JR 서일본 역을 선택하면 성인 일반 운임을 자동으로 찾습니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/okayama_kurashiki_gururin_pass_page.dart"
+    ],
+    "english": "Choose JR West stations to look up adult regular fares automatically."
+  },
+  {
+    "key": "passFlow275",
+    "source": "JR 서일본 일반 운임",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/okayama_kurashiki_gururin_pass_page.dart"
+    ],
+    "english": "JR West regular fares"
+  },
+  {
+    "key": "passFlow276",
+    "source": "JR 이동 구간 또는 노면전차·버스 이용 횟수를 입력해 주세요.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/okayama_kurashiki_gururin_pass_page.dart"
+    ],
+    "english": "Enter JR journeys or tram and bus ride counts."
+  },
+  {
+    "key": "passFlow277",
+    "source": "JR 홋카이도 · 보통·쾌속",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hokkaido_rail_pass_page.dart"
+    ],
+    "english": "JR Hokkaido · Local / Rapid"
+  },
+  {
+    "key": "passFlow278",
+    "source": "JR 홋카이도 · 특급",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hokkaido_rail_pass_page.dart"
+    ],
+    "english": "JR Hokkaido · Limited express"
+  },
+  {
+    "key": "passFlow279",
+    "source": "JR 홋카이도 버스",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hokkaido_rail_pass_page.dart"
+    ],
+    "english": "JR Hokkaido Bus"
+  },
+  {
+    "key": "passFlow280",
+    "source": "JR 홋카이도 역을 선택하면 성인 일반 운임을 자동으로 찾습니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hokkaido_rail_pass_page.dart"
+    ],
+    "english": "Choose JR Hokkaido stations to look up adult regular fares automatically."
+  },
+  {
+    "key": "passFlow281",
+    "source": "JR 홋카이도선의 성인 운임을 계산합니다. 특급은 보통차 지정석만, 버스는 1회 ¥300 예상값만 반영합니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/hokkaido_rail_pass_page.dart"
+    ],
+    "english": "Calculates adult fares on JR Hokkaido lines. Includes only ordinary reserved seats for limited express trains and estimated bus fares of ¥300 per ride."
+  },
+  {
+    "key": "passFlow282",
+    "source": "JR·노면전차와 선택한 시모덴 버스 횟수를 합산합니다. 관광시설 입장·렌터사이클 혜택, 특급·할인과 다른 회사 환승은 계산하지 않습니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/okayama_kurashiki_gururin_pass_page.dart"
+    ],
+    "english": "Adds JR and tram fares and the selected Shimoden Bus ride counts. Attraction admission, bicycle-rental benefits, limited express charges, discounts and transfers to other operators are excluded."
+  },
+  {
+    "key": "passFlow283",
+    "source": "JR·오카야마 전기궤도는 성인 일반 운임을 합산합니다. 시모덴 버스 대표 운임은 실제 정류장별 운임과 차이가 있을 수 있으며, 관광시설·렌터사이클 혜택은 계산하지 않습니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/okayama_kurashiki_gururin_pass_page.dart"
+    ],
+    "english": "Adds adult regular fares for JR and Okayama Electric Tramway. Representative Shimoden Bus fares may differ from actual stop-specific fares. Attraction and bicycle-rental benefits are excluded."
+  },
+  {
+    "key": "passFlow284",
+    "source": "Metro ↔ 도에이 지하철",
+    "files": [
+      "lib/src/features/pass_comparison/domain/pass_comparison.dart"
+    ],
+    "english": "Metro ↔ Toei Subway"
+  },
+  {
+    "key": "passFlow285",
+    "source": "Metro↔도에이 구간은 공식 지정 환승역·60분 이내 환승·70엔 할인을 전제로 계산합니다. 패스 구매 전 공식 운임과 상품 구매 조건을 다시 확인해 주세요.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/pass_comparison_prototype_page.dart"
+    ],
+    "english": "Metro↔Toei journeys assume officially designated transfer stations, a transfer within 60 minutes and a ¥70 discount. Recheck official fares and purchase conditions before buying a pass."
+  },
+  {
+    "key": "passFlow286",
+    "source": "Tokyo Subway 24시간권",
+    "files": [
+      "lib/src/features/pass_comparison/domain/pass_comparison.dart"
+    ],
+    "english": "Tokyo Subway 24-Hour Ticket"
+  },
+  {
+    "key": "passFlow287",
+    "source": "Tokyo Subway 48시간권",
+    "files": [
+      "lib/src/features/pass_comparison/domain/pass_comparison.dart"
+    ],
+    "english": "Tokyo Subway 48-Hour Ticket"
+  },
+  {
+    "key": "passFlow288",
+    "source": "Tokyo Subway 72시간권",
+    "files": [
+      "lib/src/features/pass_comparison/domain/pass_comparison.dart"
+    ],
+    "english": "Tokyo Subway 72-Hour Ticket"
+  },
+  {
+    "key": "passFlow289",
+    "source": "Web 프로토타입에서 검증된 상품만 Android 앱에 반영합니다.",
+    "files": [
+      "lib/src/features/pass_comparison/presentation/prototype_pass_selection_page.dart"
+    ],
+    "english": "Only products verified in the web prototype are included in the Android app."
+  }
+]
